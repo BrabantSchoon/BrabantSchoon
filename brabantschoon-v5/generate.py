@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "27"
+ASSET_VERSION = "32"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -537,11 +537,10 @@ def contact_form():
     </div>
   </form>"""
 
-def contact_info_block(base=""):
+def contact_info_block(base="", show_heading=True):
+    heading = '<span class="eyebrow">Contact</span>\n    <h2>Vraag uw offerte aan.</h2>\n    <p>Neem contact op via telefoon, e-mail of het formulier. We reageren binnen \u00e9\u00e9n werkdag.</p>' if show_heading else ''
     return f"""<div class="contact-info">
-    <span class="eyebrow">Contact</span>
-    <h2>Vraag uw offerte aan.</h2>
-    <p>Neem contact op via telefoon, e-mail of het formulier. We reageren binnen \u00e9\u00e9n werkdag.</p>
+    {heading}
     <div class="contact-line">{icon('phone')}<a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a></div>
     <div class="contact-line">{icon('mail')}<a href="mailto:{EMAIL}">{EMAIL}</a></div>
     <div class="contact-line">{icon('pin')}<span style="font-weight:600; font-size:15.5px;">Actief vanuit {CITY}, heel Noord-Brabant</span></div>
@@ -597,10 +596,10 @@ def build_home():
     </a>""" for s in SERVICES)
 
     usp_items = [
-        ("chat", "Heldere communicatie", "U weet altijd waar u aan toe bent."),
-        ("check", "Betrouwbare service", "Afspraken worden nagekomen."),
-        ("clock", "Flexibele planning", "Frequentie en tijdstip in overleg."),
-        ("spark", "Oog voor kwaliteit", "Aandacht voor detail bij elke beurt."),
+        ("chat", "Eén vast aanspreekpunt", "Geen callcenter, direct contact met wie uw locatie kent."),
+        ("check", "Afspraak is afspraak", "Heldere planning, nagekomen zonder verrassingen."),
+        ("clock", "Flexibele inzet", "Frequentie en tijdstip afgestemd op uw organisatie."),
+        ("spark", "Oog voor detail", "Controle op kwaliteit bij elke beurt, niet alleen bij de eerste."),
     ]
     usp_html = "\n    ".join(f'<div class="usp"><div class="icon-circle">{icon(n)}</div><h3>{t}</h3><p>{d}</p></div>' for n, t, d in usp_items)
 
@@ -611,7 +610,7 @@ def build_home():
   <section class="hero">
     <div class="wrap hero-grid">
       <div>
-        <span class="eyebrow">Schoonmaak voor kantoren &amp; bedrijfspanden in heel Noord-Brabant</span>
+        <span class="eyebrow">Professionele schoonmaakpartner voor bedrijven &amp; organisaties</span>
         <h1>Een schone bedrijfsomgeving, zonder gedoe.</h1>
         <p class="lead">BrabantSchoon verzorgt kantoorreiniging, opleveringsschoonmaak, VvE-schoonmaak en specialistische reiniging voor bedrijven, winkels, praktijken en vakantieparken. Ons kerngebied is {CITY} en de Peelgemeenten, maar we werken in heel Noord-Brabant &mdash; ook voor grotere opdrachten verder weg.</p>
         <div class="hero-actions">
@@ -631,7 +630,7 @@ def build_home():
           <h2 style="font-size:30px; margin-top:10px;">Persoonlijk en professioneel.</h2>
         </div>
         <div class="prose" style="margin-top:8px;">
-          <p>BrabantSchoon is een schoonmaakbedrijf uit {CITY}, gericht op kantoren, bedrijfspanden, winkels, VvE's, praktijken en vakantieparken. Ons kerngebied is Helmond en de Peelgemeenten, maar we zijn beschikbaar voor opdrachten in heel Noord-Brabant. We werken met korte communicatielijnen en duidelijke afspraken, zodat schoonmaak geen zorg is maar gewoon geregeld. Ook voor particuliere klussen zoals opleveringsschoonmaak zijn we inzetbaar.</p>
+          <p>BrabantSchoon is de schoonmaakpartner uit {CITY} voor kantoren, bedrijfsverzamelgebouwen, VvE's, scholen en vastgoedbeheerders die op zoek zijn naar een vaste, betrouwbare partij &mdash; niet een eenmalige leverancier. Ons kerngebied is Helmond en de Peelgemeenten, maar we zijn beschikbaar voor opdrachten in heel Noord-Brabant. We werken met korte communicatielijnen en duidelijke afspraken, zodat schoonmaak geen zorg is maar gewoon geregeld. Ook voor particuliere klussen, zoals opleveringsschoonmaak en vakantieparken, zijn we inzetbaar.</p>
         </div>
       </div>
     </div>
@@ -642,7 +641,7 @@ def build_home():
       <div class="sec-head reveal">
         <span class="eyebrow">Diensten</span>
         <h2>Onze diensten.</h2>
-        <p>Voornamelijk gericht op kantoren, bedrijfspanden, winkels, VvE's en praktijken. Particuliere klussen, zoals glasbewassing aan huis, zijn ook mogelijk.</p>
+        <p>Voornamelijk gericht op kantoren, bedrijfsverzamelgebouwen, VvE's, scholen en vastgoedbeheerders. Particuliere klussen, zoals glasbewassing aan huis, zijn ook mogelijk.</p>
       </div>
       <div class="grid-3 reveal">
         {service_cards}
@@ -684,6 +683,22 @@ def build_home():
         {overig_tags}
       </div>
       <p class="prose reveal" style="text-align:center; margin-top:24px;">Een opdracht buiten deze regio? Neem gerust contact op, dan bekijken we de mogelijkheden.</p>
+    </div>
+  </section>
+
+  <section id="werkwijze" style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Werkwijze</span>
+        <h2>Zo werken we samen.</h2>
+        <p>Geen verrassingen, geen losse toezeggingen &mdash; een vast proces van eerste contact tot uitvoering.</p>
+      </div>
+      <div class="steps reveal">
+        <div class="step"><div class="stepnum">01</div><h3>Aanvraag</h3><p>U laat weten wat er schoongemaakt moet worden en hoe vaak.</p></div>
+        <div class="step"><div class="stepnum">02</div><h3>Locatiebezoek</h3><p>Een kort, vrijblijvend gesprek op locatie om de situatie te bekijken.</p></div>
+        <div class="step"><div class="stepnum">03</div><h3>Offerte op maat</h3><p>Een heldere prijs en planning, afgestemd op uw organisatie.</p></div>
+        <div class="step"><div class="stepnum">04</div><h3>Uitvoering &amp; controle</h3><p>Een vast team gaat aan de slag; kwaliteit wordt gecontroleerd, niet alleen beloofd.</p></div>
+      </div>
     </div>
   </section>
 
@@ -1006,7 +1021,7 @@ def build_contact():
   <section>
     <div class="wrap">
       <div class="contact-grid reveal">
-        {contact_info_block(base)}
+        {contact_info_block(base, show_heading=False)}
         {contact_form()}
       </div>
     </div>
