@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="image" href="images/hero.jpg" fetchpriority="high">
-<link rel="stylesheet" href="css/styles.css?v=35">
+<link rel="stylesheet" href="css/styles.css?v=41">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
@@ -67,8 +67,7 @@
   "mainEntity": [
     {"@type": "Question", "name": "Wat kost schoonmaak door BrabantSchoon?", "acceptedAnswer": {"@type": "Answer", "text": "Dat hangt af van de ruimte, frequentie en het type dienst. Na een kort gesprek ontvangt u een offerte op maat."}},
     {"@type": "Question", "name": "In welke regio’s is BrabantSchoon actief?", "acceptedAnswer": {"@type": "Answer", "text": "We zijn voornamelijk actief in Helmond en de Peelgemeenten: Deurne, Asten, Someren, Gemert-Bakel en Laarbeek, en verder in Eindhoven, Geldrop-Mierlo, Nuenen en Mierlo. Opdrachten daarbuiten bespreken we graag in overleg."}},
-    {"@type": "Question", "name": "Werk ik steeds met dezelfde persoon of hetzelfde team?", "acceptedAnswer": {"@type": "Answer", "text": "We streven naar continuïteit, zodat u niet steeds opnieuw hoeft uit te leggen hoe u het wilt."}},
-    {"@type": "Question", "name": "Kan ik ook een eenmalige schoonmaakbeurt aanvragen?", "acceptedAnswer": {"@type": "Answer", "text": "Ja, naast vaste afspraken is een eenmalige beurt mogelijk, bijvoorbeeld bij een oplevering of verhuizing."}}
+    {"@type": "Question", "name": "Werk ik steeds met dezelfde persoon of hetzelfde team?", "acceptedAnswer": {"@type": "Answer", "text": "We streven naar continuïteit, zodat u niet steeds opnieuw hoeft uit te leggen hoe u het wilt."}}
   ]
 }
 </script>
@@ -113,41 +112,25 @@
 </aside>
 <main id="main-content">
 
-  <section class="hero">
-    <div class="wrap hero-grid">
-      <div>
-        <span class="eyebrow">Professionele schoonmaakpartner voor bedrijven &amp; organisaties</span>
-        <h1>Een schone bedrijfsomgeving, zonder gedoe.</h1>
-        <p class="lead">BrabantSchoon verzorgt kantoorreiniging, opleveringsschoonmaak, VvE-schoonmaak en specialistische reiniging voor bedrijven, winkels, praktijken en vakantieparken. Ons kerngebied is Helmond en de Peelgemeenten, maar we werken in heel Noord-Brabant &mdash; ook voor grotere opdrachten verder weg.</p>
-        <div class="hero-actions">
-          <a href="contact.html" class="btn btn-primary">Vraag offerte aan</a>
-          <a href="tel:+31492313050" class="btn btn-outline">Bel direct</a>
-        </div>
-      </div>
-      <div class="illustration-panel hero-photo reveal"><img src="images/hero.jpg" alt="Bedrijfswagens en medewerker van BrabantSchoon bij een klant in Zuidoost-Brabant" width="1600" height="1067" fetchpriority="high" decoding="async"></div>
-    </div>
-  </section>
-
-  <section>
-    <div class="wrap">
-      <div class="two-col reveal">
-        <div>
-          <span class="eyebrow">Over BrabantSchoon</span>
-          <h2 style="font-size:30px; margin-top:10px;">Persoonlijk en professioneel.</h2>
-        </div>
-        <div class="prose" style="margin-top:8px;">
-          <p>BrabantSchoon is de schoonmaakpartner uit Helmond voor kantoren, bedrijfsverzamelgebouwen, VvE's, scholen en vastgoedbeheerders die op zoek zijn naar een vaste, betrouwbare partij &mdash; niet een eenmalige leverancier. Ons kerngebied is Helmond en de Peelgemeenten, maar we zijn beschikbaar voor opdrachten in heel Noord-Brabant. We werken met korte communicatielijnen en duidelijke afspraken, zodat schoonmaak geen zorg is maar gewoon geregeld. Ook voor particuliere klussen, zoals opleveringsschoonmaak en vakantieparken, zijn we inzetbaar.</p>
-        </div>
+  <section class="hero-full">
+    <img src="images/hero.jpg" alt="Bedrijfswagens en medewerker van BrabantSchoon bij een klant in Zuidoost-Brabant" class="hero-full-img" width="1600" height="1067" fetchpriority="high" decoding="async">
+    <div class="hero-full-overlay"></div>
+    <div class="wrap hero-full-content">
+      <span class="eyebrow" style="color:#BFE0FF;">Professionele schoonmaakpartner</span>
+      <h1>Schoon zonder gedoe.</h1>
+      <p class="lead" style="color:rgba(255,255,255,0.9);">Vaste kwaliteit voor kantoren, VvE's en organisaties in heel Noord-Brabant.</p>
+      <div class="hero-actions">
+        <a href="contact.html" class="btn btn-primary">Vraag offerte aan</a>
+        <a href="#diensten" class="btn btn-ghost-light">Bekijk onze diensten</a>
       </div>
     </div>
   </section>
 
-  <section id="diensten" style="background:var(--bg-soft);">
+  <section id="diensten">
     <div class="wrap">
       <div class="sec-head reveal">
         <span class="eyebrow">Diensten</span>
-        <h2>Onze diensten.</h2>
-        <p>Voornamelijk gericht op kantoren, bedrijfsverzamelgebouwen, VvE's, scholen en vastgoedbeheerders. Particuliere klussen, zoals glasbewassing aan huis, zijn ook mogelijk.</p>
+        <h2>Wat wij doen.</h2>
       </div>
       <div class="grid-3 reveal">
         <a href="diensten/kantoorreiniging.html" class="service-card">
@@ -155,7 +138,6 @@
       <div class="body">
         <h3>Kantoorreiniging</h3>
         <p>Vaste of periodieke reiniging van uw kantoorpand, buiten werktijd.</p>
-        <span class="sc-link">Meer informatie <svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
     <a href="diensten/glasbewassing.html" class="service-card">
@@ -163,7 +145,6 @@
       <div class="body">
         <h3>Glasbewassing</h3>
         <p>Ramen en kozijnen streeploos schoon, binnen en buiten.</p>
-        <span class="sc-link">Meer informatie <svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
     <a href="diensten/gevelreiniging.html" class="service-card">
@@ -171,7 +152,6 @@
       <div class="body">
         <h3>Gevelreiniging</h3>
         <p>Reiniging van gevels en buitenmuren.</p>
-        <span class="sc-link">Meer informatie <svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
     <a href="diensten/opleveringsschoonmaak.html" class="service-card">
@@ -179,7 +159,6 @@
       <div class="body">
         <h3>Opleveringsschoonmaak</h3>
         <p>Een pand schoon opgeleverd bij sleuteloverdracht.</p>
-        <span class="sc-link">Meer informatie <svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
     <a href="diensten/vve-schoonmaak.html" class="service-card">
@@ -187,7 +166,6 @@
       <div class="body">
         <h3>VvE-schoonmaak</h3>
         <p>Onderhoud van trappenhuizen en gemeenschappelijke ruimtes.</p>
-        <span class="sc-link">Meer informatie <svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
     <a href="diensten/periodieke-schoonmaak.html" class="service-card">
@@ -195,28 +173,21 @@
       <div class="body">
         <h3>Periodieke schoonmaak</h3>
         <p>Een vaste schoonmaakbeurt op een vast ritme.</p>
-        <span class="sc-link">Meer informatie <svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-      </div>
-    </a>
-    <a href="diensten/specialistische-reiniging.html" class="service-card">
-      <div class="thumb tint-7"><img src="images/diensten/specialistische-reiniging.jpg" alt="Specialistische reiniging door BrabantSchoon in Zuidoost-Brabant" class="" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;"></div>
-      <div class="body">
-        <h3>Specialistische reiniging</h3>
-        <p>Maatwerk voor vloeren, tapijt en bijzondere oppervlakken.</p>
-        <span class="sc-link">Meer informatie <svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
       </div>
+      <div class="sec-foot"><a href="diensten.html" class="btn btn-outline">Alle diensten</a></div>
     </div>
   </section>
 
-  <section>
+  <section class="section-tight" style="background:var(--bg-soft);">
     <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="eyebrow">Resultaat</span>
-        <h2>Zo laten we het achter.</h2>
-      </div>
-      <div class="compare-slider reveal">
+      <div class="two-col reveal" style="align-items:center;">
+        <div>
+          <span class="eyebrow">Resultaat</span>
+          <h2 style="font-size:26px; margin-top:8px;">Zo laten we het achter.</h2>
+        </div>
+        <div><div class="compare-slider reveal">
     <div class="cs-layer">
       <div class="cs-after" style="background-image:url('images/after.jpg');"></div>
       <div class="cs-before-clip" id="csBeforeClip">
@@ -227,7 +198,8 @@
     <span class="cs-label before">Voor</span>
     <span class="cs-label after">Na</span>
     <input type="range" min="0" max="100" value="50" id="csRange" aria-label="Vergelijk voor en na schoonmaak">
-  </div>
+  </div></div>
+      </div>
     </div>
   </section>
 
@@ -238,85 +210,51 @@
         <h2>Waarom klanten voor ons kiezen.</h2>
       </div>
       <div class="usp-grid reveal">
-        <div class="usp"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3>Eén vast aanspreekpunt</h3><p>Geen callcenter, direct contact met wie uw locatie kent.</p></div>
-    <div class="usp"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div><h3>Afspraak is afspraak</h3><p>Heldere planning, nagekomen zonder verrassingen.</p></div>
-    <div class="usp"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><h3>Flexibele inzet</h3><p>Frequentie en tijdstip afgestemd op uw organisatie.</p></div>
-    <div class="usp"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg></div><h3>Oog voor detail</h3><p>Controle op kwaliteit bij elke beurt, niet alleen bij de eerste.</p></div>
+        <div class="usp"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3>Vast aanspreekpunt</h3><p>Geen callcenter, direct contact.</p></div>
+    <div class="usp"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div><h3>Afspraak is afspraak</h3><p>Heldere planning, nagekomen.</p></div>
+    <div class="usp"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><h3>Flexibele inzet</h3><p>Frequentie op maat.</p></div>
+    <div class="usp"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg></div><h3>Oog voor detail</h3><p>Kwaliteit wordt gecontroleerd.</p></div>
+      </div>
+      <div class="steps reveal" style="margin-top:56px; border-top:1px solid var(--line); padding-top:40px;">
+        <div class="step"><div class="stepnum">01</div><h3>Aanvraag</h3><p>Uw wens, kort omschreven.</p></div>
+        <div class="step"><div class="stepnum">02</div><h3>Locatiebezoek</h3><p>Vrijblijvend gesprek op locatie.</p></div>
+        <div class="step"><div class="stepnum">03</div><h3>Offerte</h3><p>Heldere prijs en planning.</p></div>
+        <div class="step"><div class="stepnum">04</div><h3>Uitvoering</h3><p>Vast team, gecontroleerde kwaliteit.</p></div>
       </div>
     </div>
   </section>
 
-  <section id="werkgebied" style="background:var(--bg-soft);">
+  <section style="background:var(--bg-soft);">
     <div class="wrap">
       <div class="sec-head reveal">
-        <span class="eyebrow">Werkgebied</span>
-        <h2>Actief in Helmond en de Peelgemeenten.</h2>
-        <p>Ons kerngebied, maar we werken in heel Noord-Brabant.</p>
+        <span class="eyebrow">Voor wie, en waar</span>
+        <h2>Sectoren &amp; werkgebied.</h2>
       </div>
       <div class="area-tags reveal">
-        <span class="area-tag primary">Helmond</span>
-      <span class="area-tag primary">Deurne</span>
-      <span class="area-tag primary">Asten</span>
-      <span class="area-tag primary">Someren</span>
-      <span class="area-tag primary">Gemert-Bakel</span>
-      <span class="area-tag primary">Laarbeek</span>
-        <span class="area-tag">Eindhoven</span>
+        <span class="area-tag primary">Kantoren</span>
+      <span class="area-tag primary">Bedrijfsverzamelgebouwen</span>
+      <span class="area-tag primary">VvE's</span>
+      <span class="area-tag primary">Scholen</span>
+      <span class="area-tag primary">Vastgoedbeheerders</span>
+      <span class="area-tag primary">Winkels &amp; praktijken</span>
+      </div>
+      <div class="area-tags reveal" style="margin-top:14px;">
+        <span class="area-tag">Helmond</span>
+      <span class="area-tag">Deurne</span>
+      <span class="area-tag">Asten</span>
+      <span class="area-tag">Someren</span>
+      <span class="area-tag">Gemert-Bakel</span>
+      <span class="area-tag">Laarbeek</span>
+      <span class="area-tag">Eindhoven</span>
       <span class="area-tag">Geldrop-Mierlo</span>
       <span class="area-tag">Nuenen</span>
       <span class="area-tag">Mierlo</span>
       </div>
-      <p class="prose reveal" style="text-align:center; margin-top:24px;">Een opdracht buiten deze regio? Neem gerust contact op, dan bekijken we de mogelijkheden.</p>
+      <p class="prose reveal" style="text-align:center; margin-top:20px;">Uw organisatie of locatie staat er niet bij? <a href="contact.html" style="color:var(--link); font-weight:600;">Neem contact op</a> &mdash; we denken graag mee.</p>
     </div>
   </section>
 
-  <section id="werkwijze" style="background:var(--bg-soft);">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="eyebrow">Werkwijze</span>
-        <h2>Zo werken we samen.</h2>
-        <p>Geen verrassingen, geen losse toezeggingen &mdash; een vast proces van eerste contact tot uitvoering.</p>
-      </div>
-      <div class="steps reveal">
-        <div class="step"><div class="stepnum">01</div><h3>Aanvraag</h3><p>U laat weten wat er schoongemaakt moet worden en hoe vaak.</p></div>
-        <div class="step"><div class="stepnum">02</div><h3>Locatiebezoek</h3><p>Een kort, vrijblijvend gesprek op locatie om de situatie te bekijken.</p></div>
-        <div class="step"><div class="stepnum">03</div><h3>Offerte op maat</h3><p>Een heldere prijs en planning, afgestemd op uw organisatie.</p></div>
-        <div class="step"><div class="stepnum">04</div><h3>Uitvoering &amp; controle</h3><p>Een vast team gaat aan de slag; kwaliteit wordt gecontroleerd, niet alleen beloofd.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="sectoren">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="eyebrow">Sectoren</span>
-        <h2>Voor wie wij werken.</h2>
-        <p>Van kleinere kantoren tot organisaties met meerdere locaties.</p>
-      </div>
-      <div class="usp-grid reveal">
-        <div class="usp"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 21v-4h6v4M9 8h.01M9 12h.01M15 8h.01M15 12h.01"/></svg></div><div><h3>Kantoren</h3><p>Van eenmanszaak tot kantoorpand met meerdere afdelingen.</p></div></div>
-        <div class="usp"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg></div><div><h3>Bedrijfsverzamelgebouwen</h3><p>Gedeelde ruimtes, meerdere huurders, één aanspreekpunt.</p></div></div>
-        <div class="usp"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div><div><h3>VvE's &amp; vastgoedbeheerders</h3><p>Trappenhuizen en gemeenschappelijke ruimtes, structureel onderhouden.</p></div></div>
-        <div class="usp"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg></div><div><h3>Scholen</h3><p>Schone, gezonde leslokalen buiten lestijd.</p></div></div>
-        <div class="usp"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1-5h16l1 5"/><path d="M4 9v11h16V9"/><path d="M9 20v-6h6v6"/></svg></div><div><h3>Winkels &amp; praktijken</h3><p>Representatief voor klanten, buiten openingstijd.</p></div></div>
-        <div class="usp"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><h3>Andere organisaties</h3><p>Werkt u bij een grotere organisatie of op meerdere locaties? Neem contact op &mdash; we bespreken graag wat mogelijk is.</p></div></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="reviews">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="eyebrow">Klanten</span>
-        <h2>Ervaringen van klanten.</h2>
-      </div>
-      <div class="reveal">
-    <script src="https://elfsightcdn.com/platform.js" async></script>
-    <div class="elfsight-app-d2e96685-a06e-40c9-96e3-375649773c8e" data-elfsight-app-lazy></div>
-  </div>
-    </div>
-  </section>
-
-  <section id="faq" style="background:var(--bg-soft);">
+  <section id="faq" class="section-tight">
     <div class="wrap">
       <div class="sec-head reveal">
         <span class="eyebrow">Veelgestelde vragen</span>
@@ -326,13 +264,16 @@
         <details><summary>Wat kost schoonmaak door BrabantSchoon?<span class="chev">+</span></summary><p class="faq-a">Dat hangt af van de ruimte, frequentie en het type dienst. Na een kort gesprek ontvangt u een offerte op maat.</p></details>
       <details><summary>In welke regio’s is BrabantSchoon actief?<span class="chev">+</span></summary><p class="faq-a">We zijn voornamelijk actief in Helmond en de Peelgemeenten: Deurne, Asten, Someren, Gemert-Bakel en Laarbeek, en verder in Eindhoven, Geldrop-Mierlo, Nuenen en Mierlo. Opdrachten daarbuiten bespreken we graag in overleg.</p></details>
       <details><summary>Werk ik steeds met dezelfde persoon of hetzelfde team?<span class="chev">+</span></summary><p class="faq-a">We streven naar continuïteit, zodat u niet steeds opnieuw hoeft uit te leggen hoe u het wilt.</p></details>
-      <details><summary>Kan ik ook een eenmalige schoonmaakbeurt aanvragen?<span class="chev">+</span></summary><p class="faq-a">Ja, naast vaste afspraken is een eenmalige beurt mogelijk, bijvoorbeeld bij een oplevering of verhuizing.</p></details>
       </div>
     </div>
   </section>
 
-  <section id="contact">
+  <section id="contact" style="background:var(--bg-soft);">
     <div class="wrap">
+      <div class="reveal">
+    <script src="https://elfsightcdn.com/platform.js" async></script>
+    <div class="elfsight-app-d2e96685-a06e-40c9-96e3-375649773c8e" data-elfsight-app-lazy></div>
+  </div>
       <div class="benefits-strip reveal">
         <span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Gratis &amp; vrijblijvend</span>
         <span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Reactie binnen één werkdag</span>
@@ -561,7 +502,12 @@
     <div class="footer-top">
       <div class="footer-brand">
         <img src="images/logo.png" alt="BrabantSchoon" width="120" height="30">
-        <p class="footer-tagline">Schoonmaak &amp; facility diensten, actief in heel Noord-Brabant.</p>
+        <p class="footer-tagline">Schoonmaak &amp; facility diensten voor bedrijven, actief in heel Noord-Brabant. Ook voor particuliere klussen, zoals opleveringsschoonmaak en vakantieparken.</p>
+        <div class="footer-social">
+          <a href="https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen" target="_blank" rel="noopener" aria-label="BrabantSchoon op WhatsApp"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z"/><path d="M8.5 8.7c.2-.5.4-.5.7-.5h.5c.2 0 .4 0 .6.4.2.5.7 1.6.7 1.7.1.1.1.3 0 .4-.1.2-.1.3-.3.4-.1.2-.3.3-.4.5-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.5 1.5.3.1.5.1.6-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1.2.1 1.6.7 1.8.9.2.1.4.2.4.3 0 .2 0 .9-.3 1.3-.3.5-1.4 1-2 1-.5 0-1.9-.2-3.5-1.6-2.1-1.8-2.9-3.3-3.1-3.7-.1-.4-.7-1.2-.7-2.3 0-1 .5-1.5.7-1.7z"/></svg></a>
+          <a href="https://facebook.com/brabantschoon" target="_blank" rel="noopener" aria-label="BrabantSchoon op Facebook"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 8h-2a2 2 0 0 0-2 2v2H9v3h2v7h3v-7h2.2l.8-3H14v-1.5a.5.5 0 0 1 .5-.5H16z"/></svg></a>
+          <a href="https://instagram.com/brabantschoon" target="_blank" rel="noopener" aria-label="BrabantSchoon op Instagram"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+        </div>
       </div>
       <div class="footer-col">
         <h4>Diensten</h4>
@@ -601,6 +547,6 @@
   <a href="tel:+31492313050" class="btn btn-outline">Bel direct</a>
   <a href="contact.html" class="btn btn-primary">Vrijblijvende offerte</a>
 </div>
-<script src="js/main.js?v=35" defer></script>
+<script src="js/main.js?v=41" defer></script>
 </body>
 </html>
