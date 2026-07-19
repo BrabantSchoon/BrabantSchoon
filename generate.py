@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "43"
+ASSET_VERSION = "44"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -963,7 +963,6 @@ def build_contact():
   {page_hero("Contact", "Neem contact op.", "We reageren binnen \u00e9\u00e9n werkdag.", base, "Contact")}
   <section>
     <div class="wrap">
-      {reviews_widget_block()}
       <div class="contact-grid reveal">
         {contact_info_block(base, show_heading=False)}
         {contact_form()}
