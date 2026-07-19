@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "44"
+ASSET_VERSION = "45"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -691,8 +691,8 @@ def build_home():
   {trust_strip()}
 """
     write("index.html", page_shell(
-        "BrabantSchoon | Schoonmaakbedrijf Helmond, Eindhoven &amp; Peelgemeenten",
-        f"BrabantSchoon verzorgt kantoorreiniging, opleveringsschoonmaak, glasbewassing en VvE-schoonmaak voor bedrijven in Helmond, Eindhoven, Deurne en de Peelgemeenten. Vraag een vrijblijvende offerte aan.",
+        "BrabantSchoon | Schoonmaakbedrijf Helmond &amp; Peelgemeenten",
+        f"BrabantSchoon verzorgt kantoorreiniging, glasbewassing en VvE-schoonmaak voor bedrijven in Helmond en de Peelgemeenten. Vraag een vrijblijvende offerte aan.",
         "", base, "index.html", body, LOCALBUSINESS_SCHEMA + "\n" + faq_schema(FAQ_ITEMS[:3]),
         preload_image="images/hero.jpg"
     ))
@@ -793,7 +793,7 @@ def build_service_pages():
   </section>
 """
         write(f"diensten/{s['slug']}.html", page_shell(
-            f"{s['name']} {CITY} | BrabantSchoon Schoonmaakbedrijf",
+            f"{s['name']} {CITY} | BrabantSchoon",
             f"{s['short']} BrabantSchoon verzorgt {s['name'].lower()} in {CITY} en de Peelgemeenten.",
             f"diensten/{s['slug']}.html", base, "diensten.html",
             body, service_schema(s) + "\n" + breadcrumb_schema(s['name'], f"diensten/{s['slug']}.html") + "\n" + faq_schema(s["faqs"])
@@ -855,7 +855,7 @@ LOCATIONS = [
         "faq_a": "Dat hangt af van de omvang van de klus. Neem contact op met de details van uw situatie, dan laten we u weten of het rendabel is in te plannen.",
     },
     {
-        "slug": "den-bosch", "name": "'s-Hertogenbosch (Den Bosch)",
+        "slug": "den-bosch", "name": "Den Bosch",
         "intro": "'s-Hertogenbosch ligt op een goed bereikbare afstand vanuit Helmond. Voor kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak zijn we hier regelmatig inzetbaar.",
         "faq_q": "Werken jullie ook voor VvE's in Den Bosch?",
         "faq_a": "Ja, we verzorgen schoonmaak van trappenhuizen en gemeenschappelijke ruimtes voor VvE's in en rond 's-Hertogenbosch, in overleg met het bestuur.",
@@ -893,8 +893,8 @@ def build_werkgebied():
   </section>
 """
     write("werkgebied.html", page_shell(
-        "Werkgebied | Schoonmaakbedrijf Helmond, Eindhoven &amp; Peelgemeenten",
-        f"BrabantSchoon is als schoonmaakbedrijf gevestigd in Helmond, met de Peelgemeenten als kerngebied \u2014 en actief in heel Noord-Brabant, ook voor grotere opdrachten verder van huis.",
+        "Werkgebied | BrabantSchoon Helmond &amp; omstreken",
+        f"BrabantSchoon is gevestigd in Helmond, met de Peelgemeenten als kerngebied \u2014 en actief in heel Noord-Brabant.",
         "werkgebied.html", base, "werkgebied.html", body, breadcrumb_schema("Werkgebied", "werkgebied.html")
     ))
 
@@ -951,7 +951,7 @@ def build_location_pages():
   <section><div class="wrap">{cta_band(f"Schoonmaak nodig in {loc['name']}?", "Vraag een vrijblijvende offerte aan.", base)}</div></section>
 """
         title = f"Schoonmaakbedrijf {loc['name']} | BrabantSchoon"
-        desc = f"BrabantSchoon verzorgt kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak voor grotere opdrachten in {loc['name']}. Gevestigd in Helmond, actief in heel Noord-Brabant."
+        desc = f"BrabantSchoon verzorgt kantoorreiniging en VvE-schoonmaak voor grotere opdrachten in {loc['name']}. Gevestigd in Helmond."
         write(f"locaties/{loc['slug']}.html", page_shell(
             title, desc, f"locaties/{loc['slug']}.html", base, "werkgebied.html", body,
             breadcrumb_schema(loc['name'], f"locaties/{loc['slug']}.html") + "\n" + faq_schema([(loc['faq_q'], loc['faq_a'])])
@@ -983,14 +983,14 @@ def build_thanks():
     body = f"""
   <section style="min-height:56vh; display:flex; align-items:center; justify-content:center; text-align:center;">
     <div class="wrap-narrow">
-      <img src="images/logo.png" alt="BrabantSchoon" style="height:34px; margin:0 auto 20px;">
+      <img src="images/logo.png" alt="BrabantSchoon" width="136" height="34" style="height:34px; width:auto; margin:0 auto 20px;">
       <h1 style="font-size:34px;">Bedankt voor uw aanvraag.</h1>
       <p class="prose" style="margin-top:12px;">We hebben uw bericht ontvangen en nemen binnen \u00e9\u00e9n werkdag contact met u op.</p>
       <a class="btn btn-primary" href="index.html" style="margin-top:24px;">Terug naar de website</a>
     </div>
   </section>
 """
-    write("thanks.html", page_shell("Bedankt | BrabantSchoon", "Bedankt voor uw offerteaanvraag.", "thanks.html", "", "", body))
+    write("thanks.html", page_shell("Bedankt | BrabantSchoon", "Bedankt voor uw offerteaanvraag bij BrabantSchoon. We nemen binnen \u00e9\u00e9n werkdag contact met u op.", "thanks.html", "", "", body))
 
 def build_legal():
     base = ""
@@ -1006,7 +1006,7 @@ def build_legal():
     <p>U heeft recht op inzage, correctie en verwijdering van uw gegevens. Neem hiervoor contact op via {EMAIL}.</p>
   </div></section>
 """
-    write("privacy.html", page_shell("Privacyverklaring | BrabantSchoon", "Hoe BrabantSchoon omgaat met persoonsgegevens.", "privacy.html", base, "", privacy))
+    write("privacy.html", page_shell("Privacyverklaring | BrabantSchoon", "Lees hoe BrabantSchoon omgaat met uw persoonsgegevens bij een offerteaanvraag of samenwerking.", "privacy.html", base, "", privacy))
 
     voorwaarden = f"""
   {page_hero("Juridisch", "Algemene voorwaarden.", "De voorwaarden die van toepassing zijn op onze dienstverlening.", base, "Algemene voorwaarden")}
@@ -1020,7 +1020,7 @@ def build_legal():
     <p>Vragen? Neem contact op via {EMAIL}.</p>
   </div></section>
 """
-    write("voorwaarden.html", page_shell("Algemene voorwaarden | BrabantSchoon", "De algemene voorwaarden van BrabantSchoon.", "voorwaarden.html", base, "", voorwaarden))
+    write("voorwaarden.html", page_shell("Algemene voorwaarden | BrabantSchoon", "De algemene voorwaarden die gelden voor offertes en opdrachten bij BrabantSchoon.", "voorwaarden.html", base, "", voorwaarden))
 
 # =================================================================
 # SEO FILES
