@@ -55,6 +55,21 @@
     if (current > 1) { current--; show(current, true); }
   });
 
+  // Automatisch doorgaan bij het kiezen van een kaartje (alleen bij keuzestappen, niet bij tekstvelden)
+  const autoAdvanceSteps = [1, 2, 3];
+  steps.forEach(stepEl => {
+    const stepNum = parseInt(stepEl.dataset.step, 10);
+    if (!autoAdvanceSteps.includes(stepNum)) return;
+    stepEl.querySelectorAll('input[type="radio"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        if (current !== stepNum) return;
+        setTimeout(() => {
+          if (current < total) { current++; show(current, true); }
+        }, 350);
+      });
+    });
+  });
+
   show(current, false);
 })();
 
