@@ -301,10 +301,19 @@ form.card-form{display:grid; gap:14px; background:var(--bg-soft); border:1px sol
 
 .wizard-nav{display:flex; justify-content:space-between; gap:10px; margin-top:28px; padding-top:20px; border-top:1px solid var(--line);}
 .wizard-nav .wizard-next, .wizard-nav .wizard-submit{margin-left:auto;}
+
+@media(max-width:599px){
+  .wizard-form{padding:20px 16px; border-radius:16px;}
+  .wizard-q{font-size:17px;}
+  .radio-cards{gap:10px;}
+  .rc-card{padding:14px;}
+  .wizard-nav{flex-direction:column-reverse; gap:10px;}
+  .wizard-nav .wizard-back, .wizard-nav .wizard-next, .wizard-nav .wizard-submit{width:100%; margin-left:0;}
+}
 .row2{display:grid; grid-template-columns:1fr; gap:14px;}
 @media(min-width:560px){.row2{grid-template-columns:1fr 1fr;}}
 label{font-size:13px; font-weight:600; color:var(--ink-soft); display:block; margin-bottom:6px;}
-input,select,textarea{width:100%; border:1px solid var(--line); border-radius:10px; padding:12px 13px; font-family:'Inter',sans-serif; font-size:14.5px; background:#fff; color:var(--ink);}
+input,select,textarea{width:100%; border:1px solid var(--line); border-radius:10px; padding:12px 13px; font-family:'Inter',sans-serif; font-size:16px; background:#fff; color:var(--ink);}
 textarea{resize:vertical; min-height:90px;}
 input:focus,select:focus,textarea:focus{border-color:var(--link);}
 .hidden-field{position:absolute; left:-9999px;}
@@ -312,7 +321,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--link);}
 /* ---------- FOOTER ---------- */
 footer.site-footer{background:var(--bg-navy); color:var(--ink-on-navy); padding:56px 0 28px;}
 .footer-top{display:grid; grid-template-columns:1fr; gap:36px; padding-bottom:32px; border-bottom:1px solid rgba(255,255,255,0.14);}
-@media(min-width:860px){.footer-top{grid-template-columns:1.3fr repeat(2,1fr);}}
+@media(min-width:860px){.footer-top{grid-template-columns:1.2fr repeat(3,1fr);}}
 .footer-brand img{height:28px; filter:brightness(0) invert(1);}
 .footer-tagline{font-size:13.5px; color:var(--ink-on-navy); margin-top:14px; max-width:280px; line-height:1.6;}
 .footer-col h4{font-size:12.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#fff; margin-bottom:16px;}

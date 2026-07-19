@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "25"
+ASSET_VERSION = "27"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -340,6 +340,7 @@ def render_header(base, active):
 
 def render_footer(base):
     service_links = "\n        ".join(f'<a href="{base}diensten/{s["slug"]}.html">{s["name"]}</a>' for s in SERVICES)
+    location_links = "\n        ".join(f'<a href="{base}locaties/{loc["slug"]}.html">{loc["name"]}</a>' for loc in LOCATIONS)
     return f"""<footer class="site-footer">
   <div class="wrap">
     <div class="footer-top">
@@ -352,10 +353,14 @@ def render_footer(base):
         {service_links}
       </div>
       <div class="footer-col">
+        <h4>Regio's</h4>
+        <a href="{base}werkgebied.html">Werkgebied</a>
+        {location_links}
+      </div>
+      <div class="footer-col">
         <h4>Contact</h4>
         <a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a>
         <a href="mailto:{EMAIL}">{EMAIL}</a>
-        <a href="{base}werkgebied.html">Werkgebied</a>
         <a href="{base}contact.html">Offerte aanvragen</a>
       </div>
     </div>
@@ -857,12 +862,42 @@ WERKGEBIED_TEKST = {
     "Mierlo": "Mierlo, onderdeel van de gemeente Geldrop-Mierlo, bedienen we met dezelfde vaste aanpak als de rest van onze regio: \u00e9\u00e9n team, heldere afspraken.",
 }
 
+# Steden buiten het kerngebied: eigen landingspagina, eerlijk over de afstand,
+# gericht op grotere of terugkerende opdrachten in plaats van een claim van lokale aanwezigheid.
+LOCATIONS = [
+    {
+        "slug": "tilburg", "name": "Tilburg",
+        "intro": "Tilburg ligt buiten ons kerngebied in de Peel, maar we rijden geregeld uit naar de stad voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak. Vooral voor grotere of terugkerende opdrachten is een vaste planning vanuit Helmond goed te combineren.",
+        "faq_q": "Rijden jullie ook naar Tilburg voor kleinere klussen?",
+        "faq_a": "Voor kleine, eenmalige klussen in Tilburg is de reistijd vanuit Helmond niet altijd rendabel. Voor grotere of terugkerende opdrachten, zoals wekelijkse kantoorreiniging, is dit meestal wel mogelijk. Neem contact op om de mogelijkheden te bespreken.",
+    },
+    {
+        "slug": "breda", "name": "Breda",
+        "intro": "Breda ligt verder van ons kerngebied in de Peel, maar voor substanti\u00eble opdrachten \u2014 zoals een vast kantoorcontract, VvE-schoonmaak of een grote opleveringsschoonmaak \u2014 rijden we ook hiernaartoe.",
+        "faq_q": "Is een eenmalige beurt in Breda mogelijk?",
+        "faq_a": "Dat hangt af van de omvang van de klus. Neem contact op met de details van uw situatie, dan laten we u weten of het rendabel is in te plannen.",
+    },
+    {
+        "slug": "den-bosch", "name": "'s-Hertogenbosch (Den Bosch)",
+        "intro": "'s-Hertogenbosch ligt op een goed bereikbare afstand vanuit Helmond. Voor kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak zijn we hier regelmatig inzetbaar.",
+        "faq_q": "Werken jullie ook voor VvE's in Den Bosch?",
+        "faq_a": "Ja, we verzorgen schoonmaak van trappenhuizen en gemeenschappelijke ruimtes voor VvE's in en rond 's-Hertogenbosch, in overleg met het bestuur.",
+    },
+    {
+        "slug": "waalwijk", "name": "Waalwijk",
+        "intro": "Waalwijk ligt tussen Tilburg en 's-Hertogenbosch in. Voor bedrijven en VvE's in Waalwijk verzorgen we schoonmaak op aanvraag, vooral bij grotere of vaste opdrachten.",
+        "faq_q": "Kunnen jullie een vast schoonmaakcontract voor Waalwijk verzorgen?",
+        "faq_a": "Ja, voor een vast, terugkerend contract is Waalwijk goed inpasbaar in onze planning. Neem contact op om de mogelijkheden te bespreken.",
+    },
+]
+
 def build_werkgebied():
     base = ""
     kern_tags = "\n      ".join(f'<span class="area-tag primary">{c}</span>' for c in WERKGEBIED_KERN)
     overig_tags = "\n      ".join(f'<span class="area-tag">{c}</span>' for c in WERKGEBIED_OVERIG)
     kern_cards = "\n        ".join(f'<div class="card"><h3 style="font-family:\'Inter\',sans-serif; font-size:16px; font-weight:700;">{c}</h3><p style="color:var(--ink-soft); font-size:14.5px; margin-top:8px;">{WERKGEBIED_TEKST[c]}</p></div>' for c in WERKGEBIED_KERN)
     overig_cards = "\n        ".join(f'<div class="card"><h3 style="font-family:\'Inter\',sans-serif; font-size:16px; font-weight:700;">{c}</h3><p style="color:var(--ink-soft); font-size:14.5px; margin-top:8px;">{WERKGEBIED_TEKST[c]}</p></div>' for c in WERKGEBIED_OVERIG)
+    location_links = "\n        ".join(f'<a href="{base}locaties/{loc["slug"]}.html" class="card" style="display:block; text-decoration:none; color:inherit;"><h3 style="font-family:\'Inter\',sans-serif; font-size:16px; font-weight:700;">{loc["name"]}</h3><p style="color:var(--ink-soft); font-size:14.5px; margin-top:8px;">{loc["intro"][:90]}&hellip;</p><span class="sc-link" style="margin-top:12px;">Meer over {loc["name"]} {icon("arrow","")}</span></a>' for loc in LOCATIONS)
     body = f"""
   {page_hero("Werkgebied", "Actief in heel Noord-Brabant.", f"BrabantSchoon is gevestigd in {CITY}, met de Peelgemeenten als kerngebied \u2014 en we werken door heel Brabant, ook voor grotere opdrachten verder van huis.", base, "Werkgebied")}
   <section>
@@ -887,6 +922,14 @@ def build_werkgebied():
   </section>
   <section style="background:var(--bg-soft);">
     <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Verder in Brabant</span><h2>Voor grotere opdrachten rijden we verder.</h2></div>
+      <div class="grid-3 reveal">
+        {location_links}
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="wrap">
       {cta_band(base=base)}
     </div>
   </section>
@@ -900,6 +943,62 @@ def build_werkgebied():
 # =================================================================
 # CONTACT
 # =================================================================
+# =================================================================
+# LOCATIEPAGINA'S (steden buiten het kerngebied)
+# =================================================================
+def build_location_pages():
+    base = "../"
+    for loc in LOCATIONS:
+        others = [o for o in LOCATIONS if o["slug"] != loc["slug"]][:3]
+        others_html = "\n        ".join(f'<a href="{o["slug"]}.html" class="card" style="display:block; text-decoration:none; color:inherit;"><h3 style="font-family:\'Inter\',sans-serif; font-size:16px; font-weight:700;">{o["name"]}</h3></a>' for o in others)
+        service_mentions = "\n        ".join(f"""<a href="{base}diensten/{s['slug']}.html" class="service-card">
+      <div class="thumb {s['tint']}">{service_visual(s)}</div>
+      <div class="body"><h3>{s['name']}</h3><p>{s['short']}</p></div>
+    </a>""" for s in SERVICES[:6])
+        body = f"""
+  {page_hero("Werkgebied", f"Schoonmaakbedrijf voor {loc['name']}.", loc['intro'], base, loc['name'])}
+  <section>
+    <div class="wrap">
+      <div class="two-col reveal">
+        <div>
+          <p class="prose">{loc['intro']}</p>
+          <p class="prose" style="margin-top:16px;">Ons kerngebied is Helmond en de Peelgemeenten \u2014 vandaar rijden we uit. Voor {loc['name']} werken we vooral bij grotere of terugkerende opdrachten, zoals een vast kantoorcontract, VvE-schoonmaak of een omvangrijke opleveringsschoonmaak.</p>
+          <div class="hero-actions" style="margin-top:26px;">
+            <a href="{base}contact.html" class="btn btn-primary">Vraag offerte aan</a>
+            <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
+          </div>
+        </div>
+        <div class="illustration-panel sm">{service_illustration('building')}</div>
+      </div>
+    </div>
+  </section>
+  <section style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Diensten</span><h2>Wat we ook in {loc['name']} verzorgen</h2></div>
+      <div class="grid-3 reveal">{service_mentions}</div>
+    </div>
+  </section>
+  <section>
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Veelgestelde vraag</span><h2>Over {loc['name']}</h2></div>
+      <div class="faq reveal">{faq_block([(loc['faq_q'], loc['faq_a'])])}</div>
+    </div>
+  </section>
+  <section style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Ook interessant</span><h2>Andere regio's</h2></div>
+      <div class="grid-3 reveal">{others_html}</div>
+    </div>
+  </section>
+  <section><div class="wrap">{cta_band(f"Schoonmaak nodig in {loc['name']}?", "Vraag een vrijblijvende offerte aan.", base)}</div></section>
+"""
+        title = f"Schoonmaakbedrijf {loc['name']} | BrabantSchoon"
+        desc = f"BrabantSchoon verzorgt kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak voor grotere opdrachten in {loc['name']}. Gevestigd in Helmond, actief in heel Noord-Brabant."
+        write(f"locaties/{loc['slug']}.html", page_shell(
+            title, desc, f"locaties/{loc['slug']}.html", base, "werkgebied.html", body,
+            breadcrumb_schema(loc['name'], f"locaties/{loc['slug']}.html") + "\n" + faq_schema([(loc['faq_q'], loc['faq_a'])])
+        ))
+
 def build_contact():
     base = ""
     body = f"""
@@ -977,6 +1076,7 @@ def build_seo_files():
         ("privacy.html", "0.3"), ("voorwaarden.html", "0.3"),
     ]
     urls += [(f"diensten/{s['slug']}.html", "0.8") for s in SERVICES]
+    urls += [(f"locaties/{loc['slug']}.html", "0.8") for loc in LOCATIONS]
     entries = "\n  ".join(
         f"<url><loc>{SITE_URL}/{u}</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>{p}</priority></url>"
         for u, p in urls
@@ -1012,6 +1112,7 @@ if __name__ == "__main__":
     build_service_pages()
     build_over_ons()
     build_werkgebied()
+    build_location_pages()
     build_contact()
     build_thanks()
     build_legal()

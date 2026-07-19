@@ -14,7 +14,7 @@
   let current = 1;
   const total = steps.length;
 
-  function show(stepNum) {
+  function show(stepNum, scrollTo) {
     steps.forEach(s => { s.hidden = parseInt(s.dataset.step, 10) !== stepNum; });
     stepLabels.forEach((el, i) => {
       el.classList.toggle('active', i + 1 === stepNum);
@@ -24,7 +24,7 @@
     backBtn.hidden = stepNum === 1;
     nextBtn.hidden = stepNum === total;
     submitBtn.hidden = stepNum !== total;
-    form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (scrollTo) form.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function currentStepEl() {
@@ -49,13 +49,13 @@
 
   nextBtn.addEventListener('click', () => {
     if (!validateStep()) return;
-    if (current < total) { current++; show(current); }
+    if (current < total) { current++; show(current, true); }
   });
   backBtn.addEventListener('click', () => {
-    if (current > 1) { current--; show(current); }
+    if (current > 1) { current--; show(current, true); }
   });
 
-  show(current);
+  show(current, false);
 })();
 
 // Voor/na-sleepbalk
