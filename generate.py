@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "33"
+ASSET_VERSION = "35"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -702,6 +702,24 @@ def build_home():
     </div>
   </section>
 
+  <section id="sectoren">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Sectoren</span>
+        <h2>Voor wie wij werken.</h2>
+        <p>Van kleinere kantoren tot organisaties met meerdere locaties.</p>
+      </div>
+      <div class="usp-grid reveal">
+        <div class="usp"><div class="icon-circle">{icon('office')}</div><div><h3>Kantoren</h3><p>Van eenmanszaak tot kantoorpand met meerdere afdelingen.</p></div></div>
+        <div class="usp"><div class="icon-circle">{icon('building')}</div><div><h3>Bedrijfsverzamelgebouwen</h3><p>Gedeelde ruimtes, meerdere huurders, \u00e9\u00e9n aanspreekpunt.</p></div></div>
+        <div class="usp"><div class="icon-circle">{icon('key')}</div><div><h3>VvE's &amp; vastgoedbeheerders</h3><p>Trappenhuizen en gemeenschappelijke ruimtes, structureel onderhouden.</p></div></div>
+        <div class="usp"><div class="icon-circle">{icon('spark')}</div><div><h3>Scholen</h3><p>Schone, gezonde leslokalen buiten lestijd.</p></div></div>
+        <div class="usp"><div class="icon-circle">{icon('shop')}</div><div><h3>Winkels &amp; praktijken</h3><p>Representatief voor klanten, buiten openingstijd.</p></div></div>
+        <div class="usp"><div class="icon-circle">{icon('chat')}</div><div><h3>Andere organisaties</h3><p>Werkt u bij een grotere organisatie of op meerdere locaties? Neem contact op &mdash; we bespreken graag wat mogelijk is.</p></div></div>
+      </div>
+    </div>
+  </section>
+
   <section id="reviews">
     <div class="wrap">
       <div class="sec-head reveal">
@@ -726,6 +744,12 @@ def build_home():
 
   <section id="contact">
     <div class="wrap">
+      <div class="benefits-strip reveal">
+        <span>{icon('check')}Gratis &amp; vrijblijvend</span>
+        <span>{icon('clock')}Reactie binnen \u00e9\u00e9n werkdag</span>
+        <span>{icon('chat')}Persoonlijk advies</span>
+        <span>{icon('doc')}Geen verplichtingen</span>
+      </div>
       <div class="contact-grid reveal">
         {contact_info_block(base)}
         {contact_form()}
