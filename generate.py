@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "41"
+ASSET_VERSION = "43"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -642,18 +642,6 @@ def build_home():
     </div>
   </section>
 
-  <section class="section-tight" style="background:var(--bg-soft);">
-    <div class="wrap">
-      <div class="two-col reveal" style="align-items:center;">
-        <div>
-          <span class="eyebrow">Resultaat</span>
-          <h2 style="font-size:26px; margin-top:8px;">Zo laten we het achter.</h2>
-        </div>
-        <div>{compare_slider('images/before.jpg', 'images/after.jpg')}</div>
-      </div>
-    </div>
-  </section>
-
   <section>
     <div class="wrap">
       <div class="sec-head reveal">
@@ -696,22 +684,6 @@ def build_home():
       </div>
       <div class="faq reveal">
         {faq_block(FAQ_ITEMS[:3])}
-      </div>
-    </div>
-  </section>
-
-  <section id="contact" style="background:var(--bg-soft);">
-    <div class="wrap">
-      {reviews_widget_block()}
-      <div class="benefits-strip reveal">
-        <span>{icon('check')}Gratis &amp; vrijblijvend</span>
-        <span>{icon('clock')}Reactie binnen \u00e9\u00e9n werkdag</span>
-        <span>{icon('chat')}Persoonlijk advies</span>
-        <span>{icon('doc')}Geen verplichtingen</span>
-      </div>
-      <div class="contact-grid reveal">
-        {contact_info_block(base)}
-        {contact_form()}
       </div>
     </div>
   </section>
@@ -991,6 +963,7 @@ def build_contact():
   {page_hero("Contact", "Neem contact op.", "We reageren binnen \u00e9\u00e9n werkdag.", base, "Contact")}
   <section>
     <div class="wrap">
+      {reviews_widget_block()}
       <div class="contact-grid reveal">
         {contact_info_block(base, show_heading=False)}
         {contact_form()}
