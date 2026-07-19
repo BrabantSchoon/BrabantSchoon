@@ -71,6 +71,17 @@
   });
 
   show(current, false);
+
+  // Vaste onderbalk (Bel direct / Vrijblijvende offerte) verbergen zolang de wizard zelf in beeld is
+  const ctaBar = document.querySelector('.mobile-cta-bar');
+  if (ctaBar && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        ctaBar.style.display = entry.isIntersecting ? 'none' : '';
+      });
+    }, { threshold: 0.15 });
+    io.observe(form);
+  }
 })();
 
 // Voor/na-sleepbalk

@@ -304,6 +304,8 @@ form.card-form{display:grid; gap:14px; background:var(--bg-soft); border:1px sol
   border-top:1px solid var(--line); position:sticky; bottom:0; background:#fff; z-index:20;
   box-shadow:0 -10px 16px -4px rgba(16,32,92,0.06);
 }
+.wizard-nav [hidden]{display:none !important;}
+.wizard-step[hidden]{display:none !important;}
 .wizard-nav .wizard-next, .wizard-nav .wizard-submit{margin-left:auto;}
 
 @media(max-width:899px){
