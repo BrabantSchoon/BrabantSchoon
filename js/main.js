@@ -86,7 +86,7 @@
 
 // Voor/na-sleepbalk
 const csRange = document.getElementById('csRange');
-const csClip = document.getElementById('csAfterClip');
+const csClip = document.getElementById('csBeforeClip');
 const csHandle = document.getElementById('csHandle');
 if (csRange && csClip && csHandle) {
   const updateSlider = (v) => {
