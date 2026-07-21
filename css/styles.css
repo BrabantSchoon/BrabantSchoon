@@ -396,18 +396,14 @@ footer.site-footer{background:var(--bg-navy); color:var(--ink-on-navy); padding:
 @media(min-width:860px){.footer-top-3col{grid-template-columns:1fr 0.85fr 1.15fr;}}
 .footer-brand-col img{height:30px; filter:brightness(0) invert(1);}
 .footer-tagline{font-size:13.5px; color:var(--ink-on-navy); margin-top:12px; max-width:280px; line-height:1.55;}
-.footer-social{display:flex; align-items:center; gap:18px; margin-top:20px;}
-.footer-social a{display:flex; align-items:center; justify-content:center; flex-shrink:0;}
-.footer-social svg{
-  width:22px; height:22px; color:#fff; display:block; flex-shrink:0;
-  transition:transform .25s ease, color .25s ease;
+.footer-social{display:flex; gap:10px; margin-top:18px;}
+.footer-social a{
+  width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; background:transparent; border:1.5px solid rgba(255,255,255,0.35);
+  transition:transform .18s ease, background .18s ease, border-color .18s ease;
 }
-.footer-social a:hover svg{transform:scale(1.1);}
-.fs-whatsapp:hover svg{color:#25D366;}
-.fs-linkedin:hover svg{color:#0A66C2;}
-.fs-facebook:hover svg{color:#1877F2;}
-.fs-instagram:hover svg{color:#E1306C;}
-.fs-email:hover svg{color:#8FE0C1;}
+.footer-social a:hover{transform:translateY(-2px); background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.6);}
+.footer-social svg{width:18px; height:18px; color:#fff; display:block; flex-shrink:0;}
 .footer-meta{font-size:11.5px; color:rgba(201,210,238,0.6); margin-top:16px;}
 .footer-availability{font-size:12px; color:rgba(201,210,238,0.75); margin:12px 0 0; line-height:1.4;}
 .footer-col h4{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#fff; margin-bottom:14px;}

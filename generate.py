@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "72"
+ASSET_VERSION = "70"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -365,6 +365,13 @@ def render_footer(base):
       <div class="footer-col footer-brand-col">
         <img src="{base}images/logo.png" alt="BrabantSchoon" width="130" height="32">
         <p class="footer-tagline">Professionele schoonmaakpartner voor kantoren, VvE's en organisaties in heel Noord-Brabant.</p>
+        <div class="footer-social">
+          <a href="{WA_LINK}" target="_blank" rel="noopener" class="fs-icon fs-whatsapp" aria-label="WhatsApp">{icon('lucide-message')}</a>
+          <a href="https://www.linkedin.com/in/egzon-berisha-957796413/" target="_blank" rel="noopener" class="fs-icon fs-linkedin" aria-label="LinkedIn">{icon('lucide-linkedin')}</a>
+          <a href="https://facebook.com/brabantschoon" target="_blank" rel="noopener" class="fs-icon fs-facebook" aria-label="Facebook">{icon('lucide-facebook')}</a>
+          <a href="https://instagram.com/brabantschoon" target="_blank" rel="noopener" class="fs-icon fs-instagram" aria-label="Instagram">{icon('lucide-instagram')}</a>
+          <a href="mailto:{EMAIL}" class="fs-icon fs-email" aria-label="E-mail">{icon('lucide-mail')}</a>
+        </div>
         <div class="footer-meta">KvK {KVK} &bull; BTW NL005380198B12</div>
       </div>
 
