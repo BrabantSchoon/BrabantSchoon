@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "58"
+ASSET_VERSION = "59"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -505,6 +505,7 @@ WIZARD_OPPERVLAKTE = [
     ("Middel", "50 \u2013 150 m\u00b2"),
     ("Groot", "150 \u2013 500 m\u00b2"),
     ("Zeer groot", "500 m\u00b2 of meer"),
+    ("Weet ik niet", "Overleg liever tijdens een kennismaking"),
 ]
 
 WIZARD_FREQUENTIE = [
@@ -668,7 +669,7 @@ def build_home():
         ("chat", "Vast aanspreekpunt", "U spreekt altijd met iemand die uw locatie en wensen kent \u2014 geen callcenter."),
         ("check", "Afspraak is afspraak", "Heldere planning die we nakomen, zonder verrassingen achteraf."),
         ("clock", "Flexibiliteit", "Frequentie en tijdstip volledig afgestemd op uw organisatie."),
-        ("spark", "Kwaliteitscontrole", "Iedere beurt wordt gecontroleerd, niet alleen bij de start."),
+        ("spark", "Kwaliteitscontrole", "Resultaat en afspraken worden steekproefsgewijs nagelopen, niet alleen bij de eerste beurt."),
     ]
     usp_html = "\n    ".join(f'<div class="usp"><div class="icon-circle">{icon(n)}</div><h3>{t}</h3><p>{d}</p></div>' for n, t, d in usp_items)
 
@@ -935,6 +936,12 @@ WERKGEBIED_TEKST = {
 # Steden buiten het kerngebied: eigen landingspagina, eerlijk over de afstand,
 # gericht op grotere of terugkerende opdrachten in plaats van een claim van lokale aanwezigheid.
 LOCATIONS = [
+    {
+        "slug": "eindhoven", "name": "Eindhoven",
+        "intro": "Eindhoven ligt op korte afstand van ons kerngebied in de Peel. We zijn hier regelmatig actief voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak \u2014 van eenmalige klussen tot vaste contracten.",
+        "faq_q": "Is een vast schoonmaakcontract in Eindhoven mogelijk?",
+        "faq_a": "Ja, Eindhoven ligt goed bereikbaar vanuit Helmond en we verzorgen hier regelmatig vaste, terugkerende schoonmaak voor kantoren en VvE's.",
+    },
     {
         "slug": "tilburg", "name": "Tilburg",
         "intro": "Tilburg ligt buiten ons kerngebied in de Peel, maar we rijden geregeld uit naar de stad voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak. Vooral voor grotere of terugkerende opdrachten is een vaste planning vanuit Helmond goed te combineren.",
