@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "80"
+ASSET_VERSION = "81"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -429,23 +429,29 @@ WERKGEBIED_KAART_PUNTEN = {
     "geldrop-mierlo": (272, 208, "Geldrop-Mierlo"),
 }
 
-def werkgebied_kaart(highlight_slug):
-    dots = []
+def werkgebied_kaart(highlight_slug, base="../"):
+    markers = []
     for slug, (x, y, label) in WERKGEBIED_KAART_PUNTEN.items():
+        left, top = x / 380 * 100, y / 260 * 100
         if slug == highlight_slug:
-            dots.append(f'''<g>
-        <circle cx="{x}" cy="{y}" r="13" fill="var(--link)" opacity="0.18"><animate attributeName="r" values="13;18;13" dur="2.4s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.18;0.02;0.18" dur="2.4s" repeatCount="indefinite"/></circle>
-        <circle cx="{x}" cy="{y}" r="7" fill="var(--link)" stroke="#fff" stroke-width="2"/>
-        <text x="{x}" y="{y - 16}" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="var(--navy)">{label}</text>
-      </g>''')
+            markers.append(f'''<div class="wg-marker wg-marker-active" style="left:{left:.2f}%; top:{top:.2f}%;">
+        <span class="wg-marker-pulse"></span>
+        <span class="wg-marker-dot"></span>
+        <span class="wg-marker-label">{label}</span>
+      </div>''')
         else:
-            dots.append(f'<circle cx="{x}" cy="{y}" r="3.5" fill="var(--ink-soft)" opacity="0.4"/>')
-    dots_svg = "\n      ".join(dots)
-    return f'''<svg viewBox="0 0 380 260" class="wg-map" role="img" aria-label="Kaart van Noord-Brabant met het werkgebied uitgelicht">
-      <path d="M20,90 Q10,50 60,35 Q110,15 170,25 Q230,10 290,30 Q350,40 365,80 Q375,110 350,140 Q360,175 320,195 Q300,225 260,230 Q210,245 160,230 Q100,240 60,210 Q15,195 15,150 Q5,120 20,90 Z"
-        fill="var(--bg-soft)" stroke="var(--line)" stroke-width="1.5"/>
-      {dots_svg}
-    </svg>'''
+            markers.append(f'''<a href="{base}locaties/{slug}.html" class="wg-marker" style="left:{left:.2f}%; top:{top:.2f}%;" aria-label="Werkgebied {label}">
+        <span class="wg-marker-dot"></span>
+        <span class="wg-marker-tooltip">{label}</span>
+      </a>''')
+    markers_html = "\n      ".join(markers)
+    return f'''<div class="wg-map-wrap">
+      <svg viewBox="0 0 380 260" class="wg-map" role="img" aria-label="Kaart van Noord-Brabant met het werkgebied uitgelicht">
+        <path d="M20,90 Q10,50 60,35 Q110,15 170,25 Q230,10 290,30 Q350,40 365,80 Q375,110 350,140 Q360,175 320,195 Q300,225 260,230 Q210,245 160,230 Q100,240 60,210 Q15,195 15,150 Q5,120 20,90 Z"
+          fill="var(--bg-soft)" stroke="var(--line)" stroke-width="1.5"/>
+      </svg>
+      {markers_html}
+    </div>'''
 
 def cta_band(heading="Interesse in onze diensten?", sub="Vraag een vrijblijvende offerte aan of neem direct contact op.", base=""):
     return f"""<div class="cta-band reveal">
