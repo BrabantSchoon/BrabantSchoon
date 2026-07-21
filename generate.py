@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "59"
+ASSET_VERSION = "60"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -338,7 +338,7 @@ def render_header(base, active):
     </nav>
     <div class="nav-actions">
       <a href="tel:{PHONE_TEL}" class="phone-link">{PHONE_DISPLAY}</a>
-      <a href="{base}contact.html" class="btn btn-primary btn-sm">Offerte aanvragen</a>
+      <a href="{base}contact.html#offerteWizard" class="btn btn-primary btn-sm">Offerte aanvragen</a>
       <label for="menuCheckbox" class="menu-toggle" aria-label="Menu openen">{icon('list')}</label>
     </div>
   </div>
@@ -354,7 +354,7 @@ def render_header(base, active):
   <div class="mobile-menu-links">
     {mobile_links}
     <a href="tel:{PHONE_TEL}" style="color:var(--link);">{PHONE_DISPLAY}</a>
-    <a href="{base}contact.html" class="btn btn-primary mobile-cta">Offerte aanvragen</a>
+    <a href="{base}contact.html#offerteWizard" class="btn btn-primary mobile-cta">Offerte aanvragen</a>
   </div>
 </aside>"""
 
@@ -391,7 +391,7 @@ def render_footer(base):
         <a href="{base}over-ons.html">Over ons</a>
         <a href="{base}werkgebied.html">Werkgebied</a>
         <a href="{base}contact.html">Contact</a>
-        <a href="{base}contact.html">Offerte aanvragen</a>
+        <a href="{base}contact.html#offerteWizard">Offerte aanvragen</a>
         <a href="{base}privacy.html">Privacybeleid</a>
         <a href="{base}voorwaarden.html">Algemene voorwaarden</a>
       </div>
@@ -455,7 +455,7 @@ def cta_band(heading="Interesse in onze diensten?", sub="Vraag een vrijblijvende
     <h2>{heading}</h2>
     <p>{sub}</p>
     <div class="hero-actions">
-      <a href="{base}contact.html" class="btn btn-primary">Vrijblijvende offerte</a>
+      <a href="{base}contact.html#offerteWizard" class="btn btn-primary">Vrijblijvende offerte</a>
       <a href="tel:{PHONE_TEL}" class="btn btn-outline">Neem contact op</a>
     </div>
   </div>"""
@@ -638,7 +638,7 @@ def page_shell(title, description, path, base, active, body, extra_schema="", pr
 {render_footer(base)}
 <div class="mobile-cta-bar">
   <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
-  <a href="{base}contact.html" class="btn btn-primary">Vrijblijvende offerte</a>
+  <a href="{base}contact.html#offerteWizard" class="btn btn-primary">Vrijblijvende offerte</a>
 </div>
 <script src="{base}js/main.js?v={ASSET_VERSION}" defer></script>
 </body>
@@ -686,7 +686,7 @@ def build_home():
       <h1>Professionele schoonmaak. Altijd geregeld.</h1>
       <p class="lead" style="color:rgba(255,255,255,0.9);">Voor kantoren, VvE's en organisaties in Noord-Brabant. Vaste kwaliteit, duidelijke communicatie en \u00e9\u00e9n betrouwbaar aanspreekpunt.</p>
       <div class="hero-actions">
-        <a href="contact.html" class="btn btn-primary">Gratis offerte aanvragen</a>
+        <a href="contact.html#offerteWizard" class="btn btn-primary">Gratis offerte aanvragen</a>
         <a href="#diensten" class="btn btn-ghost-light">Bekijk onze diensten</a>
       </div>
       <ul class="hero-checklist">
@@ -862,7 +862,7 @@ def build_service_pages():
           <p class="prose">{s['intro']}</p>
           <ul class="prose" style="margin-top:16px;">{bullets_html}</ul>
           <div class="hero-actions" style="margin-top:24px;">
-            <a href="{base}contact.html" class="btn btn-primary">Vraag offerte aan</a>
+            <a href="{base}contact.html#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
           </div>
         </div>
@@ -1021,7 +1021,7 @@ def build_location_pages():
         <div>
           <p class="prose">Ons kerngebied is Helmond en de Peelgemeenten \u2014 vandaar rijden we uit. Voor {loc['name']} werken we vooral bij grotere of terugkerende opdrachten, zoals een vast kantoorcontract, VvE-schoonmaak of een omvangrijke opleveringsschoonmaak.</p>
           <div class="hero-actions" style="margin-top:26px;">
-            <a href="{base}contact.html" class="btn btn-primary">Vraag offerte aan</a>
+            <a href="{base}contact.html#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
           </div>
         </div>

@@ -325,7 +325,7 @@ form.card-form{display:grid; gap:14px; background:var(--bg-soft); border:1px sol
 /* ---------- OFFERTE-WIZARD ---------- */
 .wizard-form{
   background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg);
-  padding:32px; box-shadow:var(--shadow-md);
+  padding:32px; box-shadow:var(--shadow-md); scroll-margin-top:90px;
 }
 .wizard-progress{margin-bottom:28px;}
 .wizard-progress-bar{height:5px; background:var(--line); border-radius:100px; overflow:hidden;}
