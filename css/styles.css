@@ -146,6 +146,8 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
    background-position:center;` toe aan .illustration-panel en verwijder de SVG uit de HTML. */
 /* ---------- WERKGEBIEDKAART ---------- */
 .wg-map-panel{background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:24px;}
+.wg-map-panel-lg{padding:20px;}
+@media(min-width:760px){.wg-map-panel-lg{padding:28px;}}
 .wg-map{width:100%; height:auto; display:block;}
 @media (prefers-reduced-motion: reduce){.wg-map animate{display:none;}}
 

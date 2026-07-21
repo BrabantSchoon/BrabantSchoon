@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "78"
+ASSET_VERSION = "79"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -937,24 +937,28 @@ LOCATIONS = [
         "slug": "tilburg", "name": "Tilburg",
         "intro": "Tilburg ligt buiten ons kerngebied in de Peel, maar we rijden geregeld uit naar de stad voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak. Vooral voor grotere of terugkerende opdrachten is een vaste planning vanuit Helmond goed te combineren.",
         "faq_q": "Rijden jullie ook naar Tilburg voor kleinere klussen?",
+        "kaart_tekst": "Voor grotere en terugkerende opdrachten verzorgt BrabantSchoon in Tilburg kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak.",
         "faq_a": "Voor kleine, eenmalige klussen in Tilburg is de reistijd vanuit Helmond niet altijd rendabel. Voor grotere of terugkerende opdrachten, zoals wekelijkse kantoorreiniging, is dit meestal wel mogelijk. Neem contact op om de mogelijkheden te bespreken.",
     },
     {
         "slug": "breda", "name": "Breda",
         "intro": "Breda ligt verder van ons kerngebied in de Peel, maar voor substanti\u00eble opdrachten \u2014 zoals een vast kantoorcontract, VvE-schoonmaak of een grote opleveringsschoonmaak \u2014 rijden we ook hiernaartoe.",
         "faq_q": "Is een eenmalige beurt in Breda mogelijk?",
+        "kaart_tekst": "In Breda richten we ons op substantiële, structurele schoonmaakopdrachten voor kantoren en VvE's.",
         "faq_a": "Dat hangt af van de omvang van de klus. Neem contact op met de details van uw situatie, dan laten we u weten of het rendabel is in te plannen.",
     },
     {
         "slug": "den-bosch", "name": "Den Bosch",
         "intro": "'s-Hertogenbosch ligt op een goed bereikbare afstand vanuit Helmond. Voor kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak zijn we hier regelmatig inzetbaar.",
         "faq_q": "Werken jullie ook voor VvE's in Den Bosch?",
+        "kaart_tekst": "Voor kantoren, VvE's en bedrijfsverzamelgebouwen in 's-Hertogenbosch verzorgen we periodieke en facilitaire schoonmaak.",
         "faq_a": "Ja, we verzorgen schoonmaak van trappenhuizen en gemeenschappelijke ruimtes voor VvE's in en rond 's-Hertogenbosch, in overleg met het bestuur.",
     },
     {
         "slug": "waalwijk", "name": "Waalwijk",
         "intro": "Waalwijk ligt tussen Tilburg en 's-Hertogenbosch in. Voor bedrijven en VvE's in Waalwijk verzorgen we schoonmaak op aanvraag, vooral bij grotere of vaste opdrachten.",
         "faq_q": "Kunnen jullie een vast schoonmaakcontract voor Waalwijk verzorgen?",
+        "kaart_tekst": "In Waalwijk verzorgen we vaste schoonmaakcontracten en grotere eenmalige opdrachten voor bedrijven en VvE's.",
         "faq_a": "Ja, voor een vast, terugkerend contract is Waalwijk goed inpasbaar in onze planning. Neem contact op om de mogelijkheden te bespreken.",
     },
 ]
@@ -1016,6 +1020,7 @@ KERNGEBIED = [
         "intro": "Als thuisbasis van BrabantSchoon kennen we Helmond het beste. Van dagelijkse en wekelijkse schoonmaak tot bredere facilitaire dienstverlening \u2014 we zijn hier voor kantoren, bedrijfsverzamelgebouwen en winkelpanden dagelijks onderweg.",
         "waarom": "Doordat we in Helmond zelf gevestigd zijn, is de reistijd naar elke locatie kort. Dat betekent snel kunnen schakelen bij een spoedklus, en een vast team dat uw pand door en door kent.",
         "klanten": "kantoren, bedrijfsverzamelgebouwen, VvE's, winkels, praktijken en andere zakelijke organisaties",
+        "kaart_tekst": "BrabantSchoon verzorgt vanuit Helmond periodieke, dagelijkse en eenmalige schoonmaak voor kantoren, VvE's en winkels in de hele regio.",
         "faqs": [
             ("Werken jullie ook 's avonds of in het weekend in Helmond?", "Ja, voor veel kantoren en winkels plannen we de schoonmaak juist buiten openingstijden, zodat het uw bedrijfsvoering niet verstoort."),
             ("Kunnen jullie snel starten met een nieuwe klant in Helmond?", "Vaak wel \u2014 omdat we hier gevestigd zijn, is een kennismaking op locatie meestal al binnen enkele dagen te plannen."),
@@ -1027,6 +1032,7 @@ KERNGEBIED = [
         "intro": "Deurne kennen we goed: van bedrijfspanden op de bedrijventerreinen tot praktijken in het centrum. We verzorgen hier zowel reguliere kantoorreiniging als opleveringsschoonmaak en specialistische reiniging.",
         "waarom": "Deurne ligt op korte afstand van ons kerngebied Helmond, waardoor we hier net zo snel kunnen schakelen als in onze thuisstad.",
         "klanten": "bedrijfspanden, praktijken, logistieke bedrijven en productiebedrijven",
+        "kaart_tekst": "Vanuit ons kerngebied verzorgen we in Deurne periodieke schoonmaak, opleveringsschoonmaak en specialistische reiniging voor bedrijven en praktijken.",
         "faqs": [
             ("Verzorgen jullie ook praktijken in Deurne?", "Ja, we reinigen regelmatig praktijkruimtes zoals huisartsenposten en fysiotherapiepraktijken, buiten de openingstijden."),
             ("Is eenmalige schoonmaak in Deurne mogelijk?", "Zeker, bijvoorbeeld bij een verhuizing of oplevering. Neem contact op voor de mogelijkheden."),
@@ -1038,6 +1044,7 @@ KERNGEBIED = [
         "intro": "Asten en de kern Heusden liggen goed bereikbaar vanuit Helmond. We verzorgen hier zowel eenmalige als periodieke schoonmaak, op een ritme dat bij uw organisatie past.",
         "waarom": "De korte afstand vanuit Helmond maakt het voor ons eenvoudig om ook kleinere opdrachten in Asten rendabel in te plannen.",
         "klanten": "kantoren, bedrijfsruimtes, VvE's en productiebedrijven",
+        "kaart_tekst": "BrabantSchoon verzorgt in Asten zowel eenmalige als terugkerende schoonmaak voor kantoren, bedrijfsruimtes en VvE's.",
         "faqs": [
             ("Rijden jullie ook naar Heusden?", "Ja, Heusden valt binnen ons werkgebied rond Asten."),
             ("Wat kost schoonmaak in Asten?", "Dat hangt af van de ruimte en frequentie. Na een kort gesprek ontvangt u een vrijblijvende offerte op maat."),
@@ -1049,6 +1056,7 @@ KERNGEBIED = [
         "intro": "In Someren werken we voor kantoren, VvE's en scholen die op zoek zijn naar een persoonlijke, vaste schoonmaakpartner \u2014 van wekelijkse onderhoudsbeurten tot eenmalige klussen.",
         "waarom": "Someren heeft veel lokale organisaties die op zoek zijn naar een vaste, betrokken schoonmaakpartner \u2014 daar sluit onze aanpak van \u00e9\u00e9n vast team en korte lijnen goed op aan.",
         "klanten": "kantoren, VvE's, bedrijfspanden en scholen",
+        "kaart_tekst": "In Someren bieden we periodieke en wekelijkse schoonmaak voor kantoren, VvE's en scholen in de regio.",
         "faqs": [
             ("Werken jullie met een vast team in Someren?", "Ja, u krijgt een vast aanspreekpunt dat uw locatie kent."),
             ("Is een offerte vrijblijvend?", "Altijd, en zonder verplichtingen."),
@@ -1060,6 +1068,7 @@ KERNGEBIED = [
         "intro": "Gemert en Bakel behoren tot ons kerngebied. Of het nu gaat om facilitaire schoonmaak voor een bedrijfspand in Gemert of een opleveringsschoonmaak in Bakel, we plannen dit met dezelfde zorg als in Helmond zelf.",
         "waarom": "Als vaste partij in de Peelregio kennen we de lokale bedrijven en hun specifieke wensen.",
         "klanten": "bedrijfspanden, VvE's, logistieke bedrijven en organisaties met een opleveringsklus",
+        "kaart_tekst": "BrabantSchoon verzorgt in Gemert-Bakel facilitaire schoonmaak, opleveringsschoonmaak en periodiek onderhoud voor bedrijven en VvE's.",
         "faqs": [
             ("Doen jullie ook opleveringsschoonmaak in Gemert-Bakel?", "Ja, dat is een van onze kernactiviteiten in deze regio."),
             ("Hoe snel kunnen jullie starten?", "Meestal binnen enkele dagen na een kort kennismakingsgesprek."),
@@ -1071,6 +1080,7 @@ KERNGEBIED = [
         "intro": "In Laarbeek, met de kernen Beek en Donk, Aarle-Rixtel en Mariahout, verzorgen we periodieke en dagelijkse schoonmaak voor kantoren, winkels en VvE's die op zoek zijn naar een vast en betrouwbaar schoonmaakteam.",
         "waarom": "De verschillende kernen van Laarbeek liggen dicht bij elkaar, waardoor we hier efficient kunnen plannen \u2014 dat voordeel geven we door in scherpe tarieven.",
         "klanten": "kantoren, VvE's, winkels en bedrijfsverzamelgebouwen in Beek en Donk, Aarle-Rixtel en Mariahout",
+        "kaart_tekst": "In Laarbeek verzorgen we periodieke en dagelijkse schoonmaak voor kantoren, winkels en bedrijfsverzamelgebouwen.",
         "faqs": [
             ("Werken jullie in alle kernen van Laarbeek?", "Ja, in Beek en Donk, Aarle-Rixtel en Mariahout."),
             ("Bieden jullie ook periodieke schoonmaak?", "Ja, naast vaste contracten ook periodieke beurten op afspraak."),
@@ -1082,6 +1092,7 @@ KERNGEBIED = [
         "intro": "In Nuenen verzorgen we zowel periodieke als eenmalige schoonmaak voor kantoren, praktijken en scholen, waarbij persoonlijk contact en een vast aanspreekpunt voorop staan.",
         "waarom": "Nuenen heeft veel zelfstandige ondernemers en professionele praktijken \u2014 juist daar telt een schoonmaakpartner die meedenkt in plaats van alleen uitvoert.",
         "klanten": "kantoren, praktijken, scholen en organisaties met een eigen bedrijfspand",
+        "kaart_tekst": "BrabantSchoon verzorgt in Nuenen periodieke en eenmalige schoonmaak voor kantoren, praktijken en scholen.",
         "faqs": [
             ("Werken jullie voor organisaties van elke omvang in Nuenen?", "Zeker, van eenmanszaak tot grotere praktijk maken we een passende offerte."),
             ("Is de eerste afspraak vrijblijvend?", "Ja, een kennismaking en offerte zijn altijd kosteloos en vrijblijvend."),
@@ -1093,6 +1104,7 @@ KERNGEBIED = [
         "intro": "Geldrop en Mierlo, samen de gemeente Geldrop-Mierlo, liggen op de route tussen Helmond en Eindhoven. Dat maakt het voor ons goed mogelijk om hier structurele en facilitaire schoonmaak te verzorgen, van dagelijks onderhoud tot vaste contracten.",
         "waarom": "De ligging tussen onze twee belangrijkste werkgebieden in maakt Geldrop-Mierlo makkelijk te combineren met andere afspraken \u2014 dat scheelt in de planning en dus in de prijs.",
         "klanten": "kantoren, bedrijfsverzamelgebouwen, VvE's en productiebedrijven",
+        "kaart_tekst": "In Geldrop-Mierlo bieden we structurele en facilitaire schoonmaak voor kantoren, bedrijfsverzamelgebouwen en VvE's.",
         "faqs": [
             ("Ook actief in Mierlo zelf?", "Ja, Mierlo valt onder dezelfde vaste aanpak als Geldrop."),
             ("Kunnen jullie een vast wekelijks contract verzorgen?", "Ja, dat is een groot deel van ons werk in deze regio."),
@@ -1104,6 +1116,7 @@ KERNGEBIED = [
         "intro": "Eindhoven ligt op korte afstand van ons kerngebied in de Peel. We zijn hier regelmatig actief met kantoorreiniging, facilitaire schoonmaak, VvE-schoonmaak en specialistische reiniging \u2014 van eenmalige klussen tot vaste contracten.",
         "waarom": "Eindhoven is de grootste stad in onze regio, met veel kantoren, bedrijfsverzamelgebouwen en VvE's. We investeren daarom bewust in structurele aanwezigheid hier, niet alleen incidentele ritjes.",
         "klanten": "kantoren, bedrijfsverzamelgebouwen, VvE's, zorginstellingen en gemeentelijke instellingen",
+        "kaart_tekst": "BrabantSchoon verzorgt in Eindhoven periodieke, eenmalige en specialistische schoonmaak voor kantoren, VvE's, zorginstellingen en gemeentelijke instellingen.",
         "faqs": [
             ("Is een vast schoonmaakcontract in Eindhoven mogelijk?", "Ja, Eindhoven ligt goed bereikbaar vanuit Helmond en we verzorgen hier regelmatig vaste, terugkerende schoonmaak."),
             ("Werken jullie ook voor bedrijfsverzamelgebouwen in Eindhoven?", "Ja, met meerdere huurders onder \u00e9\u00e9n dak werken we met \u00e9\u00e9n vast aanspreekpunt voor het hele pand."),
@@ -1142,7 +1155,10 @@ def build_kerngebied_pages():
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
           </div>
         </div>
-        <div class="illustration-panel sm">{service_illustration('building')}</div>
+        <div>
+          <div class="wg-map-panel wg-map-panel-lg">{werkgebied_kaart(k['slug'])}</div>
+          <p class="prose" style="text-align:center; margin-top:14px; font-size:13.5px;">{k['kaart_tekst']}</p>
+        </div>
       </div>
     </div>
   </section>
@@ -1153,18 +1169,7 @@ def build_kerngebied_pages():
     </div>
   </section>
   <section class="section-tight">
-    <div class="wrap">
-      <div class="two-col reveal" style="align-items:center;">
-        <div>
-          <span class="eyebrow">Werkgebied</span>
-          <h2 style="font-size:24px; margin-top:8px;">Actief in en rondom {k['name']}.</h2>
-          <p class="prose" style="margin-top:14px;">{k['name']} maakt deel uit van ons vaste werkgebied in Noord-Brabant, samen met de andere Peelgemeenten en de regio Eindhoven.</p>
-        </div>
-        <div class="wg-map-panel">{werkgebied_kaart(k['slug'])}</div>
-      </div>
-    </div>
-  </section>
-  <section class="section-tight">
+
     <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Veelgestelde vragen</span><h2>Over {k['name']}</h2></div>
       <div class="faq reveal">{faq_html}</div>
@@ -1206,7 +1211,10 @@ def build_location_pages():
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
           </div>
         </div>
-        <div class="illustration-panel sm">{service_illustration('building')}</div>
+        <div>
+          <div class="wg-map-panel wg-map-panel-lg">{werkgebied_kaart(loc['slug'])}</div>
+          <p class="prose" style="text-align:center; margin-top:14px; font-size:13.5px;">{loc['kaart_tekst']}</p>
+        </div>
       </div>
     </div>
   </section>
@@ -1214,18 +1222,6 @@ def build_location_pages():
     <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Diensten</span><h2>Wat we ook in {loc['name']} verzorgen</h2></div>
       <div class="grid-3 reveal">{service_mentions}</div>
-    </div>
-  </section>
-  <section class="section-tight">
-    <div class="wrap">
-      <div class="two-col reveal" style="align-items:center;">
-        <div>
-          <span class="eyebrow">Werkgebied</span>
-          <h2 style="font-size:24px; margin-top:8px;">Actief in en rondom {loc['name']}.</h2>
-          <p class="prose" style="margin-top:14px;">Ons kerngebied ligt in de Peel, maar we rijden ook naar {loc['name']} voor grotere opdrachten.</p>
-        </div>
-        <div class="wg-map-panel">{werkgebied_kaart(loc['slug'])}</div>
-      </div>
     </div>
   </section>
   <section>
