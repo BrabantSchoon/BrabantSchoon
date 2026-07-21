@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "63"
+ASSET_VERSION = "67"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -34,6 +34,8 @@ ICONS = {
     "instagram-simple": '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>',
     "facebook-simple": '<path d="M9 20V6a2 2 0 0 1 2-2h4M9 12h4"/>',
     "linkedin-simple": '<circle cx="6.5" cy="7" r="1.3" fill="currentColor" stroke="none"/><path d="M6.5 10.5v7.5"/><path d="M11.5 10.5v7.5M11.5 13.8a3 3 0 0 1 6 0v4.2"/>',
+    "linkedin-official": '<path fill="currentColor" stroke="none" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>',
+    "facebook-official": '<path fill="currentColor" stroke="none" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>',
     "whatsapp-fill": '<path fill="currentColor" stroke="none" d="M12.02 2C6.5 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.07L2 22l5.08-1.33A9.96 9.96 0 0 0 12.02 22C17.55 22 22 17.52 22 12S17.55 2 12.02 2Zm5.84 14.14c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.82-.12-.42-.11-.96-.31-1.65-.6-2.9-1.25-4.8-4.17-4.94-4.36-.14-.19-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.42.27-.29.58-.36.78-.36l.55.01c.18.01.42-.07.65.5.24.58.82 2.01.89 2.15.07.15.12.32.02.51-.1.19-.15.31-.3.48-.15.17-.31.38-.44.51-.15.14-.3.3-.13.6.17.29.76 1.26 1.64 2.04 1.13 1 2.08 1.32 2.37 1.47.29.15.46.12.63-.07.17-.19.72-.84.92-1.13.19-.29.38-.24.63-.14.26.1 1.65.78 1.93.92.29.14.48.21.55.33.07.12.07.68-.17 1.36Z"/>',
     "lock": '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
     "chevron": '<path d="M6 9l6 6 6-6"/>',
@@ -371,12 +373,13 @@ def render_footer(base):
         <div class="footer-areas">
           <span>Werkgebied:</span> {CITY}, Deurne, Asten, Someren, Gemert-Bakel, Laarbeek, Eindhoven e.o.
         </div>
+        <p class="footer-social-label">Volg ons op social media</p>
         <div class="footer-social">
-          <a href="{WA_LINK}" target="_blank" rel="noopener" class="social-whatsapp" aria-label="BrabantSchoon op WhatsApp">{icon('chat')}</a>
-          <a href="https://www.linkedin.com/in/egzon-berisha-957796413/" target="_blank" rel="noopener" class="social-linkedin" aria-label="BrabantSchoon op LinkedIn">{icon('linkedin-simple')}</a>
-          <a href="https://facebook.com/brabantschoon" target="_blank" rel="noopener" class="social-facebook" aria-label="BrabantSchoon op Facebook">{icon('facebook-simple')}</a>
-          <a href="https://instagram.com/brabantschoon" target="_blank" rel="noopener" class="social-instagram" aria-label="BrabantSchoon op Instagram">{icon('instagram-simple')}</a>
-          <a href="mailto:{EMAIL}" class="social-email" aria-label="Mail BrabantSchoon">{icon('mail')}</a>
+          <a href="{WA_LINK}" target="_blank" rel="noopener"><span class="fs-badge">{icon('chat')}</span>WhatsApp</a>
+          <a href="https://www.linkedin.com/in/egzon-berisha-957796413/" target="_blank" rel="noopener"><span class="fs-badge">{icon('linkedin-official')}</span>LinkedIn</a>
+          <a href="https://facebook.com/brabantschoon" target="_blank" rel="noopener"><span class="fs-badge">{icon('facebook-official')}</span>Facebook</a>
+          <a href="https://instagram.com/brabantschoon" target="_blank" rel="noopener"><span class="fs-badge">{icon('instagram-simple')}</span>Instagram</a>
+          <a href="mailto:{EMAIL}"><span class="fs-badge">{icon('mail')}</span>E-mail</a>
         </div>
       </div>
 
