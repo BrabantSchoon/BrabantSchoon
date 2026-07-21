@@ -11,22 +11,16 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "70"
+ASSET_VERSION = "73"
 
 # ---------------------------------------------------------------
 # ICONS
 # ---------------------------------------------------------------
 ICONS = {
     "check": '<path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/>',
-    "team": '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',
     "list": '<path d="M4 12h16M4 6h16M4 18h10"/>',
     "spark": '<path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3"/>',
     "chat": '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
-    "lucide-message": '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
-    "lucide-linkedin": '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/>',
-    "lucide-facebook": '<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>',
-    "lucide-instagram": '<rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>',
-    "lucide-mail": '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
     "pin": '<path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
     "window": '<rect x="4" y="4" width="16" height="16" rx="1"/><path d="M12 4v16M4 12h16"/>',
     "office": '<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 21v-4h6v4M9 8h.01M9 12h.01M15 8h.01M15 12h.01"/>',
@@ -36,17 +30,10 @@ ICONS = {
     "clock": '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
     "phone": '<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 2 .7 3a2 2 0 0 1-.5 2.1L8 10.1a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c1 .4 2 .6 3 .7a2 2 0 0 1 1.7 2z"/>',
     "mail": '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
-    "instagram-simple": '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>',
-    "facebook-simple": '<path d="M9 20V6a2 2 0 0 1 2-2h4M9 12h4"/>',
-    "linkedin-simple": '<circle cx="6.5" cy="7" r="1.3" fill="currentColor" stroke="none"/><path d="M6.5 10.5v7.5"/><path d="M11.5 10.5v7.5M11.5 13.8a3 3 0 0 1 6 0v4.2"/>',
-    "linkedin-official": '<path fill="currentColor" stroke="none" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>',
-    "facebook-official": '<path fill="currentColor" stroke="none" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>',
     "whatsapp-fill": '<path fill="currentColor" stroke="none" d="M12.02 2C6.5 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.07L2 22l5.08-1.33A9.96 9.96 0 0 0 12.02 22C17.55 22 22 17.52 22 12S17.55 2 12.02 2Zm5.84 14.14c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.82-.12-.42-.11-.96-.31-1.65-.6-2.9-1.25-4.8-4.17-4.94-4.36-.14-.19-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.42.27-.29.58-.36.78-.36l.55.01c.18.01.42-.07.65.5.24.58.82 2.01.89 2.15.07.15.12.32.02.51-.1.19-.15.31-.3.48-.15.17-.31.38-.44.51-.15.14-.3.3-.13.6.17.29.76 1.26 1.64 2.04 1.13 1 2.08 1.32 2.37 1.47.29.15.46.12.63-.07.17-.19.72-.84.92-1.13.19-.29.38-.24.63-.14.26.1 1.65.78 1.93.92.29.14.48.21.55.33.07.12.07.68-.17 1.36Z"/>',
-    "lock": '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
     "chevron": '<path d="M6 9l6 6 6-6"/>',
     "doc": '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5"/>',
     "arrow": '<path d="M5 12h14M13 6l6 6-6 6"/>',
-    "star-outline": '<path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',
     "shop": '<path d="M3 9l1-5h16l1 5"/><path d="M4 9v11h16V9"/><path d="M9 20v-6h6v6"/>',
     "practice": '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
     "stairs": '<path d="M4 20h4v-4h4v-4h4V8h4"/><path d="M4 20V8h4"/>',
@@ -54,8 +41,6 @@ ICONS = {
 
 ICON_VIEWBOX = {
     "whatsapp-fill": "-0.54 -0.60 25.08 25.20",
-    "linkedin-simple": "4.4 4.9 13.9 13.9",
-    "facebook-simple": "8.3 3.3 7.4 17.4",
 }
 
 def icon(name, cls="icon"):
@@ -365,13 +350,6 @@ def render_footer(base):
       <div class="footer-col footer-brand-col">
         <img src="{base}images/logo.png" alt="BrabantSchoon" width="130" height="32">
         <p class="footer-tagline">Professionele schoonmaakpartner voor kantoren, VvE's en organisaties in heel Noord-Brabant.</p>
-        <div class="footer-social">
-          <a href="{WA_LINK}" target="_blank" rel="noopener" class="fs-icon fs-whatsapp" aria-label="WhatsApp">{icon('lucide-message')}</a>
-          <a href="https://www.linkedin.com/in/egzon-berisha-957796413/" target="_blank" rel="noopener" class="fs-icon fs-linkedin" aria-label="LinkedIn">{icon('lucide-linkedin')}</a>
-          <a href="https://facebook.com/brabantschoon" target="_blank" rel="noopener" class="fs-icon fs-facebook" aria-label="Facebook">{icon('lucide-facebook')}</a>
-          <a href="https://instagram.com/brabantschoon" target="_blank" rel="noopener" class="fs-icon fs-instagram" aria-label="Instagram">{icon('lucide-instagram')}</a>
-          <a href="mailto:{EMAIL}" class="fs-icon fs-email" aria-label="E-mail">{icon('lucide-mail')}</a>
-        </div>
         <div class="footer-meta">KvK {KVK} &bull; BTW NL005380198B12</div>
       </div>
 
@@ -383,9 +361,6 @@ def render_footer(base):
         <a href="{base}werkgebied.html">Werkgebied</a>
         <a href="{base}contact.html">Contact</a>
         <a href="{base}contact.html#offerteWizard">Offerte aanvragen</a>
-        <div class="footer-contact-line" style="margin-top:14px;"><a href="tel:{PHONE_TEL}">{icon('phone')}{PHONE_DISPLAY}</a></div>
-        <div class="footer-contact-line"><a href="mailto:{EMAIL}">{icon('mail')}{EMAIL}</a></div>
-        <p class="footer-availability">Ook buiten kantooruren bereikbaar bij spoed.</p>
       </div>
 
       <div class="footer-col footer-form-col">
