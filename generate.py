@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "74"
+ASSET_VERSION = "75"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -939,7 +939,7 @@ def build_werkgebied():
         f'<a href="{base}locaties/{loc["slug"]}.html" class="wg-card" style="text-decoration:none; color:inherit;">'
         f'<div class="wg-icon">{icon("pin")}</div><h3>{loc["name"]}</h3><p>{loc["intro"][:100]}&hellip;</p>'
         f'<span class="wg-btn">Bekijk werkgebied {icon("arrow")}</span></a>'
-        for loc in LOCATIONS
+        for loc in LOCATIONS if loc["slug"] != "eindhoven"
     )
     body = f"""
   {page_hero("Werkgebied", "Actief in heel Noord-Brabant.", f"Gevestigd in {CITY}, met de Peelgemeenten als kerngebied \u2014 en we rijden verder voor de juiste opdracht.", base, "Werkgebied")}
