@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "45"
+ASSET_VERSION = "50"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -377,6 +377,7 @@ def render_footer(base):
       <div class="footer-legal-links">
         <a href="{base}privacy.html">Privacyverklaring</a>
         <a href="{base}voorwaarden.html">Algemene voorwaarden</a>
+        <a href="{base}cookiebeleid.html">Cookiebeleid</a>
       </div>
     </div>
   </div>
@@ -557,7 +558,7 @@ def contact_info_block(base="", show_heading=True):
       <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
     </div>
     <div class="contact-map">
-      <iframe src="https://www.google.com/maps?q={CITY},+Noord-Brabant&output=embed" width="100%" height="220" style="border:0; border-radius:16px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="BrabantSchoon werkgebied - {CITY}"></iframe>
+      <iframe src="https://www.google.com/maps?q={CITY},+Noord-Brabant&output=embed" width="100%" height="280" style="border:0; border-radius:16px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="BrabantSchoon werkgebied - {CITY}"></iframe>
     </div>
   </div>"""
 
@@ -603,10 +604,10 @@ def build_home():
     </a>""" for s in SERVICES[:6])
 
     usp_items = [
-        ("chat", "Vast aanspreekpunt", "Geen callcenter, direct contact."),
-        ("check", "Afspraak is afspraak", "Heldere planning, nagekomen."),
-        ("clock", "Flexibele inzet", "Frequentie op maat."),
-        ("spark", "Oog voor detail", "Kwaliteit wordt gecontroleerd."),
+        ("chat", "Vast aanspreekpunt", "U spreekt altijd met iemand die uw locatie en wensen kent \u2014 geen callcenter."),
+        ("check", "Afspraak is afspraak", "Heldere planning die we nakomen, zonder verrassingen achteraf."),
+        ("clock", "Flexibiliteit", "Frequentie en tijdstip volledig afgestemd op uw organisatie."),
+        ("spark", "Kwaliteitscontrole", "Iedere beurt wordt gecontroleerd, niet alleen bij de start."),
     ]
     usp_html = "\n    ".join(f'<div class="usp"><div class="icon-circle">{icon(n)}</div><h3>{t}</h3><p>{d}</p></div>' for n, t, d in usp_items)
 
@@ -619,13 +620,19 @@ def build_home():
     <img src="images/hero.jpg" alt="Bedrijfswagens en medewerker van BrabantSchoon bij een klant in Zuidoost-Brabant" class="hero-full-img" width="1600" height="1067" fetchpriority="high" decoding="async">
     <div class="hero-full-overlay"></div>
     <div class="wrap hero-full-content">
-      <span class="eyebrow" style="color:#BFE0FF;">Professionele schoonmaakpartner</span>
-      <h1>Schoon zonder gedoe.</h1>
-      <p class="lead" style="color:rgba(255,255,255,0.9);">Vaste kwaliteit voor kantoren, VvE's en organisaties in heel Noord-Brabant.</p>
+      <span class="eyebrow" style="color:#BFE0FF;">Professionele schoonmaak voor bedrijven</span>
+      <h1>Professionele schoonmaak. Altijd geregeld.</h1>
+      <p class="lead" style="color:rgba(255,255,255,0.9);">Voor kantoren, VvE's en organisaties in Noord-Brabant. Vaste kwaliteit, duidelijke communicatie en \u00e9\u00e9n betrouwbaar aanspreekpunt.</p>
       <div class="hero-actions">
-        <a href="contact.html" class="btn btn-primary">Vraag offerte aan</a>
+        <a href="contact.html" class="btn btn-primary">Gratis offerte aanvragen</a>
         <a href="#diensten" class="btn btn-ghost-light">Bekijk onze diensten</a>
       </div>
+      <ul class="hero-checklist">
+        <li>{icon('check')}Vast aanspreekpunt</li>
+        <li>{icon('check')}Flexibele planning</li>
+        <li>{icon('check')}Professionele medewerkers</li>
+        <li>{icon('check')}Actief in heel Noord-Brabant</li>
+      </ul>
     </div>
   </section>
 
@@ -646,16 +653,16 @@ def build_home():
     <div class="wrap">
       <div class="sec-head reveal">
         <span class="eyebrow">Waarom BrabantSchoon</span>
-        <h2>Waarom klanten voor ons kiezen.</h2>
+        <h2>Waarom bedrijven voor BrabantSchoon kiezen.</h2>
       </div>
       <div class="usp-grid reveal">
         {usp_html}
       </div>
       <div class="steps reveal" style="margin-top:56px; border-top:1px solid var(--line); padding-top:40px;">
-        <div class="step"><div class="stepnum">01</div><h3>Aanvraag</h3><p>Uw wens, kort omschreven.</p></div>
-        <div class="step"><div class="stepnum">02</div><h3>Locatiebezoek</h3><p>Vrijblijvend gesprek op locatie.</p></div>
-        <div class="step"><div class="stepnum">03</div><h3>Offerte</h3><p>Heldere prijs en planning.</p></div>
-        <div class="step"><div class="stepnum">04</div><h3>Uitvoering</h3><p>Vast team, gecontroleerde kwaliteit.</p></div>
+        <div class="step"><div class="stepnum">{icon('chat')}01</div><h3>Aanvraag</h3><p>U laat weten wat u nodig heeft; wij denken direct mee over de aanpak.</p></div>
+        <div class="step"><div class="stepnum">{icon('pin')}02</div><h3>Locatiebezoek</h3><p>Een vrijblijvend gesprek op locatie, zodat de offerte precies aansluit op uw situatie.</p></div>
+        <div class="step"><div class="stepnum">{icon('doc')}03</div><h3>Offerte</h3><p>Een heldere offerte met vaste prijs en planning, zonder kleine lettertjes.</p></div>
+        <div class="step"><div class="stepnum">{icon('check')}04</div><h3>Uitvoering</h3><p>Een vast team gaat aan de slag; kwaliteit wordt doorlopend gecontroleerd.</p></div>
       </div>
     </div>
   </section>
@@ -785,7 +792,7 @@ def build_service_pages():
       <div class="grid-3 reveal">{others_html}</div>
     </div>
   </section>
-  <section><div class="wrap">{cta_band(f"Interesse in {s['name'].lower()}?", "Vraag een vrijblijvende offerte aan.", base)}</div></section>
+  <section><div class="wrap">{cta_band(f"Interesse in {s['name']}?", "Vraag een vrijblijvende offerte aan.", base)}</div></section>
   <section class="section-tight">
     <div class="wrap-narrow" style="text-align:center;">
       <p class="prose">Actief in <a href="{base}werkgebied.html" style="color:var(--link); font-weight:600;">heel Noord-Brabant</a> &mdash; bekijk ook onze <a href="{base}diensten.html" style="color:var(--link); font-weight:600;">overige diensten</a>.</p>
@@ -919,8 +926,7 @@ def build_location_pages():
     <div class="wrap">
       <div class="two-col reveal">
         <div>
-          <p class="prose">{loc['intro']}</p>
-          <p class="prose" style="margin-top:16px;">Ons kerngebied is Helmond en de Peelgemeenten \u2014 vandaar rijden we uit. Voor {loc['name']} werken we vooral bij grotere of terugkerende opdrachten, zoals een vast kantoorcontract, VvE-schoonmaak of een omvangrijke opleveringsschoonmaak.</p>
+          <p class="prose">Ons kerngebied is Helmond en de Peelgemeenten \u2014 vandaar rijden we uit. Voor {loc['name']} werken we vooral bij grotere of terugkerende opdrachten, zoals een vast kantoorcontract, VvE-schoonmaak of een omvangrijke opleveringsschoonmaak.</p>
           <div class="hero-actions" style="margin-top:26px;">
             <a href="{base}contact.html" class="btn btn-primary">Vraag offerte aan</a>
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
@@ -963,6 +969,13 @@ def build_contact():
   {page_hero("Contact", "Neem contact op.", "We reageren binnen \u00e9\u00e9n werkdag.", base, "Contact")}
   <section>
     <div class="wrap">
+      {reviews_widget_block()}
+      <div class="benefits-strip reveal">
+        <span>{icon('check')}Vrijblijvende offerte</span>
+        <span>{icon('clock')}Reactie binnen \u00e9\u00e9n werkdag</span>
+        <span>{icon('doc')}Geen verborgen kosten</span>
+        <span>{icon('pin')}Actief in heel Noord-Brabant</span>
+      </div>
       <div class="contact-grid reveal">
         {contact_info_block(base, show_heading=False)}
         {contact_form()}
@@ -1022,6 +1035,22 @@ def build_legal():
 """
     write("voorwaarden.html", page_shell("Algemene voorwaarden | BrabantSchoon", "De algemene voorwaarden die gelden voor offertes en opdrachten bij BrabantSchoon.", "voorwaarden.html", base, "", voorwaarden))
 
+    cookies = f"""
+  {page_hero("Juridisch", "Cookiebeleid.", "Welke cookies en externe diensten deze website gebruikt.", base, "Cookiebeleid")}
+  <section><div class="wrap-narrow prose reveal">
+    <p><em>Dit is een voorbeeldtekst. Laat deze controleren door een jurist voordat u ze publiceert.</em></p>
+    <h2>Gebruikt deze website cookies?</h2>
+    <p>Deze website plaatst geen advertentie- of trackingcookies. Er wordt alleen gebruikgemaakt van functionele onderdelen die nodig zijn om de site goed te laten werken.</p>
+    <h2>Google Maps</h2>
+    <p>Op de contactpagina tonen we een kaart via Google Maps. Google kan hierbij gegevens verzamelen conform het eigen privacybeleid van Google.</p>
+    <h2>Offerteformulier</h2>
+    <p>Het offerteformulier wordt verwerkt via een externe formulierdienst. Zie onze <a href="{base}privacy.html" style="color:var(--link); font-weight:600;">privacyverklaring</a> voor meer informatie over hoe wij met uw gegevens omgaan.</p>
+    <h2>Vragen</h2>
+    <p>Vragen over dit cookiebeleid? Neem contact op via {EMAIL}.</p>
+  </div></section>
+"""
+    write("cookiebeleid.html", page_shell("Cookiebeleid | BrabantSchoon", "Lees welke cookies en externe diensten, zoals Google Maps, BrabantSchoon.nl gebruikt en waarom.", "cookiebeleid.html", base, "", cookies))
+
 # =================================================================
 # SEO FILES
 # =================================================================
@@ -1031,7 +1060,7 @@ def build_seo_files():
     urls = [
         ("", "1.0"), ("diensten.html", "0.9"), ("werkgebied.html", "0.9"),
         ("over-ons.html", "0.7"), ("contact.html", "0.8"),
-        ("privacy.html", "0.3"), ("voorwaarden.html", "0.3"),
+        ("privacy.html", "0.3"), ("voorwaarden.html", "0.3"), ("cookiebeleid.html", "0.3"),
     ]
     urls += [(f"diensten/{s['slug']}.html", "0.8") for s in SERVICES]
     urls += [(f"locaties/{loc['slug']}.html", "0.8") for loc in LOCATIONS]
