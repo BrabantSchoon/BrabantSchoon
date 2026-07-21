@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "56"
+ASSET_VERSION = "57"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -420,7 +420,7 @@ def render_footer(base):
           <input type="tel" name="telefoon" placeholder="Telefoonnummer" required>
           <input type="text" name="bedrijfsnaam" placeholder="Bedrijfsnaam (optioneel)">
           <textarea name="bericht" placeholder="Bericht" rows="3"></textarea>
-          <button type="submit" class="btn btn-primary footer-form-submit">Neem contact met mij op</button>
+          <button type="submit" class="btn btn-primary footer-form-submit">Neem contact met ons op</button>
           <p class="footer-form-privacy">{icon('lock')}Uw gegevens worden vertrouwelijk behandeld en uitsluitend gebruikt om contact met u op te nemen.</p>
         </form>
       </div>
