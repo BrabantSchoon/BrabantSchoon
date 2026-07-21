@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "75"
+ASSET_VERSION = "76"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -897,12 +897,6 @@ WERKGEBIED_TEKST = {
 # gericht op grotere of terugkerende opdrachten in plaats van een claim van lokale aanwezigheid.
 LOCATIONS = [
     {
-        "slug": "eindhoven", "name": "Eindhoven",
-        "intro": "Eindhoven ligt op korte afstand van ons kerngebied in de Peel. We zijn hier regelmatig actief voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak \u2014 van eenmalige klussen tot vaste contracten.",
-        "faq_q": "Is een vast schoonmaakcontract in Eindhoven mogelijk?",
-        "faq_a": "Ja, Eindhoven ligt goed bereikbaar vanuit Helmond en we verzorgen hier regelmatig vaste, terugkerende schoonmaak voor kantoren en VvE's.",
-    },
-    {
         "slug": "tilburg", "name": "Tilburg",
         "intro": "Tilburg ligt buiten ons kerngebied in de Peel, maar we rijden geregeld uit naar de stad voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak. Vooral voor grotere of terugkerende opdrachten is een vaste planning vanuit Helmond goed te combineren.",
         "faq_q": "Rijden jullie ook naar Tilburg voor kleinere klussen?",
@@ -931,8 +925,13 @@ LOCATIONS = [
 def build_werkgebied():
     base = ""
     all_cities = WERKGEBIED_KERN + WERKGEBIED_OVERIG
+    city_slug_map = {"Helmond":"helmond","Deurne":"deurne","Asten":"asten","Someren":"someren",
+                      "Gemert-Bakel":"gemert-bakel","Laarbeek":"laarbeek","Eindhoven":"eindhoven",
+                      "Geldrop-Mierlo":"geldrop-mierlo","Nuenen":"nuenen","Mierlo":"geldrop-mierlo"}
     city_cards = "\n        ".join(
-        f'<div class="wg-card"><div class="wg-icon">{icon("pin")}</div><h3>{c}</h3><p>{WERKGEBIED_TEKST[c]}</p></div>'
+        f'<a href="{base}locaties/{city_slug_map[c]}.html" class="wg-card" style="text-decoration:none; color:inherit;">'
+        f'<div class="wg-icon">{icon("pin")}</div><h3>{c}</h3><p>{WERKGEBIED_TEKST[c]}</p>'
+        f'<span class="wg-btn">Bekijk {c} {icon("arrow")}</span></a>'
         for c in all_cities
     )
     location_cards = "\n        ".join(
@@ -949,6 +948,7 @@ def build_werkgebied():
       <div class="grid-4 reveal">{city_cards}</div>
     </div>
   </section>
+""" + f"""
   <section class="section-tight" style="background:var(--bg-soft);">
     <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Verder in Brabant</span><h2>Ook actief hier, voor grotere opdrachten.</h2></div>
@@ -973,6 +973,169 @@ def build_werkgebied():
 # =================================================================
 # LOCATIEPAGINA'S (steden buiten het kerngebied)
 # =================================================================
+KERNGEBIED = [
+    {
+        "slug": "helmond", "name": "Helmond",
+        "intro": "Als thuisbasis van BrabantSchoon kennen we Helmond het beste. Van kantoren rond het centrum tot bedrijfsverzamelgebouwen en winkelpanden \u2014 we zijn hier dagelijks onderweg.",
+        "waarom": "Doordat we in Helmond zelf gevestigd zijn, is de reistijd naar elke locatie kort. Dat betekent snel kunnen schakelen bij een spoedklus, en een vast team dat uw pand door en door kent.",
+        "klanten": "kantoren, bedrijfsverzamelgebouwen, VvE's, winkels en praktijken",
+        "faqs": [
+            ("Werken jullie ook 's avonds of in het weekend in Helmond?", "Ja, voor veel kantoren en winkels plannen we de schoonmaak juist buiten openingstijden, zodat het uw bedrijfsvoering niet verstoort."),
+            ("Kunnen jullie snel starten met een nieuwe klant in Helmond?", "Vaak wel \u2014 omdat we hier gevestigd zijn, is een kennismaking op locatie meestal al binnen enkele dagen te plannen."),
+        ],
+        "neighbors": ["deurne", "gemert-bakel"],
+    },
+    {
+        "slug": "deurne", "name": "Deurne",
+        "intro": "Deurne kennen we goed: van bedrijfspanden op de bedrijventerreinen tot praktijken in het centrum. We rijden hier geregeld voor kantoorreiniging en opleveringsschoonmaak.",
+        "waarom": "Deurne ligt op korte afstand van ons kerngebied Helmond, waardoor we hier net zo snel kunnen schakelen als in onze thuisstad.",
+        "klanten": "bedrijfspanden, praktijken (huisartsen, fysiotherapie) en kleinere kantoren",
+        "faqs": [
+            ("Verzorgen jullie ook praktijken in Deurne?", "Ja, we reinigen regelmatig praktijkruimtes zoals huisartsenposten en fysiotherapiepraktijken, buiten de openingstijden."),
+            ("Is eenmalige schoonmaak in Deurne mogelijk?", "Zeker, bijvoorbeeld bij een verhuizing of oplevering. Neem contact op voor de mogelijkheden."),
+        ],
+        "neighbors": ["helmond", "asten"],
+    },
+    {
+        "slug": "asten", "name": "Asten",
+        "intro": "Asten en de kern Heusden liggen goed bereikbaar vanuit Helmond. We verzorgen hier zowel eenmalige als terugkerende schoonmaak voor bedrijven.",
+        "waarom": "De korte afstand vanuit Helmond maakt het voor ons eenvoudig om ook kleinere opdrachten in Asten rendabel in te plannen.",
+        "klanten": "kleinere kantoren, bedrijfsruimtes en VvE's",
+        "faqs": [
+            ("Rijden jullie ook naar Heusden?", "Ja, Heusden valt binnen ons werkgebied rond Asten."),
+            ("Wat kost schoonmaak in Asten?", "Dat hangt af van de ruimte en frequentie. Na een kort gesprek ontvangt u een vrijblijvende offerte op maat."),
+        ],
+        "neighbors": ["deurne", "someren"],
+    },
+    {
+        "slug": "someren", "name": "Someren",
+        "intro": "In Someren werken we voor kantoren en VvE's die op zoek zijn naar een persoonlijke, vaste schoonmaakpartner in plaats van een groot, onpersoonlijk bedrijf.",
+        "waarom": "Someren heeft relatief veel kleinere, lokale organisaties \u2014 daar sluit onze aanpak van \u00e9\u00e9n vast team en korte lijnen goed op aan.",
+        "klanten": "kantoren, VvE's en kleinere bedrijven",
+        "faqs": [
+            ("Werken jullie met een vast team in Someren?", "Ja, u krijgt een vast aanspreekpunt dat uw locatie kent."),
+            ("Is een offerte vrijblijvend?", "Altijd, en zonder verplichtingen."),
+        ],
+        "neighbors": ["asten", "gemert-bakel"],
+    },
+    {
+        "slug": "gemert-bakel", "name": "Gemert-Bakel",
+        "intro": "Gemert en Bakel behoren tot ons kerngebied. Of het nu gaat om een bedrijfspand in Gemert of een opleveringsschoonmaak in Bakel, we plannen dit met dezelfde zorg als in Helmond zelf.",
+        "waarom": "Als vaste partij in de Peelregio kennen we de lokale bedrijven en hun specifieke wensen.",
+        "klanten": "bedrijfspanden, VvE's en organisaties met een opleveringsklus",
+        "faqs": [
+            ("Doen jullie ook opleveringsschoonmaak in Gemert-Bakel?", "Ja, dat is een van onze kernactiviteiten in deze regio."),
+            ("Hoe snel kunnen jullie starten?", "Meestal binnen enkele dagen na een kort kennismakingsgesprek."),
+        ],
+        "neighbors": ["helmond", "laarbeek"],
+    },
+    {
+        "slug": "laarbeek", "name": "Laarbeek",
+        "intro": "In Laarbeek, met de kernen Beek en Donk, Aarle-Rixtel en Mariahout, zijn we actief voor kantoren en VvE's die op zoek zijn naar een vast en betrouwbaar schoonmaakteam.",
+        "waarom": "De verschillende kernen van Laarbeek liggen dicht bij elkaar, waardoor we hier efficient kunnen plannen \u2014 dat voordeel geven we door in scherpe tarieven.",
+        "klanten": "kantoren en VvE's in Beek en Donk, Aarle-Rixtel en Mariahout",
+        "faqs": [
+            ("Werken jullie in alle kernen van Laarbeek?", "Ja, in Beek en Donk, Aarle-Rixtel en Mariahout."),
+            ("Bieden jullie ook periodieke schoonmaak?", "Ja, naast vaste contracten ook periodieke beurten op afspraak."),
+        ],
+        "neighbors": ["gemert-bakel", "helmond"],
+    },
+    {
+        "slug": "nuenen", "name": "Nuenen",
+        "intro": "In Nuenen verzorgen we schoonmaak voor kleinere kantoren en praktijken, waarbij persoonlijk contact en een vast aanspreekpunt voorop staan.",
+        "waarom": "Nuenen heeft veel zelfstandige ondernemers en kleinere praktijken \u2014 juist daar telt een schoonmaakpartner die meedenkt in plaats van alleen uitvoert.",
+        "klanten": "kleinere kantoren, praktijken en zzp'ers met een eigen bedrijfspand",
+        "faqs": [
+            ("Ook geschikt voor kleine kantoren in Nuenen?", "Zeker, ook voor kleinschalige locaties maken we een passende offerte."),
+            ("Is de eerste afspraak vrijblijvend?", "Ja, een kennismaking en offerte zijn altijd kosteloos en vrijblijvend."),
+        ],
+        "neighbors": ["eindhoven", "geldrop-mierlo"],
+    },
+    {
+        "slug": "geldrop-mierlo", "name": "Geldrop-Mierlo",
+        "intro": "Geldrop en Mierlo, samen de gemeente Geldrop-Mierlo, liggen op de route tussen Helmond en Eindhoven. Dat maakt het voor ons goed mogelijk om hier structureel schoonmaakwerk te verzorgen.",
+        "waarom": "De ligging tussen onze twee belangrijkste werkgebieden in maakt Geldrop-Mierlo makkelijk te combineren met andere afspraken \u2014 dat scheelt in de planning en dus in de prijs.",
+        "klanten": "kantoren, bedrijfsverzamelgebouwen en VvE's",
+        "faqs": [
+            ("Ook actief in Mierlo zelf?", "Ja, Mierlo valt onder dezelfde vaste aanpak als Geldrop."),
+            ("Kunnen jullie een vast wekelijks contract verzorgen?", "Ja, dat is een groot deel van ons werk in deze regio."),
+        ],
+        "neighbors": ["nuenen", "eindhoven"],
+    },
+    {
+        "slug": "eindhoven", "name": "Eindhoven",
+        "intro": "Eindhoven ligt op korte afstand van ons kerngebied in de Peel. We zijn hier regelmatig actief voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak \u2014 van eenmalige klussen tot vaste contracten.",
+        "waarom": "Eindhoven is de grootste stad in onze regio, met veel kantoren, bedrijfsverzamelgebouwen en VvE's. We investeren daarom bewust in structurele aanwezigheid hier, niet alleen incidentele ritjes.",
+        "klanten": "kantoren, bedrijfsverzamelgebouwen, VvE's en grotere praktijken",
+        "faqs": [
+            ("Is een vast schoonmaakcontract in Eindhoven mogelijk?", "Ja, Eindhoven ligt goed bereikbaar vanuit Helmond en we verzorgen hier regelmatig vaste, terugkerende schoonmaak."),
+            ("Werken jullie ook voor bedrijfsverzamelgebouwen in Eindhoven?", "Ja, met meerdere huurders onder \u00e9\u00e9n dak werken we met \u00e9\u00e9n vast aanspreekpunt voor het hele pand."),
+        ],
+        "neighbors": ["geldrop-mierlo", "nuenen"],
+    },
+]
+
+def build_kerngebied_pages():
+    base = "../"
+    by_slug = {k["slug"]: k for k in KERNGEBIED}
+    for k in KERNGEBIED:
+        neighbor_cards = "\n        ".join(
+            f'<a href="{by_slug[n]["slug"]}.html" class="wg-card" style="text-decoration:none; color:inherit;">'
+            f'<div class="wg-icon">{icon("pin")}</div><h3>{by_slug[n]["name"]}</h3>'
+            f'<span class="wg-btn">Bekijk {by_slug[n]["name"]} {icon("arrow")}</span></a>'
+            for n in k["neighbors"]
+        )
+        service_mentions = "\n        ".join(f"""<a href="{base}diensten/{s['slug']}.html" class="service-card">
+      <div class="thumb {s['tint']}">{service_visual(s)}</div>
+      <div class="body"><h3>{s['name']}</h3><p>{s['short']}</p></div>
+    </a>""" for s in SERVICES[:6])
+        faq_html = faq_block(k["faqs"])
+        body = f"""
+  {page_hero("Werkgebied", f"Schoonmaakbedrijf in {k['name']}.", k['intro'], base, k['name'])}
+  <section class="section-tight">
+    <div class="wrap">
+      <div class="two-col reveal">
+        <div>
+          <span class="eyebrow">Waarom BrabantSchoon in {k['name']}</span>
+          <h2 style="font-size:24px; margin-top:8px;">Lokaal betrokken, professioneel uitgevoerd.</h2>
+          <p class="prose" style="margin-top:14px;">{k['waarom']}</p>
+          <p class="prose" style="margin-top:12px;"><strong style="color:var(--ink);">Voor wie:</strong> {k['klanten']}.</p>
+          <div class="hero-actions" style="margin-top:24px;">
+            <a href="{base}contact.html#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
+            <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
+          </div>
+        </div>
+        <div class="illustration-panel sm">{service_illustration('building')}</div>
+      </div>
+    </div>
+  </section>
+  <section style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Diensten</span><h2>Wat we in {k['name']} verzorgen</h2></div>
+      <div class="grid-3 reveal">{service_mentions}</div>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Veelgestelde vragen</span><h2>Over {k['name']}</h2></div>
+      <div class="faq reveal">{faq_html}</div>
+    </div>
+  </section>
+  <section class="section-tight" style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Ook interessant</span><h2>Andere gemeenten in de buurt</h2></div>
+      <div class="grid-3 reveal">{neighbor_cards}</div>
+    </div>
+  </section>
+  <section><div class="wrap">{cta_band(f"Schoonmaak nodig in {k['name']}?", "Vraag een vrijblijvende offerte aan.", base)}</div></section>
+"""
+        title = f"Schoonmaakbedrijf {k['name']} | BrabantSchoon"
+        desc = f"BrabantSchoon verzorgt kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak in {k['name']}. Vast team, vrijblijvende offerte."
+        write(f"locaties/{k['slug']}.html", page_shell(
+            title, desc, f"locaties/{k['slug']}.html", base, "werkgebied.html", body,
+            breadcrumb_schema(k['name'], f"locaties/{k['slug']}.html") + "\n" + faq_schema(k['faqs'])
+        ))
+
 def build_location_pages():
     base = "../"
     for loc in LOCATIONS:
@@ -1126,6 +1289,7 @@ def build_seo_files():
     ]
     urls += [(f"diensten/{s['slug']}.html", "0.8") for s in SERVICES]
     urls += [(f"locaties/{loc['slug']}.html", "0.8") for loc in LOCATIONS]
+    urls += [(f"locaties/{k['slug']}.html", "0.85") for k in KERNGEBIED]
     entries = "\n  ".join(
         f"<url><loc>{SITE_URL}/{u}</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>{p}</priority></url>"
         for u, p in urls
@@ -1161,6 +1325,7 @@ if __name__ == "__main__":
     build_service_pages()
     build_over_ons()
     build_werkgebied()
+    build_kerngebied_pages()
     build_location_pages()
     build_contact()
     build_thanks()
