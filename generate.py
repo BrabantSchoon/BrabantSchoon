@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "50"
+ASSET_VERSION = "52"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -342,46 +342,80 @@ def render_header(base, active):
 </aside>"""
 
 def render_footer(base):
-    service_links = "\n        ".join(f'<a href="{base}diensten/{s["slug"]}.html">{s["name"]}</a>' for s in SERVICES)
-    location_links = "\n        ".join(f'<a href="{base}locaties/{loc["slug"]}.html">{loc["name"]}</a>' for loc in LOCATIONS)
     return f"""<footer class="site-footer">
   <div class="wrap">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <img src="{base}images/logo.png" alt="BrabantSchoon" width="120" height="30">
-        <p class="footer-tagline">Schoonmaak &amp; facility diensten voor bedrijven, actief in heel Noord-Brabant. Ook voor particuliere klussen, zoals opleveringsschoonmaak en vakantieparken.</p>
+    <div class="footer-top footer-top-4col">
+      <div class="footer-col footer-brand-col">
+        <img src="{base}images/logo.png" alt="BrabantSchoon" width="130" height="32">
+        <p class="footer-tagline">Professionele schoonmaakpartner voor kantoren, VvE's en organisaties in heel Noord-Brabant.</p>
+        <div class="footer-meta">
+          <span>KvK {KVK}</span>
+          <span>Werkgebied: Noord-Brabant &amp; omstreken</span>
+        </div>
         <div class="footer-social">
           <a href="{WA_LINK}" target="_blank" rel="noopener" aria-label="BrabantSchoon op WhatsApp">{icon('whatsapp')}</a>
           <a href="https://facebook.com/brabantschoon" target="_blank" rel="noopener" aria-label="BrabantSchoon op Facebook">{icon('facebook')}</a>
           <a href="https://instagram.com/brabantschoon" target="_blank" rel="noopener" aria-label="BrabantSchoon op Instagram">{icon('instagram')}</a>
+          <a href="mailto:{EMAIL}" aria-label="Mail BrabantSchoon">{icon('mail')}</a>
         </div>
       </div>
+
       <div class="footer-col">
-        <h4>Diensten</h4>
-        {service_links}
-      </div>
-      <div class="footer-col">
-        <h4>Regio's</h4>
+        <h4>Snelle links</h4>
+        <a href="{base}index.html">Home</a>
+        <a href="{base}diensten.html">Diensten</a>
+        <a href="{base}over-ons.html">Over ons</a>
         <a href="{base}werkgebied.html">Werkgebied</a>
-        {location_links}
+        <a href="{base}contact.html">Contact</a>
+        <a href="{base}contact.html">Offerte aanvragen</a>
+        <a href="{base}privacy.html">Privacybeleid</a>
+        <a href="{base}voorwaarden.html">Algemene voorwaarden</a>
       </div>
+
       <div class="footer-col">
         <h4>Contact</h4>
-        <a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a>
-        <a href="mailto:{EMAIL}">{EMAIL}</a>
-        <a href="{base}contact.html">Offerte aanvragen</a>
+        <div class="footer-contact-line">{icon('pin')}<span>Actief vanuit {CITY}, heel Noord-Brabant</span></div>
+        <div class="footer-contact-line"><a href="tel:{PHONE_TEL}">{icon('phone')}{PHONE_DISPLAY}</a></div>
+        <div class="footer-contact-line"><a href="mailto:{EMAIL}">{icon('mail')}{EMAIL}</a></div>
+        <div class="footer-contact-line">{icon('clock')}<span>Ma&ndash;vr, 08:00&ndash;18:00</span></div>
+        <div class="footer-contact-actions">
+          <a href="tel:{PHONE_TEL}" class="btn btn-outline btn-sm footer-btn-light">Bel direct</a>
+          <a href="{WA_LINK}" target="_blank" rel="noopener" class="btn btn-sm footer-btn-whatsapp">WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="footer-col footer-form-col">
+        <h4>Vrijblijvend kennismaken?</h4>
+        <p class="footer-form-intro">Laat uw gegevens achter. Wij nemen doorgaans binnen \u00e9\u00e9n werkdag contact met u op.</p>
+        <form name="footer-offerte" method="POST" action="https://api.web3forms.com/submit" class="footer-form">
+          <input type="hidden" name="access_key" value="abc98c0d-af16-42b0-ae5c-3337f35e5299">
+          <input type="hidden" name="subject" value="Nieuwe offerteaanvraag via de footer">
+          <input type="hidden" name="redirect" value="{SITE_URL}/thanks.html">
+          <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
+          <input type="text" name="naam" placeholder="Naam" required>
+          <input type="email" name="email" placeholder="E-mailadres" required>
+          <input type="tel" name="telefoon" placeholder="Telefoonnummer" required>
+          <input type="text" name="bedrijfsnaam" placeholder="Bedrijfsnaam (optioneel)">
+          <textarea name="bericht" placeholder="Bericht" rows="3"></textarea>
+          <button type="submit" class="btn btn-primary footer-form-submit">Vraag vrijblijvend een offerte aan</button>
+        </form>
       </div>
     </div>
     <div class="footer-bottom">
       <span>&copy; 2026 BrabantSchoon &middot; KvK {KVK} &middot; {CITY}</span>
       <div class="footer-legal-links">
-        <a href="{base}privacy.html">Privacyverklaring</a>
-        <a href="{base}voorwaarden.html">Algemene voorwaarden</a>
+        <a href="{base}privacy.html">Privacybeleid</a>
         <a href="{base}cookiebeleid.html">Cookiebeleid</a>
+        <a href="{base}voorwaarden.html">Algemene voorwaarden</a>
+        <a href="{base}sitemap.xml">Sitemap</a>
       </div>
     </div>
   </div>
-</footer>"""
+</footer>
+<a href="{WA_LINK}" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Chat direct via WhatsApp">
+  {icon('whatsapp')}
+  <span class="whatsapp-tooltip">Chat direct via WhatsApp</span>
+</a>"""
 
 # ---------------------------------------------------------------
 # SHARED BLOCKS
@@ -636,6 +670,12 @@ def build_home():
     </div>
   </section>
 
+  <section class="section-tight">
+    <div class="wrap">
+      {reviews_widget_block()}
+    </div>
+  </section>
+
   <section id="diensten">
     <div class="wrap">
       <div class="sec-head reveal">
@@ -683,7 +723,22 @@ def build_home():
     </div>
   </section>
 
-  <section id="faq" class="section-tight">
+  <section id="contact">
+    <div class="wrap">
+      <div class="benefits-strip reveal">
+        <span>{icon('check')}Vrijblijvende offerte</span>
+        <span>{icon('clock')}Reactie binnen \u00e9\u00e9n werkdag</span>
+        <span>{icon('doc')}Geen verborgen kosten</span>
+        <span>{icon('pin')}Actief in heel Noord-Brabant</span>
+      </div>
+      <div class="contact-grid reveal">
+        {contact_info_block(base)}
+        {contact_form()}
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="section-tight" style="background:var(--bg-soft);">
     <div class="wrap">
       <div class="sec-head reveal">
         <span class="eyebrow">Veelgestelde vragen</span>
