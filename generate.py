@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "61"
+ASSET_VERSION = "63"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -33,7 +33,7 @@ ICONS = {
     "mail": '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
     "instagram-simple": '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>',
     "facebook-simple": '<path d="M9 20V6a2 2 0 0 1 2-2h4M9 12h4"/>',
-    "linkedin-simple": '<rect x="4" y="8" width="16" height="12" rx="2"/><path d="M9 8V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><path d="M4 13h16"/>',
+    "linkedin-simple": '<circle cx="6.5" cy="7" r="1.3" fill="currentColor" stroke="none"/><path d="M6.5 10.5v7.5"/><path d="M11.5 10.5v7.5M11.5 13.8a3 3 0 0 1 6 0v4.2"/>',
     "whatsapp-fill": '<path fill="currentColor" stroke="none" d="M12.02 2C6.5 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.07L2 22l5.08-1.33A9.96 9.96 0 0 0 12.02 22C17.55 22 22 17.52 22 12S17.55 2 12.02 2Zm5.84 14.14c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.82-.12-.42-.11-.96-.31-1.65-.6-2.9-1.25-4.8-4.17-4.94-4.36-.14-.19-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.42.27-.29.58-.36.78-.36l.55.01c.18.01.42-.07.65.5.24.58.82 2.01.89 2.15.07.15.12.32.02.51-.1.19-.15.31-.3.48-.15.17-.31.38-.44.51-.15.14-.3.3-.13.6.17.29.76 1.26 1.64 2.04 1.13 1 2.08 1.32 2.37 1.47.29.15.46.12.63-.07.17-.19.72-.84.92-1.13.19-.29.38-.24.63-.14.26.1 1.65.78 1.93.92.29.14.48.21.55.33.07.12.07.68-.17 1.36Z"/>',
     "lock": '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
     "chevron": '<path d="M6 9l6 6 6-6"/>',
@@ -47,7 +47,7 @@ ICONS = {
 
 ICON_VIEWBOX = {
     "whatsapp-fill": "-0.54 -0.60 25.08 25.20",
-    "linkedin-simple": "3.4 4.5 17.2 16",
+    "linkedin-simple": "4.4 4.9 13.9 13.9",
     "facebook-simple": "8.3 3.3 7.4 17.4",
 }
 
@@ -368,8 +368,11 @@ def render_footer(base):
           <li>{icon('check')}Vrijblijvende offerte</li>
           <li>{icon('check')}Actief in heel Noord-Brabant</li>
         </ul>
+        <div class="footer-areas">
+          <span>Werkgebied:</span> {CITY}, Deurne, Asten, Someren, Gemert-Bakel, Laarbeek, Eindhoven e.o.
+        </div>
         <div class="footer-social">
-          <a href="{WA_LINK}" target="_blank" rel="noopener" class="social-whatsapp" aria-label="BrabantSchoon op WhatsApp">{icon('phone')}</a>
+          <a href="{WA_LINK}" target="_blank" rel="noopener" class="social-whatsapp" aria-label="BrabantSchoon op WhatsApp">{icon('chat')}</a>
           <a href="https://www.linkedin.com/in/egzon-berisha-957796413/" target="_blank" rel="noopener" class="social-linkedin" aria-label="BrabantSchoon op LinkedIn">{icon('linkedin-simple')}</a>
           <a href="https://facebook.com/brabantschoon" target="_blank" rel="noopener" class="social-facebook" aria-label="BrabantSchoon op Facebook">{icon('facebook-simple')}</a>
           <a href="https://instagram.com/brabantschoon" target="_blank" rel="noopener" class="social-instagram" aria-label="BrabantSchoon op Instagram">{icon('instagram-simple')}</a>
@@ -385,8 +388,6 @@ def render_footer(base):
         <a href="{base}werkgebied.html">Werkgebied</a>
         <a href="{base}contact.html">Contact</a>
         <a href="{base}contact.html#offerteWizard">Offerte aanvragen</a>
-        <a href="{base}privacy.html">Privacybeleid</a>
-        <a href="{base}voorwaarden.html">Algemene voorwaarden</a>
       </div>
 
       <div class="footer-col">
@@ -396,7 +397,7 @@ def render_footer(base):
         <div class="footer-contact-line"><a href="mailto:{EMAIL}">{icon('mail')}{EMAIL}</a></div>
         <p class="footer-availability">Ook buiten kantooruren bereikbaar.<br>Spoed? Bel of WhatsApp direct.</p>
         <div class="footer-contact-actions">
-          <a href="tel:{PHONE_TEL}" class="btn btn-outline btn-sm footer-btn-light">Bel direct</a>
+          <a href="tel:{PHONE_TEL}" class="btn btn-sm footer-btn-call">Bel direct</a>
           <a href="{WA_LINK}" target="_blank" rel="noopener" class="btn btn-sm footer-btn-whatsapp">WhatsApp</a>
         </div>
       </div>
@@ -409,10 +410,14 @@ def render_footer(base):
           <input type="hidden" name="subject" value="Nieuwe offerteaanvraag via de footer">
           <input type="hidden" name="redirect" value="{SITE_URL}/thanks.html">
           <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
-          <input type="text" name="naam" placeholder="Naam" required>
-          <input type="email" name="email" placeholder="E-mailadres" required>
-          <input type="tel" name="telefoon" placeholder="Telefoonnummer" required>
-          <input type="text" name="bedrijfsnaam" placeholder="Bedrijfsnaam (optioneel)">
+          <div class="footer-form-row">
+            <input type="text" name="naam" placeholder="Naam" required>
+            <input type="tel" name="telefoon" placeholder="Telefoonnummer" required>
+          </div>
+          <div class="footer-form-row">
+            <input type="email" name="email" placeholder="E-mailadres" required>
+            <input type="text" name="bedrijfsnaam" placeholder="Bedrijfsnaam (optioneel)">
+          </div>
           <textarea name="bericht" placeholder="Bericht" rows="3"></textarea>
           <button type="submit" class="btn btn-primary footer-form-submit">Neem contact met ons op</button>
           <p class="footer-form-privacy">{icon('lock')}Uw gegevens worden vertrouwelijk behandeld en uitsluitend gebruikt om contact met u op te nemen.</p>
@@ -420,7 +425,10 @@ def render_footer(base):
       </div>
     </div>
     <div class="footer-bottom">
-      <span>&copy; 2026 BrabantSchoon &middot; KvK {KVK} &middot; {CITY}</span>
+      <div class="footer-copy">
+        <span>&copy; 2026 BrabantSchoon. Alle rechten voorbehouden.</span>
+        <span class="footer-copy-sub">KvK {KVK} &bull; BTW NL005380198B12 &bull; {CITY}</span>
+      </div>
       <div class="footer-legal-links">
         <a href="{base}privacy.html">Privacybeleid</a>
         <a href="{base}cookiebeleid.html">Cookiebeleid</a>
