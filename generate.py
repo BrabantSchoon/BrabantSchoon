@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "67"
+ASSET_VERSION = "69"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -356,31 +356,18 @@ def render_header(base, active):
 def render_footer(base):
     return f"""<footer class="site-footer">
   <div class="wrap">
-    <div class="footer-top footer-top-4col">
+    <div class="footer-top footer-top-3col">
       <div class="footer-col footer-brand-col">
         <img src="{base}images/logo.png" alt="BrabantSchoon" width="130" height="32">
         <p class="footer-tagline">Professionele schoonmaakpartner voor kantoren, VvE's en organisaties in heel Noord-Brabant.</p>
-        <div class="footer-meta">
-          <span>KvK {KVK}</span>
-          <span>BTW NL005380198B12</span>
-        </div>
-        <ul class="footer-trust-list">
-          <li>{icon('check')}Persoonlijk contact</li>
-          <li>{icon('check')}Ook buiten kantooruren bereikbaar</li>
-          <li>{icon('check')}Vrijblijvende offerte</li>
-          <li>{icon('check')}Actief in heel Noord-Brabant</li>
-        </ul>
-        <div class="footer-areas">
-          <span>Werkgebied:</span> {CITY}, Deurne, Asten, Someren, Gemert-Bakel, Laarbeek, Eindhoven e.o.
-        </div>
-        <p class="footer-social-label">Volg ons op social media</p>
         <div class="footer-social">
-          <a href="{WA_LINK}" target="_blank" rel="noopener"><span class="fs-badge">{icon('chat')}</span>WhatsApp</a>
-          <a href="https://www.linkedin.com/in/egzon-berisha-957796413/" target="_blank" rel="noopener"><span class="fs-badge">{icon('linkedin-official')}</span>LinkedIn</a>
-          <a href="https://facebook.com/brabantschoon" target="_blank" rel="noopener"><span class="fs-badge">{icon('facebook-official')}</span>Facebook</a>
-          <a href="https://instagram.com/brabantschoon" target="_blank" rel="noopener"><span class="fs-badge">{icon('instagram-simple')}</span>Instagram</a>
-          <a href="mailto:{EMAIL}"><span class="fs-badge">{icon('mail')}</span>E-mail</a>
+          <a href="{WA_LINK}" target="_blank" rel="noopener" class="fs-icon fs-whatsapp" aria-label="WhatsApp">{icon('chat')}</a>
+          <a href="https://www.linkedin.com/in/egzon-berisha-957796413/" target="_blank" rel="noopener" class="fs-icon fs-linkedin" aria-label="LinkedIn">{icon('linkedin-official')}</a>
+          <a href="https://facebook.com/brabantschoon" target="_blank" rel="noopener" class="fs-icon fs-facebook" aria-label="Facebook">{icon('facebook-official')}</a>
+          <a href="https://instagram.com/brabantschoon" target="_blank" rel="noopener" class="fs-icon fs-instagram" aria-label="Instagram">{icon('instagram-simple')}</a>
+          <a href="mailto:{EMAIL}" class="fs-icon fs-email" aria-label="E-mail">{icon('mail')}</a>
         </div>
+        <div class="footer-meta">KvK {KVK} &bull; BTW NL005380198B12</div>
       </div>
 
       <div class="footer-col">
@@ -391,23 +378,14 @@ def render_footer(base):
         <a href="{base}werkgebied.html">Werkgebied</a>
         <a href="{base}contact.html">Contact</a>
         <a href="{base}contact.html#offerteWizard">Offerte aanvragen</a>
-      </div>
-
-      <div class="footer-col">
-        <h4>Contact</h4>
-        <div class="footer-contact-line">{icon('pin')}<span>Actief in heel Noord-Brabant</span></div>
-        <div class="footer-contact-line"><a href="tel:{PHONE_TEL}">{icon('phone')}{PHONE_DISPLAY}</a></div>
+        <div class="footer-contact-line" style="margin-top:14px;"><a href="tel:{PHONE_TEL}">{icon('phone')}{PHONE_DISPLAY}</a></div>
         <div class="footer-contact-line"><a href="mailto:{EMAIL}">{icon('mail')}{EMAIL}</a></div>
-        <p class="footer-availability">Ook buiten kantooruren bereikbaar.<br>Spoed? Bel of WhatsApp direct.</p>
-        <div class="footer-contact-actions">
-          <a href="tel:{PHONE_TEL}" class="btn btn-sm footer-btn-call">Bel direct</a>
-          <a href="{WA_LINK}" target="_blank" rel="noopener" class="btn btn-sm footer-btn-whatsapp">WhatsApp</a>
-        </div>
+        <p class="footer-availability">Ook buiten kantooruren bereikbaar bij spoed.</p>
       </div>
 
       <div class="footer-col footer-form-col">
         <h4>Vrijblijvend kennismaken?</h4>
-        <p class="footer-form-intro">Laat uw gegevens achter. Wij nemen doorgaans binnen \u00e9\u00e9n werkdag contact met u op om kennis te maken en uw wensen te bespreken.</p>
+        <p class="footer-form-intro">Laat uw gegevens achter, wij nemen doorgaans binnen \u00e9\u00e9n werkdag contact op.</p>
         <form name="footer-offerte" method="POST" action="https://api.web3forms.com/submit" class="footer-form">
           <input type="hidden" name="access_key" value="abc98c0d-af16-42b0-ae5c-3337f35e5299">
           <input type="hidden" name="subject" value="Nieuwe offerteaanvraag via de footer">
@@ -421,16 +399,14 @@ def render_footer(base):
             <input type="email" name="email" placeholder="E-mailadres" required>
             <input type="text" name="bedrijfsnaam" placeholder="Bedrijfsnaam (optioneel)">
           </div>
-          <textarea name="bericht" placeholder="Bericht" rows="3"></textarea>
+          <textarea name="bericht" placeholder="Bericht" rows="2"></textarea>
           <button type="submit" class="btn btn-primary footer-form-submit">Neem contact met ons op</button>
-          <p class="footer-form-privacy">{icon('lock')}Uw gegevens worden vertrouwelijk behandeld en uitsluitend gebruikt om contact met u op te nemen.</p>
         </form>
       </div>
     </div>
     <div class="footer-bottom">
       <div class="footer-copy">
         <span>&copy; 2026 BrabantSchoon. Alle rechten voorbehouden.</span>
-        <span class="footer-copy-sub">KvK {KVK} &bull; BTW NL005380198B12 &bull; {CITY}</span>
       </div>
       <div class="footer-legal-links">
         <a href="{base}privacy.html">Privacybeleid</a>
