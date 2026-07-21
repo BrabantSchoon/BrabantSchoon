@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "81"
+ASSET_VERSION = "83"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -410,47 +410,56 @@ def trust_strip():
     spans = "\n      ".join(f'<span>{icon(n)}{t}</span>' for n, t in items)
     return f'<div class="trust"><div class="wrap trust-inner">{spans}</div></div>'
 
-# Gestileerde vectorkaart van Noord-Brabant, met steeds \u00e9\u00e9n gemeente uitgelicht.
-# Bewust een vereenvoudigde, abstracte weergave (geen exacte gemeentegrenzen) \u2014
-# dat past juist bij het gevraagde minimalistische, vectorachtige karakter.
-WERKGEBIED_KAART_PUNTEN = {
-    "breda": (55, 130, "Breda"),
-    "tilburg": (140, 155, "Tilburg"),
-    "waalwijk": (168, 105, "Waalwijk"),
-    "den-bosch": (205, 65, "Den Bosch"),
-    "helmond": (300, 165, "Helmond"),
-    "eindhoven": (268, 190, "Eindhoven"),
-    "deurne": (325, 155, "Deurne"),
-    "asten": (312, 200, "Asten"),
-    "someren": (295, 218, "Someren"),
-    "gemert-bakel": (312, 128, "Gemert-Bakel"),
-    "laarbeek": (283, 138, "Laarbeek"),
-    "nuenen": (278, 172, "Nuenen"),
-    "geldrop-mierlo": (272, 208, "Geldrop-Mierlo"),
+# Kaart van Noord-Brabant: zowel de provinciecontour als de 13 relevante gemeentegrenzen
+# zijn gedecodeerd uit echte, open geodata (CBS-gemeentegrenzen 2026, aangeleverd door de klant,
+# en elaval/topojson voor de provinciecontour). Geografisch correct, geen schematische vorm.
+WERKGEBIED_GEMEENTEN = {
+    "asten": {"naam": "Asten", "cx": 320.8, "cy": 171.4, "d": "M308.56,157.26 L303.81,157.26 L305.59,165.53 L312.12,173.16 L318.85,190.65 L332.7,186.52 L338.64,184.61 L336.06,184.29 L335.47,177.29 L331.12,169.98 L322.41,165.53 L316.08,158.85 L308.56,157.26 Z"},
+    "breda": {"naam": "Breda", "cx": 117.9, "cy": 112.8, "d": "M124.53,94.28 L120.97,96.51 L114.83,92.37 L106.92,93.96 L100.19,95.24 L98.8,99.69 L99.99,104.78 L103.55,106.37 L105.93,116.23 L105.93,123.54 L107.91,121.95 L115.43,128.0 L115.43,135.95 L113.84,142.31 L118.99,137.22 L116.42,133.08 L120.97,129.27 L133.04,121.95 L139.37,119.73 L139.57,112.73 L135.41,110.5 L135.41,100.64 L130.47,95.87 L124.53,94.28 Z"},
+    "deurne": {"naam": "Deurne", "cx": 326.3, "cy": 157.4, "d": "M335.27,136.58 L319.64,141.35 L309.35,142.63 L312.12,146.76 L308.36,148.67 L310.93,155.67 L308.56,157.26 L316.08,158.85 L322.41,165.53 L331.12,169.98 L335.47,177.29 L336.06,184.29 L338.64,184.61 L350.71,174.43 L339.63,154.71 L336.86,140.4 L335.27,136.58 Z"},
+    "eindhoven": {"naam": "Eindhoven", "cx": 256.1, "cy": 154.3, "d": "M267.6,138.81 L254.14,139.76 L248.01,142.63 L243.85,142.31 L243.85,146.76 L239.5,148.99 L237.12,152.49 L237.12,157.57 L243.06,157.57 L250.78,160.12 L250.98,168.71 L252.76,168.07 L265.42,168.39 L266.41,169.66 L270.57,168.07 L270.37,160.75 L274.72,158.85 L271.36,150.9 L267.2,147.71 L267.6,138.81 Z"},
+    "helmond": {"naam": "Helmond", "cx": 297.5, "cy": 145.4, "d": "M301.83,135.31 L296.29,135.63 L292.13,139.45 L287.19,134.99 L280.66,138.17 L282.44,144.53 L286.2,147.08 L282.24,150.26 L286.79,153.76 L296.29,151.53 L299.46,151.21 L303.81,157.26 L308.56,157.26 L310.93,155.67 L308.36,148.67 L312.12,146.76 L309.35,142.63 L306.58,137.22 L301.83,135.31 Z"},
+    "den-bosch": {"naam": "\'s-Hertogenbosch", "cx": 234.0, "cy": 69.3, "d": "M260.28,65.02 L258.1,65.98 L254.34,58.03 L253.35,53.57 L243.85,55.16 L240.49,57.39 L236.53,56.75 L225.05,62.48 L222.48,61.52 L214.96,63.43 L212.19,61.21 L207.24,61.21 L212.19,66.61 L211.99,70.75 L215.55,75.84 L211.2,77.43 L215.36,79.65 L223.67,79.97 L225.65,84.74 L229.6,83.79 L233.56,85.7 L240.09,80.61 L238.9,75.2 L251.57,73.93 L256.91,78.06 L263.84,72.34 L260.28,65.02 Z"},
+    "nuenen": {"naam": "Nuenen, Gerwen en Nederwetten", "cx": 276.4, "cy": 142.5, "d": "M280.66,138.17 L276.9,134.99 L274.72,125.77 L271.55,129.9 L274.52,133.72 L267.6,138.81 L267.2,147.71 L271.36,150.9 L274.72,158.85 L278.48,156.62 L282.24,150.26 L286.2,147.08 L282.44,144.53 L280.66,138.17 Z"},
+    "someren": {"naam": "Someren", "cx": 303.3, "cy": 172.4, "d": "M318.85,190.65 L312.12,173.16 L305.59,165.53 L303.81,157.26 L299.46,151.21 L296.29,151.53 L292.93,162.66 L292.93,173.16 L296.09,184.29 L299.46,196.69 L318.85,190.65 Z"},
+    "tilburg": {"naam": "Tilburg", "cx": 180.8, "cy": 112.9, "d": "M208.23,100.96 L204.47,93.65 L198.14,93.33 L187.46,94.6 L185.08,102.55 L175.38,102.55 L167.27,103.51 L156.19,102.55 L160.35,105.41 L160.35,115.27 L156.78,118.45 L157.18,121.63 L161.53,125.13 L170.83,125.77 L172.61,128.31 L178.35,125.77 L185.48,126.72 L188.25,125.45 L192.2,128.31 L194.58,124.5 L193.79,117.82 L196.36,112.41 L208.23,100.96 Z"},
+    "waalwijk": {"naam": "Waalwijk", "cx": 169.8, "cy": 77.2, "d": "M182.71,67.25 L177.17,70.43 L168.26,70.11 L158.17,66.93 L150.25,67.88 L153.22,81.56 L157.38,83.47 L158.17,89.51 L163.91,88.56 L164.9,81.88 L176.18,86.33 L178.55,83.47 L186.66,81.56 L188.05,71.38 L182.71,67.25 Z"},
+    "gemert-bakel": {"naam": "Gemert-Bakel", "cx": 315.1, "cy": 122.5, "d": "M332.3,116.86 L324.98,112.73 L322.21,106.69 L316.67,107.96 L304.8,111.14 L295.3,111.78 L295.5,115.59 L301.83,135.31 L306.58,137.22 L309.35,142.63 L319.64,141.35 L335.27,136.58 L332.3,116.86 Z"},
+    "laarbeek": {"naam": "Laarbeek", "cx": 287.6, "cy": 129.5, "d": "M301.83,135.31 L295.5,115.59 L289.56,121.0 L282.04,117.82 L271.95,119.41 L274.72,125.77 L276.9,134.99 L280.66,138.17 L287.19,134.99 L292.13,139.45 L296.29,135.63 L301.83,135.31 Z"},
+    "geldrop-mierlo": {"naam": "Geldrop-Mierlo", "cx": 281.6, "cy": 158.6, "d": "M282.24,150.26 L278.48,156.62 L274.72,158.85 L270.37,160.75 L270.57,168.07 L278.48,167.75 L285.01,163.94 L292.93,162.66 L296.29,151.53 L286.79,153.76 L282.24,150.26 Z"},
 }
 
 def werkgebied_kaart(highlight_slug, base="../"):
-    markers = []
-    for slug, (x, y, label) in WERKGEBIED_KAART_PUNTEN.items():
-        left, top = x / 380 * 100, y / 260 * 100
+    shapes = []
+    for slug, g in WERKGEBIED_GEMEENTEN.items():
         if slug == highlight_slug:
-            markers.append(f'''<div class="wg-marker wg-marker-active" style="left:{left:.2f}%; top:{top:.2f}%;">
-        <span class="wg-marker-pulse"></span>
-        <span class="wg-marker-dot"></span>
-        <span class="wg-marker-label">{label}</span>
-      </div>''')
+            shapes.append(f'''<g class="wg-shape wg-shape-active">
+        <path d="{g["d"]}" />
+      </g>''')
         else:
-            markers.append(f'''<a href="{base}locaties/{slug}.html" class="wg-marker" style="left:{left:.2f}%; top:{top:.2f}%;" aria-label="Werkgebied {label}">
-        <span class="wg-marker-dot"></span>
-        <span class="wg-marker-tooltip">{label}</span>
+            tt_x, tt_y = g["cx"] - 40, g["cy"] - 26
+            shapes.append(f'''<a href="{base}locaties/{slug}.html" class="wg-shape" aria-label="Werkgebied {g['naam']}">
+        <path d="{g["d"]}" />
+        <foreignObject x="{tt_x}" y="{tt_y}" width="80" height="24" class="wg-tooltip-fo">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex; justify-content:center;">
+            <span class="wg-tooltip">{g['naam']}</span>
+          </div>
+        </foreignObject>
       </a>''')
-    markers_html = "\n      ".join(markers)
+    shapes_html = "\n      ".join(shapes)
+    active = WERKGEBIED_GEMEENTEN[highlight_slug]
+    label_left, label_top = active["cx"] / 380 * 100, active["cy"] / 260 * 100
     return f'''<div class="wg-map-wrap">
       <svg viewBox="0 0 380 260" class="wg-map" role="img" aria-label="Kaart van Noord-Brabant met het werkgebied uitgelicht">
-        <path d="M20,90 Q10,50 60,35 Q110,15 170,25 Q230,10 290,30 Q350,40 365,80 Q375,110 350,140 Q360,175 320,195 Q300,225 260,230 Q210,245 160,230 Q100,240 60,210 Q15,195 15,150 Q5,120 20,90 Z"
+        <path d="M336.7,55.4 L341.1,56.7 L341.1,60.6 L342.6,64.6 L345.6,67.2 L353.1,67.2 L356.1,69.9 L359.1,81.8 L362.1,85.7 L360.6,88.4 L362.1,89.7 L363.6,91.0 L365.1,92.3 L369.6,99.0 L369.6,100.3 L371.1,101.6 L372.6,110.8 L374.1,114.8 L374.1,116.1 L371.1,120.1 L366.6,116.1 L363.6,116.1 L354.6,118.8 L348.6,120.1 L347.1,120.1 L339.6,117.4 L332.2,116.1 L335.2,135.9 L339.6,154.4 L347.1,163.7 L351.6,174.3 L344.1,180.9 L339.6,184.8 L333.7,186.1 L320.2,190.1 L300.7,196.7 L296.2,202.0 L294.8,203.3 L291.8,209.9 L288.8,220.5 L288.8,223.1 L287.3,224.5 L285.8,225.8 L284.3,225.8 L278.3,227.1 L275.3,228.4 L275.3,228.4 L273.8,227.1 L273.8,219.2 L272.3,213.9 L269.3,208.6 L264.8,206.0 L260.3,204.6 L255.8,207.3 L246.9,212.6 L243.9,215.2 L219.9,213.9 L213.9,215.2 L212.4,215.2 L209.5,215.2 L209.5,203.3 L205.0,199.4 L202.0,198.0 L194.5,199.4 L191.5,196.7 L190.0,195.4 L188.5,187.5 L187.0,184.8 L179.5,178.2 L178.0,174.3 L179.5,167.7 L181.0,162.4 L182.5,157.1 L178.0,150.5 L172.0,146.5 L172.0,145.2 L169.0,146.5 L167.6,147.8 L167.6,150.5 L166.1,154.4 L163.1,159.7 L158.6,166.3 L152.6,171.6 L148.1,171.6 L140.6,169.0 L137.6,167.7 L124.2,167.7 L119.7,165.0 L121.2,161.0 L122.7,161.0 L131.6,165.0 L130.1,159.7 L130.1,154.4 L131.6,150.5 L131.6,145.2 L130.1,142.6 L125.7,141.2 L122.7,139.9 L119.7,138.6 L113.7,142.6 L98.7,161.0 L95.7,162.4 L92.7,163.7 L89.7,163.7 L83.8,162.4 L77.8,163.7 L76.3,163.7 L71.8,161.0 L71.8,157.1 L73.3,153.1 L74.8,147.8 L73.3,145.2 L70.3,145.2 L64.3,146.5 L53.8,150.5 L43.3,155.8 L46.3,158.4 L44.8,161.0 L43.3,163.7 L43.3,166.3 L44.8,169.0 L49.3,174.3 L50.8,178.2 L49.3,183.5 L46.3,184.8 L37.4,184.8 L32.9,183.5 L25.4,179.5 L23.9,179.5 L23.9,179.5 L23.9,176.9 L23.9,175.6 L20.9,172.9 L20.9,167.7 L20.9,163.7 L20.9,162.4 L20.9,161.0 L22.4,159.7 L20.9,155.8 L20.9,155.8 L23.9,154.4 L26.9,147.8 L25.4,139.9 L20.9,134.6 L16.4,132.0 L14.9,132.0 L14.9,132.0 L16.4,125.4 L16.4,124.1 L16.4,120.1 L14.9,116.1 L14.9,114.8 L8.9,109.5 L8.9,109.5 L8.9,102.9 L5.9,100.3 L5.9,100.3 L7.4,93.7 L7.4,93.7 L16.4,91.0 L23.9,91.0 L34.4,88.4 L41.9,83.1 L47.8,71.2 L68.8,75.2 L76.3,75.2 L83.8,73.9 L91.2,69.9 L95.7,68.6 L101.7,68.6 L112.2,56.7 L115.2,50.1 L119.7,46.1 L125.7,42.1 L136.1,40.8 L140.6,39.5 L148.1,32.9 L154.1,32.9 L163.1,34.2 L169.0,34.2 L169.0,34.2 L169.0,36.9 L169.0,38.2 L172.0,42.1 L179.5,47.4 L184.0,47.4 L187.0,47.4 L193.0,52.7 L193.0,58.0 L191.5,62.0 L193.0,63.3 L228.9,59.3 L233.4,56.7 L236.4,54.0 L239.4,50.1 L240.9,44.8 L242.4,38.2 L245.4,36.9 L254.3,36.9 L257.3,35.5 L261.8,32.9 L266.3,31.6 L269.3,34.2 L272.3,34.2 L284.3,32.9 L293.3,34.2 L294.8,36.9 L297.7,42.1 L299.2,43.5 L303.7,44.8 L317.2,54.0 L336.7,55.4 Z"
           fill="var(--bg-soft)" stroke="var(--line)" stroke-width="1.5"/>
+        {shapes_html}
       </svg>
-      {markers_html}
+      <div class="wg-map-label" style="left:{label_left:.2f}%; top:{label_top:.2f}%;">
+        <span class="wg-marker-pulse"></span>
+        <span class="wg-marker-dot"></span>
+        <span class="wg-marker-label">{active['naam']}</span>
+      </div>
     </div>'''
 
 def cta_band(heading="Interesse in onze diensten?", sub="Vraag een vrijblijvende offerte aan of neem direct contact op.", base=""):

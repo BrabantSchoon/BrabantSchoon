@@ -149,31 +149,32 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 .wg-map-panel-lg{padding:20px;}
 @media(min-width:760px){.wg-map-panel-lg{padding:28px;}}
 .wg-map-wrap{position:relative; width:100%;}
-.wg-map{width:100%; height:auto; display:block;}
+.wg-map{width:100%; height:auto; display:block; overflow:visible;}
 
-.wg-marker{position:absolute; transform:translate(-50%,-50%); text-decoration:none; cursor:pointer; z-index:2;}
+.wg-shape{cursor:pointer;}
+.wg-shape path{
+  fill:var(--bg-soft); stroke:#fff; stroke-width:1;
+  transition:fill .25s ease, stroke .25s ease;
+}
+.wg-shape:hover path{fill:var(--link); opacity:0.35;}
+.wg-shape-active path{fill:var(--link); opacity:0.22; stroke:var(--link); stroke-width:1.5;}
+
+.wg-tooltip-fo{overflow:visible; pointer-events:none;}
+.wg-tooltip{
+  display:inline-flex; background:var(--navy); color:#fff; font-family:'Inter',sans-serif;
+  font-size:11px; font-weight:600; white-space:nowrap; padding:5px 10px; border-radius:7px;
+  box-shadow:var(--shadow-md); opacity:0; transform:translateY(3px); transition:opacity .2s ease, transform .2s ease;
+}
+.wg-shape:hover .wg-tooltip{opacity:1; transform:translateY(0);}
+
+.wg-map-label{position:absolute; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; z-index:3; pointer-events:none;}
 .wg-marker-dot{
-  display:block; width:9px; height:9px; border-radius:50%; background:var(--ink-soft); opacity:0.4;
-  transition:transform .2s ease, background .2s ease, opacity .2s ease;
-}
-a.wg-marker:hover .wg-marker-dot{background:var(--link); opacity:1; transform:scale(1.7);}
-.wg-marker-tooltip{
-  position:absolute; bottom:calc(100% + 9px); left:50%; transform:translateX(-50%) translateY(4px);
-  background:var(--navy); color:#fff; font-family:'Inter',sans-serif; font-size:12px; font-weight:600; white-space:nowrap;
-  padding:6px 12px; border-radius:8px; box-shadow:var(--shadow-md);
-  opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease;
-}
-.wg-marker-tooltip::after{content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:5px solid transparent; border-top-color:var(--navy);}
-a.wg-marker:hover .wg-marker-tooltip{opacity:1; transform:translateX(-50%) translateY(0);}
-
-.wg-marker-active{position:absolute; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; z-index:3;}
-.wg-marker-active .wg-marker-dot{
-  width:14px; height:14px; background:var(--link); opacity:1; border:2px solid #fff;
+  width:12px; height:12px; background:var(--link); border-radius:50%; border:2px solid #fff;
   box-shadow:0 0 0 4px rgba(0,104,184,0.15);
 }
-.wg-marker-pulse{position:absolute; top:0; left:0; width:14px; height:14px; border-radius:50%; background:var(--link); opacity:0.3; animation:wgPulse 2.4s ease-out infinite;}
+.wg-marker-pulse{position:absolute; top:0; left:0; width:12px; height:12px; border-radius:50%; background:var(--link); opacity:0.3; animation:wgPulse 2.4s ease-out infinite;}
 @keyframes wgPulse{0%{transform:scale(1); opacity:0.3;} 100%{transform:scale(2.8); opacity:0;}}
-.wg-marker-active .wg-marker-label{margin-top:7px; font-family:'Inter',sans-serif; font-size:12.5px; font-weight:700; color:var(--navy); white-space:nowrap;}
+.wg-marker-label{margin-top:6px; font-family:'Inter',sans-serif; font-size:12.5px; font-weight:700; color:var(--navy); white-space:nowrap; background:rgba(255,255,255,0.85); padding:2px 8px; border-radius:6px;}
 @media (prefers-reduced-motion: reduce){.wg-marker-pulse{animation:none;}}
 
 .illustration-panel{
