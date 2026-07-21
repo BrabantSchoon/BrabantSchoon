@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "69"
+ASSET_VERSION = "70"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -22,6 +22,11 @@ ICONS = {
     "list": '<path d="M4 12h16M4 6h16M4 18h10"/>',
     "spark": '<path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3"/>',
     "chat": '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+    "lucide-message": '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+    "lucide-linkedin": '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/>',
+    "lucide-facebook": '<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>',
+    "lucide-instagram": '<rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>',
+    "lucide-mail": '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
     "pin": '<path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
     "window": '<rect x="4" y="4" width="16" height="16" rx="1"/><path d="M12 4v16M4 12h16"/>',
     "office": '<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 21v-4h6v4M9 8h.01M9 12h.01M15 8h.01M15 12h.01"/>',
@@ -361,11 +366,11 @@ def render_footer(base):
         <img src="{base}images/logo.png" alt="BrabantSchoon" width="130" height="32">
         <p class="footer-tagline">Professionele schoonmaakpartner voor kantoren, VvE's en organisaties in heel Noord-Brabant.</p>
         <div class="footer-social">
-          <a href="{WA_LINK}" target="_blank" rel="noopener" class="fs-icon fs-whatsapp" aria-label="WhatsApp">{icon('chat')}</a>
-          <a href="https://www.linkedin.com/in/egzon-berisha-957796413/" target="_blank" rel="noopener" class="fs-icon fs-linkedin" aria-label="LinkedIn">{icon('linkedin-official')}</a>
-          <a href="https://facebook.com/brabantschoon" target="_blank" rel="noopener" class="fs-icon fs-facebook" aria-label="Facebook">{icon('facebook-official')}</a>
-          <a href="https://instagram.com/brabantschoon" target="_blank" rel="noopener" class="fs-icon fs-instagram" aria-label="Instagram">{icon('instagram-simple')}</a>
-          <a href="mailto:{EMAIL}" class="fs-icon fs-email" aria-label="E-mail">{icon('mail')}</a>
+          <a href="{WA_LINK}" target="_blank" rel="noopener" class="fs-icon fs-whatsapp" aria-label="WhatsApp">{icon('lucide-message')}</a>
+          <a href="https://www.linkedin.com/in/egzon-berisha-957796413/" target="_blank" rel="noopener" class="fs-icon fs-linkedin" aria-label="LinkedIn">{icon('lucide-linkedin')}</a>
+          <a href="https://facebook.com/brabantschoon" target="_blank" rel="noopener" class="fs-icon fs-facebook" aria-label="Facebook">{icon('lucide-facebook')}</a>
+          <a href="https://instagram.com/brabantschoon" target="_blank" rel="noopener" class="fs-icon fs-instagram" aria-label="Instagram">{icon('lucide-instagram')}</a>
+          <a href="mailto:{EMAIL}" class="fs-icon fs-email" aria-label="E-mail">{icon('lucide-mail')}</a>
         </div>
         <div class="footer-meta">KvK {KVK} &bull; BTW NL005380198B12</div>
       </div>
