@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "73"
+ASSET_VERSION = "74"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -931,19 +931,28 @@ LOCATIONS = [
 def build_werkgebied():
     base = ""
     all_cities = WERKGEBIED_KERN + WERKGEBIED_OVERIG
-    city_cards = "\n        ".join(f'<div class="card" style="padding:20px 22px;"><h3 style="font-family:\'Inter\',sans-serif; font-size:15px; font-weight:700;">{c}</h3><p style="color:var(--ink-soft); font-size:13.5px; margin-top:6px;">{WERKGEBIED_TEKST[c]}</p></div>' for c in all_cities)
-    location_links = "\n        ".join(f'<a href="{base}locaties/{loc["slug"]}.html" class="card" style="display:block; text-decoration:none; color:inherit; padding:20px 22px;"><h3 style="font-family:\'Inter\',sans-serif; font-size:15px; font-weight:700;">{loc["name"]}</h3><span class="sc-link" style="margin-top:8px;">Meer info {icon("arrow","")}</span></a>' for loc in LOCATIONS)
+    city_cards = "\n        ".join(
+        f'<div class="wg-card"><div class="wg-icon">{icon("pin")}</div><h3>{c}</h3><p>{WERKGEBIED_TEKST[c]}</p></div>'
+        for c in all_cities
+    )
+    location_cards = "\n        ".join(
+        f'<a href="{base}locaties/{loc["slug"]}.html" class="wg-card" style="text-decoration:none; color:inherit;">'
+        f'<div class="wg-icon">{icon("pin")}</div><h3>{loc["name"]}</h3><p>{loc["intro"][:100]}&hellip;</p>'
+        f'<span class="wg-btn">Bekijk werkgebied {icon("arrow")}</span></a>'
+        for loc in LOCATIONS
+    )
     body = f"""
   {page_hero("Werkgebied", "Actief in heel Noord-Brabant.", f"Gevestigd in {CITY}, met de Peelgemeenten als kerngebied \u2014 en we rijden verder voor de juiste opdracht.", base, "Werkgebied")}
   <section class="section-tight">
     <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Kerngebied</span><h2>Onze vaste regio.</h2></div>
       <div class="grid-4 reveal">{city_cards}</div>
     </div>
   </section>
   <section class="section-tight" style="background:var(--bg-soft);">
     <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Verder in Brabant</span><h2>Ook actief hier, voor grotere opdrachten.</h2></div>
-      <div class="grid-4 reveal">{location_links}</div>
+      <div class="grid-3 reveal">{location_cards}</div>
     </div>
   </section>
   <section>
