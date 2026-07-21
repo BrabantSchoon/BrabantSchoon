@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "57"
+ASSET_VERSION = "58"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -43,6 +43,7 @@ ICONS = {
     "facebook-fill": '<path fill="currentColor" stroke="none" d="M13.5 22v-8.4h2.8l.4-3.3h-3.2V8.1c0-.96.27-1.61 1.64-1.61h1.75V3.5c-.3-.04-1.34-.13-2.55-.13-2.52 0-4.25 1.54-4.25 4.36v2.43H7.3v3.3h2.81V22z"/>',
     "linkedin-fill": '<path fill="currentColor" stroke="none" d="M6.94 8.5H3.56V20.5H6.94V8.5ZM5.25 3.5a1.97 1.97 0 1 0 0 3.94 1.97 1.97 0 0 0 0-3.94ZM20.5 20.5v-6.6c0-3.53-1.89-5.17-4.4-5.17-2.03 0-2.94 1.12-3.45 1.9V8.5H9.28c.04.94 0 12 0 12h3.37v-6.7c0-.36.03-.72.13-.98.29-.72.94-1.47 2.05-1.47 1.44 0 2.02 1.1 2.02 2.71V20.5H20.5Z"/>',
     "lock": '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+    "chevron": '<path d="M6 9l6 6 6-6"/>',
     "whatsapp-fill": '<path fill="currentColor" stroke="none" d="M12.02 2C6.5 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.07L2 22l5.08-1.33A9.96 9.96 0 0 0 12.02 22C17.55 22 22 17.52 22 12S17.55 2 12.02 2Zm5.84 14.14c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.82-.12-.42-.11-.96-.31-1.65-.6-2.9-1.25-4.8-4.17-4.94-4.36-.14-.19-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.42.27-.29.58-.36.78-.36l.55.01c.18.01.42-.07.65.5.24.58.82 2.01.89 2.15.07.15.12.32.02.51-.1.19-.15.31-.3.48-.15.17-.31.38-.44.51-.15.14-.3.3-.13.6.17.29.76 1.26 1.64 2.04 1.13 1 2.08 1.32 2.37 1.47.29.15.46.12.63-.07.17-.19.72-.84.92-1.13.19-.29.38-.24.63-.14.26.1 1.65.78 1.93.92.29.14.48.21.55.33.07.12.07.68-.17 1.36Z"/>',
     "shop": '<path d="M3 9l1-5h16l1 5"/><path d="M4 9v11h16V9"/><path d="M9 20v-6h6v6"/>',
     "practice": '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
@@ -445,7 +446,7 @@ def render_footer(base):
 # SHARED BLOCKS
 # ---------------------------------------------------------------
 def trust_strip():
-    items = [("doc", f"KvK {KVK}"), ("pin", "Actief in heel Noord-Brabant"), ("chat", "Persoonlijk contact, geen callcenter")]
+    items = [("doc", f"KvK {KVK}"), ("pin", "Actief in heel Noord-Brabant"), ("chat", "Persoonlijk contact, geen callcenter"), ("clock", "Ook buiten kantooruren bereikbaar")]
     spans = "\n      ".join(f'<span>{icon(n)}{t}</span>' for n, t in items)
     return f'<div class="trust"><div class="wrap trust-inner">{spans}</div></div>'
 
@@ -460,13 +461,15 @@ def cta_band(heading="Interesse in onze diensten?", sub="Vraag een vrijblijvende
   </div>"""
 
 def faq_block(items):
-    return "\n      ".join(f'<details><summary>{q}<span class="chev">+</span></summary><p class="faq-a">{a}</p></details>' for q, a in items)
+    return "\n      ".join(f'<details><summary>{q}<span class="chev">{icon("chevron")}</span></summary><div class="faq-a-wrap"><p class="faq-a">{a}</p></div></details>' for q, a in items)
 
 FAQ_ITEMS = [
-    ("Wat kost schoonmaak door BrabantSchoon?", "Dat hangt af van de ruimte, frequentie en het type dienst. Na een kort gesprek ontvangt u een offerte op maat."),
-    ("In welke regio\u2019s is BrabantSchoon actief?", f"We zijn voornamelijk actief in {CITY} en de Peelgemeenten: Deurne, Asten, Someren, Gemert-Bakel en Laarbeek, en verder in Eindhoven, Geldrop-Mierlo, Nuenen en Mierlo. Opdrachten daarbuiten bespreken we graag in overleg."),
-    ("Werk ik steeds met dezelfde persoon of hetzelfde team?", "We streven naar continu\u00efteit, zodat u niet steeds opnieuw hoeft uit te leggen hoe u het wilt."),
-    ("Kan ik ook een eenmalige schoonmaakbeurt aanvragen?", "Ja, naast vaste afspraken is een eenmalige beurt mogelijk, bijvoorbeeld bij een oplevering of verhuizing."),
+    ("Wat kost een schoonmaakdienst van BrabantSchoon?", "Dat hangt af van de ruimte, frequentie en het type dienst. Na een kort, vrijblijvend gesprek ontvangt u een offerte op maat \u2014 zonder verplichtingen."),
+    ("In welke regio\u2019s is BrabantSchoon actief?", f"We zijn voornamelijk actief in {CITY} en de Peelgemeenten: Deurne, Asten, Someren, Gemert-Bakel en Laarbeek, en verder in Eindhoven, Geldrop-Mierlo, Nuenen en Mierlo. Voor grotere opdrachten rijden we graag verder, in heel Noord-Brabant."),
+    ("Werk ik steeds met dezelfde persoon of hetzelfde team?", "Ja, u krijgt een vast aanspreekpunt en een vast team dat uw locatie kent \u2014 zodat u niet steeds opnieuw hoeft uit te leggen hoe u het wilt."),
+    ("Kan ik ook een eenmalige schoonmaakbeurt aanvragen?", "Ja, naast vaste afspraken verzorgen we ook maatwerk voor eenmalige beurten, bijvoorbeeld bij een oplevering of verhuizing."),
+    ("Hoe snel kunnen jullie starten?", "Dat verschilt per situatie, maar we plannen doorgaans snel een kennismaking in. Bij spoed zijn we ook buiten kantooruren bereikbaar via telefoon of WhatsApp."),
+    ("Is een offerte altijd vrijblijvend?", "Ja, elke offerte is geheel vrijblijvend en kosteloos. U beslist zelf of en hoe u verdergaat."),
 ]
 
 def reviews_widget_block():
@@ -766,10 +769,14 @@ def build_home():
     <div class="wrap">
       <div class="sec-head reveal">
         <span class="eyebrow">Veelgestelde vragen</span>
-        <h2>Nog vragen?</h2>
+        <h2>Heeft u nog vragen?</h2>
       </div>
       <div class="faq reveal">
-        {faq_block(FAQ_ITEMS[:3])}
+        {faq_block(FAQ_ITEMS[:5])}
+      </div>
+      <div class="faq-cta reveal">
+        <p>Staat uw vraag er niet tussen? Bel, mail of stuur ons een WhatsApp.</p>
+        <a href="contact.html" class="btn btn-outline btn-sm">Neem contact op</a>
       </div>
     </div>
   </section>
@@ -779,7 +786,7 @@ def build_home():
     write("index.html", page_shell(
         "BrabantSchoon | Schoonmaakbedrijf Helmond &amp; Peelgemeenten",
         f"BrabantSchoon verzorgt kantoorreiniging, glasbewassing en VvE-schoonmaak voor bedrijven in Helmond en de Peelgemeenten. Vraag een vrijblijvende offerte aan.",
-        "", base, "index.html", body, LOCALBUSINESS_SCHEMA + "\n" + faq_schema(FAQ_ITEMS[:3]),
+        "", base, "index.html", body, LOCALBUSINESS_SCHEMA + "\n" + faq_schema(FAQ_ITEMS[:5]),
         preload_image="images/hero.jpg"
     ))
 

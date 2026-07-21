@@ -270,12 +270,27 @@ section{padding:96px 0;}
 
 /* ---------- FAQ ---------- */
 .faq{max-width:760px; margin:0 auto; display:grid; gap:12px;}
-.faq details{border:1px solid var(--line); border-radius:14px; padding:18px 22px; background:#fff;}
-.faq summary{cursor:pointer; font-weight:600; font-size:15.5px; list-style:none; display:flex; align-items:center; justify-content:space-between; gap:16px;}
+.faq details{
+  border:1px solid var(--line); border-radius:14px; background:#fff; overflow:hidden;
+  transition:border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.faq details:hover{border-color:var(--line); background:var(--bg-soft); box-shadow:var(--shadow-sm);}
+.faq summary{
+  cursor:pointer; font-weight:600; font-size:15.5px; list-style:none; padding:18px 22px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
 .faq summary::-webkit-details-marker{display:none;}
-.faq summary .chev{transition:transform .2s ease; color:var(--blue); flex-shrink:0;}
-.faq details[open] summary .chev{transform:rotate(45deg);}
-.faq .faq-a{color:var(--ink-soft); font-size:14.5px; margin-top:12px; line-height:1.65;}
+.faq summary .chev{display:flex; transition:transform .25s ease; color:var(--link); flex-shrink:0;}
+.faq summary .chev svg{width:18px; height:18px;}
+.faq details[open] summary .chev{transform:rotate(180deg);}
+.faq-a-wrap{
+  display:grid !important; grid-template-rows:0fr; padding:0 22px;
+  transition:grid-template-rows .28s ease, padding .28s ease;
+}
+.faq details[open] .faq-a-wrap{grid-template-rows:1fr; padding:0 22px 20px;}
+.faq-a-wrap > .faq-a{overflow:hidden; color:var(--ink-soft); font-size:14.5px; line-height:1.65; margin:0;}
+.faq-cta{text-align:center; margin-top:32px;}
+.faq-cta p{color:var(--ink-soft); font-size:14.5px; margin-bottom:14px;}
 
 /* ---------- CTA BAND ---------- */
 .cta-band{border-radius:var(--radius-lg); background:var(--grad-button); color:#fff; padding:52px 40px; text-align:center;}
