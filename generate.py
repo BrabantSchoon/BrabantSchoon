@@ -1423,6 +1423,32 @@ def seo_trust_paragraphs(stad):
       <p class="prose" style="margin-top:14px;">{flexibiliteit}</p>
       <p class="prose" style="margin-top:14px;">{duurzaam}</p>"""
 
+def seo_context_paragraphs(stad, klanten):
+    """Derde geroteerde sectie: gaat in op de doelgroep en praktische afspraken per stad."""
+    idx = sum(ord(c) for c in stad) % 3
+
+    doelgroep = [
+        f"In {stad} werken we voor uiteenlopende organisaties: {klanten}. Elk pand heeft zijn eigen indeling en gebruik, en daar stemmen we de schoonmaak op af \u2014 geen standaardpakket, maar maatwerk per situatie.",
+        f"De opdrachtgevers waarvoor we in {stad} actief zijn, lopen uiteen van {klanten}. Voor elk van deze groepen geldt hetzelfde uitgangspunt: een schone, representatieve omgeving zonder gedoe.",
+        f"Van {klanten} \u2014 in {stad} verzorgen we schoonmaak voor een brede groep opdrachtgevers, telkens met dezelfde persoonlijke aanpak en een vast aanspreekpunt.",
+    ][idx]
+
+    planning = [
+        f"De planning stemmen we in {stad} af op uw openingstijden of gebruik van het pand. Vaak plannen we buiten de reguliere uren, zodat de dagelijkse werkzaamheden geen hinder ondervinden van de schoonmaak.",
+        f"Timing is belangrijk: in {stad} plannen we schoonmaak bij voorkeur vroeg, laat of in het weekend, afhankelijk van wat het beste past bij uw organisatie.",
+        f"We houden in {stad} rekening met uw dagelijkse gang van zaken. De schoonmaak plannen we zoveel mogelijk buiten piekmomenten, in overleg met u.",
+    ][idx]
+
+    contact = [
+        f"Vragen of een aanpassing nodig? In {stad} heeft u altijd één vast aanspreekpunt bij BrabantSchoon, rechtstreeks bereikbaar \u2014 geen callcenter of wisselende contactpersonen.",
+        f"Mocht er iets zijn, dan belt of appt u in {stad} rechtstreeks met uw vaste contactpersoon bij BrabantSchoon. Korte lijnen, snel geregeld.",
+        f"Communicatie verloopt in {stad} via één vast aanspreekpunt, zodat u nooit hoeft uit te leggen wie u bent of wat de afspraken ook alweer waren.",
+    ][idx]
+
+    return f"""<p class="prose">{doelgroep}</p>
+      <p class="prose" style="margin-top:14px;">{planning}</p>
+      <p class="prose" style="margin-top:14px;">{contact}</p>"""
+
 KERNGEBIED = [
     {
         "slug": "helmond", "name": "Helmond",
@@ -1591,6 +1617,12 @@ def build_kerngebied_pages():
   </section>
   <section class="section-tight">
     <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Voor wie</span><h2>Onze opdrachtgevers in {k['name']}</h2></div>
+      <div style="max-width:760px; margin:0 auto;">{seo_context_paragraphs(k['name'], k['klanten'])}</div>
+    </div>
+  </section>
+  <section class="section-tight" style="background:var(--bg-soft);">
+    <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Veelgestelde vragen</span><h2>Over {k['name']}</h2></div>
       <div class="faq reveal">{faq_html}</div>
     </div>
@@ -1659,6 +1691,12 @@ def build_location_pages():
     </div>
   </section>
   <section>
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Voor wie</span><h2>Onze opdrachtgevers in {loc['name']}</h2></div>
+      <div style="max-width:760px; margin:0 auto;">{seo_context_paragraphs(loc['name'], "kantoren, VvE's en bedrijfspanden")}</div>
+    </div>
+  </section>
+  <section style="background:var(--bg-soft);">
     <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Veelgestelde vraag</span><h2>Over {loc['name']}</h2></div>
       <div class="faq reveal">{faq_block([(loc['faq_q'], loc['faq_a'])])}</div>
