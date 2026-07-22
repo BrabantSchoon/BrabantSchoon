@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "95"
+ASSET_VERSION = "96"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -38,7 +38,6 @@ ICONS = {
     "practice": '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
     "school": '<path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/>',
     "close": '<path d="M18 6 6 18M6 6l12 12"/>',
-    "star-fill": '<path fill="currentColor" stroke="none" d="M12 2.5l2.9 6.3 6.9.7-5.2 4.6 1.6 6.8L12 17.6l-6.2 3.3 1.6-6.8-5.2-4.6 6.9-.7z"/>',
     "stairs": '<path d="M4 20h4v-4h4v-4h4V8h4"/><path d="M4 20V8h4"/>',
 }
 
@@ -519,24 +518,14 @@ FAQ_ITEMS = [
 ]
 
 def reviews_widget_block():
-    # Eigen reviewsectie, geen externe branding. REVIEWS hieronder is bewust leeg -
-    # er zijn nog geen echte klantreviews. Zodra die er zijn, voeg je hier simpelweg
-    # entries toe: {"naam": "...", "tekst": "...", "sterren": 5, "datum": "..."}.
-    if not REVIEWS:
-        return """<div class="reveal reviews-empty-state">
-      <div class="reviews-empty-icon">""" + icon('check') + """</div>
-      <h3>We bouwen momenteel onze eerste klantreviews op</h3>
-      <p>Heeft u met ons samengewerkt? We horen graag hoe het beviel.</p>
-      <a href="https://www.google.com/search?q=BrabantSchoon+Helmond" target="_blank" rel="noopener" class="btn btn-outline">Laat een review achter op Google</a>
+    return """<div class="reviews-compact reveal">
+      <div class="reviews-compact-label">
+        <span>Beoordeeld op Google Reviews</span>
+      </div>
+      <div class="trustindex-widget-wrap">
+        <script defer async src='https://cdn.trustindex.io/loader.js?1615584773fa412ed426df4e3e9'></script>
+      </div>
     </div>"""
-    cards = "\n      ".join(f"""<div class="review-card reveal">
-        <div class="review-stars">{"".join(icon('star-fill') for _ in range(r['sterren']))}</div>
-        <p class="review-text">&ldquo;{r['tekst']}&rdquo;</p>
-        <div class="review-author"><span>{r['naam']}</span><span class="review-date">{r['datum']}</span></div>
-      </div>""" for r in REVIEWS)
-    return f"""<div class="reviews-grid">{cards}</div>"""
-
-REVIEWS = []
 
 FORM_SERVICE_OPTIONS = [
     "Kantoorreiniging", "Glasbewassing", "Gevelreiniging", "VvE-schoonmaak",
@@ -1012,7 +1001,7 @@ def build_home():
     kern_tags = "\n      ".join(f'<span class="area-tag">{c}</span>' for c in WERKGEBIED_KERN + WERKGEBIED_OVERIG)
 
     body = f"""
-  <section class="hero-full">
+  <section class="hero-full hero-full-compact">
     <img src="images/hero.jpg" alt="Bedrijfswagens en medewerker van BrabantSchoon bij een klant in Zuidoost-Brabant" class="hero-full-img" width="1600" height="1067" fetchpriority="high" decoding="async">
     <div class="hero-full-overlay"></div>
     <div class="wrap hero-full-content">
@@ -1029,15 +1018,10 @@ def build_home():
         <li>{icon('check')}Professionele medewerkers</li>
         <li>{icon('check')}Actief in heel Noord-Brabant</li>
       </ul>
-      <!-- Gereserveerde plek voor een Google Reviews-widget (bijv. Elfsight of Trustindex).
-           Plaats hier de embed-code zodra je die kiest; de stijl (.hero-review-slot) staat al
-           klaar en is afgestemd op de donkere hero-achtergrond. Standaard leeg, dus geen
-           effect op layout of laadtijd totdat er content in komt. -->
-      <div class="hero-review-slot" id="heroReviewSlot"></div>
     </div>
   </section>
 
-  <section class="section-tight">
+  <section class="reviews-strip">
     <div class="wrap">
       {reviews_widget_block()}
     </div>

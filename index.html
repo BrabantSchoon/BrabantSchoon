@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="image" href="images/hero.jpg" fetchpriority="high">
-<link rel="stylesheet" href="css/styles.css?v=95">
+<link rel="stylesheet" href="css/styles.css?v=96">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
@@ -114,7 +114,7 @@
 </aside>
 <main id="main-content">
 
-  <section class="hero-full">
+  <section class="hero-full hero-full-compact">
     <img src="images/hero.jpg" alt="Bedrijfswagens en medewerker van BrabantSchoon bij een klant in Zuidoost-Brabant" class="hero-full-img" width="1600" height="1067" fetchpriority="high" decoding="async">
     <div class="hero-full-overlay"></div>
     <div class="wrap hero-full-content">
@@ -131,21 +131,18 @@
         <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Professionele medewerkers</li>
         <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Actief in heel Noord-Brabant</li>
       </ul>
-      <!-- Gereserveerde plek voor een Google Reviews-widget (bijv. Elfsight of Trustindex).
-           Plaats hier de embed-code zodra je die kiest; de stijl (.hero-review-slot) staat al
-           klaar en is afgestemd op de donkere hero-achtergrond. Standaard leeg, dus geen
-           effect op layout of laadtijd totdat er content in komt. -->
-      <div class="hero-review-slot" id="heroReviewSlot"></div>
     </div>
   </section>
 
-  <section class="section-tight">
+  <section class="reviews-strip">
     <div class="wrap">
-      <div class="reveal reviews-empty-state">
-      <div class="reviews-empty-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
-      <h3>We bouwen momenteel onze eerste klantreviews op</h3>
-      <p>Heeft u met ons samengewerkt? We horen graag hoe het beviel.</p>
-      <a href="https://www.google.com/search?q=BrabantSchoon+Helmond" target="_blank" rel="noopener" class="btn btn-outline">Laat een review achter op Google</a>
+      <div class="reviews-compact reveal">
+      <div class="reviews-compact-label">
+        <span>Beoordeeld op Google Reviews</span>
+      </div>
+      <div class="trustindex-widget-wrap">
+        <script defer async src='https://cdn.trustindex.io/loader.js?1615584773fa412ed426df4e3e9'></script>
+      </div>
     </div>
     </div>
   </section>
@@ -582,7 +579,7 @@
   <a href="tel:+31492313050" class="btn btn-outline">Bel direct</a>
   <a href="contact.html#offerteWizard" class="btn btn-primary">Vrijblijvende offerte</a>
 </div>
-<script src="js/pricing-engine.js?v=95" defer></script>
-<script src="js/main.js?v=95" defer></script>
+<script src="js/pricing-engine.js?v=96" defer></script>
+<script src="js/main.js?v=96" defer></script>
 </body>
 </html>
