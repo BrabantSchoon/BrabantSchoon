@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "91"
+ASSET_VERSION = "92"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -38,6 +38,7 @@ ICONS = {
     "practice": '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
     "school": '<path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/>',
     "close": '<path d="M18 6 6 18M6 6l12 12"/>',
+    "star-fill": '<path fill="currentColor" stroke="none" d="M12 2.5l2.9 6.3 6.9.7-5.2 4.6 1.6 6.8L12 17.6l-6.2 3.3 1.6-6.8-5.2-4.6 6.9-.7z"/>',
     "stairs": '<path d="M4 20h4v-4h4v-4h4V8h4"/><path d="M4 20V8h4"/>',
 }
 
@@ -510,10 +511,24 @@ FAQ_ITEMS = [
 ]
 
 def reviews_widget_block():
-    return """<div class="reveal">
-    <script src="https://elfsightcdn.com/platform.js" async></script>
-    <div class="elfsight-app-d2e96685-a06e-40c9-96e3-375649773c8e" data-elfsight-app-lazy></div>
-  </div>"""
+    # Eigen reviewsectie, geen externe branding. REVIEWS hieronder is bewust leeg -
+    # er zijn nog geen echte klantreviews. Zodra die er zijn, voeg je hier simpelweg
+    # entries toe: {"naam": "...", "tekst": "...", "sterren": 5, "datum": "..."}.
+    if not REVIEWS:
+        return """<div class="reveal reviews-empty-state">
+      <div class="reviews-empty-icon">""" + icon('check') + """</div>
+      <h3>We bouwen momenteel onze eerste klantreviews op</h3>
+      <p>Heeft u met ons samengewerkt? We horen graag hoe het beviel.</p>
+      <a href="https://www.google.com/search?q=BrabantSchoon+Helmond" target="_blank" rel="noopener" class="btn btn-outline">Laat een review achter op Google</a>
+    </div>"""
+    cards = "\n      ".join(f"""<div class="review-card reveal">
+        <div class="review-stars">{"".join(icon('star-fill') for _ in range(r['sterren']))}</div>
+        <p class="review-text">&ldquo;{r['tekst']}&rdquo;</p>
+        <div class="review-author"><span>{r['naam']}</span><span class="review-date">{r['datum']}</span></div>
+      </div>""" for r in REVIEWS)
+    return f"""<div class="reviews-grid">{cards}</div>"""
+
+REVIEWS = []
 
 FORM_SERVICE_OPTIONS = [
     "Kantoorreiniging", "Glasbewassing", "Gevelreiniging", "VvE-schoonmaak",
@@ -694,7 +709,14 @@ def write(path, content):
 # HOME
 # =================================================================
 def calculator_block():
+    import json as _json
+    kern_cities = WERKGEBIED_KERN + WERKGEBIED_OVERIG
+    cities_data = _json.dumps({
+        "all": CALCULATOR_CITIES,
+        "kern": kern_cities
+    }, ensure_ascii=False)
     return f"""
+  <script>window.CALC_CITIES_DATA = {cities_data};</script>
   <section id="calculator" style="background:var(--bg-soft);">
     <div class="wrap">
       <div class="sec-head reveal">
@@ -755,11 +777,11 @@ def calculator_block():
 
           <div class="calc-block">
             <h3>5. Waar bevindt het pand zich?</h3>
-            <input type="text" id="calcPlaats" list="calcCitiesList" placeholder="Typ of kies een plaats..." autocomplete="off" value="Helmond">
-            <datalist id="calcCitiesList">
-              {"".join(f'<option value="{c}">' for c in CALCULATOR_CITIES)}
-            </datalist>
-            <p class="calc-note">{icon('check')}Wij zijn actief in heel Noord-Brabant.</p>
+            <div class="calc-autocomplete" id="calcPlaatsWrap">
+              <input type="text" id="calcPlaats" placeholder="Typ een plaatsnaam..." autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="calcPlaatsListbox" value="Helmond">
+              <ul class="calc-autocomplete-list" id="calcPlaatsListbox" role="listbox" hidden></ul>
+            </div>
+            <p class="calc-note" id="calcPlaatsNote">{icon('check')}<span>Wij zijn actief in heel Noord-Brabant.</span></p>
           </div>
 
         </div>

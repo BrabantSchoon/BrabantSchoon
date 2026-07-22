@@ -135,6 +135,8 @@ if (revealEls.length) {
   const modalInternalField = document.getElementById('calcModalInternalField');
   const freqExplainEl = document.getElementById('calcFreqExplain');
   const plaatsInput = document.getElementById('calcPlaats');
+  const plaatsListbox = document.getElementById('calcPlaatsListbox');
+  const plaatsNote = document.getElementById('calcPlaatsNote');
   const sumType = document.getElementById('calcSumType');
   const sumM2 = document.getElementById('calcSumM2');
   const sumPlaats = document.getElementById('calcSumPlaats');
@@ -179,7 +181,119 @@ if (revealEls.length) {
   }
   if (m2Range) m2Range.addEventListener('input', e => syncM2(e.target.value));
   if (m2Number) m2Number.addEventListener('input', e => syncM2(e.target.value));
-  if (plaatsInput) plaatsInput.addEventListener('input', () => calculate());
+
+  // Locatie-autocomplete: eigen implementatie (geen native <datalist>, dat gaf in
+  // combinatie met autocomplete="off" een bekend browserprobleem waarbij de
+  // suggestielijst niet opende).
+  (function setupPlaatsAutocomplete() {
+    if (!plaatsInput || !plaatsListbox) return;
+    const cityData = window.CALC_CITIES_DATA || { all: [], kern: [] };
+    let activeIndex = -1;
+    let currentMatches = [];
+
+    function normalize(s) { return (s || '').toLowerCase().trim(); }
+
+    function closeList() {
+      plaatsListbox.hidden = true;
+      plaatsListbox.innerHTML = '';
+      plaatsInput.setAttribute('aria-expanded', 'false');
+      activeIndex = -1;
+    }
+
+    function renderMatches(matches) {
+      currentMatches = matches;
+      activeIndex = -1;
+      if (!matches.length) { closeList(); return; }
+      plaatsListbox.innerHTML = matches.map((city, i) =>
+        `<li role="option" id="calcPlaatsOpt${i}" data-index="${i}">${city}</li>`
+      ).join('');
+      plaatsListbox.hidden = false;
+      plaatsInput.setAttribute('aria-expanded', 'true');
+    }
+
+    function updateActiveDescendant() {
+      Array.from(plaatsListbox.children).forEach((li, i) => {
+        li.classList.toggle('active', i === activeIndex);
+      });
+      if (activeIndex >= 0) {
+        plaatsInput.setAttribute('aria-activedescendant', `calcPlaatsOpt${activeIndex}`);
+      } else {
+        plaatsInput.removeAttribute('aria-activedescendant');
+      }
+    }
+
+    function checkWerkgebied(value) {
+      if (!plaatsNote) return;
+      const inKern = cityData.kern.some(c => normalize(c) === normalize(value));
+      const noteText = plaatsNote.querySelector('span') || plaatsNote;
+      if (!value) {
+        plaatsNote.classList.remove('calc-note-warning');
+        noteText.textContent = 'Wij zijn actief in heel Noord-Brabant.';
+      } else if (inKern) {
+        plaatsNote.classList.remove('calc-note-warning');
+        noteText.textContent = 'Dit ligt in ons vaste werkgebied.';
+      } else {
+        plaatsNote.classList.add('calc-note-warning');
+        noteText.textContent = 'Dit ligt buiten ons kerngebied \u2014 voor grotere opdrachten rijden we ook hier graag naartoe.';
+      }
+    }
+
+    plaatsInput.addEventListener('input', () => {
+      const query = normalize(plaatsInput.value);
+      const matches = query
+        ? cityData.all.filter(c => normalize(c).includes(query)).slice(0, 8)
+        : cityData.all.slice(0, 8);
+      renderMatches(matches);
+      checkWerkgebied(plaatsInput.value);
+      calculate();
+    });
+
+    plaatsInput.addEventListener('focus', () => {
+      if (!plaatsInput.value) renderMatches(cityData.all.slice(0, 8));
+    });
+
+    plaatsInput.addEventListener('keydown', (e) => {
+      if (plaatsListbox.hidden && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+        renderMatches(cityData.all.filter(c => normalize(c).includes(normalize(plaatsInput.value))).slice(0, 8));
+        return;
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activeIndex = Math.min(activeIndex + 1, currentMatches.length - 1);
+        updateActiveDescendant();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeIndex = Math.max(activeIndex - 1, 0);
+        updateActiveDescendant();
+      } else if (e.key === 'Enter') {
+        if (activeIndex >= 0 && currentMatches[activeIndex]) {
+          e.preventDefault();
+          plaatsInput.value = currentMatches[activeIndex];
+          checkWerkgebied(plaatsInput.value);
+          closeList();
+          calculate();
+        }
+      } else if (e.key === 'Escape') {
+        closeList();
+      }
+    });
+
+    plaatsListbox.addEventListener('mousedown', (e) => {
+      const li = e.target.closest('li');
+      if (!li) return;
+      e.preventDefault(); // voorkomt blur vóór de klik verwerkt is
+      plaatsInput.value = li.textContent;
+      checkWerkgebied(plaatsInput.value);
+      closeList();
+      calculate();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!plaatsInput.contains(e.target) && !plaatsListbox.contains(e.target)) closeList();
+    });
+
+    checkWerkgebied(plaatsInput.value);
+  })();
 
   extraChecks.forEach(chk => chk.addEventListener('change', () => {
     extraPctTotal = Array.from(extraChecks).filter(c => c.checked).reduce((sum, c) => sum + parseFloat(c.dataset.pct || 0), 0);

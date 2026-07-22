@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="css/styles.css?v=91">
+<link rel="stylesheet" href="css/styles.css?v=92">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
@@ -101,6 +101,7 @@
     </div>
   </section>
   
+  <script>window.CALC_CITIES_DATA = {"all": ["Helmond", "Eindhoven", "Deurne", "Gemert", "Asten", "Someren", "Geldrop", "Nuenen", "Best", "Veldhoven", "Valkenswaard", "Oirschot", "Laarbeek", "Boekel", "Veghel", "Uden", "Oss", "Tilburg", "Den Bosch", "Breda", "Roosendaal", "Bergen op Zoom", "Oosterhout", "Waalwijk", "Etten-Leur", "Overige plaats in Noord-Brabant"], "kern": ["Helmond", "Deurne", "Asten", "Someren", "Gemert-Bakel", "Laarbeek", "Eindhoven", "Geldrop-Mierlo", "Nuenen", "Mierlo"]};</script>
   <section id="calculator" style="background:var(--bg-soft);">
     <div class="wrap">
       <div class="sec-head reveal">
@@ -161,11 +162,11 @@
 
           <div class="calc-block">
             <h3>5. Waar bevindt het pand zich?</h3>
-            <input type="text" id="calcPlaats" list="calcCitiesList" placeholder="Typ of kies een plaats..." autocomplete="off" value="Helmond">
-            <datalist id="calcCitiesList">
-              <option value="Helmond"><option value="Eindhoven"><option value="Deurne"><option value="Gemert"><option value="Asten"><option value="Someren"><option value="Geldrop"><option value="Nuenen"><option value="Best"><option value="Veldhoven"><option value="Valkenswaard"><option value="Oirschot"><option value="Laarbeek"><option value="Boekel"><option value="Veghel"><option value="Uden"><option value="Oss"><option value="Tilburg"><option value="Den Bosch"><option value="Breda"><option value="Roosendaal"><option value="Bergen op Zoom"><option value="Oosterhout"><option value="Waalwijk"><option value="Etten-Leur"><option value="Overige plaats in Noord-Brabant">
-            </datalist>
-            <p class="calc-note"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Wij zijn actief in heel Noord-Brabant.</p>
+            <div class="calc-autocomplete" id="calcPlaatsWrap">
+              <input type="text" id="calcPlaats" placeholder="Typ een plaatsnaam..." autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="calcPlaatsListbox" value="Helmond">
+              <ul class="calc-autocomplete-list" id="calcPlaatsListbox" role="listbox" hidden></ul>
+            </div>
+            <p class="calc-note" id="calcPlaatsNote"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg><span>Wij zijn actief in heel Noord-Brabant.</span></p>
           </div>
 
         </div>
@@ -373,7 +374,7 @@
   <a href="tel:+31492313050" class="btn btn-outline">Bel direct</a>
   <a href="contact.html#offerteWizard" class="btn btn-primary">Vrijblijvende offerte</a>
 </div>
-<script src="js/pricing-engine.js?v=91" defer></script>
-<script src="js/main.js?v=91" defer></script>
+<script src="js/pricing-engine.js?v=92" defer></script>
+<script src="js/main.js?v=92" defer></script>
 </body>
 </html>
