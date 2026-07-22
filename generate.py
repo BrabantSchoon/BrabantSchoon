@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "93"
+ASSET_VERSION = "94"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -336,10 +336,9 @@ def render_header(base, active):
       {links_html}
     </nav>
     <div class="nav-actions">
-      <!-- Gereserveerde plek voor een Google Reviews-widget (bijv. Elfsight). Plaats hier de
-           embed-code zodra je een widget hebt gekozen; de stijl (.header-review-slot) staat al klaar.
-           Standaard leeg en onzichtbaar (display:none), dus geen effect op layout of laadtijd. -->
-      <div class="header-review-slot" id="headerReviewSlot"></div>
+      <!-- Trustindex-widget: sterrenscore op basis van Google Reviews, automatisch gesynchroniseerd.
+           Gratis plan, dus toont 'Powered by Trustindex'-branding (bewuste keuze van de klant). -->
+      <div class="header-review-slot" id="headerReviewSlot"><script defer async src='https://cdn.trustindex.io/loader.js?1615584773fa412ed426df4e3e9'></script></div>
       <a href="tel:{PHONE_TEL}" class="phone-link">{PHONE_DISPLAY}</a>
       <a href="{base}contact.html#offerteWizard" class="btn btn-primary btn-sm">Offerte aanvragen</a>
       <label for="menuCheckbox" class="menu-toggle" aria-label="Menu openen">{icon('list')}</label>
