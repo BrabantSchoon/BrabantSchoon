@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "90"
+ASSET_VERSION = "91"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -1089,7 +1089,7 @@ def build_diensten_overview():
     base = ""
     cards = "\n    ".join(f"""<a href="diensten/{s['slug']}.html" class="service-card">
       <div class="thumb {s['tint']}">{service_visual_from_root(s)}</div>
-      <div class="body"><h3>{s['name']}</h3><p>{s['short']}</p><span class="sc-link">Meer informatie {icon('arrow','')}</span></div>
+      <div class="body"><h3>{s['name']}</h3><p>{s['short']}</p><span class="sc-link">Meer informatie {icon('arrow')}</span></div>
     </a>""" for s in SERVICES)
     body = f"""
   {page_hero("Diensten", "Onze diensten.", "Van dagelijks onderhoud tot specialistisch werk.", base, "Diensten")}
