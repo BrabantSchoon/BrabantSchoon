@@ -23,10 +23,11 @@
 }
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
+html{overflow-x:hidden;}
 body{
   margin:0; background:var(--bg); color:var(--ink);
   font-family:'Inter',sans-serif; font-size:16px; line-height:1.62;
-  -webkit-font-smoothing:antialiased;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden; max-width:100vw;
 }
 h1,h2,h3{ font-family:'Plus Jakarta Sans', sans-serif; margin:0; font-weight:700; letter-spacing:-0.015em;}
 h4{font-family:'Inter',sans-serif; font-weight:700; margin:0;}
@@ -110,9 +111,12 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 .mobile-menu-top img{height:26px;}
 .mobile-menu-close{display:flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:10px; border:1px solid var(--line); background:#fff; cursor:pointer;}
 .mobile-menu-close svg{width:17px; height:17px;}
-.mobile-menu-links{padding:8px 20px 28px;}
+.mobile-menu-links{padding:8px 20px 4px;}
 .mobile-sidebar a{display:block; padding:15px 4px; font-size:16.5px; font-weight:600; text-decoration:none; color:var(--ink); border-bottom:1px solid var(--line);}
-.mobile-sidebar .mobile-cta{margin-top:20px; text-align:center;}
+.mobile-phone-link{display:flex !important; align-items:center; gap:10px; color:var(--link) !important; border-bottom:none !important;}
+.mobile-phone-link svg{width:18px; height:18px; color:var(--link); flex-shrink:0;}
+.mobile-menu-cta-wrap{padding:20px; border-top:1px solid var(--line); margin-top:8px;}
+.mobile-menu-cta-wrap .mobile-cta{margin:0; width:100%; text-align:center; padding-top:15px; padding-bottom:15px;}
 
 /* ---------- HERO (illustration, not photo) ---------- */
 .hero{padding:64px 0 40px;}
@@ -177,19 +181,20 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 .calc-grid{display:grid; grid-template-columns:1fr; gap:28px; align-items:start;}
 @media(min-width:960px){.calc-grid{grid-template-columns:1.5fr 1fr;}}
 
-.calc-form{background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:28px;}
+.calc-form{background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:18px;}
+@media(min-width:480px){.calc-form{padding:28px;}}
 .calc-block{padding:22px 0; border-bottom:1px solid var(--line);}
 .calc-block:first-child{padding-top:0;}
 .calc-block:last-child{border-bottom:none; padding-bottom:0;}
 .calc-block h3{font-family:'Inter',sans-serif; font-size:15px; font-weight:700; color:var(--ink); margin-bottom:14px;}
 .calc-optional{font-weight:400; color:var(--ink-soft); font-size:13px;}
 
-.calc-jobtype-grid{grid-template-columns:1fr 1fr;}
+.calc-jobtype-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
 @media(min-width:640px){.calc-jobtype-grid{grid-template-columns:repeat(4,1fr);}}
 .calc-jobtype-grid .calc-card{padding:16px 10px;}
 .calc-emoji{font-size:26px; line-height:1;}
 
-.calc-type-grid, .calc-freq-grid, .calc-time-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px;}
+.calc-type-grid, .calc-freq-grid, .calc-time-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px;}
 @media(min-width:520px){.calc-type-grid{grid-template-columns:repeat(3,1fr);}}
 @media(min-width:640px){.calc-freq-grid, .calc-time-grid{grid-template-columns:repeat(3,1fr);}}
 @media(min-width:820px){.calc-time-grid{grid-template-columns:repeat(5,1fr);}}
@@ -198,11 +203,12 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
   position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
   background:var(--bg-soft); border:1.5px solid var(--line); border-radius:12px; padding:14px 10px;
   cursor:pointer; font-family:'Inter',sans-serif; text-align:center; transition:border-color .15s ease, background .15s ease, transform .15s ease;
+  min-width:0;
 }
 .calc-card:hover{border-color:var(--link); transform:translateY(-2px);}
 .calc-card.active{background:#EAF4FF; border-color:var(--link); box-shadow:0 0 0 1px var(--link) inset;}
 .calc-card svg{width:22px; height:22px; color:var(--link);}
-.calc-card span{font-size:13.5px; font-weight:700; color:var(--ink);}
+.calc-card span{font-size:13.5px; font-weight:700; color:var(--ink); overflow-wrap:break-word; word-break:break-word; hyphens:auto;}
 .calc-card small{font-size:11px; color:var(--ink-soft);}
 .calc-badge{position:absolute; top:-9px; left:50%; transform:translateX(-50%); background:var(--teal); color:#fff; font-size:9.5px; font-weight:700; padding:2px 8px; border-radius:20px; white-space:nowrap;}
 
