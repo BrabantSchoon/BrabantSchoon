@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "84"
+ASSET_VERSION = "85"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -438,11 +438,11 @@ def werkgebied_kaart(highlight_slug, base="../"):
         <path d="{g["d"]}" />
       </g>''')
         else:
-            tt_x, tt_y = g["cx"] - 40, g["cy"] - 26
+            tt_x, tt_y = g["cx"] - 55, g["cy"] - 30
             shapes.append(f'''<a href="{base}locaties/{slug}.html" class="wg-shape" aria-label="Werkgebied {g['naam']}">
         <path d="{g["d"]}" />
-        <foreignObject x="{tt_x}" y="{tt_y}" width="80" height="24" class="wg-tooltip-fo">
-          <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex; justify-content:center;">
+        <foreignObject x="{tt_x}" y="{tt_y}" width="110" height="30" class="wg-tooltip-fo">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex; justify-content:center; background:transparent; margin:0; padding:0;">
             <span class="wg-tooltip">{g['naam']}</span>
           </div>
         </foreignObject>
@@ -451,15 +451,15 @@ def werkgebied_kaart(highlight_slug, base="../"):
 
     anchor_x, anchor_y = active["cx"], active["cy"]
     place_right = anchor_x < 300
-    label_x = anchor_x + (55 if place_right else -55)
+    label_x = anchor_x + (60 if place_right else -60)
     line_end_x = label_x + (-4 if place_right else 4)
-    box_x = label_x if place_right else label_x - 90
+    box_x = label_x if place_right else label_x - 110
     justify = 'flex-start' if place_right else 'flex-end'
     callout = f'''<g class="wg-callout">
         <line x1="{anchor_x}" y1="{anchor_y}" x2="{line_end_x}" y2="{anchor_y}" class="wg-callout-line"/>
         <circle cx="{anchor_x}" cy="{anchor_y}" r="2.5" class="wg-callout-dot"/>
-        <foreignObject x="{box_x}" y="{anchor_y - 12}" width="90" height="24" style="overflow:visible;">
-          <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex; justify-content:{justify};">
+        <foreignObject x="{box_x}" y="{anchor_y - 14}" width="110" height="30" style="overflow:visible;">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex; justify-content:{justify}; background:transparent; margin:0; padding:0;">
             <span class="wg-callout-label">{active['naam']}</span>
           </div>
         </foreignObject>

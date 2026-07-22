@@ -161,18 +161,18 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 
 .wg-tooltip-fo{overflow:visible; pointer-events:none;}
 .wg-tooltip{
-  display:inline-flex; background:var(--navy); color:#fff; font-family:'Inter',sans-serif;
+  display:inline-flex; background:#10205C; color:#fff; font-family:'Inter',sans-serif;
   font-size:11px; font-weight:600; white-space:nowrap; padding:5px 10px; border-radius:7px;
-  box-shadow:var(--shadow-md); opacity:0; transform:translateY(3px); transition:opacity .2s ease, transform .2s ease;
+  box-shadow:0 6px 16px -4px rgba(16,32,92,0.35); opacity:0; transform:translateY(3px); transition:opacity .2s ease, transform .2s ease;
 }
 .wg-shape:hover .wg-tooltip{opacity:1; transform:translateY(0);}
 
-.wg-callout-line{stroke:var(--link); stroke-width:1;}
-.wg-callout-dot{fill:var(--link);}
+.wg-callout-line{stroke:#0068B8; stroke-width:1;}
+.wg-callout-dot{fill:#0068B8;}
 .wg-callout-label{
-  font-family:'Inter',sans-serif; font-size:12.5px; font-weight:700; color:var(--navy);
-  white-space:nowrap; background:#fff; padding:3px 9px; border-radius:6px; border:1px solid var(--line);
-  box-shadow:var(--shadow-sm);
+  font-family:'Inter',sans-serif; font-size:12.5px; font-weight:700; color:#10205C;
+  white-space:nowrap; background:#fff; padding:3px 9px; border-radius:6px; border:1px solid #E4E8F2;
+  box-shadow:0 4px 10px -3px rgba(16,32,92,0.18);
 }
 
 .illustration-panel{
