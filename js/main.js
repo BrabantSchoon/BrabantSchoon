@@ -107,32 +107,40 @@ if (revealEls.length) {
   revealEls.forEach(el => io.observe(el));
 }
 
-// Prijscalculator (indicatie, realtime, geen submit)
+// Prijscalculator: echte rekenengine met configureerbare variabelen.
+// Alle instelbare waarden staan hier bovenaan gebundeld (equivalent van een los config-bestand),
+// zodat je later zonder in de rest van de logica te zoeken de tarieven kunt aanpassen.
 (function() {
   const calc = document.getElementById('calculator');
   if (!calc) return;
 
-  // Configuratie: eenvoudig hier aan te passen zodra echte tarieven bekend zijn.
-  const CONFIG = {
-    baseRatePerM2PerVisit: 0.11,   // basisprijs per m² per schoonmaakbeurt
-    minMonthly: 150,               // ondergrens per maand
-    rangeSpread: 0.16,             // 16% marge onder/boven het middelpunt
-    minutesPerM2: 0.9               // geschatte tijd (minuten) per m² per beurt
+  const PRICING_CONFIG = {
+    zzpHourlyRate: 30,
+    profitMargin: 35,            // percentage
+    travelCostPerVisit: 12.50,
+    materialCostPerVisit: 8.50,
+    minimumMonthlyPrice: 250,
+    rangeSpread: 10               // percentage, prijsbandbreedte rondom de berekende prijs
   };
 
-  let typeFactor = 1.0;
-  let freqPerMonth = 8.66;
-  let extrasTotal = 0;
+  let currentNorm = 55;           // minuten per 100 m², afhankelijk van pandtype
+  let currentFreq = 8;            // bezoeken per maand
+  let extraPctTotal = 0;          // som van percentage-toeslagen voor extra diensten
+  let lastLow = 0, lastHigh = 0;
 
   const typeButtons = calc.querySelectorAll('#calcType .calc-card');
   const freqButtons = calc.querySelectorAll('#calcFreq .calc-card');
-  const timeButtons = calc.querySelectorAll('#calcTime .calc-card');
   const m2Range = document.getElementById('calcM2Range');
   const m2Number = document.getElementById('calcM2Number');
-  const extraChecks = calc.querySelectorAll('#calcExtra input[type="checkbox"]');
-  const priceRangeEl = document.getElementById('calcPriceRange');
-  const priceInzetEl = document.getElementById('calcPriceInzet');
+  const extraChecks = calc.querySelectorAll('#calcExtra input[type="checkbox"]:not(#calcOplevering)');
+  const priceLowEl = document.getElementById('calcPriceLow');
+  const priceHighEl = document.getElementById('calcPriceHigh');
+  const hoursVisitEl = document.getElementById('calcHoursVisit');
+  const hoursMonthEl = document.getElementById('calcHoursMonth');
   const mobilePriceEl = document.getElementById('calcMobilePrice');
+  const modalPriceEl = document.getElementById('calcModalPrice');
+  const modalPriceField = document.getElementById('calcModalPriceField');
+  const modalDetailsField = document.getElementById('calcModalDetailsField');
 
   function selectCard(buttons, btn) {
     buttons.forEach(b => b.classList.remove('active'));
@@ -141,15 +149,14 @@ if (revealEls.length) {
 
   typeButtons.forEach(btn => btn.addEventListener('click', () => {
     selectCard(typeButtons, btn);
-    typeFactor = parseFloat(btn.dataset.value);
+    currentNorm = parseFloat(btn.dataset.norm);
     calculate();
   }));
   freqButtons.forEach(btn => btn.addEventListener('click', () => {
     selectCard(freqButtons, btn);
-    freqPerMonth = parseFloat(btn.dataset.value);
+    currentFreq = parseFloat(btn.dataset.value);
     calculate();
   }));
-  timeButtons.forEach(btn => btn.addEventListener('click', () => selectCard(timeButtons, btn)));
 
   function syncM2(value) {
     value = Math.max(10, Math.min(20000, parseInt(value) || 0));
@@ -161,7 +168,7 @@ if (revealEls.length) {
   if (m2Number) m2Number.addEventListener('input', e => syncM2(e.target.value));
 
   extraChecks.forEach(chk => chk.addEventListener('change', () => {
-    extrasTotal = Array.from(extraChecks).filter(c => c.checked).reduce((sum, c) => sum + parseFloat(c.dataset.value || 0), 0);
+    extraPctTotal = Array.from(extraChecks).filter(c => c.checked).reduce((sum, c) => sum + parseFloat(c.dataset.pct || 0), 0);
     calculate();
   }));
 
@@ -169,31 +176,75 @@ if (revealEls.length) {
     return '\u20ac' + Math.round(n).toLocaleString('nl-NL');
   }
 
+  // Vloeiende telanimatie van het ene bedrag naar het andere (easing, geen abrupte sprong)
+  function animateValue(el, from, to, duration) {
+    if (!el) return;
+    const startTime = performance.now();
+    function step(now) {
+      const progress = Math.min(1, (now - startTime) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      const value = from + (to - from) * eased;
+      el.textContent = formatEuro(value);
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
   function calculate() {
     const m2 = parseInt(m2Number.value) || 250;
-    const base = m2 * CONFIG.baseRatePerM2PerVisit * freqPerMonth * typeFactor;
-    let monthly = Math.max(CONFIG.minMonthly, base) + extrasTotal;
 
-    const low = monthly * (1 - CONFIG.rangeSpread);
-    const high = monthly * (1 + CONFIG.rangeSpread);
+    // 1. Benodigde uren per bezoek en per maand
+    const minutesPerVisit = (m2 / 100) * currentNorm;
+    const hoursPerVisit = minutesPerVisit / 60;
+    const hoursPerMonth = hoursPerVisit * currentFreq;
+
+    // 2. Loonkosten
+    const laborCost = hoursPerMonth * PRICING_CONFIG.zzpHourlyRate;
+    // 3. Materiaalkosten (per bezoek)
+    const materialCost = PRICING_CONFIG.materialCostPerVisit * currentFreq;
+    // 4. Reiskosten (per bezoek)
+    const travelCost = PRICING_CONFIG.travelCostPerVisit * currentFreq;
+
+    // 5. Subtotaal + marge
+    const subtotal = laborCost + materialCost + travelCost;
+    let monthly = subtotal * (1 + PRICING_CONFIG.profitMargin / 100);
+
+    // 6. Extra diensten (percentage-toeslag op het basisbedrag)
+    monthly = monthly * (1 + extraPctTotal / 100);
+
+    // 7. Ondergrens
+    monthly = Math.max(PRICING_CONFIG.minimumMonthlyPrice, monthly);
+
+    // 8. Bandbreedte
+    const low = monthly * (1 - PRICING_CONFIG.rangeSpread / 100);
+    const high = monthly * (1 + PRICING_CONFIG.rangeSpread / 100);
+
+    animateValue(priceLowEl, lastLow || low, low, 450);
+    animateValue(priceHighEl, lastHigh || high, high, 450);
+    lastLow = low; lastHigh = high;
+
     const rangeText = formatEuro(low) + ' \u2013 ' + formatEuro(high);
-
-    if (priceRangeEl) priceRangeEl.textContent = rangeText;
     if (mobilePriceEl) mobilePriceEl.textContent = rangeText + ' / mnd';
+    if (modalPriceEl) modalPriceEl.textContent = rangeText;
+    if (modalPriceField) modalPriceField.value = rangeText + ' per maand (indicatief)';
 
-    const minutesPerVisit = m2 * CONFIG.minutesPerM2 * typeFactor;
-    const hoursPerVisit = Math.max(0.5, minutesPerVisit / 60);
-    if (priceInzetEl) {
-      const inzetTextNode = priceInzetEl.querySelector('.calc-inzet-text');
-      if (inzetTextNode) {
-        inzetTextNode.textContent = `Geschatte inzet: ~${hoursPerVisit.toFixed(1)} uur per bezoek`;
-      }
+    if (hoursVisitEl) hoursVisitEl.textContent = hoursPerVisit.toFixed(1).replace('.', ',');
+    if (hoursMonthEl) hoursMonthEl.textContent = Math.round(hoursPerMonth);
+
+    // Details voor in de offerte-e-mail
+    if (modalDetailsField) {
+      const typeLabel = calc.querySelector('#calcType .calc-card.active')?.dataset.label || '';
+      const freqLabel = calc.querySelector('#calcFreq .calc-card.active')?.dataset.label || '';
+      const extras = Array.from(extraChecks).filter(c => c.checked).map(c => c.closest('label').textContent.trim()).join(', ') || 'geen';
+      const oplevering = document.getElementById('calcOplevering')?.checked ? 'Ja' : 'Nee';
+      const plaats = document.getElementById('calcPlaats')?.value || '';
+      modalDetailsField.value = `Type: ${typeLabel} | Oppervlakte: ${m2} m² | Frequentie: ${freqLabel} | Extra diensten: ${extras} | Opleveringsschoonmaak: ${oplevering} | Plaats: ${plaats}`;
     }
   }
 
   calculate();
 
-  // Mobiele sticky-balk: opent/scrollt naar de prijskaart
+  // Mobiele sticky-balk: scrollt naar de prijskaart
   const mobileBtn = document.getElementById('calcMobileBtn');
   const priceCard = document.getElementById('calcPriceCard');
   if (mobileBtn && priceCard) {
@@ -203,4 +254,30 @@ if (revealEls.length) {
       setTimeout(() => priceCard.classList.remove('calc-price-flash'), 900);
     });
   }
+
+  // Offerte-modal openen/sluiten
+  const modalOverlay = document.getElementById('calcModalOverlay');
+  const openModalBtn = document.getElementById('calcOpenModal');
+  const closeModalBtn = document.getElementById('calcModalClose');
+  function openModal() {
+    calculate();
+    modalOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    modalOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  if (openModalBtn) openModalBtn.addEventListener('click', openModal);
+  if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+  if (modalOverlay) modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+  // Tijdstip-keuze binnen de modal
+  const modalTimeButtons = calc.parentElement ? document.querySelectorAll('#calcModalTime .calc-card') : [];
+  const modalTimeField = document.getElementById('calcModalTimeField');
+  modalTimeButtons.forEach(btn => btn.addEventListener('click', () => {
+    selectCard(modalTimeButtons, btn);
+    if (modalTimeField) modalTimeField.value = btn.dataset.label;
+  }));
 })();
