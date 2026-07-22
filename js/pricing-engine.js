@@ -64,6 +64,62 @@ function safeNumber(value, fallback) {
 }
 
 /**
+ * Geeft een geadviseerde schoonmaakfrequentie op basis van pandtype en oppervlakte.
+ * Dit is uitsluitend een advies - de bezoeker kan altijd zelf een andere frequentie kiezen.
+ * De drempelwaarden zijn gebaseerd op gangbare praktijk in de zakelijke schoonmaakbranche
+ * en kunnen hieronder eenvoudig aangepast worden.
+ */
+const FREQUENCY_RECOMMENDATION_RULES = {
+  office: [
+    { maxM2: 250, freqKey: "weekly2" },
+    { maxM2: 750, freqKey: "weekly3" },
+    { maxM2: 1500, freqKey: "weekly5" },
+    { maxM2: Infinity, freqKey: "daily" }
+  ],
+  practice: [
+    { maxM2: 200, freqKey: "weekly5" },
+    { maxM2: Infinity, freqKey: "daily" }
+  ],
+  school: [
+    { maxM2: 800, freqKey: "weekly5" },
+    { maxM2: Infinity, freqKey: "daily" }
+  ],
+  retail: [
+    { maxM2: 150, freqKey: "weekly2" },
+    { maxM2: 500, freqKey: "weekly3" },
+    { maxM2: Infinity, freqKey: "weekly5" }
+  ],
+  warehouse: [
+    { maxM2: 500, freqKey: "weekly1" },
+    { maxM2: 1500, freqKey: "weekly2" },
+    { maxM2: Infinity, freqKey: "weekly3" }
+  ],
+  vve: [
+    { maxM2: 500, freqKey: "weekly1" },
+    { maxM2: Infinity, freqKey: "weekly2" }
+  ],
+  other: [
+    { maxM2: Infinity, freqKey: "weekly2" }
+  ]
+};
+
+const FREQUENCY_LABELS = {
+  weekly1: "1x per week", weekly2: "2x per week", weekly3: "3x per week",
+  weekly5: "5x per week", daily: "dagelijks"
+};
+
+function getRecommendedFrequency(propertyType, surfaceM2) {
+  const rules = FREQUENCY_RECOMMENDATION_RULES[propertyType] || FREQUENCY_RECOMMENDATION_RULES.other;
+  const m2 = safeNumber(surfaceM2, 250);
+  const rule = rules.find(r => m2 <= r.maxM2) || rules[rules.length - 1];
+  return {
+    freqKey: rule.freqKey,
+    label: FREQUENCY_LABELS[rule.freqKey],
+    explanation: `Op basis van uw pandtype en oppervlakte adviseren wij ${FREQUENCY_LABELS[rule.freqKey]} schoonmaken voor een representatieve en hygi\u00ebnische werkomgeving. U kunt hier altijd van afwijken.`
+  };
+}
+
+/**
  * Voert de volledige berekening uit.
  * @param {Object} input
  * @param {number} input.surfaceM2 - oppervlakte in m²

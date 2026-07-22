@@ -115,7 +115,7 @@ if (revealEls.length) {
   if (!calc || typeof calculatePricing !== 'function') return;
 
   let currentTypeKey = 'office';
-  let currentFreqKey = 'weekly2';
+  let currentFreqKey = null; // null = nog geen handmatige keuze, volgt het advies
   let extraPctTotal = 0;
   let lastLow = 0, lastHigh = 0;
 
@@ -133,10 +133,31 @@ if (revealEls.length) {
   const modalPriceField = document.getElementById('calcModalPriceField');
   const modalDetailsField = document.getElementById('calcModalDetailsField');
   const modalInternalField = document.getElementById('calcModalInternalField');
+  const freqExplainEl = document.getElementById('calcFreqExplain');
+  const plaatsInput = document.getElementById('calcPlaats');
+  const sumType = document.getElementById('calcSumType');
+  const sumM2 = document.getElementById('calcSumM2');
+  const sumPlaats = document.getElementById('calcSumPlaats');
+  const sumFreq = document.getElementById('calcSumFreq');
+  const sumExtras = document.getElementById('calcSumExtras');
 
   function selectCard(buttons, btn) {
     buttons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+  }
+
+  // Verwijdert alle 'Aanbevolen'-badges en zet er \u00e9\u00e9n op de meegegeven freqKey
+  function markRecommended(freqKey) {
+    freqButtons.forEach(b => {
+      const existingBadge = b.querySelector('.calc-badge');
+      if (existingBadge) existingBadge.remove();
+      if (b.dataset.freqKey === freqKey) {
+        const badge = document.createElement('em');
+        badge.className = 'calc-badge';
+        badge.textContent = 'Aanbevolen';
+        b.appendChild(badge);
+      }
+    });
   }
 
   typeButtons.forEach(btn => btn.addEventListener('click', () => {
@@ -146,7 +167,7 @@ if (revealEls.length) {
   }));
   freqButtons.forEach(btn => btn.addEventListener('click', () => {
     selectCard(freqButtons, btn);
-    currentFreqKey = btn.dataset.freqKey;
+    currentFreqKey = btn.dataset.freqKey; // vanaf nu een bewuste, handmatige keuze
     calculate();
   }));
 
@@ -158,6 +179,7 @@ if (revealEls.length) {
   }
   if (m2Range) m2Range.addEventListener('input', e => syncM2(e.target.value));
   if (m2Number) m2Number.addEventListener('input', e => syncM2(e.target.value));
+  if (plaatsInput) plaatsInput.addEventListener('input', () => calculate());
 
   extraChecks.forEach(chk => chk.addEventListener('change', () => {
     extraPctTotal = Array.from(extraChecks).filter(c => c.checked).reduce((sum, c) => sum + parseFloat(c.dataset.pct || 0), 0);
@@ -186,10 +208,28 @@ if (revealEls.length) {
     const parsedM2 = parseInt(m2Number.value, 10);
     const m2 = Number.isFinite(parsedM2) && parsedM2 > 0 ? parsedM2 : 250;
 
+    // Dynamische frequentie-aanbeveling: zolang de bezoeker nog niets handmatig koos,
+    // volgt de selectie automatisch het advies bij wijziging van pandtype/oppervlakte.
+    const recommendation = typeof getRecommendedFrequency === 'function'
+      ? getRecommendedFrequency(currentTypeKey, m2)
+      : { freqKey: 'weekly2', label: '2x per week', explanation: '' };
+
+    markRecommended(recommendation.freqKey);
+    if (freqExplainEl) {
+      const textSpan = freqExplainEl.querySelector('span');
+      if (textSpan) textSpan.textContent = recommendation.explanation;
+    }
+
+    if (currentFreqKey === null) {
+      const recBtn = calc.querySelector(`#calcFreq .calc-card[data-freq-key="${recommendation.freqKey}"]`);
+      if (recBtn) selectCard(freqButtons, recBtn);
+    }
+    const activeFreqKey = currentFreqKey || recommendation.freqKey;
+
     const result = calculatePricing({
       surfaceM2: m2,
       propertyType: currentTypeKey,
-      frequencyKey: currentFreqKey,
+      frequencyKey: activeFreqKey,
       extraServicesSurchargePercentage: extraPctTotal
     });
 
@@ -209,14 +249,22 @@ if (revealEls.length) {
     if (hoursVisitEl) hoursVisitEl.textContent = result.customer.estimatedLaborHoursPerVisit.toFixed(1).replace('.', ',');
     if (hoursMonthEl) hoursMonthEl.textContent = Math.round(result.customer.estimatedLaborHoursPerMonth);
 
+    // Live selectie-samenvatting boven de offerteknop
+    const typeLabel = calc.querySelector('#calcType .calc-card.active')?.dataset.label || '';
+    const freqLabel = calc.querySelector('#calcFreq .calc-card.active')?.dataset.label || '';
+    const extrasChecked = Array.from(extraChecks).filter(c => c.checked).map(c => c.closest('label').textContent.trim());
+    const plaats = plaatsInput ? plaatsInput.value : '';
+
+    if (sumType) sumType.textContent = typeLabel;
+    if (sumM2) sumM2.textContent = m2.toLocaleString('nl-NL') + ' m\u00b2';
+    if (sumPlaats) sumPlaats.textContent = plaats || '\u2013';
+    if (sumFreq) sumFreq.textContent = freqLabel;
+    if (sumExtras) sumExtras.textContent = extrasChecked.length ? extrasChecked.join(', ') : '';
+
     // Klantgegevens voor in de offerte-e-mail (zichtbaar voor jou, niet op de pagina)
     if (modalDetailsField) {
-      const typeLabel = calc.querySelector('#calcType .calc-card.active')?.dataset.label || '';
-      const freqLabel = calc.querySelector('#calcFreq .calc-card.active')?.dataset.label || '';
-      const extras = Array.from(extraChecks).filter(c => c.checked).map(c => c.closest('label').textContent.trim()).join(', ') || 'geen';
       const oplevering = document.getElementById('calcOplevering')?.checked ? 'Ja' : 'Nee';
-      const plaats = document.getElementById('calcPlaats')?.value || '';
-      modalDetailsField.value = `Type: ${typeLabel} | Oppervlakte: ${m2} m² | Frequentie: ${freqLabel} | Extra diensten: ${extras} | Opleveringsschoonmaak: ${oplevering} | Plaats: ${plaats}`;
+      modalDetailsField.value = `Type: ${typeLabel} | Oppervlakte: ${m2} m² | Frequentie: ${freqLabel} | Extra diensten: ${extrasChecked.join(', ') || 'geen'} | Opleveringsschoonmaak: ${oplevering} | Plaats: ${plaats}`;
     }
 
     // Interne kostprijs-uitsplitsing, UITSLUITEND naar het verborgen e-mailveld -

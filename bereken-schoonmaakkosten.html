@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="css/styles.css?v=89">
+<link rel="stylesheet" href="css/styles.css?v=90">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
@@ -97,7 +97,7 @@
       <div class="breadcrumb"><a href="index.html">Home</a> &nbsp;/&nbsp; Prijscalculator</div>
       <span class="eyebrow">Prijscalculator</span>
       <h1>Bereken uw schoonmaakkosten.</h1>
-      <p class="lead">Vul uw pandtype, oppervlakte en wensen in en ontvang direct een prijsindicatie — vrijblijvend en zonder verplichtingen.</p>
+      <p class="lead">Ontvang binnen 30 seconden een vrijblijvende prijsindicatie voor professionele schoonmaak in Noord-Brabant. Geen verplichtingen.</p>
     </div>
   </section>
   
@@ -137,11 +137,12 @@
             <h3>3. Hoe vaak wilt u dat wij schoonmaken?</h3>
             <div class="calc-freq-grid" id="calcFreq">
               <button type="button" class="calc-card" data-freq-key="weekly1" data-label="1x per week"><span>1x</span><small>per week</small></button>
-              <button type="button" class="calc-card active" data-freq-key="weekly2" data-label="2x per week"><span>2x</span><small>per week</small><em class="calc-badge">Aanbevolen</em></button>
+              <button type="button" class="calc-card" data-freq-key="weekly2" data-label="2x per week"><span>2x</span><small>per week</small></button>
               <button type="button" class="calc-card" data-freq-key="weekly3" data-label="3x per week"><span>3x</span><small>per week</small></button>
               <button type="button" class="calc-card" data-freq-key="weekly5" data-label="5x per week"><span>5x</span><small>per week</small></button>
               <button type="button" class="calc-card" data-freq-key="daily" data-label="Dagelijks"><span>Dagelijks</span></button>
             </div>
+            <p class="calc-note calc-freq-explain" id="calcFreqExplain"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg><span>Advies wordt automatisch berekend op basis van pandtype en oppervlakte.</span></p>
           </div>
 
           <div class="calc-block">
@@ -160,10 +161,10 @@
 
           <div class="calc-block">
             <h3>5. Waar bevindt het pand zich?</h3>
-            <select id="calcPlaats">
-              <option>Helmond</option><option>Deurne</option><option>Asten</option><option>Someren</option><option>Gemert-Bakel</option><option>Laarbeek</option><option>Eindhoven</option><option>Geldrop-Mierlo</option><option>Nuenen</option><option>Mierlo</option>
-              <option>Elders in Noord-Brabant</option>
-            </select>
+            <input type="text" id="calcPlaats" list="calcCitiesList" placeholder="Typ of kies een plaats..." autocomplete="off" value="Helmond">
+            <datalist id="calcCitiesList">
+              <option value="Helmond"><option value="Eindhoven"><option value="Deurne"><option value="Gemert"><option value="Asten"><option value="Someren"><option value="Geldrop"><option value="Nuenen"><option value="Best"><option value="Veldhoven"><option value="Valkenswaard"><option value="Oirschot"><option value="Laarbeek"><option value="Boekel"><option value="Veghel"><option value="Uden"><option value="Oss"><option value="Tilburg"><option value="Den Bosch"><option value="Breda"><option value="Roosendaal"><option value="Bergen op Zoom"><option value="Oosterhout"><option value="Waalwijk"><option value="Etten-Leur"><option value="Overige plaats in Noord-Brabant">
+            </datalist>
             <p class="calc-note"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Wij zijn actief in heel Noord-Brabant.</p>
           </div>
 
@@ -171,13 +172,23 @@
 
         <div class="calc-price-wrap">
           <div class="calc-price-card" id="calcPriceCard">
-            <div class="calc-price-header">Geschatte maandprijs</div>
+            <div class="calc-price-header">Uw prijsindicatie</div>
             <div class="calc-price-range"><span id="calcPriceLow">&euro;400</span> &ndash; <span id="calcPriceHigh">&euro;550</span></div>
-            <div class="calc-price-sub">per maand, indicatie excl. btw</div>
-            <p class="calc-price-disclaimer"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg>Dit is een grove inschatting op basis van uw invoer. De exacte prijs bepalen we samen tijdens een kort, vrijblijvend kennismakingsgesprek.</p>
+            <div class="calc-price-sub">per maand, excl. btw</div>
+            <p class="calc-price-disclaimer">Gebaseerd op uw invoer. De definitieve offerte bepalen we tijdens een korte inventarisatie.</p>
             <div class="calc-price-hours">
               <div><span id="calcHoursVisit">2,0</span><small>uur per bezoek</small></div>
               <div><span id="calcHoursMonth">16</span><small>uur per maand</small></div>
+            </div>
+            <div class="calc-summary" id="calcSummary">
+              <div class="calc-summary-title">Uw selectie</div>
+              <div class="calc-summary-grid">
+                <span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 21v-4h6v4M9 8h.01M9 12h.01M15 8h.01M15 12h.01"/></svg><b id="calcSumType">Kantoor</b></span>
+                <span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg><b id="calcSumM2">250 m&sup2;</b></span>
+                <span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><b id="calcSumPlaats">Helmond</b></span>
+                <span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><b id="calcSumFreq">2x per week</b></span>
+              </div>
+              <div class="calc-summary-extras" id="calcSumExtras"></div>
             </div>
             <ul class="calc-price-includes">
               <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Vast contactpersoon</li>
@@ -201,44 +212,52 @@
 
   <div class="calc-modal-overlay" id="calcModalOverlay">
     <div class="calc-modal" role="dialog" aria-modal="true" aria-labelledby="calcModalTitle">
-      <button type="button" class="calc-modal-close" id="calcModalClose" aria-label="Sluiten"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
-      <h3 id="calcModalTitle">Vraag uw definitieve offerte aan</h3>
-      <p class="calc-modal-sub">Uw indicatie: <strong id="calcModalPrice">&euro;400 &ndash; &euro;550</strong> per maand. Vul uw gegevens in, dan nemen we binnen één werkdag contact op.</p>
+      <div class="calc-modal-header">
+        <div>
+          <h3 id="calcModalTitle">Vraag uw definitieve offerte aan</h3>
+          <p class="calc-modal-sub">Uw indicatie: <strong id="calcModalPrice">&euro;400 &ndash; &euro;550</strong> per maand</p>
+        </div>
+        <button type="button" class="calc-modal-close" id="calcModalClose" aria-label="Sluiten"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      </div>
       <form name="calculator-offerte" method="POST" action="https://api.web3forms.com/submit" enctype="multipart/form-data" class="calc-modal-form">
-        <input type="hidden" name="access_key" value="abc98c0d-af16-42b0-ae5c-3337f35e5299">
-        <input type="hidden" name="subject" value="Nieuwe offerteaanvraag via de prijscalculator">
-        <input type="hidden" name="redirect" value="https://www.brabantschoon.nl/thanks.html">
-        <input type="hidden" name="prijsindicatie" id="calcModalPriceField" value="">
-        <input type="hidden" name="calculator_details" id="calcModalDetailsField" value="">
-        <input type="hidden" name="interne_kostprijs_uitsplitsing" id="calcModalInternalField" value="">
-        <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
-        <div class="calc-modal-row">
-          <input type="text" name="naam" placeholder="Naam" required>
-          <input type="text" name="bedrijfsnaam" placeholder="Bedrijfsnaam">
-        </div>
-        <div class="calc-modal-row">
-          <input type="email" name="email" placeholder="E-mailadres" required>
-          <input type="tel" name="telefoon" placeholder="Telefoonnummer" required>
-        </div>
-        <input type="text" name="adres" placeholder="Adres">
-        <div class="calc-modal-block">
-          <label class="calc-modal-label">Voorkeur schoonmaaktijd</label>
-          <div class="calc-time-grid" id="calcModalTime">
-            <button type="button" class="calc-card" data-label="Ochtend"><span>Ochtend</span><small>06:00 - 12:00</small></button>
-            <button type="button" class="calc-card" data-label="Middag"><span>Middag</span><small>12:00 - 17:00</small></button>
-            <button type="button" class="calc-card" data-label="Avond"><span>Avond</span><small>17:00 - 22:00</small></button>
-            <button type="button" class="calc-card" data-label="Nacht"><span>Nacht</span><small>22:00 - 06:00</small></button>
-            <button type="button" class="calc-card active" data-label="Geen voorkeur"><span>Geen voorkeur</span><small>Flexibel</small></button>
+        <div class="calc-modal-body">
+          <input type="hidden" name="access_key" value="abc98c0d-af16-42b0-ae5c-3337f35e5299">
+          <input type="hidden" name="subject" value="Nieuwe offerteaanvraag via de prijscalculator">
+          <input type="hidden" name="redirect" value="https://www.brabantschoon.nl/thanks.html">
+          <input type="hidden" name="prijsindicatie" id="calcModalPriceField" value="">
+          <input type="hidden" name="calculator_details" id="calcModalDetailsField" value="">
+          <input type="hidden" name="interne_kostprijs_uitsplitsing" id="calcModalInternalField" value="">
+          <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
+          <div class="calc-modal-row">
+            <input type="text" name="naam" placeholder="Naam" required>
+            <input type="text" name="bedrijfsnaam" placeholder="Bedrijfsnaam">
           </div>
-          <input type="hidden" name="voorkeur_tijdstip" id="calcModalTimeField" value="Geen voorkeur">
+          <div class="calc-modal-row">
+            <input type="email" name="email" placeholder="E-mailadres" required>
+            <input type="tel" name="telefoon" placeholder="Telefoonnummer" required>
+          </div>
+          <input type="text" name="adres" placeholder="Adres">
+          <div class="calc-modal-block">
+            <label class="calc-modal-label">Voorkeur schoonmaaktijd</label>
+            <div class="calc-time-grid" id="calcModalTime">
+              <button type="button" class="calc-card" data-label="Ochtend"><span>Ochtend</span><small>06:00 - 12:00</small></button>
+              <button type="button" class="calc-card" data-label="Middag"><span>Middag</span><small>12:00 - 17:00</small></button>
+              <button type="button" class="calc-card" data-label="Avond"><span>Avond</span><small>17:00 - 22:00</small></button>
+              <button type="button" class="calc-card" data-label="Nacht"><span>Nacht</span><small>22:00 - 06:00</small></button>
+              <button type="button" class="calc-card active" data-label="Geen voorkeur"><span>Geen voorkeur</span><small>Flexibel</small></button>
+            </div>
+            <input type="hidden" name="voorkeur_tijdstip" id="calcModalTimeField" value="Geen voorkeur">
+          </div>
+          <textarea name="opmerkingen" placeholder="Opmerkingen (optioneel)" rows="3"></textarea>
+          <label class="calc-modal-upload">
+            <input type="file" name="fotos" accept="image/*" multiple>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg><span>Foto's toevoegen <em>(optioneel)</em></span>
+          </label>
         </div>
-        <textarea name="opmerkingen" placeholder="Opmerkingen (optioneel)" rows="3"></textarea>
-        <label class="calc-modal-upload">
-          <input type="file" name="fotos" accept="image/*" multiple>
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg><span>Foto's toevoegen <em>(optioneel)</em></span>
-        </label>
-        <button type="submit" class="btn btn-primary calc-modal-submit">Verstuur offerteaanvraag</button>
-        <p class="calc-price-footnote"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Vrijblijvend &middot; Reactie binnen één werkdag</p>
+        <div class="calc-modal-footer">
+          <button type="submit" class="btn btn-primary calc-modal-submit">Verstuur offerteaanvraag</button>
+          <p class="calc-price-footnote"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Vrijblijvend &middot; Reactie binnen één werkdag</p>
+        </div>
       </form>
     </div>
   </div>
@@ -249,10 +268,37 @@
         <span class="eyebrow">Veelgestelde vragen</span>
         <h2>Over de prijscalculator</h2>
       </div>
-      <div class="faq reveal"><details><summary>Hoe betrouwbaar is de berekende prijsindicatie?<span class="chev"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="faq-a-wrap"><p class="faq-a">De calculator geeft een realistische inschatting op basis van oppervlakte, pandtype en frequentie. De definitieve prijs stellen we vast na een kort kennismakingsgesprek, waarin we rekening houden met de specifieke situatie van uw pand.</p></div></details>
-      <details><summary>Wat kost een schoonmaakbedrijf per m2?<span class="chev"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="faq-a-wrap"><p class="faq-a">Dat hangt sterk af van het pandtype, de frequentie en eventuele extra diensten. Gebruik de calculator hierboven voor een indicatie op maat, of vraag een vrijblijvende offerte aan.</p></div></details>
-      <details><summary>Is de prijsindicatie inclusief of exclusief btw?<span class="chev"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="faq-a-wrap"><p class="faq-a">De getoonde bandbreedte is exclusief btw, zoals gebruikelijk bij zakelijke schoonmaakdiensten.</p></div></details>
-      <details><summary>Kan ik de calculator ook gebruiken voor een eenmalige schoonmaakbeurt?<span class="chev"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="faq-a-wrap"><p class="faq-a">De calculator is gericht op terugkerende schoonmaak. Voor een eenmalige beurt, opleveringsschoonmaak of specialistische reiniging kunt u direct een offerte aanvragen via het formulier.</p></div></details></div>
+      <div class="faq reveal"><details><summary>Hoe wordt de prijs berekend?<span class="chev"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="faq-a-wrap"><p class="faq-a">We rekenen met de oppervlakte, het pandtype en de gekozen frequentie om de benodigde schoonmaaktijd te schatten. Daarop baseren we een prijsindicatie, inclusief materiaal- en reiskosten.</p></div></details>
+      <details><summary>Waarom is dit een indicatie en geen vaste prijs?<span class="chev"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="faq-a-wrap"><p class="faq-a">Elk pand is anders: indeling, vloersoort en specifieke wensen beïnvloeden de uiteindelijke prijs. Daarom bepalen we het definitieve bedrag pas na een korte kennismaking.</p></div></details>
+      <details><summary>Hoe snel ontvang ik een offerte?<span class="chev"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="faq-a-wrap"><p class="faq-a">Na het invullen van het formulier nemen we binnen één werkdag contact met u op voor een definitieve offerte.</p></div></details>
+      <details><summary>Werken jullie in heel Noord-Brabant?<span class="chev"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="faq-a-wrap"><p class="faq-a">Ons kerngebied is Helmond en de Peelgemeenten. Voor grotere of terugkerende opdrachten zijn we ook actief in de rest van Noord-Brabant.</p></div></details>
+      <details><summary>Zijn er verborgen kosten?<span class="chev"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="faq-a-wrap"><p class="faq-a">Nee. De prijsindicatie is exclusief btw, verder rekenen we geen extra kosten die niet in de berekening zijn meegenomen. Eventuele extra diensten kiest u zelf, vooraf zichtbaar in de calculator.</p></div></details>
+      <details><summary>Kan ik eerst kennismaken voordat ik een contract afsluit?<span class="chev"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="faq-a-wrap"><p class="faq-a">Ja, een vrijblijvend kennismakingsgesprek gaat altijd vooraf aan een definitieve offerte of contract.</p></div></details></div>
+    </div>
+  </section>
+  <section class="section-tight" style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Achtergrond</span>
+        <h2>Hoe wij onze schoonmaakprijzen bepalen</h2>
+      </div>
+      <div class="grid-3 reveal">
+        <div class="wg-card" style="cursor:default;">
+          <div class="wg-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg></div>
+          <h3>Waaruit bestaat een schoonmaakprijs?</h3>
+          <p>De prijs is opgebouwd uit de benodigde schoonmaaktijd, materiaalkosten, reiskosten en een redelijke marge. Meer oppervlakte of een hogere frequentie betekent meer uren, en dus een hogere prijs.</p>
+        </div>
+        <div class="wg-card" style="cursor:default;">
+          <div class="wg-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+          <h3>Waarom verschilt de prijs per locatie?</h3>
+          <p>Reistijd en -kosten spelen mee in de prijsopbouw. Panden dichter bij ons kerngebied in de Peel zijn doorgaans iets voordeliger dan locaties verder weg in Noord-Brabant.</p>
+        </div>
+        <div class="wg-card" style="cursor:default;">
+          <div class="wg-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
+          <h3>Voordelen van periodieke schoonmaak</h3>
+          <p>Een vast schema zorgt voor een consistent schone werkomgeving, voorkomt achterstallig onderhoud en is per beurt vaak voordeliger dan losse, eenmalige schoonmaakopdrachten.</p>
+        </div>
+      </div>
     </div>
   </section>
   <section><div class="wrap"><div class="cta-band reveal">
@@ -327,7 +373,7 @@
   <a href="tel:+31492313050" class="btn btn-outline">Bel direct</a>
   <a href="contact.html#offerteWizard" class="btn btn-primary">Vrijblijvende offerte</a>
 </div>
-<script src="js/pricing-engine.js?v=89" defer></script>
-<script src="js/main.js?v=89" defer></script>
+<script src="js/pricing-engine.js?v=90" defer></script>
+<script src="js/main.js?v=90" defer></script>
 </body>
 </html>

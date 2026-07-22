@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "89"
+ASSET_VERSION = "90"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -177,6 +177,17 @@ SERVICES = [
 
 WERKGEBIED_KERN = ["Helmond", "Deurne", "Asten", "Someren", "Gemert-Bakel", "Laarbeek"]
 WERKGEBIED_OVERIG = ["Eindhoven", "Geldrop-Mierlo", "Nuenen", "Mierlo"]
+
+# Plaatsenlijst voor de doorzoekbare locatie-invoer in de calculator.
+# Losstaand van WERKGEBIED_KERN/OVERIG omdat dit een bredere, servicegerichte
+# lijst is (ook plaatsen buiten het kerngebied), niet het officiele werkgebied.
+CALCULATOR_CITIES = [
+    "Helmond", "Eindhoven", "Deurne", "Gemert", "Asten", "Someren", "Geldrop",
+    "Nuenen", "Best", "Veldhoven", "Valkenswaard", "Oirschot", "Laarbeek",
+    "Boekel", "Veghel", "Uden", "Oss", "Tilburg", "Den Bosch", "Breda",
+    "Roosendaal", "Bergen op Zoom", "Oosterhout", "Waalwijk", "Etten-Leur",
+    "Overige plaats in Noord-Brabant",
+]
 
 FORM_SERVICE_OPTIONS = [
     "Kantoorreiniging", "Glasbewassing", "Gevelreiniging", "VvE-schoonmaak",
@@ -720,11 +731,12 @@ def calculator_block():
             <h3>3. Hoe vaak wilt u dat wij schoonmaken?</h3>
             <div class="calc-freq-grid" id="calcFreq">
               <button type="button" class="calc-card" data-freq-key="weekly1" data-label="1x per week"><span>1x</span><small>per week</small></button>
-              <button type="button" class="calc-card active" data-freq-key="weekly2" data-label="2x per week"><span>2x</span><small>per week</small><em class="calc-badge">Aanbevolen</em></button>
+              <button type="button" class="calc-card" data-freq-key="weekly2" data-label="2x per week"><span>2x</span><small>per week</small></button>
               <button type="button" class="calc-card" data-freq-key="weekly3" data-label="3x per week"><span>3x</span><small>per week</small></button>
               <button type="button" class="calc-card" data-freq-key="weekly5" data-label="5x per week"><span>5x</span><small>per week</small></button>
               <button type="button" class="calc-card" data-freq-key="daily" data-label="Dagelijks"><span>Dagelijks</span></button>
             </div>
+            <p class="calc-note calc-freq-explain" id="calcFreqExplain">{icon('check')}<span>Advies wordt automatisch berekend op basis van pandtype en oppervlakte.</span></p>
           </div>
 
           <div class="calc-block">
@@ -743,10 +755,10 @@ def calculator_block():
 
           <div class="calc-block">
             <h3>5. Waar bevindt het pand zich?</h3>
-            <select id="calcPlaats">
-              {"".join(f'<option>{c}</option>' for c in WERKGEBIED_KERN + WERKGEBIED_OVERIG)}
-              <option>Elders in Noord-Brabant</option>
-            </select>
+            <input type="text" id="calcPlaats" list="calcCitiesList" placeholder="Typ of kies een plaats..." autocomplete="off" value="Helmond">
+            <datalist id="calcCitiesList">
+              {"".join(f'<option value="{c}">' for c in CALCULATOR_CITIES)}
+            </datalist>
             <p class="calc-note">{icon('check')}Wij zijn actief in heel Noord-Brabant.</p>
           </div>
 
@@ -754,13 +766,23 @@ def calculator_block():
 
         <div class="calc-price-wrap">
           <div class="calc-price-card" id="calcPriceCard">
-            <div class="calc-price-header">Geschatte maandprijs</div>
+            <div class="calc-price-header">Uw prijsindicatie</div>
             <div class="calc-price-range"><span id="calcPriceLow">&euro;400</span> &ndash; <span id="calcPriceHigh">&euro;550</span></div>
-            <div class="calc-price-sub">per maand, indicatie excl. btw</div>
-            <p class="calc-price-disclaimer">{icon('doc')}Dit is een grove inschatting op basis van uw invoer. De exacte prijs bepalen we samen tijdens een kort, vrijblijvend kennismakingsgesprek.</p>
+            <div class="calc-price-sub">per maand, excl. btw</div>
+            <p class="calc-price-disclaimer">Gebaseerd op uw invoer. De definitieve offerte bepalen we tijdens een korte inventarisatie.</p>
             <div class="calc-price-hours">
               <div><span id="calcHoursVisit">2,0</span><small>uur per bezoek</small></div>
               <div><span id="calcHoursMonth">16</span><small>uur per maand</small></div>
+            </div>
+            <div class="calc-summary" id="calcSummary">
+              <div class="calc-summary-title">Uw selectie</div>
+              <div class="calc-summary-grid">
+                <span>{icon('office')}<b id="calcSumType">Kantoor</b></span>
+                <span>{icon('doc')}<b id="calcSumM2">250 m&sup2;</b></span>
+                <span>{icon('pin')}<b id="calcSumPlaats">Helmond</b></span>
+                <span>{icon('clock')}<b id="calcSumFreq">2x per week</b></span>
+              </div>
+              <div class="calc-summary-extras" id="calcSumExtras"></div>
             </div>
             <ul class="calc-price-includes">
               <li>{icon('check')}Vast contactpersoon</li>
@@ -784,44 +806,52 @@ def calculator_block():
 
   <div class="calc-modal-overlay" id="calcModalOverlay">
     <div class="calc-modal" role="dialog" aria-modal="true" aria-labelledby="calcModalTitle">
-      <button type="button" class="calc-modal-close" id="calcModalClose" aria-label="Sluiten">{icon('close')}</button>
-      <h3 id="calcModalTitle">Vraag uw definitieve offerte aan</h3>
-      <p class="calc-modal-sub">Uw indicatie: <strong id="calcModalPrice">&euro;400 &ndash; &euro;550</strong> per maand. Vul uw gegevens in, dan nemen we binnen \u00e9\u00e9n werkdag contact op.</p>
+      <div class="calc-modal-header">
+        <div>
+          <h3 id="calcModalTitle">Vraag uw definitieve offerte aan</h3>
+          <p class="calc-modal-sub">Uw indicatie: <strong id="calcModalPrice">&euro;400 &ndash; &euro;550</strong> per maand</p>
+        </div>
+        <button type="button" class="calc-modal-close" id="calcModalClose" aria-label="Sluiten">{icon('close')}</button>
+      </div>
       <form name="calculator-offerte" method="POST" action="https://api.web3forms.com/submit" enctype="multipart/form-data" class="calc-modal-form">
-        <input type="hidden" name="access_key" value="abc98c0d-af16-42b0-ae5c-3337f35e5299">
-        <input type="hidden" name="subject" value="Nieuwe offerteaanvraag via de prijscalculator">
-        <input type="hidden" name="redirect" value="{SITE_URL}/thanks.html">
-        <input type="hidden" name="prijsindicatie" id="calcModalPriceField" value="">
-        <input type="hidden" name="calculator_details" id="calcModalDetailsField" value="">
-        <input type="hidden" name="interne_kostprijs_uitsplitsing" id="calcModalInternalField" value="">
-        <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
-        <div class="calc-modal-row">
-          <input type="text" name="naam" placeholder="Naam" required>
-          <input type="text" name="bedrijfsnaam" placeholder="Bedrijfsnaam">
-        </div>
-        <div class="calc-modal-row">
-          <input type="email" name="email" placeholder="E-mailadres" required>
-          <input type="tel" name="telefoon" placeholder="Telefoonnummer" required>
-        </div>
-        <input type="text" name="adres" placeholder="Adres">
-        <div class="calc-modal-block">
-          <label class="calc-modal-label">Voorkeur schoonmaaktijd</label>
-          <div class="calc-time-grid" id="calcModalTime">
-            <button type="button" class="calc-card" data-label="Ochtend"><span>Ochtend</span><small>06:00 - 12:00</small></button>
-            <button type="button" class="calc-card" data-label="Middag"><span>Middag</span><small>12:00 - 17:00</small></button>
-            <button type="button" class="calc-card" data-label="Avond"><span>Avond</span><small>17:00 - 22:00</small></button>
-            <button type="button" class="calc-card" data-label="Nacht"><span>Nacht</span><small>22:00 - 06:00</small></button>
-            <button type="button" class="calc-card active" data-label="Geen voorkeur"><span>Geen voorkeur</span><small>Flexibel</small></button>
+        <div class="calc-modal-body">
+          <input type="hidden" name="access_key" value="abc98c0d-af16-42b0-ae5c-3337f35e5299">
+          <input type="hidden" name="subject" value="Nieuwe offerteaanvraag via de prijscalculator">
+          <input type="hidden" name="redirect" value="{SITE_URL}/thanks.html">
+          <input type="hidden" name="prijsindicatie" id="calcModalPriceField" value="">
+          <input type="hidden" name="calculator_details" id="calcModalDetailsField" value="">
+          <input type="hidden" name="interne_kostprijs_uitsplitsing" id="calcModalInternalField" value="">
+          <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
+          <div class="calc-modal-row">
+            <input type="text" name="naam" placeholder="Naam" required>
+            <input type="text" name="bedrijfsnaam" placeholder="Bedrijfsnaam">
           </div>
-          <input type="hidden" name="voorkeur_tijdstip" id="calcModalTimeField" value="Geen voorkeur">
+          <div class="calc-modal-row">
+            <input type="email" name="email" placeholder="E-mailadres" required>
+            <input type="tel" name="telefoon" placeholder="Telefoonnummer" required>
+          </div>
+          <input type="text" name="adres" placeholder="Adres">
+          <div class="calc-modal-block">
+            <label class="calc-modal-label">Voorkeur schoonmaaktijd</label>
+            <div class="calc-time-grid" id="calcModalTime">
+              <button type="button" class="calc-card" data-label="Ochtend"><span>Ochtend</span><small>06:00 - 12:00</small></button>
+              <button type="button" class="calc-card" data-label="Middag"><span>Middag</span><small>12:00 - 17:00</small></button>
+              <button type="button" class="calc-card" data-label="Avond"><span>Avond</span><small>17:00 - 22:00</small></button>
+              <button type="button" class="calc-card" data-label="Nacht"><span>Nacht</span><small>22:00 - 06:00</small></button>
+              <button type="button" class="calc-card active" data-label="Geen voorkeur"><span>Geen voorkeur</span><small>Flexibel</small></button>
+            </div>
+            <input type="hidden" name="voorkeur_tijdstip" id="calcModalTimeField" value="Geen voorkeur">
+          </div>
+          <textarea name="opmerkingen" placeholder="Opmerkingen (optioneel)" rows="3"></textarea>
+          <label class="calc-modal-upload">
+            <input type="file" name="fotos" accept="image/*" multiple>
+            {icon('doc')}<span>Foto's toevoegen <em>(optioneel)</em></span>
+          </label>
         </div>
-        <textarea name="opmerkingen" placeholder="Opmerkingen (optioneel)" rows="3"></textarea>
-        <label class="calc-modal-upload">
-          <input type="file" name="fotos" accept="image/*" multiple>
-          {icon('doc')}<span>Foto's toevoegen <em>(optioneel)</em></span>
-        </label>
-        <button type="submit" class="btn btn-primary calc-modal-submit">Verstuur offerteaanvraag</button>
-        <p class="calc-price-footnote">{icon('check')}Vrijblijvend &middot; Reactie binnen \u00e9\u00e9n werkdag</p>
+        <div class="calc-modal-footer">
+          <button type="submit" class="btn btn-primary calc-modal-submit">Verstuur offerteaanvraag</button>
+          <p class="calc-price-footnote">{icon('check')}Vrijblijvend &middot; Reactie binnen \u00e9\u00e9n werkdag</p>
+        </div>
       </form>
     </div>
   </div>
@@ -830,7 +860,7 @@ def calculator_block():
 def build_calculator_page():
     base = ""
     body = f"""
-  {page_hero("Prijscalculator", "Bereken uw schoonmaakkosten.", "Vul uw pandtype, oppervlakte en wensen in en ontvang direct een prijsindicatie \u2014 vrijblijvend en zonder verplichtingen.", base, "Prijscalculator")}
+  {page_hero("Prijscalculator", "Bereken uw schoonmaakkosten.", "Ontvang binnen 30 seconden een vrijblijvende prijsindicatie voor professionele schoonmaak in Noord-Brabant. Geen verplichtingen.", base, "Prijscalculator")}
   {calculator_block()}
   <section class="section-tight">
     <div class="wrap">
@@ -839,11 +869,38 @@ def build_calculator_page():
         <h2>Over de prijscalculator</h2>
       </div>
       <div class="faq reveal">{faq_block([
-        ("Hoe betrouwbaar is de berekende prijsindicatie?", "De calculator geeft een realistische inschatting op basis van oppervlakte, pandtype en frequentie. De definitieve prijs stellen we vast na een kort kennismakingsgesprek, waarin we rekening houden met de specifieke situatie van uw pand."),
-        ("Wat kost een schoonmaakbedrijf per m2?", "Dat hangt sterk af van het pandtype, de frequentie en eventuele extra diensten. Gebruik de calculator hierboven voor een indicatie op maat, of vraag een vrijblijvende offerte aan."),
-        ("Is de prijsindicatie inclusief of exclusief btw?", "De getoonde bandbreedte is exclusief btw, zoals gebruikelijk bij zakelijke schoonmaakdiensten."),
-        ("Kan ik de calculator ook gebruiken voor een eenmalige schoonmaakbeurt?", "De calculator is gericht op terugkerende schoonmaak. Voor een eenmalige beurt, opleveringsschoonmaak of specialistische reiniging kunt u direct een offerte aanvragen via het formulier."),
+        ("Hoe wordt de prijs berekend?", "We rekenen met de oppervlakte, het pandtype en de gekozen frequentie om de benodigde schoonmaaktijd te schatten. Daarop baseren we een prijsindicatie, inclusief materiaal- en reiskosten."),
+        ("Waarom is dit een indicatie en geen vaste prijs?", "Elk pand is anders: indeling, vloersoort en specifieke wensen be\u00efnvloeden de uiteindelijke prijs. Daarom bepalen we het definitieve bedrag pas na een korte kennismaking."),
+        ("Hoe snel ontvang ik een offerte?", "Na het invullen van het formulier nemen we binnen \u00e9\u00e9n werkdag contact met u op voor een definitieve offerte."),
+        ("Werken jullie in heel Noord-Brabant?", "Ons kerngebied is Helmond en de Peelgemeenten. Voor grotere of terugkerende opdrachten zijn we ook actief in de rest van Noord-Brabant."),
+        ("Zijn er verborgen kosten?", "Nee. De prijsindicatie is exclusief btw, verder rekenen we geen extra kosten die niet in de berekening zijn meegenomen. Eventuele extra diensten kiest u zelf, vooraf zichtbaar in de calculator."),
+        ("Kan ik eerst kennismaken voordat ik een contract afsluit?", "Ja, een vrijblijvend kennismakingsgesprek gaat altijd vooraf aan een definitieve offerte of contract."),
       ])}</div>
+    </div>
+  </section>
+  <section class="section-tight" style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Achtergrond</span>
+        <h2>Hoe wij onze schoonmaakprijzen bepalen</h2>
+      </div>
+      <div class="grid-3 reveal">
+        <div class="wg-card" style="cursor:default;">
+          <div class="wg-icon">{icon('doc')}</div>
+          <h3>Waaruit bestaat een schoonmaakprijs?</h3>
+          <p>De prijs is opgebouwd uit de benodigde schoonmaaktijd, materiaalkosten, reiskosten en een redelijke marge. Meer oppervlakte of een hogere frequentie betekent meer uren, en dus een hogere prijs.</p>
+        </div>
+        <div class="wg-card" style="cursor:default;">
+          <div class="wg-icon">{icon('pin')}</div>
+          <h3>Waarom verschilt de prijs per locatie?</h3>
+          <p>Reistijd en -kosten spelen mee in de prijsopbouw. Panden dichter bij ons kerngebied in de Peel zijn doorgaans iets voordeliger dan locaties verder weg in Noord-Brabant.</p>
+        </div>
+        <div class="wg-card" style="cursor:default;">
+          <div class="wg-icon">{icon('check')}</div>
+          <h3>Voordelen van periodieke schoonmaak</h3>
+          <p>Een vast schema zorgt voor een consistent schone werkomgeving, voorkomt achterstallig onderhoud en is per beurt vaak voordeliger dan losse, eenmalige schoonmaakopdrachten.</p>
+        </div>
+      </div>
     </div>
   </section>
   <section><div class="wrap">{cta_band("Liever direct persoonlijk contact?", "Bel of mail ons voor een vrijblijvend gesprek.", base)}</div></section>
