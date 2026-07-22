@@ -114,22 +114,36 @@ if (revealEls.length) {
   const calc = document.getElementById('calculator');
   if (!calc || typeof calculatePricing !== 'function') return;
 
+  let currentJobType = 'periodiek';
   let currentTypeKey = 'office';
   let currentFreqKey = null; // null = nog geen handmatige keuze, volgt het advies
   let extraPctTotal = 0;
+  let verhuisExtraPctTotal = 0;
+  let panNietLeeg = false;
+  let opleveringType = 'nieuwbouw';
   let lastLow = 0, lastHigh = 0;
 
+  const jobTypeButtons = calc.querySelectorAll('#calcJobType .calc-card');
+  const jobGroupBlocks = calc.querySelectorAll('[data-job-group]');
   const typeButtons = calc.querySelectorAll('#calcType .calc-card');
   const freqButtons = calc.querySelectorAll('#calcFreq .calc-card');
+  const verhuisTypeButtons = calc.querySelectorAll('#calcVerhuisType .calc-card');
+  const opleveringTypeButtons = calc.querySelectorAll('#calcOpleveringType .calc-card');
+  const pandLeegButtons = calc.querySelectorAll('#calcPandLeeg .calc-card');
+  const verhuisExtraChecks = calc.querySelectorAll('#calcVerhuisExtra input[type="checkbox"]');
   const m2Range = document.getElementById('calcM2Range');
   const m2Number = document.getElementById('calcM2Number');
-  const extraChecks = calc.querySelectorAll('#calcExtra input[type="checkbox"]:not(#calcOplevering)');
+  const extraChecks = calc.querySelectorAll('#calcExtra input[type="checkbox"]');
   const priceLowEl = document.getElementById('calcPriceLow');
   const priceHighEl = document.getElementById('calcPriceHigh');
+  const priceHeaderEl = document.getElementById('calcPriceHeader');
+  const priceSubEl = document.getElementById('calcPriceSub');
+  const priceHoursBlock = document.getElementById('calcPriceHours');
   const hoursVisitEl = document.getElementById('calcHoursVisit');
   const hoursMonthEl = document.getElementById('calcHoursMonth');
   const mobilePriceEl = document.getElementById('calcMobilePrice');
   const modalPriceEl = document.getElementById('calcModalPrice');
+  const modalPriceSuffixEl = document.getElementById('calcModalPriceSuffix');
   const modalPriceField = document.getElementById('calcModalPriceField');
   const modalDetailsField = document.getElementById('calcModalDetailsField');
   const modalInternalField = document.getElementById('calcModalInternalField');
@@ -137,16 +151,54 @@ if (revealEls.length) {
   const plaatsInput = document.getElementById('calcPlaats');
   const plaatsListbox = document.getElementById('calcPlaatsListbox');
   const plaatsNote = document.getElementById('calcPlaatsNote');
+  const sumJobType = document.getElementById('calcSumJobType');
   const sumType = document.getElementById('calcSumType');
   const sumM2 = document.getElementById('calcSumM2');
   const sumPlaats = document.getElementById('calcSumPlaats');
   const sumFreq = document.getElementById('calcSumFreq');
+  const sumFreqWrap = document.getElementById('calcSumFreqWrap');
   const sumExtras = document.getElementById('calcSumExtras');
+
+  const JOB_TYPE_LABELS = {
+    periodiek: 'Periodieke schoonmaak', oplevering: 'Opleveringsschoonmaak',
+    verhuis: 'Verhuisschoonmaak', dieptereiniging: 'Eenmalige dieptereiniging'
+  };
 
   function selectCard(buttons, btn) {
     buttons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
   }
+
+  function applyJobTypeVisibility() {
+    jobGroupBlocks.forEach(block => {
+      const groups = block.dataset.jobGroup.split(' ');
+      block.hidden = !groups.includes(currentJobType);
+    });
+  }
+
+  jobTypeButtons.forEach(btn => btn.addEventListener('click', () => {
+    selectCard(jobTypeButtons, btn);
+    currentJobType = btn.dataset.job;
+    applyJobTypeVisibility();
+    calculate();
+  }));
+  applyJobTypeVisibility();
+
+  verhuisTypeButtons.forEach(btn => btn.addEventListener('click', () => { selectCard(verhuisTypeButtons, btn); calculate(); }));
+  opleveringTypeButtons.forEach(btn => btn.addEventListener('click', () => {
+    selectCard(opleveringTypeButtons, btn);
+    opleveringType = btn.dataset.value;
+    calculate();
+  }));
+  pandLeegButtons.forEach(btn => btn.addEventListener('click', () => {
+    selectCard(pandLeegButtons, btn);
+    panNietLeeg = btn.dataset.value === 'nee';
+    calculate();
+  }));
+  verhuisExtraChecks.forEach(chk => chk.addEventListener('change', () => {
+    verhuisExtraPctTotal = Array.from(verhuisExtraChecks).filter(c => c.checked).reduce((sum, c) => sum + parseFloat(c.dataset.pct || 0), 0);
+    calculate();
+  }));
 
   // Verwijdert alle 'Aanbevolen'-badges en zet er \u00e9\u00e9n op de meegegeven freqKey
   function markRecommended(freqKey) {
@@ -321,78 +373,116 @@ if (revealEls.length) {
   function calculate() {
     const parsedM2 = parseInt(m2Number.value, 10);
     const m2 = Number.isFinite(parsedM2) && parsedM2 > 0 ? parsedM2 : 250;
+    const plaats = plaatsInput ? plaatsInput.value : '';
+    let low, high, result;
 
-    // Dynamische frequentie-aanbeveling: zolang de bezoeker nog niets handmatig koos,
-    // volgt de selectie automatisch het advies bij wijziging van pandtype/oppervlakte.
-    const recommendation = typeof getRecommendedFrequency === 'function'
-      ? getRecommendedFrequency(currentTypeKey, m2)
-      : { freqKey: 'weekly2', label: '2x per week', explanation: '' };
+    if (currentJobType === 'periodiek') {
+      // Dynamische frequentie-aanbeveling: zolang de bezoeker nog niets handmatig koos,
+      // volgt de selectie automatisch het advies bij wijziging van pandtype/oppervlakte.
+      const recommendation = typeof getRecommendedFrequency === 'function'
+        ? getRecommendedFrequency(currentTypeKey, m2)
+        : { freqKey: 'weekly2', label: '2x per week', explanation: '' };
 
-    markRecommended(recommendation.freqKey);
-    if (freqExplainEl) {
-      const textSpan = freqExplainEl.querySelector('span');
-      if (textSpan) textSpan.textContent = recommendation.explanation;
+      markRecommended(recommendation.freqKey);
+      if (freqExplainEl) {
+        const textSpan = freqExplainEl.querySelector('span');
+        if (textSpan) textSpan.textContent = recommendation.explanation;
+      }
+      if (currentFreqKey === null) {
+        const recBtn = calc.querySelector(`#calcFreq .calc-card[data-freq-key="${recommendation.freqKey}"]`);
+        if (recBtn) selectCard(freqButtons, recBtn);
+      }
+      const activeFreqKey = currentFreqKey || recommendation.freqKey;
+
+      result = calculatePricing({
+        surfaceM2: m2, propertyType: currentTypeKey, frequencyKey: activeFreqKey,
+        extraServicesSurchargePercentage: extraPctTotal
+      });
+      low = result.customer.priceLow; high = result.customer.priceHigh;
+
+      if (priceHeaderEl) priceHeaderEl.textContent = 'Uw prijsindicatie';
+      if (priceSubEl) priceSubEl.textContent = 'per maand, excl. btw';
+      if (priceHoursBlock) priceHoursBlock.hidden = false;
+      if (hoursVisitEl) hoursVisitEl.textContent = result.customer.estimatedLaborHoursPerVisit.toFixed(1).replace('.', ',');
+      if (hoursMonthEl) hoursMonthEl.textContent = Math.round(result.customer.estimatedLaborHoursPerMonth);
+      if (modalPriceSuffixEl) modalPriceSuffixEl.textContent = ' per maand';
+      if (mobilePriceEl) mobilePriceEl.textContent = formatEuro(low) + ' \u2013 ' + formatEuro(high) + ' / mnd';
+    } else {
+      // Eenmalige opdrachten: oplevering, verhuis, dieptereiniging
+      const oneTimeInput = { surfaceM2: m2 };
+      if (currentJobType === 'oplevering') {
+        oneTimeInput.opleveringType = opleveringType;
+      } else if (currentJobType === 'verhuis') {
+        oneTimeInput.panNietLeeg = panNietLeeg;
+        oneTimeInput.extraServicesSurchargePercentage = verhuisExtraPctTotal;
+      }
+      result = typeof calculateOneTimePricing === 'function'
+        ? calculateOneTimePricing(currentJobType, oneTimeInput)
+        : { customer: { priceLow: 145, priceHigh: 195, estimatedLaborHours: 2 }, internal: {} };
+      low = result.customer.priceLow; high = result.customer.priceHigh;
+
+      if (priceHeaderEl) priceHeaderEl.textContent = 'Uw eenmalige prijsindicatie';
+      if (priceSubEl) priceSubEl.textContent = 'eenmalig, excl. btw';
+      if (priceHoursBlock) priceHoursBlock.hidden = true;
+      if (modalPriceSuffixEl) modalPriceSuffixEl.textContent = ' (eenmalig)';
+      if (mobilePriceEl) mobilePriceEl.textContent = formatEuro(low) + ' \u2013 ' + formatEuro(high);
     }
-
-    if (currentFreqKey === null) {
-      const recBtn = calc.querySelector(`#calcFreq .calc-card[data-freq-key="${recommendation.freqKey}"]`);
-      if (recBtn) selectCard(freqButtons, recBtn);
-    }
-    const activeFreqKey = currentFreqKey || recommendation.freqKey;
-
-    const result = calculatePricing({
-      surfaceM2: m2,
-      propertyType: currentTypeKey,
-      frequencyKey: activeFreqKey,
-      extraServicesSurchargePercentage: extraPctTotal
-    });
-
-    // --- Alleen deze twee waarden mogen zichtbaar zijn voor de bezoeker ---
-    const low = result.customer.priceLow;
-    const high = result.customer.priceHigh;
 
     animateValue(priceLowEl, lastLow || low, low, 450);
     animateValue(priceHighEl, lastHigh || high, high, 450);
     lastLow = low; lastHigh = high;
 
     const rangeText = formatEuro(low) + ' \u2013 ' + formatEuro(high);
-    if (mobilePriceEl) mobilePriceEl.textContent = rangeText + ' / mnd';
     if (modalPriceEl) modalPriceEl.textContent = rangeText;
-    if (modalPriceField) modalPriceField.value = rangeText + ' per maand (indicatief)';
-
-    if (hoursVisitEl) hoursVisitEl.textContent = result.customer.estimatedLaborHoursPerVisit.toFixed(1).replace('.', ',');
-    if (hoursMonthEl) hoursMonthEl.textContent = Math.round(result.customer.estimatedLaborHoursPerMonth);
+    if (modalPriceField) modalPriceField.value = rangeText + (currentJobType === 'periodiek' ? ' per maand (indicatief)' : ' eenmalig (indicatief)');
 
     // Live selectie-samenvatting boven de offerteknop
-    const typeLabel = calc.querySelector('#calcType .calc-card.active')?.dataset.label || '';
+    const typeLabel = currentJobType === 'verhuis'
+      ? (calc.querySelector('#calcVerhuisType .calc-card.active')?.dataset.label || '')
+      : (calc.querySelector('#calcType .calc-card.active')?.dataset.label || '');
     const freqLabel = calc.querySelector('#calcFreq .calc-card.active')?.dataset.label || '';
-    const extrasChecked = Array.from(extraChecks).filter(c => c.checked).map(c => c.closest('label').textContent.trim());
-    const plaats = plaatsInput ? plaatsInput.value : '';
+    const activeExtraChecks = currentJobType === 'verhuis' ? verhuisExtraChecks : extraChecks;
+    const extrasChecked = currentJobType === 'periodiek' || currentJobType === 'verhuis'
+      ? Array.from(activeExtraChecks).filter(c => c.checked).map(c => c.closest('label').textContent.trim())
+      : [];
 
+    if (sumJobType) sumJobType.textContent = JOB_TYPE_LABELS[currentJobType];
     if (sumType) sumType.textContent = typeLabel;
     if (sumM2) sumM2.textContent = m2.toLocaleString('nl-NL') + ' m\u00b2';
     if (sumPlaats) sumPlaats.textContent = plaats || '\u2013';
+    if (sumFreqWrap) sumFreqWrap.hidden = currentJobType !== 'periodiek';
     if (sumFreq) sumFreq.textContent = freqLabel;
     if (sumExtras) sumExtras.textContent = extrasChecked.length ? extrasChecked.join(', ') : '';
 
     // Klantgegevens voor in de offerte-e-mail (zichtbaar voor jou, niet op de pagina)
     if (modalDetailsField) {
-      const oplevering = document.getElementById('calcOplevering')?.checked ? 'Ja' : 'Nee';
-      modalDetailsField.value = `Type: ${typeLabel} | Oppervlakte: ${m2} m² | Frequentie: ${freqLabel} | Extra diensten: ${extrasChecked.join(', ') || 'geen'} | Opleveringsschoonmaak: ${oplevering} | Plaats: ${plaats}`;
+      let extraInfo = '';
+      if (currentJobType === 'oplevering') extraInfo = ` | Type oplevering: ${opleveringType}`;
+      else if (currentJobType === 'verhuis') extraInfo = ` | Pand leeg: ${panNietLeeg ? 'Nee' : 'Ja'}`;
+      modalDetailsField.value = `Opdrachttype: ${JOB_TYPE_LABELS[currentJobType]} | Type: ${typeLabel} | Oppervlakte: ${m2} m² | ${currentJobType === 'periodiek' ? 'Frequentie: ' + freqLabel + ' | ' : ''}Extra diensten: ${extrasChecked.join(', ') || 'geen'}${extraInfo} | Plaats: ${plaats}`;
     }
 
     // Interne kostprijs-uitsplitsing, UITSLUITEND naar het verborgen e-mailveld -
     // nooit gerenderd in de zichtbare pagina, dus niet zichtbaar voor een bezoeker.
     if (modalInternalField) {
       const i = result.internal;
-      modalInternalField.value =
-        `[INTERN - niet voor klant] Uren/bezoek: ${i.estimatedLaborHoursPerVisit.toFixed(2)} | ` +
-        `Uren/maand: ${i.estimatedLaborHoursPerMonth.toFixed(1)} | ` +
-        `Zzp-tarief: ${formatEuro(i.contractorHourlyRate)}/u | ` +
-        `Loonkosten: ${formatEuro(i.laborCost)} | Materiaal: ${formatEuro(i.materialCost)} | ` +
-        `Reiskosten: ${formatEuro(i.travelCost)} | Overhead: ${formatEuro(i.overheadCost)} | ` +
-        `Kostprijs totaal: ${formatEuro(i.totalCostPrice)} | Winstmarge: ${formatEuro(i.profitMarginAmount)} | ` +
-        `Extra diensten: ${formatEuro(i.extraServicesAmount)} | Verkoopprijs (midden): ${formatEuro(i.customerMonthlyPrice)}`;
+      if (currentJobType === 'periodiek') {
+        modalInternalField.value =
+          `[INTERN - niet voor klant] Uren/bezoek: ${i.estimatedLaborHoursPerVisit.toFixed(2)} | ` +
+          `Uren/maand: ${i.estimatedLaborHoursPerMonth.toFixed(1)} | ` +
+          `Zzp-tarief: ${formatEuro(i.contractorHourlyRate)}/u | ` +
+          `Loonkosten: ${formatEuro(i.laborCost)} | Materiaal: ${formatEuro(i.materialCost)} | ` +
+          `Reiskosten: ${formatEuro(i.travelCost)} | Overhead: ${formatEuro(i.overheadCost)} | ` +
+          `Kostprijs totaal: ${formatEuro(i.totalCostPrice)} | Winstmarge: ${formatEuro(i.profitMarginAmount)} | ` +
+          `Extra diensten: ${formatEuro(i.extraServicesAmount)} | Verkoopprijs (midden): ${formatEuro(i.customerMonthlyPrice)}`;
+      } else {
+        modalInternalField.value =
+          `[INTERN - niet voor klant, eenmalig] Uren: ${(i.estimatedLaborHours || 0).toFixed(2)} | ` +
+          `Loonkosten: ${formatEuro(i.laborCost || 0)} | Materiaal: ${formatEuro(i.materialCost || 0)} | ` +
+          `Reiskosten: ${formatEuro(i.travelCost || 0)} | Overhead: ${formatEuro(i.overheadCost || 0)} | ` +
+          `Kostprijs totaal: ${formatEuro(i.totalCostPrice || 0)} | Winstmarge: ${formatEuro(i.profitMarginAmount || 0)} | ` +
+          `Totaalprijs (midden): ${formatEuro(i.totalPrice || 0)}`;
+      }
     }
   }
 

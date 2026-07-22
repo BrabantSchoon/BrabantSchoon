@@ -85,6 +85,10 @@ nav.links > a{text-decoration:none; color:var(--ink-soft); transition:color .15s
 nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 @media(min-width:900px){nav.links{display:flex;}}
 .nav-actions{display:flex; align-items:center; gap:10px;}
+.header-review-slot{display:none;}
+.header-review-slot:not(:empty){
+  display:flex; align-items:center; max-height:36px; overflow:hidden;
+}
 .phone-link{display:none; font-size:14px; font-weight:600; text-decoration:none; color:var(--navy);}
 @media(min-width:640px){.phone-link{display:inline;}}
 .menu-toggle{display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:10px; border:1px solid var(--line); background:#fff; cursor:pointer;}
@@ -191,6 +195,11 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 .calc-block:last-child{border-bottom:none; padding-bottom:0;}
 .calc-block h3{font-family:'Inter',sans-serif; font-size:15px; font-weight:700; color:var(--ink); margin-bottom:14px;}
 .calc-optional{font-weight:400; color:var(--ink-soft); font-size:13px;}
+
+.calc-jobtype-grid{grid-template-columns:1fr 1fr;}
+@media(min-width:640px){.calc-jobtype-grid{grid-template-columns:repeat(4,1fr);}}
+.calc-jobtype-grid .calc-card{padding:16px 10px;}
+.calc-emoji{font-size:26px; line-height:1;}
 
 .calc-type-grid, .calc-freq-grid, .calc-time-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px;}
 @media(min-width:520px){.calc-type-grid{grid-template-columns:repeat(3,1fr);}}

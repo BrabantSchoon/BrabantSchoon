@@ -201,3 +201,75 @@ function calculatePricing(input) {
     }
   };
 }
+
+/* ==========================================================================
+   EENMALIGE OPDRACHTEN (oplevering, verhuis, dieptereiniging)
+   Aparte, eenvoudigere berekening: geen frequentie/maandprijs, wel een
+   toeslag t.o.v. periodieke schoonmaak (gangbaar in de branche: eenmalig
+   werk is minder efficiënt in te plannen dan een vast contract).
+   ========================================================================== */
+const ONE_TIME_CONFIG = {
+  oneTimeSurchargePercentage: 25,   // opslag t.o.v. het normale uurtarief voor eenmalig werk
+  rangeSpreadPercentage: 15,        // eenmalige klussen variëren meer, dus bredere bandbreedte
+  minimumOneTimePrice: 145          // eigen, lagere ondergrens dan de maandprijs-minimum
+};
+
+// Normtijden voor eenmalig werk: minuten per 100 m² (hoger dan periodiek onderhoud,
+// want dieper/grondiger werk per bezoek)
+const ONE_TIME_NORM_TIMES_MINUTES_PER_100M2 = {
+  oplevering_nieuwbouw: 100,
+  oplevering_renovatie: 130,   // renovatiestof/-vuil vraagt meer tijd dan kale nieuwbouw
+  verhuis: 75,
+  dieptereiniging: 95
+};
+
+function calculateOneTimePricing(jobType, input) {
+  let normTime;
+  if (jobType === "oplevering") {
+    normTime = input.opleveringType === "renovatie"
+      ? ONE_TIME_NORM_TIMES_MINUTES_PER_100M2.oplevering_renovatie
+      : ONE_TIME_NORM_TIMES_MINUTES_PER_100M2.oplevering_nieuwbouw;
+  } else if (jobType === "verhuis") {
+    normTime = ONE_TIME_NORM_TIMES_MINUTES_PER_100M2.verhuis;
+  } else {
+    normTime = ONE_TIME_NORM_TIMES_MINUTES_PER_100M2.dieptereiniging;
+  }
+
+  const surfaceM2 = Math.max(1, safeNumber(input.surfaceM2, 100));
+  const rawHours = (surfaceM2 / 100) * normTime / 60;
+  const estimatedLaborHours = Math.max(PRICING_CONFIG.minimumVisitDuration, rawHours);
+
+  // Pand niet leeg bij verhuisschoonmaak = meer voorzichtig/tijdrovend werken
+  const notEmptySurcharge = (jobType === "verhuis" && input.panNietLeeg) ? 1.15 : 1;
+  // Extra werkzaamheden bij verhuisschoonmaak (percentagetoeslag, zelfde principe als extra diensten)
+  const extraPct = safeNumber(input.extraServicesSurchargePercentage, 0);
+
+  const laborCost = estimatedLaborHours * PRICING_CONFIG.contractorHourlyRate * (1 + ONE_TIME_CONFIG.oneTimeSurchargePercentage / 100) * notEmptySurcharge;
+  const materialCost = estimatedLaborHours * PRICING_CONFIG.materialCostPerHour;
+  const travelCost = PRICING_CONFIG.travelCostPerVisit;
+  const directCosts = laborCost + materialCost + travelCost;
+  const overheadCost = directCosts * (PRICING_CONFIG.companyOverheadPercentage / 100);
+  const totalCostPrice = directCosts + overheadCost;
+  const profitMarginAmount = totalCostPrice * (PRICING_CONFIG.profitMarginPercentage / 100);
+  let totalPrice = totalCostPrice + profitMarginAmount;
+  totalPrice *= (1 + extraPct / 100);
+  totalPrice = Math.max(ONE_TIME_CONFIG.minimumOneTimePrice, totalPrice);
+
+  const spread = ONE_TIME_CONFIG.rangeSpreadPercentage / 100;
+  const finalize = (n) => safeNumber(n, 0);
+
+  return {
+    internal: {
+      estimatedLaborHours: finalize(estimatedLaborHours),
+      laborCost: finalize(laborCost), materialCost: finalize(materialCost),
+      travelCost: finalize(travelCost), overheadCost: finalize(overheadCost),
+      totalCostPrice: finalize(totalCostPrice), profitMarginAmount: finalize(profitMarginAmount),
+      totalPrice: finalize(totalPrice)
+    },
+    customer: {
+      priceLow: finalize(totalPrice * (1 - spread)),
+      priceHigh: finalize(totalPrice * (1 + spread)),
+      estimatedLaborHours: finalize(estimatedLaborHours)
+    }
+  };
+}

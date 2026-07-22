@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "92"
+ASSET_VERSION = "93"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -336,6 +336,10 @@ def render_header(base, active):
       {links_html}
     </nav>
     <div class="nav-actions">
+      <!-- Gereserveerde plek voor een Google Reviews-widget (bijv. Elfsight). Plaats hier de
+           embed-code zodra je een widget hebt gekozen; de stijl (.header-review-slot) staat al klaar.
+           Standaard leeg en onzichtbaar (display:none), dus geen effect op layout of laadtijd. -->
+      <div class="header-review-slot" id="headerReviewSlot"></div>
       <a href="tel:{PHONE_TEL}" class="phone-link">{PHONE_DISPLAY}</a>
       <a href="{base}contact.html#offerteWizard" class="btn btn-primary btn-sm">Offerte aanvragen</a>
       <label for="menuCheckbox" class="menu-toggle" aria-label="Menu openen">{icon('list')}</label>
@@ -728,7 +732,17 @@ def calculator_block():
         <div class="calc-form">
 
           <div class="calc-block">
-            <h3>1. Wat wilt u laten schoonmaken?</h3>
+            <h3>1. Wat voor opdracht wilt u laten uitvoeren?</h3>
+            <div class="calc-type-grid calc-jobtype-grid" id="calcJobType">
+              <button type="button" class="calc-card active" data-job="periodiek"><span class="calc-emoji">\U0001F5D3\uFE0F</span><span>Periodieke schoonmaak</span></button>
+              <button type="button" class="calc-card" data-job="oplevering"><span class="calc-emoji">\U0001F3D7\uFE0F</span><span>Opleveringsschoonmaak</span></button>
+              <button type="button" class="calc-card" data-job="verhuis"><span class="calc-emoji">\U0001F69A</span><span>Verhuisschoonmaak</span></button>
+              <button type="button" class="calc-card" data-job="dieptereiniging"><span class="calc-emoji">\U0001F9FC</span><span>Eenmalige dieptereiniging</span></button>
+            </div>
+          </div>
+
+          <div class="calc-block" data-job-group="periodiek oplevering dieptereiniging" id="calcTypeBlock">
+            <h3>2. Wat wilt u laten schoonmaken?</h3>
             <div class="calc-type-grid" id="calcType">
               <button type="button" class="calc-card active" data-type-key="office" data-label="Kantoor">{icon('office')}<span>Kantoor</span></button>
               <button type="button" class="calc-card" data-type-key="vve" data-label="VvE">{icon('building')}<span>VvE</span></button>
@@ -740,8 +754,16 @@ def calculator_block():
             </div>
           </div>
 
+          <div class="calc-block" data-job-group="verhuis" hidden>
+            <h3>2. Type pand</h3>
+            <div class="calc-type-grid" id="calcVerhuisType">
+              <button type="button" class="calc-card active" data-label="Woning">{icon('building')}<span>Woning</span></button>
+              <button type="button" class="calc-card" data-label="Bedrijfspand">{icon('office')}<span>Bedrijfspand</span></button>
+            </div>
+          </div>
+
           <div class="calc-block">
-            <h3>2. Oppervlakte (m&sup2;)</h3>
+            <h3>3. Oppervlakte (m&sup2;)</h3>
             <div class="calc-slider-row">
               <input type="range" id="calcM2Range" min="50" max="2000" step="10" value="250">
               <input type="number" id="calcM2Number" min="10" max="20000" value="250">
@@ -749,8 +771,8 @@ def calculator_block():
             <div class="calc-slider-labels"><span>50 m&sup2;</span><span>1.000 m&sup2;</span><span>2.000+ m&sup2;</span></div>
           </div>
 
-          <div class="calc-block">
-            <h3>3. Hoe vaak wilt u dat wij schoonmaken?</h3>
+          <div class="calc-block" data-job-group="periodiek" id="calcFreqBlock">
+            <h3>4. Hoe vaak wilt u dat wij schoonmaken?</h3>
             <div class="calc-freq-grid" id="calcFreq">
               <button type="button" class="calc-card" data-freq-key="weekly1" data-label="1x per week"><span>1x</span><small>per week</small></button>
               <button type="button" class="calc-card" data-freq-key="weekly2" data-label="2x per week"><span>2x</span><small>per week</small></button>
@@ -761,8 +783,8 @@ def calculator_block():
             <p class="calc-note calc-freq-explain" id="calcFreqExplain">{icon('check')}<span>Advies wordt automatisch berekend op basis van pandtype en oppervlakte.</span></p>
           </div>
 
-          <div class="calc-block">
-            <h3>4. Extra diensten <span class="calc-optional">(optioneel)</span></h3>
+          <div class="calc-block" data-job-group="periodiek" id="calcExtraBlock">
+            <h3>5. Extra diensten <span class="calc-optional">(optioneel)</span></h3>
             <div class="calc-extra-grid" id="calcExtra">
               <label class="calc-check"><input type="checkbox" data-pct="15"><span>{icon('check')}</span>Glasbewassing</label>
               <label class="calc-check"><input type="checkbox" data-pct="10"><span>{icon('check')}</span>Vloeronderhoud</label>
@@ -771,12 +793,39 @@ def calculator_block():
               <label class="calc-check"><input type="checkbox" data-pct="12"><span>{icon('check')}</span>Tapijtreiniging</label>
               <label class="calc-check"><input type="checkbox" data-pct="10"><span>{icon('check')}</span>Desinfectie</label>
               <label class="calc-check"><input type="checkbox" data-pct="5"><span>{icon('check')}</span>Afvalbeheer</label>
-              <label class="calc-check calc-check-separate"><input type="checkbox" id="calcOplevering"><span>{icon('check')}</span>Opleveringsschoonmaak <em>(losse offerte)</em></label>
+            </div>
+          </div>
+
+          <div class="calc-block" data-job-group="oplevering" hidden>
+            <h3>4. Nieuwbouw of renovatie?</h3>
+            <div class="calc-type-grid" id="calcOpleveringType">
+              <button type="button" class="calc-card active" data-value="nieuwbouw">{icon('building')}<span>Nieuwbouw</span></button>
+              <button type="button" class="calc-card" data-value="renovatie">{icon('doc')}<span>Renovatie</span></button>
+            </div>
+          </div>
+          <div class="calc-block" data-job-group="oplevering" hidden>
+            <h3>5. Gewenste opleverdatum <span class="calc-optional">(optioneel)</span></h3>
+            <input type="date" id="calcOpleverDatum">
+          </div>
+
+          <div class="calc-block" data-job-group="verhuis" hidden>
+            <h3>4. Is het pand al leeg?</h3>
+            <div class="calc-type-grid" id="calcPandLeeg">
+              <button type="button" class="calc-card active" data-value="ja">{icon('check')}<span>Ja, pand is leeg</span></button>
+              <button type="button" class="calc-card" data-value="nee">{icon('doc')}<span>Nee, nog vol</span></button>
+            </div>
+          </div>
+          <div class="calc-block" data-job-group="verhuis" hidden>
+            <h3>5. Extra werkzaamheden <span class="calc-optional">(optioneel)</span></h3>
+            <div class="calc-extra-grid" id="calcVerhuisExtra">
+              <label class="calc-check"><input type="checkbox" data-pct="10"><span>{icon('check')}</span>Binnenkant kasten</label>
+              <label class="calc-check"><input type="checkbox" data-pct="8"><span>{icon('check')}</span>Ramen en kozijnen</label>
+              <label class="calc-check"><input type="checkbox" data-pct="12"><span>{icon('check')}</span>Balkon of tuin opruimen</label>
             </div>
           </div>
 
           <div class="calc-block">
-            <h3>5. Waar bevindt het pand zich?</h3>
+            <h3>6. Waar bevindt het pand zich?</h3>
             <div class="calc-autocomplete" id="calcPlaatsWrap">
               <input type="text" id="calcPlaats" placeholder="Typ een plaatsnaam..." autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="calcPlaatsListbox" value="Helmond">
               <ul class="calc-autocomplete-list" id="calcPlaatsListbox" role="listbox" hidden></ul>
@@ -788,21 +837,22 @@ def calculator_block():
 
         <div class="calc-price-wrap">
           <div class="calc-price-card" id="calcPriceCard">
-            <div class="calc-price-header">Uw prijsindicatie</div>
+            <div class="calc-price-header" id="calcPriceHeader">Uw prijsindicatie</div>
             <div class="calc-price-range"><span id="calcPriceLow">&euro;400</span> &ndash; <span id="calcPriceHigh">&euro;550</span></div>
-            <div class="calc-price-sub">per maand, excl. btw</div>
+            <div class="calc-price-sub" id="calcPriceSub">per maand, excl. btw</div>
             <p class="calc-price-disclaimer">Gebaseerd op uw invoer. De definitieve offerte bepalen we tijdens een korte inventarisatie.</p>
-            <div class="calc-price-hours">
+            <div class="calc-price-hours" id="calcPriceHours">
               <div><span id="calcHoursVisit">2,0</span><small>uur per bezoek</small></div>
               <div><span id="calcHoursMonth">16</span><small>uur per maand</small></div>
             </div>
             <div class="calc-summary" id="calcSummary">
               <div class="calc-summary-title">Uw selectie</div>
               <div class="calc-summary-grid">
+                <span>{icon('doc')}<b id="calcSumJobType">Periodieke schoonmaak</b></span>
                 <span>{icon('office')}<b id="calcSumType">Kantoor</b></span>
                 <span>{icon('doc')}<b id="calcSumM2">250 m&sup2;</b></span>
                 <span>{icon('pin')}<b id="calcSumPlaats">Helmond</b></span>
-                <span>{icon('clock')}<b id="calcSumFreq">2x per week</b></span>
+                <span id="calcSumFreqWrap">{icon('clock')}<b id="calcSumFreq">2x per week</b></span>
               </div>
               <div class="calc-summary-extras" id="calcSumExtras"></div>
             </div>
@@ -831,7 +881,7 @@ def calculator_block():
       <div class="calc-modal-header">
         <div>
           <h3 id="calcModalTitle">Vraag uw definitieve offerte aan</h3>
-          <p class="calc-modal-sub">Uw indicatie: <strong id="calcModalPrice">&euro;400 &ndash; &euro;550</strong> per maand</p>
+          <p class="calc-modal-sub">Uw indicatie: <strong id="calcModalPrice">&euro;400 &ndash; &euro;550</strong><span id="calcModalPriceSuffix"> per maand</span></p>
         </div>
         <button type="button" class="calc-modal-close" id="calcModalClose" aria-label="Sluiten">{icon('close')}</button>
       </div>
