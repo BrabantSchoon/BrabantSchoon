@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "96"
+ASSET_VERSION = "97"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -205,7 +205,7 @@ FORM_SERVICE_OPTIONS = [
 ]
 
 NAV_LINKS = [
-    ("Home", "index.html"),
+    ("Home", "/"),
     ("Diensten", "diensten.html"),
     ("Over ons", "over-ons.html"),
     ("Werkgebied", "werkgebied.html"),
@@ -240,7 +240,7 @@ def render_head(title, description, path, base, schema_extra="", preload_image=N
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 {preload_tag}
 <link rel="stylesheet" href="{base}css/styles.css?v={ASSET_VERSION}">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 {ORG_SCHEMA}
 {schema_extra}"""
 
@@ -327,18 +327,20 @@ def service_schema(svc):
 # HEADER / FOOTER
 # ---------------------------------------------------------------
 def render_header(base, active):
+    def resolve(href):
+        return href if href.startswith("/") else f"{base}{href}"
     links = []
     for label, href in NAV_LINKS:
-        full_href = f"{base}{href}"
+        full_href = resolve(href)
         cls = " active" if href == active else ""
         links.append(f'<a href="{full_href}" class="{cls.strip()}">{label}</a>')
     links_html = "\n      ".join(links)
-    mobile_links = "\n      ".join(f'<a href="{base}{href}">{label}</a>' for label, href in NAV_LINKS)
+    mobile_links = "\n      ".join(f'<a href="{resolve(href)}">{label}</a>' for label, href in NAV_LINKS)
     return f"""<a href="#main-content" class="skip-link">Ga direct naar inhoud</a>
 <input type="checkbox" id="menuCheckbox" class="menu-checkbox">
 <header class="site-header">
   <div class="wrap nav">
-    <a href="{base}index.html" class="logo"><img src="{base}images/logo.png" alt="BrabantSchoon" width="130" height="32"></a>
+    <a href="/" class="logo"><img src="{base}images/logo.png" alt="BrabantSchoon" width="130" height="32"></a>
     <nav class="links">
       {links_html}
     </nav>
@@ -376,7 +378,7 @@ def render_footer(base):
 
       <div class="footer-col">
         <h4>Snelle links</h4>
-        <a href="{base}index.html">Home</a>
+        <a href="/">Home</a>
         <a href="{base}diensten.html">Diensten</a>
         <a href="{base}over-ons.html">Over ons</a>
         <a href="{base}werkgebied.html">Werkgebied</a>
@@ -523,7 +525,7 @@ def reviews_widget_block():
         <span>Beoordeeld op Google Reviews</span>
       </div>
       <div class="trustindex-widget-wrap">
-        <script defer async src='https://cdn.trustindex.io/loader.js?1615584773fa412ed426df4e3e9'></script>
+        <script defer async src='https://cdn.trustindex.io/loader.js?f96010677d3c4441ed1605368d0'></script>
       </div>
     </div>"""
 
@@ -972,7 +974,7 @@ def build_calculator_page():
   <section><div class="wrap">{cta_band("Liever direct persoonlijk contact?", "Bel of mail ons voor een vrijblijvend gesprek.", base)}</div></section>
 """
     write("bereken-schoonmaakkosten.html", page_shell(
-        "Schoonmaak Calculator | Bereken Schoonmaakkosten Kantoor & Bedrijf",
+        "Schoonmaak Calculator | Bereken Schoonmaakkosten",
         "Bereken direct uw schoonmaakkosten met de gratis prijscalculator van BrabantSchoon. Prijsindicatie voor kantoor, VvE, praktijk en bedrijfspand in 30 seconden.",
         "bereken-schoonmaakkosten.html", base, "bereken-schoonmaakkosten.html", body,
         breadcrumb_schema("Prijscalculator", "bereken-schoonmaakkosten.html")
@@ -1123,7 +1125,7 @@ def build_home():
     write("index.html", page_shell(
         "BrabantSchoon | Schoonmaakbedrijf Helmond &amp; Peelgemeenten",
         f"BrabantSchoon verzorgt kantoorreiniging, glasbewassing en VvE-schoonmaak voor bedrijven in Helmond en de Peelgemeenten. Vraag een vrijblijvende offerte aan.",
-        "", base, "index.html", body, LOCALBUSINESS_SCHEMA + "\n" + faq_schema(FAQ_ITEMS[:5]),
+        "", base, "/", body, LOCALBUSINESS_SCHEMA + "\n" + faq_schema(FAQ_ITEMS[:5]),
         preload_image="images/hero.jpg"
     ))
 
@@ -1133,7 +1135,7 @@ def page_hero(eyebrow, title, lead, base, crumb_label, image=None, image_alt="")
     <img src="{image}" alt="{image_alt}" class="hero-full-img" width="1200" height="800" decoding="async">
     <div class="hero-full-overlay"></div>
     <div class="wrap hero-full-content">
-      <div class="breadcrumb" style="color:rgba(255,255,255,0.75);"><a href="{base}index.html" style="color:rgba(255,255,255,0.9);">Home</a> &nbsp;/&nbsp; {crumb_label}</div>
+      <div class="breadcrumb" style="color:rgba(255,255,255,0.75);"><a href="/" style="color:rgba(255,255,255,0.9);">Home</a> &nbsp;/&nbsp; {crumb_label}</div>
       <span class="eyebrow" style="color:#BFE0FF;">{eyebrow}</span>
       <h1>{title}</h1>
       <p class="lead" style="color:rgba(255,255,255,0.9);">{lead}</p>
@@ -1141,7 +1143,7 @@ def page_hero(eyebrow, title, lead, base, crumb_label, image=None, image_alt="")
   </section>"""
     return f"""<section class="page-hero">
     <div class="wrap">
-      <div class="breadcrumb"><a href="{base}index.html">Home</a> &nbsp;/&nbsp; {crumb_label}</div>
+      <div class="breadcrumb"><a href="/">Home</a> &nbsp;/&nbsp; {crumb_label}</div>
       <span class="eyebrow">{eyebrow}</span>
       <h1>{title}</h1>
       <p class="lead">{lead}</p>
@@ -1620,7 +1622,7 @@ def build_thanks():
       <img src="images/logo.png" alt="BrabantSchoon" width="136" height="34" style="height:34px; width:auto; margin:0 auto 20px;">
       <h1 style="font-size:34px;">Bedankt voor uw aanvraag.</h1>
       <p class="prose" style="margin-top:12px;">We hebben uw bericht ontvangen en nemen binnen \u00e9\u00e9n werkdag contact met u op.</p>
-      <a class="btn btn-primary" href="index.html" style="margin-top:24px;">Terug naar de website</a>
+      <a class="btn btn-primary" href="/" style="margin-top:24px;">Terug naar de website</a>
     </div>
   </section>
 """

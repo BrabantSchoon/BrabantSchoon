@@ -1,661 +1,244 @@
-:root{
-  --navy:#10205C;
-  --navy-deep:#0A1640;
-  --blue:#0082E6;
-  --link:#0068B8;
-  --teal:#00785A;
-  --green:#2FA84A;
-  --bg:#FFFFFF;
-  --bg-soft:#F5F7FB;
-  --bg-navy:#0E1B4D;
-  --ink:#101427;
-  --ink-soft:#4B5468;
-  --ink-on-navy:#C9D2EE;
-  --line:#E7EAF2;
-  --radius-lg:24px;
-  --radius:20px;
-  --radius-sm:12px;
-  --shadow-sm:0 1px 2px rgba(16,32,92,0.05);
-  --shadow-md:0 16px 40px -20px rgba(16,32,92,0.25);
-  --shadow-lg:0 30px 60px -24px rgba(16,32,92,0.30);
-  --grad-brand:linear-gradient(100deg, var(--navy) 0%, var(--blue) 48%, var(--green) 100%);
-  --grad-button:linear-gradient(100deg, var(--navy) 0%, var(--blue) 55%, var(--teal) 100%);
-}
-*{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{
-  margin:0; background:var(--bg); color:var(--ink);
-  font-family:'Inter',sans-serif; font-size:16px; line-height:1.62;
-  -webkit-font-smoothing:antialiased;
-}
-h1,h2,h3{ font-family:'Instrument Serif', serif; margin:0; font-weight:400; letter-spacing:-0.01em;}
-h4{font-family:'Inter',sans-serif; font-weight:700; margin:0;}
-em{font-style:italic;}
-a{color:inherit;}
-img,svg{max-width:100%; display:block;}
-ul{margin:0; padding:0;}
-.wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
-.wrap-narrow{max-width:760px; margin:0 auto; padding:0 24px;}
-.eyebrow{font-size:12.5px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--link);}
-:focus-visible{outline:2.5px solid var(--blue); outline-offset:3px;}
-.grad-text{background:var(--grad-brand); -webkit-background-clip:text; background-clip:text; color:transparent;}
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Opleveringsschoonmaak Helmond | BrabantSchoon</title>
+<meta name="description" content="Een pand schoon opgeleverd bij sleuteloverdracht. BrabantSchoon verzorgt opleveringsschoonmaak in Helmond en de Peelgemeenten.">
+<link rel="canonical" href="https://www.brabantschoon.nl/diensten/opleveringsschoonmaak.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Opleveringsschoonmaak Helmond | BrabantSchoon">
+<meta property="og:description" content="Een pand schoon opgeleverd bij sleuteloverdracht. BrabantSchoon verzorgt opleveringsschoonmaak in Helmond en de Peelgemeenten.">
+<meta property="og:image" content="https://www.brabantschoon.nl/images/og-image.png">
+<meta property="og:url" content="https://www.brabantschoon.nl/diensten/opleveringsschoonmaak.html">
+<meta property="og:locale" content="nl_NL">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Opleveringsschoonmaak Helmond | BrabantSchoon">
+<meta name="twitter:description" content="Een pand schoon opgeleverd bij sleuteloverdracht. BrabantSchoon verzorgt opleveringsschoonmaak in Helmond en de Peelgemeenten.">
+<meta name="twitter:image" content="https://www.brabantschoon.nl/images/og-image.png">
+<link rel="icon" type="image/png" href="../images/favicon.png">
+<meta name="theme-color" content="#10205C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-/* Skip-link voor toetsenbordgebruikers */
-.skip-link{
-  position:absolute; left:12px; top:-60px; z-index:300; background:var(--navy); color:#fff;
-  padding:12px 18px; border-radius:10px; text-decoration:none; font-size:14px; font-weight:600;
-  transition:top .15s ease;
+<link rel="stylesheet" href="../css/styles.css?v=97">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "BrabantSchoon",
+  "url": "https://www.brabantschoon.nl/",
+  "logo": "https://www.brabantschoon.nl/images/logo.png",
+  "telephone": "+31492313050",
+  "email": "info@brabantschoon.nl",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Helmond",
+    "addressRegion": "Noord-Brabant",
+    "addressCountry": "NL"
+  },
+  "areaServed": "Noord-Brabant"
 }
-.skip-link:focus{top:12px;}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Opleveringsschoonmaak",
+  "name": "Opleveringsschoonmaak | BrabantSchoon",
+  "description": "Een pand schoon opgeleverd bij sleuteloverdracht.",
+  "provider": {"@type": "LocalBusiness", "name": "BrabantSchoon", "url": "https://www.brabantschoon.nl/"},
+  "areaServed": "Zuidoost-Brabant"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.brabantschoon.nl/"},
+    {"@type": "ListItem", "position": 2, "name": "Opleveringsschoonmaak", "item": "https://www.brabantschoon.nl/diensten/opleveringsschoonmaak.html"}
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Hoe snel kan opleveringsschoonmaak worden ingepland?", "acceptedAnswer": {"@type": "Answer", "text": "Vaak binnen enkele dagen, afhankelijk van de planning en de grootte van het pand."}},
+    {"@type": "Question", "name": "Is opleveringsschoonmaak ook geschikt na een verbouwing?", "acceptedAnswer": {"@type": "Answer", "text": "Ja, we verwijderen bouwstof en resten zodat het pand klaar is voor gebruik of oplevering."}}
+  ]
+}
+</script>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Ga direct naar inhoud</a>
+<input type="checkbox" id="menuCheckbox" class="menu-checkbox">
+<header class="site-header">
+  <div class="wrap nav">
+    <a href="/" class="logo"><img src="../images/logo.png" alt="BrabantSchoon" width="130" height="32"></a>
+    <nav class="links">
+      <a href="/" class="">Home</a>
+      <a href="../diensten.html" class="active">Diensten</a>
+      <a href="../over-ons.html" class="">Over ons</a>
+      <a href="../werkgebied.html" class="">Werkgebied</a>
+      <a href="../contact.html" class="">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="tel:+31492313050" class="phone-link">0492 - 31 30 50</a>
+      <a href="../contact.html#offerteWizard" class="btn btn-primary btn-sm">Offerte aanvragen</a>
+      <label for="menuCheckbox" class="menu-toggle" aria-label="Menu openen"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M4 6h16M4 18h10"/></svg></label>
+    </div>
+  </div>
+</header>
+<label for="menuCheckbox" class="menu-overlay"></label>
+<aside class="mobile-sidebar">
+  <div class="mobile-menu-top">
+    <img src="../images/logo.png" alt="BrabantSchoon" width="120" height="30">
+    <label for="menuCheckbox" class="mobile-menu-close" aria-label="Menu sluiten">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </label>
+  </div>
+  <div class="mobile-menu-links">
+    <a href="/">Home</a>
+      <a href="../diensten.html">Diensten</a>
+      <a href="../over-ons.html">Over ons</a>
+      <a href="../werkgebied.html">Werkgebied</a>
+      <a href="../contact.html">Contact</a>
+    <a href="tel:+31492313050" style="color:var(--link);">0492 - 31 30 50</a>
+    <a href="../contact.html#offerteWizard" class="btn btn-primary mobile-cta">Offerte aanvragen</a>
+  </div>
+</aside>
+<main id="main-content">
 
-/* Zichtbare focus-status op het hamburgermenu (checkbox zelf is onzichtbaar maar focusbaar) */
-.menu-checkbox:focus-visible + .site-header .menu-toggle{outline:2.5px solid var(--blue); outline-offset:2px;}
+  <section class="hero-full hero-full-inner">
+    <img src="../images/diensten/opleveringsschoonmaak.jpg" alt="Opleveringsschoonmaak door BrabantSchoon" class="hero-full-img" width="1200" height="800" decoding="async">
+    <div class="hero-full-overlay"></div>
+    <div class="wrap hero-full-content">
+      <div class="breadcrumb" style="color:rgba(255,255,255,0.75);"><a href="/" style="color:rgba(255,255,255,0.9);">Home</a> &nbsp;/&nbsp; Opleveringsschoonmaak</div>
+      <span class="eyebrow" style="color:#BFE0FF;">Dienst</span>
+      <h1>Opleveringsschoonmaak</h1>
+      <p class="lead" style="color:rgba(255,255,255,0.9);">Een pand schoon opgeleverd bij sleuteloverdracht.</p>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="wrap">
+      <div class="two-col reveal">
+        <div>
+          <p class="prose">Bij verhuizing, verbouwing of nieuwbouw moet een pand vaak op korte termijn klaar zijn. We zorgen dat de ruimte gereed is voor gebruik of oplevering.</p>
+          <ul class="prose" style="margin-top:16px;"><li>Bouwstof en resten verwijderen</li>
+          <li>Kozijnen, kasten en sanitair</li>
+          <li>Snel inplanbaar</li></ul>
+          <div class="hero-actions" style="margin-top:24px;">
+            <a href="../contact.html#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
+            <a href="tel:+31492313050" class="btn btn-outline">Bel direct</a>
+          </div>
+        </div>
+        <div>
+          <p class="prose"><strong style="color:var(--ink);">Geschikt voor:</strong> Verhuurders, aannemers en particulieren.</p>
+          <div class="faq" style="margin-top:20px;"><details><summary>Hoe snel kan opleveringsschoonmaak worden ingepland?<span class="chev"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="faq-a-wrap"><p class="faq-a">Vaak binnen enkele dagen, afhankelijk van de planning en de grootte van het pand.</p></div></details>
+      <details><summary>Is opleveringsschoonmaak ook geschikt na een verbouwing?<span class="chev"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="faq-a-wrap"><p class="faq-a">Ja, we verwijderen bouwstof en resten zodat het pand klaar is voor gebruik of oplevering.</p></div></details></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Ook interessant</span><h2>Andere diensten</h2></div>
+      <div class="grid-3 reveal"><a href="kantoorreiniging.html" class="service-card">
+      <div class="thumb tint-1"><img src="../images/diensten/kantoorreiniging.jpg" alt="Kantoorreiniging door BrabantSchoon in Zuidoost-Brabant" class="" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;"></div>
+      <div class="body"><h3>Kantoorreiniging</h3><p>Vaste of periodieke reiniging van uw kantoorpand, buiten werktijd.</p></div>
+    </a>
+    <a href="glasbewassing.html" class="service-card">
+      <div class="thumb tint-2"><img src="../images/diensten/glasbewassing.jpg" alt="Glasbewassing door BrabantSchoon in Zuidoost-Brabant" class="" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;"></div>
+      <div class="body"><h3>Glasbewassing</h3><p>Ramen en kozijnen streeploos schoon, binnen en buiten.</p></div>
+    </a>
+    <a href="gevelreiniging.html" class="service-card">
+      <div class="thumb tint-3"><img src="../images/diensten/gevelreiniging.jpg" alt="Gevelreiniging door BrabantSchoon in Zuidoost-Brabant" class="" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;"></div>
+      <div class="body"><h3>Gevelreiniging</h3><p>Reiniging van gevels en buitenmuren.</p></div>
+    </a></div>
+    </div>
+  </section>
+  <section><div class="wrap"><div class="cta-band reveal">
+    <h2>Interesse in Opleveringsschoonmaak?</h2>
+    <p>Vraag een vrijblijvende offerte aan.</p>
+    <div class="hero-actions">
+      <a href="../contact.html#offerteWizard" class="btn btn-primary">Vrijblijvende offerte</a>
+      <a href="tel:+31492313050" class="btn btn-outline">Neem contact op</a>
+    </div>
+  </div></div></section>
+  <section class="section-tight">
+    <div class="wrap-narrow" style="text-align:center;">
+      <p class="prose">Actief in <a href="../werkgebied.html" style="color:var(--link); font-weight:600;">heel Noord-Brabant</a> &mdash; bekijk ook onze <a href="../diensten.html" style="color:var(--link); font-weight:600;">overige diensten</a>.</p>
+    </div>
+  </section>
 
-/* Sticky mobiele actiebalk onderaan het scherm */
-.mobile-cta-bar{
-  display:none; position:fixed; left:0; right:0; bottom:0; z-index:120;
-  background:#fff; border-top:1px solid var(--line); box-shadow:0 -8px 24px rgba(16,32,92,0.10);
-  padding:10px 14px; gap:10px;
-}
-.mobile-cta-bar a{flex:1;}
-@media(max-width:899px){.mobile-cta-bar{display:flex;} body{padding-bottom:72px;}}
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-top footer-top-3col">
+      <div class="footer-col footer-brand-col">
+        <img src="../images/logo.png" alt="BrabantSchoon" width="130" height="32">
+        <p class="footer-tagline">Professionele schoonmaakpartner voor kantoren, VvE's en organisaties in heel Noord-Brabant.</p>
+        <div class="footer-meta">KvK 99274175 &bull; BTW NL005380198B12</div>
+      </div>
 
-/* ---------- BUTTONS ---------- */
-.btn{
-  display:inline-flex; align-items:center; gap:8px; justify-content:center;
-  padding:13px 24px; border-radius:100px; font-weight:600; font-size:14.5px; font-family:'Inter',sans-serif;
-  text-decoration:none; border:1.5px solid transparent; cursor:pointer;
-  transition:transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease, color .15s ease;
-  white-space:nowrap;
-}
-.btn-primary{background:var(--grad-button); background-size:160% 100%; background-position:0% 0%; color:#fff; box-shadow:0 14px 28px -12px rgba(0,130,230,0.45);}
-.btn-primary:hover{transform:translateY(-2px); box-shadow:0 18px 34px -12px rgba(0,130,230,0.55); background-position:100% 0%;}
-.btn-outline{background:#fff; color:var(--navy); border-color:var(--line);}
-.btn-ghost-light{background:rgba(255,255,255,0.10); color:#fff; border-color:rgba(255,255,255,0.5); backdrop-filter:blur(6px);}
-.btn-ghost-light:hover{background:rgba(255,255,255,0.20); transform:translateY(-1px);}
-.btn-outline:hover{border-color:var(--navy); transform:translateY(-1px);}
-.btn-sm{padding:10px 18px; font-size:13.5px;}
+      <div class="footer-col">
+        <h4>Snelle links</h4>
+        <a href="/">Home</a>
+        <a href="../diensten.html">Diensten</a>
+        <a href="../over-ons.html">Over ons</a>
+        <a href="../werkgebied.html">Werkgebied</a>
+        <a href="../bereken-schoonmaakkosten.html">Prijscalculator</a>
+        <a href="../contact.html">Contact</a>
+        <a href="../contact.html#offerteWizard">Offerte aanvragen</a>
+      </div>
 
-/* ---------- HEADER / NAV (simple, per brief) ---------- */
-header.site-header{position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--line);}
-.nav{display:flex; align-items:center; justify-content:space-between; padding:14px 0; gap:20px;}
-.logo img{height:32px; width:auto;}
-nav.links{display:none; align-items:center; gap:30px; font-size:14.5px; font-weight:500;}
-nav.links > a{text-decoration:none; color:var(--ink-soft); transition:color .15s; padding:8px 0;}
-nav.links > a:hover, nav.links > a.active{color:var(--navy);}
-@media(min-width:900px){nav.links{display:flex;}}
-.nav-actions{display:flex; align-items:center; gap:10px;}
-.phone-link{display:none; font-size:14px; font-weight:600; text-decoration:none; color:var(--navy);}
-@media(min-width:640px){.phone-link{display:inline;}}
-.menu-toggle{display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:10px; border:1px solid var(--line); background:#fff; cursor:pointer;}
-@media(min-width:900px){.menu-toggle{display:none;}}
-.menu-toggle svg{width:20px; height:20px;}
-
-/* Pure-CSS sidebar (checkbox hack) — geen JavaScript nodig */
-.menu-checkbox{position:absolute; opacity:0; pointer-events:none;}
-.menu-overlay{
-  position:fixed; inset:0; background:rgba(10,22,64,0.45); z-index:150;
-  opacity:0; visibility:hidden; transition:opacity .25s ease, visibility .25s ease;
-}
-.mobile-sidebar{
-  position:fixed; top:0; right:0; bottom:0; width:84%; max-width:340px; background:#fff; z-index:200;
-  transform:translateX(100%); transition:transform .3s ease; box-shadow:-16px 0 40px rgba(16,32,92,0.18);
-  overflow-y:auto; -webkit-overflow-scrolling:touch;
-}
-.menu-checkbox:checked ~ .menu-overlay{opacity:1; visibility:visible;}
-.menu-checkbox:checked ~ .mobile-sidebar{transform:translateX(0);}
-@media(min-width:900px){.menu-toggle, .mobile-sidebar, .menu-overlay{display:none !important;}}
-.mobile-menu-top{display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--line);}
-.mobile-menu-top img{height:26px;}
-.mobile-menu-close{display:flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:10px; border:1px solid var(--line); background:#fff; cursor:pointer;}
-.mobile-menu-close svg{width:17px; height:17px;}
-.mobile-menu-links{padding:8px 20px 28px;}
-.mobile-sidebar a{display:block; padding:15px 4px; font-size:16.5px; font-weight:600; text-decoration:none; color:var(--ink); border-bottom:1px solid var(--line);}
-.mobile-sidebar .mobile-cta{margin-top:20px; text-align:center;}
-
-/* ---------- HERO (illustration, not photo) ---------- */
-.hero{padding:64px 0 40px;}
-
-/* Volledig beeldvullende hero (foto-achtergrond, tekst erover) */
-.hero-full{position:relative; min-height:640px; display:flex; align-items:flex-end; overflow:hidden;}
-.hero-full-img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
-.hero-full-overlay{
-  position:absolute; inset:0;
-  background:linear-gradient(0deg, rgba(10,22,64,0.94) 0%, rgba(10,22,64,0.68) 45%, rgba(10,22,64,0.32) 100%);
-}
-.hero-full-content{position:relative; z-index:1; padding:64px 0 56px; color:#fff;}
-.hero-checklist{
-  display:flex; flex-wrap:wrap; gap:12px 28px; list-style:none; margin:28px 0 0; padding:0;
-  font-size:14px; font-weight:600; color:rgba(255,255,255,0.92);
-}
-.hero-checklist li{display:flex; align-items:center; gap:8px;}
-.hero-checklist svg{width:17px; height:17px; color:#8FE0C1; flex-shrink:0;}
-.hero-full-content h1{color:#fff; font-size:clamp(36px,6vw,64px); line-height:1.05; margin-top:14px;}
-@media(min-width:760px){.hero-full{min-height:74vh;} .hero-full-content{padding:72px 0 72px;}}
-@media(max-width:640px){.hero-full{min-height:480px;}}
-.hero-full-inner{min-height:400px;}
-@media(min-width:760px){.hero-full-inner{min-height:52vh;}}
-.hero-grid{display:grid; grid-template-columns:1fr; gap:44px; align-items:center;}
-@media(min-width:960px){.hero-grid{grid-template-columns:1.05fr 1fr;}}
-.hero h1{font-size:clamp(34px,5.2vw,58px); line-height:1.06; margin-top:14px;}
-.hero p.lead{font-size:18px; color:var(--ink-soft); max-width:480px; margin-top:20px;}
-.hero-actions{display:flex; gap:14px; margin-top:30px; flex-wrap:wrap;}
-
-/* Illustratiepanelen. Wil je later een echte foto tonen in plaats van de illustratie?
-   Voeg dan `background-image:url('../images/jouw-foto.jpg'); background-size:cover;
-   background-position:center;` toe aan .illustration-panel en verwijder de SVG uit de HTML. */
-/* ---------- PRIJSCALCULATOR ---------- */
-.calc-grid{display:grid; grid-template-columns:1fr; gap:28px; align-items:start;}
-@media(min-width:960px){.calc-grid{grid-template-columns:1.5fr 1fr;}}
-
-.calc-form{background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:28px;}
-.calc-block{padding:22px 0; border-bottom:1px solid var(--line);}
-.calc-block:first-child{padding-top:0;}
-.calc-block:last-child{border-bottom:none; padding-bottom:0;}
-.calc-block h3{font-family:'Inter',sans-serif; font-size:15px; font-weight:700; color:var(--ink); margin-bottom:14px;}
-.calc-optional{font-weight:400; color:var(--ink-soft); font-size:13px;}
-
-.calc-type-grid, .calc-freq-grid, .calc-time-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px;}
-@media(min-width:520px){.calc-type-grid{grid-template-columns:repeat(3,1fr);}}
-@media(min-width:640px){.calc-freq-grid, .calc-time-grid{grid-template-columns:repeat(3,1fr);}}
-@media(min-width:820px){.calc-time-grid{grid-template-columns:repeat(5,1fr);}}
-
-.calc-card{
-  position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
-  background:var(--bg-soft); border:1.5px solid var(--line); border-radius:12px; padding:14px 10px;
-  cursor:pointer; font-family:'Inter',sans-serif; text-align:center; transition:border-color .15s ease, background .15s ease, transform .15s ease;
-}
-.calc-card:hover{border-color:var(--link); transform:translateY(-2px);}
-.calc-card.active{background:#EAF4FF; border-color:var(--link); box-shadow:0 0 0 1px var(--link) inset;}
-.calc-card svg{width:22px; height:22px; color:var(--link);}
-.calc-card span{font-size:13.5px; font-weight:700; color:var(--ink);}
-.calc-card small{font-size:11px; color:var(--ink-soft);}
-.calc-badge{position:absolute; top:-9px; left:50%; transform:translateX(-50%); background:var(--teal); color:#fff; font-size:9.5px; font-weight:700; padding:2px 8px; border-radius:20px; white-space:nowrap;}
-
-.calc-slider-row{display:flex; align-items:center; gap:14px;}
-.calc-slider-row input[type="range"]{flex-grow:1; accent-color:var(--link); height:6px;}
-.calc-slider-row input[type="number"]{width:100px; text-align:center; font-weight:700;}
-.calc-slider-labels{display:flex; justify-content:space-between; font-size:11.5px; color:var(--ink-soft); margin-top:6px;}
-
-.calc-extra-grid{display:grid; grid-template-columns:1fr; gap:10px;}
-@media(min-width:520px){.calc-extra-grid{grid-template-columns:1fr 1fr;}}
-.calc-check{
-  display:flex; align-items:center; gap:10px; background:var(--bg-soft); border:1.5px solid var(--line); border-radius:10px;
-  padding:11px 14px; cursor:pointer; font-size:13.5px; font-weight:600; color:var(--ink); transition:border-color .15s ease;
-}
-.calc-check:has(input:checked){border-color:var(--link); background:#EAF4FF;}
-.calc-check input{display:none;}
-.calc-check span{width:20px; height:20px; border-radius:6px; border:1.5px solid var(--line); display:flex; align-items:center; justify-content:center; flex-shrink:0; background:#fff;}
-.calc-check span svg{width:13px; height:13px; color:#fff; opacity:0; transition:opacity .12s ease;}
-.calc-check input:checked + span{background:var(--link); border-color:var(--link);}
-.calc-check input:checked + span svg{opacity:1;}
-
-#calcPlaats{cursor:pointer;}
-.calc-note{display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--ink-soft); margin-top:10px;}
-.calc-note svg{width:14px; height:14px; color:var(--teal); flex-shrink:0;}
-
-.calc-price-wrap{position:relative;}
-.calc-price-card{
-  position:sticky; top:90px; background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg);
-  box-shadow:var(--shadow-md); padding:26px; transition:box-shadow .3s ease;
-}
-.calc-price-flash{box-shadow:0 0 0 3px rgba(0,104,184,0.25), var(--shadow-md);}
-.calc-price-header{font-family:'Inter',sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft);}
-.calc-price-range{font-family:'Instrument Serif',serif; font-size:38px; color:var(--navy); margin-top:8px; line-height:1;}
-.calc-price-sub{font-size:12.5px; color:var(--ink-soft); margin-top:4px;}
-.calc-price-disclaimer{
-  display:flex; gap:8px; font-size:12px; color:var(--ink-soft); background:var(--bg-soft); border-radius:10px;
-  padding:11px 12px; margin-top:16px; line-height:1.5;
-}
-.calc-price-disclaimer svg{width:15px; height:15px; flex-shrink:0; margin-top:1px; color:var(--link);}
-.calc-price-includes{list-style:none; margin:18px 0 0; padding:0; display:flex; flex-direction:column; gap:9px;}
-.calc-price-includes li{display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--ink);}
-.calc-price-includes svg{width:15px; height:15px; color:var(--teal); flex-shrink:0;}
-.calc-price-hours{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; padding-top:16px; border-top:1px solid var(--line);}
-.calc-price-hours div{background:var(--bg-soft); border-radius:10px; padding:10px 12px; text-align:center;}
-.calc-price-hours span{display:block; font-family:'Instrument Serif',serif; font-size:20px; color:var(--navy);}
-.calc-price-hours small{font-size:11px; color:var(--ink-soft);}
-.calc-check-separate{border-style:dashed;}
-.calc-check-separate em{font-style:normal; font-size:11px; color:var(--ink-soft); margin-left:4px;}
-.calc-price-inzet svg{width:15px; height:15px; color:var(--ink-soft); flex-shrink:0;}
-.calc-price-cta{width:100%; justify-content:center; margin-top:18px;}
-.calc-price-footnote{display:flex; align-items:center; gap:6px; justify-content:center; font-size:12px; color:var(--ink-soft); margin-top:10px;}
-.calc-price-footnote svg{width:13px; height:13px; color:var(--teal);}
-
-.calc-mobile-bar{display:none;}
-@media(max-width:959px){
-  .calc-mobile-bar{
-    display:flex; align-items:center; justify-content:space-between; position:sticky; bottom:0; left:0; right:0;
-    background:#fff; border-top:1px solid var(--line); box-shadow:0 -6px 16px -6px rgba(16,32,92,0.12);
-    padding:12px 20px; margin-top:20px; z-index:5;
-  }
-  .calc-mobile-bar span{font-family:'Inter',sans-serif; font-weight:700; font-size:14px; color:var(--navy);}
-  .calc-mobile-bar button{
-    display:flex; align-items:center; gap:6px; background:var(--grad-button); color:#fff; border:none;
-    border-radius:100px; padding:10px 18px; font-weight:700; font-size:13.5px; cursor:pointer;
-  }
-  .calc-mobile-bar svg{width:14px; height:14px;}
-  .calc-price-wrap{position:static;}
-  .calc-price-card{position:static;}
-}
-
-/* ---------- OFFERTE-MODAL ---------- */
-.calc-modal-overlay{
-  position:fixed; inset:0; background:rgba(16,32,92,0.55); backdrop-filter:blur(3px);
-  display:flex; align-items:center; justify-content:center; padding:20px; z-index:200;
-  opacity:0; pointer-events:none; transition:opacity .25s ease;
-}
-.calc-modal-overlay.open{opacity:1; pointer-events:auto;}
-.calc-modal{
-  background:#fff; border-radius:var(--radius-lg); padding:32px; max-width:520px; width:100%;
-  max-height:88vh; overflow-y:auto; position:relative; box-shadow:0 30px 60px -12px rgba(16,32,92,0.35);
-  transform:translateY(16px) scale(0.98); transition:transform .25s ease;
-}
-.calc-modal-overlay.open .calc-modal{transform:translateY(0) scale(1);}
-.calc-modal-close{
-  position:absolute; top:18px; right:18px; width:34px; height:34px; border-radius:50%; border:1px solid var(--line);
-  background:var(--bg-soft); display:flex; align-items:center; justify-content:center; cursor:pointer;
-}
-.calc-modal-close svg{width:16px; height:16px; color:var(--ink-soft);}
-.calc-modal h3{font-family:'Instrument Serif',serif; font-size:24px; color:var(--navy); padding-right:36px;}
-.calc-modal-sub{font-size:13.5px; color:var(--ink-soft); margin-top:8px; line-height:1.5;}
-.calc-modal-sub strong{color:var(--link);}
-.calc-modal-form{display:grid; gap:11px; margin-top:20px;}
-.calc-modal-row{display:grid; grid-template-columns:1fr 1fr; gap:11px;}
-@media(max-width:480px){.calc-modal-row{grid-template-columns:1fr;}}
-.calc-modal-form input[type="text"], .calc-modal-form input[type="email"], .calc-modal-form input[type="tel"], .calc-modal-form textarea{
-  border:1px solid var(--line); border-radius:10px; padding:11px 13px; font-family:'Inter',sans-serif; font-size:14px; width:100%;
-}
-.calc-modal-block{margin-top:4px;}
-.calc-modal-label{display:block; font-size:13px; font-weight:700; color:var(--ink); margin-bottom:8px;}
-.calc-modal-upload{
-  display:flex; align-items:center; justify-content:center; gap:8px; border:1.5px dashed var(--line); border-radius:10px;
-  padding:14px; cursor:pointer; font-size:13.5px; color:var(--ink-soft); transition:border-color .15s ease;
-}
-.calc-modal-upload:has(input:not(:placeholder-shown)), .calc-modal-upload:hover{border-color:var(--link);}
-.calc-modal-upload svg{width:16px; height:16px; color:var(--link);}
-.calc-modal-upload input{display:none;}
-.calc-modal-upload em{font-style:normal; color:var(--ink-soft);}
-.calc-modal-submit{width:100%; justify-content:center; margin-top:6px;}
-
-/* ---------- WERKGEBIEDKAART ---------- */
-.wg-map-panel{background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:24px;}
-.wg-map-panel-lg{padding:20px;}
-@media(min-width:760px){.wg-map-panel-lg{padding:28px;}}
-.wg-map-wrap{position:relative; width:100%;}
-.wg-map{width:100%; height:auto; display:block; overflow:visible;}
-
-.wg-shape{cursor:pointer;}
-.wg-shape path{
-  fill:var(--bg-soft); stroke:#fff; stroke-width:1;
-  transition:fill .25s ease, stroke .25s ease;
-}
-.wg-shape:hover path{fill:var(--link); opacity:0.35;}
-.wg-shape-active path{fill:#BFE0FF; opacity:0.9; stroke:var(--link); stroke-width:1.6;}
-
-.wg-tooltip-fo{overflow:visible; pointer-events:none;}
-.wg-tooltip{
-  display:inline-flex; background:#10205C; color:#fff; font-family:'Inter',sans-serif;
-  font-size:11px; font-weight:600; white-space:nowrap; padding:5px 10px; border-radius:7px;
-  box-shadow:0 6px 16px -4px rgba(16,32,92,0.35); opacity:0; transform:translateY(3px); transition:opacity .2s ease, transform .2s ease;
-}
-.wg-shape:hover .wg-tooltip{opacity:1; transform:translateY(0);}
-
-.wg-callout-line{stroke:#0068B8; stroke-width:1;}
-.wg-callout-dot{fill:#0068B8;}
-.wg-callout-label{
-  font-family:'Inter',sans-serif; font-size:12.5px; font-weight:700; color:#10205C;
-  white-space:nowrap; background:#fff; padding:3px 9px; border-radius:6px; border:1px solid #E4E8F2;
-  box-shadow:0 4px 10px -3px rgba(16,32,92,0.18);
-}
-
-.illustration-panel{
-  position:relative; border-radius:var(--radius-lg); overflow:hidden;
-  aspect-ratio:4/3.4; background:linear-gradient(150deg,#EAF3FF 0%,#EFFBF3 100%);
-  display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-md);
-}
-.illustration-panel svg{width:62%; height:62%;}
-.illustration-panel.hero-photo{background:none; padding:0;}
-.illustration-panel.hero-photo img{width:100%; height:100%; object-fit:cover;}
-.illustration-panel.sm{aspect-ratio:1/1; border-radius:var(--radius);}
-.illustration-panel.sm svg{width:56%; height:56%;}
-
-/* ---------- TRUST STRIP (honest, modest) ---------- */
-.trust{border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--bg-soft);}
-.trust-inner{display:flex; flex-wrap:wrap; justify-content:center; gap:14px 40px; padding:20px 24px; font-size:13.5px; color:var(--ink-soft); font-weight:600;}
-.trust-inner span{display:flex; align-items:center; gap:8px;}
-.trust-inner svg{width:16px; height:16px; color:var(--blue); flex-shrink:0;}
-
-/* ---------- SECTIONS ---------- */
-section{padding:96px 0;}
-.section-tight{padding:48px 0;}
-@media(max-width:640px){
-  section{padding:52px 0;}
-  .section-tight{padding:36px 0;}
-  .page-hero{padding:32px 0 8px;}
-  .hero{padding:40px 0 24px;}
-}
-.sec-head{text-align:center; max-width:600px; margin:0 auto 48px;}
-.sec-head h2{font-size:clamp(28px,3.6vw,38px); margin-top:10px;}
-.sec-head p{color:var(--ink-soft); font-size:16px; margin-top:12px;}
-.sec-foot{text-align:center; margin-top:40px;}
-
-/* ---------- VOOR/NA SLEEPBALK ---------- */
-.compare-slider{
-  position:relative; border-radius:var(--radius-lg); overflow:hidden; aspect-ratio:16/10;
-  box-shadow:var(--shadow-lg); user-select:none; max-width:900px; margin:0 auto;
-}
-.compare-slider .cs-layer{position:absolute; inset:0; overflow:hidden;}
-.compare-slider .cs-before, .compare-slider .cs-after{
-  position:absolute; inset:0; background-size:cover; background-position:center;
-}
-.compare-slider .cs-before-clip{position:absolute; inset:0; clip-path:inset(0 50% 0 0);}
-.compare-slider .cs-label{
-  position:absolute; top:16px; z-index:2; font-size:11.5px; font-weight:700; letter-spacing:0.06em;
-  text-transform:uppercase; color:#fff; background:rgba(16,32,92,0.55); padding:6px 12px; border-radius:100px;
-}
-.compare-slider .cs-label.before{left:16px;} .compare-slider .cs-label.after{right:16px;}
-.compare-slider .cs-handle{position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%); width:0; pointer-events:none; z-index:2;}
-.compare-slider .cs-handle::before{content:''; position:absolute; top:0; bottom:0; left:-1.5px; width:3px; background:#fff; box-shadow:0 0 0 1px rgba(0,0,0,0.1);}
-.compare-slider .cs-handle::after{
-  content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:46px; height:46px;
-  background:#fff; border-radius:50%; box-shadow:0 8px 20px rgba(16,32,92,0.3);
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2310205C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 7l-5 5 5 5M16 7l5 5-5 5'/%3E%3C/svg%3E");
-  background-repeat:no-repeat; background-position:center; background-size:22px;
-}
-.compare-slider input[type="range"]{
-  position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:ew-resize; z-index:3;
-}
-.grid-3{display:grid; grid-template-columns:1fr; gap:22px;}
-@media(min-width:680px){.grid-3{grid-template-columns:repeat(2,1fr);}}
-@media(min-width:980px){.grid-3{grid-template-columns:repeat(3,1fr);}}
-.grid-2{display:grid; grid-template-columns:1fr; gap:22px;}
-@media(min-width:680px){.grid-2{grid-template-columns:repeat(2,1fr);}}
-.grid-4{display:grid; grid-template-columns:1fr; gap:20px;}
-.wg-card{
-  display:flex; flex-direction:column; background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg);
-  padding:24px; box-shadow:var(--shadow-sm); transition:transform .2s ease, box-shadow .2s ease;
-}
-.wg-card:hover{transform:translateY(-3px); box-shadow:var(--shadow-md);}
-.wg-card .wg-icon{
-  width:44px; height:44px; border-radius:12px; background:var(--bg-soft); display:flex;
-  align-items:center; justify-content:center; margin-bottom:16px; flex-shrink:0;
-}
-.wg-card .wg-icon svg{width:22px; height:22px; color:var(--link);}
-.wg-card h3{font-family:'Inter',sans-serif; font-size:16px; font-weight:700; color:var(--ink);}
-.wg-card p{color:var(--ink-soft); font-size:13.5px; margin-top:8px; line-height:1.55; flex-grow:1;}
-.wg-card .wg-btn{
-  display:inline-flex; align-items:center; gap:6px; margin-top:16px; font-size:13.5px; font-weight:600;
-  color:var(--link); text-decoration:none;
-}
-.wg-card .wg-btn svg{width:15px; height:15px; transition:transform .18s ease;}
-.wg-card:hover .wg-btn svg{transform:translateX(3px);}
-@media(min-width:680px){.grid-4{grid-template-columns:repeat(2,1fr);}}
-@media(min-width:980px){.grid-4{grid-template-columns:repeat(4,1fr);}}
-
-/* ---------- WERKWIJZE ---------- */
-.steps{display:grid; grid-template-columns:1fr; gap:0;}
-@media(min-width:820px){.steps{grid-template-columns:repeat(4,1fr); gap:24px;}}
-.step{padding:26px 0; border-top:1px solid var(--line); position:relative;}
-@media(min-width:820px){.step{border-top:none; padding:0;}}
-.step .stepnum{font-family:'Instrument Serif', serif; font-size:32px; color:var(--link); line-height:1; display:flex; align-items:center; gap:10px;}
-.step .stepnum svg{width:22px; height:22px; color:var(--navy); flex-shrink:0;}
-.step h3{font-family:'Inter',sans-serif; font-weight:700; font-size:16px; margin-top:10px;}
-.step p{color:var(--ink-soft); font-size:14px; margin-top:6px;}
-
-.service-card{
-  display:flex; flex-direction:column; text-decoration:none; color:var(--ink);
-  background:#fff; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
-  box-shadow:var(--shadow-sm); transition:transform .2s ease, box-shadow .2s ease;
-}
-.service-card:hover{transform:translateY(-5px); box-shadow:var(--shadow-md);}
-.service-card .thumb{aspect-ratio:3/2.1; display:flex; align-items:center; justify-content:center; overflow:hidden;}
-.service-card .thumb svg{width:44%; height:44%;}
-.service-card .thumb img{transition:transform .35s ease, filter .35s ease; filter:brightness(1.07);}
-.service-card:hover .thumb img{transform:scale(1.06);}
-.service-card .body{padding:18px 22px 20px; display:flex; flex-direction:column; flex-grow:1;}
-.service-card h3{font-family:'Inter',sans-serif; font-weight:800; font-size:17.5px; letter-spacing:-0.01em;}
-.service-card p{
-  color:var(--ink-soft); font-size:14px; margin-top:7px; line-height:1.5;
-  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
-}
-.service-card .sc-link{display:inline-flex; align-items:center; gap:6px; margin-top:auto; padding-top:14px; font-size:13px; font-weight:600; color:var(--link);}
-
-/* per-service tint */
-.tint-1{background:linear-gradient(150deg,#EAF3FF,#F3F7FF);}
-.tint-2{background:linear-gradient(150deg,#E9F6F4,#EFFBF6);}
-.tint-3{background:linear-gradient(150deg,#EEF4FF,#EAF9F0);}
-.tint-4{background:linear-gradient(150deg,#EAF1FF,#ECFAF1);}
-.tint-5{background:linear-gradient(150deg,#EBF6F5,#EEF9F0);}
-.tint-6{background:linear-gradient(150deg,#EAF2FF,#EBF8F3);}
-.tint-7{background:linear-gradient(150deg,#EDF3FF,#E9F8EE);}
-
-/* ---------- USP (max 4, per brief) ---------- */
-.usp-grid{display:grid; grid-template-columns:1fr; gap:28px;}
-@media(min-width:680px){.usp-grid{grid-template-columns:repeat(2,1fr);}}
-@media(min-width:980px){.usp-grid{grid-template-columns:repeat(4,1fr);}}
-.usp{text-align:center;}
-.usp .icon-circle{width:48px; height:48px; border-radius:50%; margin:0 auto 16px; background:var(--bg-soft); display:flex; align-items:center; justify-content:center;}
-.usp .icon-circle svg{width:22px; height:22px; color:var(--navy);}
-.usp h3{font-family:'Inter',sans-serif; font-weight:700; font-size:16px;}
-.usp p{color:var(--ink-soft); font-size:14px; margin-top:6px;}
-
-/* ---------- WERKGEBIED ---------- */
-.area-tags{display:flex; flex-wrap:wrap; gap:10px; justify-content:center;}
-.area-tag{padding:9px 18px; border-radius:100px; border:1px solid var(--line); background:#fff; font-size:14px; font-weight:500; color:var(--ink-soft);}
-.area-tag.primary{border-color:var(--blue); color:var(--navy); background:#F0F8FF; font-weight:600;}
-
-/* ---------- REVIEWS (clean, review-ready, no fake content) ---------- */
-.reviews-ready{
-  border:1px solid var(--line); border-radius:var(--radius-lg); background:var(--bg-soft);
-  padding:48px 36px; text-align:center; max-width:640px; margin:0 auto;
-}
-.reviews-ready .icon-circle{width:52px; height:52px; border-radius:50%; margin:0 auto 18px; background:#fff; box-shadow:var(--shadow-sm); display:flex; align-items:center; justify-content:center;}
-.reviews-ready svg{width:24px; height:24px; color:var(--blue);}
-.reviews-ready h3{font-family:'Inter',sans-serif; font-weight:700; font-size:17px;}
-.reviews-ready p{color:var(--ink-soft); font-size:14.5px; margin-top:10px; max-width:440px; margin-left:auto; margin-right:auto;}
-
-/* ---------- FAQ ---------- */
-.faq{max-width:760px; margin:0 auto; display:grid; gap:12px;}
-.faq details{
-  border:1px solid var(--line); border-radius:14px; background:#fff; overflow:hidden;
-  transition:border-color .2s ease, box-shadow .2s ease, background .2s ease;
-}
-.faq details:hover{border-color:var(--line); background:var(--bg-soft); box-shadow:var(--shadow-sm);}
-.faq summary{
-  cursor:pointer; font-weight:600; font-size:15.5px; list-style:none; padding:18px 22px;
-  display:flex; align-items:center; justify-content:space-between; gap:16px;
-}
-.faq summary::-webkit-details-marker{display:none;}
-.faq summary .chev{display:flex; transition:transform .25s ease; color:var(--link); flex-shrink:0;}
-.faq summary .chev svg{width:18px; height:18px;}
-.faq details[open] summary .chev{transform:rotate(180deg);}
-.faq-a-wrap{
-  display:grid !important; grid-template-rows:0fr; padding:0 22px;
-  transition:grid-template-rows .28s ease, padding .28s ease;
-}
-.faq details[open] .faq-a-wrap{grid-template-rows:1fr; padding:0 22px 20px;}
-.faq-a-wrap > .faq-a{overflow:hidden; color:var(--ink-soft); font-size:14.5px; line-height:1.65; margin:0;}
-.faq-cta{text-align:center; margin-top:32px;}
-.faq-cta p{color:var(--ink-soft); font-size:14.5px; margin-bottom:14px;}
-
-/* ---------- CTA BAND ---------- */
-.cta-band{border-radius:var(--radius-lg); background:var(--grad-button); color:#fff; padding:52px 40px; text-align:center;}
-.cta-band h2{color:#fff; font-size:clamp(24px,3vw,32px);}
-.cta-band p{color:rgba(255,255,255,0.88); margin-top:10px; font-size:15.5px;}
-.cta-band .hero-actions{justify-content:center;}
-.cta-band .btn-outline{background:transparent; color:#fff; border-color:rgba(255,255,255,0.5);}
-.cta-band .btn-outline:hover{background:rgba(255,255,255,0.12); border-color:#fff;}
-.cta-band .btn-primary{background:#fff; color:var(--navy); box-shadow:none;}
-.cta-band .btn-primary:hover{transform:translateY(-2px); box-shadow:0 14px 28px -12px rgba(0,0,0,0.2);}
-
-/* ---------- CONTACT (no address emphasis) ---------- */
-.contact-grid{display:grid; grid-template-columns:1fr; gap:44px;}
-@media(min-width:940px){.contact-grid{grid-template-columns:0.85fr 1.15fr;}}
-.benefits-strip{
-  display:flex; flex-wrap:wrap; justify-content:center; gap:14px 32px; margin-bottom:40px;
-  padding:18px 24px; background:var(--bg-soft); border-radius:100px; font-size:13.5px; font-weight:600; color:var(--ink-soft);
-}
-.benefits-strip span{display:flex; align-items:center; gap:8px;}
-.benefits-strip svg{width:16px; height:16px; color:var(--teal);}
-@media(max-width:640px){.benefits-strip{border-radius:16px; justify-content:flex-start;}}
-.contact-info h2{font-size:32px;}
-.contact-info p{color:var(--ink-soft); margin-top:12px; font-size:15.5px;}
-.contact-line{display:flex; align-items:center; gap:12px; margin-top:18px;}
-.contact-line svg{width:18px; height:18px; color:var(--blue); flex-shrink:0;}
-.contact-line a{font-weight:600; text-decoration:none; font-size:15.5px;}
-.contact-line a:hover{color:var(--link);}
-.contact-actions{display:flex; gap:10px; margin-top:26px; flex-wrap:wrap;}
-.contact-map{margin-top:26px; border-radius:16px; overflow:hidden; box-shadow:var(--shadow-sm);}
-form.card-form{display:grid; gap:14px; background:var(--bg-soft); border:1px solid var(--line); border-radius:var(--radius); padding:32px; box-shadow:var(--shadow-sm);}
-
-/* ---------- OFFERTE-WIZARD ---------- */
-.wizard-form{
-  background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg);
-  padding:32px; box-shadow:var(--shadow-md); scroll-margin-top:90px;
-}
-.wizard-progress{margin-bottom:28px;}
-.wizard-progress-bar{height:5px; background:var(--line); border-radius:100px; overflow:hidden;}
-.wizard-progress-fill{height:100%; width:20%; background:var(--grad-button); border-radius:100px; transition:width .3s ease;}
-.wizard-progress-steps{display:flex; justify-content:space-between; margin-top:10px; gap:4px;}
-.wp-step{
-  flex:1; text-align:center; font-size:11px; font-weight:700; color:var(--ink-soft);
-  display:flex; flex-direction:column; align-items:center; gap:2px; position:relative;
-}
-.wp-step em{font-style:normal; font-weight:500; font-size:10.5px; text-transform:none; display:none;}
-@media(min-width:640px){.wp-step em{display:block;}}
-.wp-step.active{color:var(--navy);}
-.wp-step.done{color:var(--teal);}
-
-.wizard-q{font-family:'Inter',sans-serif; font-weight:700; font-size:19px; color:var(--ink); margin:0;}
-.wizard-sub{color:var(--ink-soft); font-size:14px; margin-top:6px; margin-bottom:20px;}
-.wizard-step[hidden]{display:none;}
-
-.radio-cards{display:grid; grid-template-columns:1fr; gap:12px;}
-@media(min-width:600px){.radio-cards.cols-2{grid-template-columns:repeat(2,1fr);} .radio-cards.cols-3{grid-template-columns:repeat(2,1fr);}}
-@media(min-width:860px){.radio-cards.cols-3{grid-template-columns:repeat(3,1fr);}}
-.rc-input{position:absolute; opacity:0; pointer-events:none; width:1px; height:1px;}
-.rc-card{
-  display:flex; flex-direction:column; gap:4px; padding:16px 16px; border:1.5px solid var(--line);
-  border-radius:14px; cursor:pointer; transition:border-color .15s ease, background .15s ease, transform .1s ease;
-}
-.rc-card:hover{border-color:var(--blue);}
-.rc-input:checked + .rc-card{border-color:var(--navy); background:var(--bg-soft); box-shadow:0 0 0 1.5px var(--navy) inset;}
-.rc-input:focus-visible + .rc-card{outline:2.5px solid var(--blue); outline-offset:2px;}
-.rc-icon{width:34px; height:34px; border-radius:10px; background:var(--bg-soft); display:flex; align-items:center; justify-content:center; margin-bottom:4px;}
-.rc-input:checked + .rc-card .rc-icon{background:#fff;}
-.rc-icon svg{width:18px; height:18px; color:var(--navy);}
-.rc-label{font-weight:700; font-size:14.5px; color:var(--ink);}
-.rc-desc{font-size:12.5px; color:var(--ink-soft);}
-
-.wizard-nav{
-  display:flex; justify-content:space-between; gap:10px; margin-top:28px; padding:16px 0;
-  border-top:1px solid var(--line); position:sticky; bottom:0; background:#fff; z-index:20;
-  box-shadow:0 -10px 16px -4px rgba(16,32,92,0.06);
-}
-.wizard-nav [hidden]{display:none !important;}
-.wizard-step[hidden]{display:none !important;}
-.wizard-nav .wizard-next, .wizard-nav .wizard-submit{margin-left:auto;}
-
-@media(max-width:899px){
-  .wizard-nav{bottom:64px;}
-}
-
-@media(max-width:599px){
-  .wizard-form{padding:20px 16px; border-radius:16px;}
-  .wizard-q{font-size:17px;}
-  .radio-cards{gap:10px;}
-  .rc-card{padding:14px;}
-  .wizard-nav{flex-direction:column-reverse; gap:10px;}
-  .wizard-nav .wizard-back, .wizard-nav .wizard-next, .wizard-nav .wizard-submit{width:100%; margin-left:0;}
-}
-.row2{display:grid; grid-template-columns:1fr; gap:14px;}
-@media(min-width:560px){.row2{grid-template-columns:1fr 1fr;}}
-label{font-size:13px; font-weight:600; color:var(--ink-soft); display:block; margin-bottom:6px;}
-input,select,textarea{width:100%; border:1px solid var(--line); border-radius:10px; padding:12px 13px; font-family:'Inter',sans-serif; font-size:16px; background:#fff; color:var(--ink);}
-textarea{resize:vertical; min-height:90px;}
-input:focus,select:focus,textarea:focus{border-color:var(--link);}
-.hidden-field{position:absolute; left:-9999px;}
-
-/* ---------- FOOTER ---------- */
-footer.site-footer{background:var(--bg-navy); color:var(--ink-on-navy); padding:44px 0 22px;}
-.footer-top-3col{display:grid; grid-template-columns:1fr; gap:32px; padding-bottom:26px; border-bottom:1px solid rgba(255,255,255,0.14);}
-@media(min-width:860px){.footer-top-3col{grid-template-columns:1.1fr 0.75fr 1.15fr;}}
-.footer-brand-col img{height:30px; filter:brightness(0) invert(1);}
-.footer-tagline{font-size:13.5px; color:var(--ink-on-navy); margin-top:12px; max-width:320px; line-height:1.55;}
-.footer-meta{font-size:11.5px; color:rgba(201,210,238,0.6); margin-top:16px;}
-.footer-col h4{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#fff; margin-bottom:14px;}
-.footer-col a{display:block; text-decoration:none; color:var(--ink-on-navy); font-size:14px; margin-bottom:9px; transition:color .15s ease;}
-.footer-col a:hover{color:#fff;}
-
-.footer-form-intro{font-size:12.5px; color:rgba(201,210,238,0.8); margin-top:6px; margin-bottom:14px; line-height:1.45;}
-.footer-form{display:grid; gap:9px;}
-.footer-form-row{display:grid; grid-template-columns:1fr 1fr; gap:9px;}
-@media(max-width:480px){.footer-form-row{grid-template-columns:1fr;}}
-.footer-form input, .footer-form textarea{
-  background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.18); border-radius:9px;
-  padding:9px 12px; font-family:'Inter',sans-serif; font-size:13px; color:#fff; width:100%;
-}
-.footer-form input::placeholder, .footer-form textarea::placeholder{color:rgba(201,210,238,0.55);}
-.footer-form input:focus, .footer-form textarea:focus{border-color:#8FE0C1; outline:none;}
-.footer-form textarea{resize:vertical;}
-.footer-form-submit{width:100%; margin-top:2px; justify-content:center; padding:10px 20px; font-size:13.5px;}
-
-.footer-bottom{display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between; align-items:center; padding-top:22px; font-size:12.5px; color:rgba(201,210,238,0.7);}
-.footer-copy{display:flex; flex-direction:column; gap:4px;}
-.footer-legal-links{display:flex; gap:18px; flex-wrap:wrap;}
-.footer-legal-links a{color:rgba(201,210,238,0.7); text-decoration:none;}
-.footer-legal-links a:hover{color:#fff;}
-
-/* Zwevende WhatsApp-knop */
-.whatsapp-float{
-  position:fixed; right:24px; bottom:24px; z-index:150;
-  width:58px; height:58px; border-radius:50%; background:#25D366;
-  display:flex; align-items:center; justify-content:center;
-  box-shadow:0 10px 28px -6px rgba(37,211,102,0.55), 0 2px 8px rgba(0,0,0,0.15);
-  transition:transform .2s ease, box-shadow .2s ease;
-}
-.whatsapp-float::before{
-  content:''; position:absolute; inset:0; border-radius:50%; background:#25D366;
-  animation:whatsappPulse 2.6s ease-out infinite; z-index:-1;
-}
-@keyframes whatsappPulse{
-  0%{transform:scale(1); opacity:0.55;}
-  100%{transform:scale(1.7); opacity:0;}
-}
-.whatsapp-float:hover{transform:translateY(-3px) scale(1.05); box-shadow:0 14px 32px -6px rgba(37,211,102,0.65), 0 4px 10px rgba(0,0,0,0.2);}
-.whatsapp-float svg{width:28px; height:28px; color:#fff;}
-@media (prefers-reduced-motion: reduce){.whatsapp-float::before{animation:none;}}
-.whatsapp-tooltip{
-  position:absolute; right:70px; top:50%; transform:translateY(-50%) translateX(6px);
-  background:var(--navy); color:#fff; font-size:13px; font-weight:600; white-space:nowrap;
-  padding:8px 14px; border-radius:8px; opacity:0; pointer-events:none; transition:opacity .18s ease, transform .18s ease;
-}
-.whatsapp-tooltip::after{content:''; position:absolute; left:100%; top:50%; transform:translateY(-50%); border:6px solid transparent; border-left-color:var(--navy);}
-.whatsapp-float:hover .whatsapp-tooltip{opacity:1; transform:translateY(-50%) translateX(0);}
-@media(max-width:899px){
-  .whatsapp-float{right:16px; bottom:92px; width:52px; height:52px;}
-  .whatsapp-float svg{width:25px; height:25px;}
-  .whatsapp-tooltip{display:none;}
-}
-
-/* ---------- misc ---------- */
-.prose{font-size:16px; color:var(--ink-soft); line-height:1.75;}
-.prose h2{color:var(--ink); margin-top:36px; margin-bottom:12px; font-size:24px;}
-.prose ul{margin-top:14px; padding-left:20px;}
-.prose li{margin-bottom:8px;}
-.two-col{display:grid; grid-template-columns:1fr; gap:48px; align-items:start;}
-@media(min-width:900px){.two-col{grid-template-columns:1.1fr 0.9fr;}}
-.breadcrumb{font-size:13px; color:var(--ink-soft); margin-bottom:16px;}
-.breadcrumb a{text-decoration:none; color:var(--ink-soft);}
-.breadcrumb a:hover{color:var(--blue);}
-.page-hero{padding:56px 0 20px;}
-.page-hero h1{font-size:clamp(32px,4.4vw,46px);}
-.page-hero p.lead{font-size:17px; color:var(--ink-soft); max-width:560px; margin-top:16px;}
-
-.reveal{opacity:0; transform:translateY(14px); transition:opacity .6s ease, transform .6s ease;}
-.reveal.in{opacity:1; transform:none;}
-@media (prefers-reduced-motion: reduce){
-  .reveal{opacity:1; transform:none; transition:none;}
-  html{scroll-behavior:auto;}
-}
+      <div class="footer-col footer-form-col">
+        <h4>Vrijblijvend kennismaken?</h4>
+        <p class="footer-form-intro">Laat uw gegevens achter, wij nemen doorgaans binnen één werkdag contact op.</p>
+        <form name="footer-offerte" method="POST" action="https://api.web3forms.com/submit" class="footer-form">
+          <input type="hidden" name="access_key" value="abc98c0d-af16-42b0-ae5c-3337f35e5299">
+          <input type="hidden" name="subject" value="Nieuwe offerteaanvraag via de footer">
+          <input type="hidden" name="redirect" value="https://www.brabantschoon.nl/thanks.html">
+          <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
+          <div class="footer-form-row">
+            <input type="text" name="naam" placeholder="Naam" required>
+            <input type="tel" name="telefoon" placeholder="Telefoonnummer" required>
+          </div>
+          <div class="footer-form-row">
+            <input type="email" name="email" placeholder="E-mailadres" required>
+            <input type="text" name="bedrijfsnaam" placeholder="Bedrijfsnaam (optioneel)">
+          </div>
+          <textarea name="bericht" placeholder="Bericht" rows="2"></textarea>
+          <button type="submit" class="btn btn-primary footer-form-submit">Neem contact met ons op</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">
+        <span>&copy; 2026 BrabantSchoon. Alle rechten voorbehouden.</span>
+      </div>
+      <div class="footer-legal-links">
+        <a href="../privacy.html">Privacybeleid</a>
+        <a href="../cookiebeleid.html">Cookiebeleid</a>
+        <a href="../voorwaarden.html">Algemene voorwaarden</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </div>
+    </div>
+  </div>
+</footer>
+<a href="https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Chat direct via WhatsApp">
+  <svg class="icon" viewBox="-0.54 -0.60 25.08 25.20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" stroke="none" d="M12.02 2C6.5 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.07L2 22l5.08-1.33A9.96 9.96 0 0 0 12.02 22C17.55 22 22 17.52 22 12S17.55 2 12.02 2Zm5.84 14.14c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.82-.12-.42-.11-.96-.31-1.65-.6-2.9-1.25-4.8-4.17-4.94-4.36-.14-.19-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.42.27-.29.58-.36.78-.36l.55.01c.18.01.42-.07.65.5.24.58.82 2.01.89 2.15.07.15.12.32.02.51-.1.19-.15.31-.3.48-.15.17-.31.38-.44.51-.15.14-.3.3-.13.6.17.29.76 1.26 1.64 2.04 1.13 1 2.08 1.32 2.37 1.47.29.15.46.12.63-.07.17-.19.72-.84.92-1.13.19-.29.38-.24.63-.14.26.1 1.65.78 1.93.92.29.14.48.21.55.33.07.12.07.68-.17 1.36Z"/></svg>
+  <span class="whatsapp-tooltip">Chat direct via WhatsApp</span>
+</a>
+<div class="mobile-cta-bar">
+  <a href="tel:+31492313050" class="btn btn-outline">Bel direct</a>
+  <a href="../contact.html#offerteWizard" class="btn btn-primary">Vrijblijvende offerte</a>
+</div>
+<script src="../js/pricing-engine.js?v=97" defer></script>
+<script src="../js/main.js?v=97" defer></script>
+</body>
+</html>
