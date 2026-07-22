@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "88"
+ASSET_VERSION = "89"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -361,6 +361,7 @@ def render_footer(base):
         <a href="{base}diensten.html">Diensten</a>
         <a href="{base}over-ons.html">Over ons</a>
         <a href="{base}werkgebied.html">Werkgebied</a>
+        <a href="{base}bereken-schoonmaakkosten.html">Prijscalculator</a>
         <a href="{base}contact.html">Contact</a>
         <a href="{base}contact.html#offerteWizard">Offerte aanvragen</a>
       </div>
@@ -681,55 +682,8 @@ def write(path, content):
 # =================================================================
 # HOME
 # =================================================================
-def build_home():
-    base = ""
-    service_cards = "\n    ".join(f"""<a href="diensten/{s['slug']}.html" class="service-card">
-      <div class="thumb {s['tint']}">{service_visual_from_root(s)}</div>
-      <div class="body">
-        <h3>{s['name']}</h3>
-        <p>{s['short']}</p>
-      </div>
-    </a>""" for s in SERVICES[:6])
-
-    usp_items = [
-        ("chat", "Vast aanspreekpunt", "U spreekt altijd met iemand die uw locatie en wensen kent \u2014 geen callcenter."),
-        ("check", "Afspraak is afspraak", "Heldere planning die we nakomen, zonder verrassingen achteraf."),
-        ("clock", "Flexibiliteit", "Frequentie en tijdstip volledig afgestemd op uw organisatie."),
-        ("spark", "Kwaliteitscontrole", "Resultaat en afspraken worden steekproefsgewijs nagelopen, niet alleen bij de eerste beurt."),
-    ]
-    usp_html = "\n    ".join(f'<div class="usp"><div class="icon-circle">{icon(n)}</div><h3>{t}</h3><p>{d}</p></div>' for n, t, d in usp_items)
-
-    sector_tags = "\n      ".join(f'<span class="area-tag primary">{s}</span>' for s in
-        ["Kantoren", "Bedrijfsverzamelgebouwen", "VvE's", "Scholen", "Vastgoedbeheerders", "Winkels &amp; praktijken"])
-    kern_tags = "\n      ".join(f'<span class="area-tag">{c}</span>' for c in WERKGEBIED_KERN + WERKGEBIED_OVERIG)
-
-    body = f"""
-  <section class="hero-full">
-    <img src="images/hero.jpg" alt="Bedrijfswagens en medewerker van BrabantSchoon bij een klant in Zuidoost-Brabant" class="hero-full-img" width="1600" height="1067" fetchpriority="high" decoding="async">
-    <div class="hero-full-overlay"></div>
-    <div class="wrap hero-full-content">
-      <span class="eyebrow" style="color:#BFE0FF;">Professionele schoonmaak voor bedrijven</span>
-      <h1>Professionele schoonmaak. Altijd geregeld.</h1>
-      <p class="lead" style="color:rgba(255,255,255,0.9);">Periodieke, eenmalige en specialistische schoonmaak voor kantoren, VvE's, scholen en organisaties in heel Noord-Brabant.</p>
-      <div class="hero-actions">
-        <a href="contact.html#offerteWizard" class="btn btn-primary">Gratis offerte aanvragen</a>
-        <a href="#diensten" class="btn btn-ghost-light">Bekijk onze diensten</a>
-      </div>
-      <ul class="hero-checklist">
-        <li>{icon('check')}Vast aanspreekpunt</li>
-        <li>{icon('check')}Flexibele planning</li>
-        <li>{icon('check')}Professionele medewerkers</li>
-        <li>{icon('check')}Actief in heel Noord-Brabant</li>
-      </ul>
-    </div>
-  </section>
-
-  <section class="section-tight">
-    <div class="wrap">
-      {reviews_widget_block()}
-    </div>
-  </section>
-
+def calculator_block():
+    return f"""
   <section id="calculator" style="background:var(--bg-soft);">
     <div class="wrap">
       <div class="sec-head reveal">
@@ -871,6 +825,97 @@ def build_home():
       </form>
     </div>
   </div>
+"""
+
+def build_calculator_page():
+    base = ""
+    body = f"""
+  {page_hero("Prijscalculator", "Bereken uw schoonmaakkosten.", "Vul uw pandtype, oppervlakte en wensen in en ontvang direct een prijsindicatie \u2014 vrijblijvend en zonder verplichtingen.", base, "Prijscalculator")}
+  {calculator_block()}
+  <section class="section-tight">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Veelgestelde vragen</span>
+        <h2>Over de prijscalculator</h2>
+      </div>
+      <div class="faq reveal">{faq_block([
+        ("Hoe betrouwbaar is de berekende prijsindicatie?", "De calculator geeft een realistische inschatting op basis van oppervlakte, pandtype en frequentie. De definitieve prijs stellen we vast na een kort kennismakingsgesprek, waarin we rekening houden met de specifieke situatie van uw pand."),
+        ("Wat kost een schoonmaakbedrijf per m2?", "Dat hangt sterk af van het pandtype, de frequentie en eventuele extra diensten. Gebruik de calculator hierboven voor een indicatie op maat, of vraag een vrijblijvende offerte aan."),
+        ("Is de prijsindicatie inclusief of exclusief btw?", "De getoonde bandbreedte is exclusief btw, zoals gebruikelijk bij zakelijke schoonmaakdiensten."),
+        ("Kan ik de calculator ook gebruiken voor een eenmalige schoonmaakbeurt?", "De calculator is gericht op terugkerende schoonmaak. Voor een eenmalige beurt, opleveringsschoonmaak of specialistische reiniging kunt u direct een offerte aanvragen via het formulier."),
+      ])}</div>
+    </div>
+  </section>
+  <section><div class="wrap">{cta_band("Liever direct persoonlijk contact?", "Bel of mail ons voor een vrijblijvend gesprek.", base)}</div></section>
+"""
+    write("bereken-schoonmaakkosten.html", page_shell(
+        "Schoonmaak Calculator | Bereken Schoonmaakkosten Kantoor & Bedrijf",
+        "Bereken direct uw schoonmaakkosten met de gratis prijscalculator van BrabantSchoon. Prijsindicatie voor kantoor, VvE, praktijk en bedrijfspand in 30 seconden.",
+        "bereken-schoonmaakkosten.html", base, "bereken-schoonmaakkosten.html", body,
+        breadcrumb_schema("Prijscalculator", "bereken-schoonmaakkosten.html")
+    ))
+
+def build_home():
+    base = ""
+    service_cards = "\n    ".join(f"""<a href="diensten/{s['slug']}.html" class="service-card">
+      <div class="thumb {s['tint']}">{service_visual_from_root(s)}</div>
+      <div class="body">
+        <h3>{s['name']}</h3>
+        <p>{s['short']}</p>
+      </div>
+    </a>""" for s in SERVICES[:6])
+
+    usp_items = [
+        ("chat", "Vast aanspreekpunt", "U spreekt altijd met iemand die uw locatie en wensen kent \u2014 geen callcenter."),
+        ("check", "Afspraak is afspraak", "Heldere planning die we nakomen, zonder verrassingen achteraf."),
+        ("clock", "Flexibiliteit", "Frequentie en tijdstip volledig afgestemd op uw organisatie."),
+        ("spark", "Kwaliteitscontrole", "Resultaat en afspraken worden steekproefsgewijs nagelopen, niet alleen bij de eerste beurt."),
+    ]
+    usp_html = "\n    ".join(f'<div class="usp"><div class="icon-circle">{icon(n)}</div><h3>{t}</h3><p>{d}</p></div>' for n, t, d in usp_items)
+
+    sector_tags = "\n      ".join(f'<span class="area-tag primary">{s}</span>' for s in
+        ["Kantoren", "Bedrijfsverzamelgebouwen", "VvE's", "Scholen", "Vastgoedbeheerders", "Winkels &amp; praktijken"])
+    kern_tags = "\n      ".join(f'<span class="area-tag">{c}</span>' for c in WERKGEBIED_KERN + WERKGEBIED_OVERIG)
+
+    body = f"""
+  <section class="hero-full">
+    <img src="images/hero.jpg" alt="Bedrijfswagens en medewerker van BrabantSchoon bij een klant in Zuidoost-Brabant" class="hero-full-img" width="1600" height="1067" fetchpriority="high" decoding="async">
+    <div class="hero-full-overlay"></div>
+    <div class="wrap hero-full-content">
+      <span class="eyebrow" style="color:#BFE0FF;">Professionele schoonmaak voor bedrijven</span>
+      <h1>Professionele schoonmaak. Altijd geregeld.</h1>
+      <p class="lead" style="color:rgba(255,255,255,0.9);">Periodieke, eenmalige en specialistische schoonmaak voor kantoren, VvE's, scholen en organisaties in heel Noord-Brabant.</p>
+      <div class="hero-actions">
+        <a href="contact.html#offerteWizard" class="btn btn-primary">Gratis offerte aanvragen</a>
+        <a href="#diensten" class="btn btn-ghost-light">Bekijk onze diensten</a>
+      </div>
+      <ul class="hero-checklist">
+        <li>{icon('check')}Vast aanspreekpunt</li>
+        <li>{icon('check')}Flexibele planning</li>
+        <li>{icon('check')}Professionele medewerkers</li>
+        <li>{icon('check')}Actief in heel Noord-Brabant</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="wrap">
+      {reviews_widget_block()}
+    </div>
+  </section>
+
+  <section id="calculator-cta" style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="calc-cta-band reveal">
+        <div class="calc-cta-icon">{icon('doc')}</div>
+        <div class="calc-cta-text">
+          <h2>Bereken uw schoonmaakkosten in 30 seconden.</h2>
+          <p>Direct een indicatie voor uw kantoor, VvE, praktijk of bedrijfspand \u2014 zonder verplichtingen.</p>
+        </div>
+        <a href="bereken-schoonmaakkosten.html" class="btn btn-primary calc-cta-btn">Start de calculator {icon('arrow')}</a>
+      </div>
+    </div>
+  </section>
 
   <section id="diensten">
     <div class="wrap">
@@ -1512,6 +1557,7 @@ def build_seo_files():
     today = datetime.date.today().isoformat()
     urls = [
         ("", "1.0"), ("diensten.html", "0.9"), ("werkgebied.html", "0.9"),
+        ("bereken-schoonmaakkosten.html", "0.9"),
         ("over-ons.html", "0.7"), ("contact.html", "0.8"),
         ("privacy.html", "0.3"), ("voorwaarden.html", "0.3"), ("cookiebeleid.html", "0.3"),
     ]
@@ -1553,6 +1599,7 @@ if __name__ == "__main__":
     build_service_pages()
     build_over_ons()
     build_werkgebied()
+    build_calculator_page()
     build_kerngebied_pages()
     build_location_pages()
     build_contact()

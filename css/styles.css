@@ -145,6 +145,23 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
    Voeg dan `background-image:url('../images/jouw-foto.jpg'); background-size:cover;
    background-position:center;` toe aan .illustration-panel en verwijder de SVG uit de HTML. */
 /* ---------- PRIJSCALCULATOR ---------- */
+/* ---------- PRIJSCALCULATOR ---------- */
+.calc-cta-band{
+  display:flex; flex-direction:column; align-items:center; text-align:center; gap:16px;
+  background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);
+  padding:36px 28px;
+}
+@media(min-width:760px){.calc-cta-band{flex-direction:row; text-align:left; padding:32px 40px;}}
+.calc-cta-icon{
+  width:52px; height:52px; border-radius:14px; background:var(--bg-soft); display:flex; align-items:center;
+  justify-content:center; flex-shrink:0;
+}
+.calc-cta-icon svg{width:26px; height:26px; color:var(--link);}
+.calc-cta-text{flex-grow:1;}
+.calc-cta-text h2{font-size:22px; margin-bottom:4px;}
+.calc-cta-text p{color:var(--ink-soft); font-size:14.5px;}
+.calc-cta-btn{flex-shrink:0; white-space:nowrap;}
+
 .calc-grid{display:grid; grid-template-columns:1fr; gap:28px; align-items:start;}
 @media(min-width:960px){.calc-grid{grid-template-columns:1.5fr 1fr;}}
 
