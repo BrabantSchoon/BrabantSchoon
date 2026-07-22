@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "87"
+ASSET_VERSION = "88"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -665,6 +665,7 @@ def page_shell(title, description, path, base, active, body, extra_schema="", pr
   <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
   <a href="{base}contact.html#offerteWizard" class="btn btn-primary">Vrijblijvende offerte</a>
 </div>
+<script src="{base}js/pricing-engine.js?v={ASSET_VERSION}" defer></script>
 <script src="{base}js/main.js?v={ASSET_VERSION}" defer></script>
 </body>
 </html>
@@ -742,13 +743,13 @@ def build_home():
           <div class="calc-block">
             <h3>1. Wat wilt u laten schoonmaken?</h3>
             <div class="calc-type-grid" id="calcType">
-              <button type="button" class="calc-card active" data-norm="55" data-label="Kantoor">{icon('office')}<span>Kantoor</span></button>
-              <button type="button" class="calc-card" data-norm="60" data-label="VvE">{icon('building')}<span>VvE</span></button>
-              <button type="button" class="calc-card" data-norm="75" data-label="Praktijk">{icon('practice')}<span>Praktijk</span></button>
-              <button type="button" class="calc-card" data-norm="70" data-label="School">{icon('school')}<span>School</span></button>
-              <button type="button" class="calc-card" data-norm="65" data-label="Winkel">{icon('shop')}<span>Winkel</span></button>
-              <button type="button" class="calc-card" data-norm="45" data-label="Bedrijfshal / Magazijn">{icon('building')}<span>Bedrijfshal</span></button>
-              <button type="button" class="calc-card" data-norm="55" data-label="Anders">{icon('doc')}<span>Anders</span></button>
+              <button type="button" class="calc-card active" data-type-key="office" data-label="Kantoor">{icon('office')}<span>Kantoor</span></button>
+              <button type="button" class="calc-card" data-type-key="vve" data-label="VvE">{icon('building')}<span>VvE</span></button>
+              <button type="button" class="calc-card" data-type-key="practice" data-label="Praktijk">{icon('practice')}<span>Praktijk</span></button>
+              <button type="button" class="calc-card" data-type-key="school" data-label="School">{icon('school')}<span>School</span></button>
+              <button type="button" class="calc-card" data-type-key="retail" data-label="Winkel">{icon('shop')}<span>Winkel</span></button>
+              <button type="button" class="calc-card" data-type-key="warehouse" data-label="Bedrijfshal / Magazijn">{icon('building')}<span>Bedrijfshal</span></button>
+              <button type="button" class="calc-card" data-type-key="other" data-label="Anders">{icon('doc')}<span>Anders</span></button>
             </div>
           </div>
 
@@ -764,11 +765,11 @@ def build_home():
           <div class="calc-block">
             <h3>3. Hoe vaak wilt u dat wij schoonmaken?</h3>
             <div class="calc-freq-grid" id="calcFreq">
-              <button type="button" class="calc-card" data-value="4" data-label="1x per week"><span>1x</span><small>per week</small></button>
-              <button type="button" class="calc-card active" data-value="8" data-label="2x per week"><span>2x</span><small>per week</small><em class="calc-badge">Aanbevolen</em></button>
-              <button type="button" class="calc-card" data-value="13" data-label="3x per week"><span>3x</span><small>per week</small></button>
-              <button type="button" class="calc-card" data-value="22" data-label="5x per week"><span>5x</span><small>per week</small></button>
-              <button type="button" class="calc-card" data-value="30" data-label="Dagelijks"><span>Dagelijks</span></button>
+              <button type="button" class="calc-card" data-freq-key="weekly1" data-label="1x per week"><span>1x</span><small>per week</small></button>
+              <button type="button" class="calc-card active" data-freq-key="weekly2" data-label="2x per week"><span>2x</span><small>per week</small><em class="calc-badge">Aanbevolen</em></button>
+              <button type="button" class="calc-card" data-freq-key="weekly3" data-label="3x per week"><span>3x</span><small>per week</small></button>
+              <button type="button" class="calc-card" data-freq-key="weekly5" data-label="5x per week"><span>5x</span><small>per week</small></button>
+              <button type="button" class="calc-card" data-freq-key="daily" data-label="Dagelijks"><span>Dagelijks</span></button>
             </div>
           </div>
 
@@ -838,6 +839,7 @@ def build_home():
         <input type="hidden" name="redirect" value="{SITE_URL}/thanks.html">
         <input type="hidden" name="prijsindicatie" id="calcModalPriceField" value="">
         <input type="hidden" name="calculator_details" id="calcModalDetailsField" value="">
+        <input type="hidden" name="interne_kostprijs_uitsplitsing" id="calcModalInternalField" value="">
         <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
         <div class="calc-modal-row">
           <input type="text" name="naam" placeholder="Naam" required>
