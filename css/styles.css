@@ -85,7 +85,14 @@ nav.links > a{text-decoration:none; color:var(--ink-soft); transition:color .15s
 nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 @media(min-width:900px){nav.links{display:flex;}}
 .nav-actions{display:flex; align-items:center; gap:10px;}
-.header-review-slot{display:flex; align-items:center; max-height:36px; overflow:hidden;}
+.hero-review-slot{display:none;}
+.hero-review-slot:not(:empty){
+  display:block; margin-top:22px; max-width:340px;
+}
+/* Voorkomt een wit blok 'geplakt' op de donkere hero: widgets die zelf een witte
+   achtergrond meebrengen worden hier optisch verzacht met ronde hoeken en een
+   subtiele schaduw, zodat het niet aanvoelt als een los element. */
+.hero-review-slot:not(:empty) > *{border-radius:12px; overflow:hidden; box-shadow:0 8px 24px -8px rgba(0,0,0,0.4);}
 .phone-link{display:none; font-size:14px; font-weight:600; text-decoration:none; color:var(--navy);}
 @media(min-width:640px){.phone-link{display:inline;}}
 .menu-toggle{display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:10px; border:1px solid var(--line); background:#fff; cursor:pointer;}

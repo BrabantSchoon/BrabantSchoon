@@ -292,17 +292,23 @@ if (revealEls.length) {
 
     plaatsInput.addEventListener('input', () => {
       const query = normalize(plaatsInput.value);
+      const priorityList = cityData.priority && cityData.priority.length ? cityData.priority : cityData.all.slice(0, 8);
       const matches = query
         ? cityData.all.filter(c => normalize(c).includes(query)).slice(0, 8)
-        : cityData.all.slice(0, 8);
+        : priorityList;
       renderMatches(matches);
       checkWerkgebied(plaatsInput.value);
       calculate();
     });
 
-    plaatsInput.addEventListener('focus', () => {
-      if (!plaatsInput.value) renderMatches(cityData.all.slice(0, 8));
-    });
+    function openDropdown() {
+      plaatsInput.select(); // bestaande tekst direct geselecteerd: typen vervangt 'm meteen
+      const query = normalize(plaatsInput.value);
+      const priorityList = cityData.priority && cityData.priority.length ? cityData.priority : cityData.all.slice(0, 8);
+      renderMatches(priorityList);
+    }
+    plaatsInput.addEventListener('focus', openDropdown);
+    plaatsInput.addEventListener('click', openDropdown);
 
     plaatsInput.addEventListener('keydown', (e) => {
       if (plaatsListbox.hidden && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {

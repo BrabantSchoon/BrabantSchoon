@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "94"
+ASSET_VERSION = "95"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -182,11 +182,19 @@ WERKGEBIED_OVERIG = ["Eindhoven", "Geldrop-Mierlo", "Nuenen", "Mierlo"]
 # Plaatsenlijst voor de doorzoekbare locatie-invoer in de calculator.
 # Losstaand van WERKGEBIED_KERN/OVERIG omdat dit een bredere, servicegerichte
 # lijst is (ook plaatsen buiten het kerngebied), niet het officiele werkgebied.
+# Belangrijkste/grootste plaatsen: worden standaard getoond zodra het veld opent (nog niets getypt)
+CALCULATOR_CITIES_PRIORITY = [
+    "Eindhoven", "Tilburg", "Breda", "Den Bosch", "Helmond", "Best", "Veldhoven", "Oss",
+]
+
+# Volledige lijst, doorzoekbaar tijdens typen (grote steden + alle genoemde kleinere plaatsen)
 CALCULATOR_CITIES = [
-    "Helmond", "Eindhoven", "Deurne", "Gemert", "Asten", "Someren", "Geldrop",
-    "Nuenen", "Best", "Veldhoven", "Valkenswaard", "Oirschot", "Laarbeek",
-    "Boekel", "Veghel", "Uden", "Oss", "Tilburg", "Den Bosch", "Breda",
-    "Roosendaal", "Bergen op Zoom", "Oosterhout", "Waalwijk", "Etten-Leur",
+    "Eindhoven", "Tilburg", "Breda", "Den Bosch", "Helmond", "Oss", "Roosendaal",
+    "Bergen op Zoom", "Oosterhout", "Waalwijk", "Etten-Leur", "Best", "Veldhoven",
+    "Valkenswaard", "Oirschot", "Bladel", "Eersel", "Reusel", "Son en Breugel",
+    "Geldrop", "Mierlo", "Nuenen", "Deurne", "Gemert", "Bakel", "Milheeze", "Handel",
+    "Someren", "Asten", "Laarbeek", "Beek en Donk", "Lieshout", "Erp", "Veghel",
+    "Uden", "Boekel",
     "Overige plaats in Noord-Brabant",
 ]
 
@@ -336,9 +344,6 @@ def render_header(base, active):
       {links_html}
     </nav>
     <div class="nav-actions">
-      <!-- Trustindex-widget: sterrenscore op basis van Google Reviews, automatisch gesynchroniseerd.
-           Gratis plan, dus toont 'Powered by Trustindex'-branding (bewuste keuze van de klant). -->
-      <div class="header-review-slot" id="headerReviewSlot"><script defer async src='https://cdn.trustindex.io/loader.js?1615584773fa412ed426df4e3e9'></script></div>
       <a href="tel:{PHONE_TEL}" class="phone-link">{PHONE_DISPLAY}</a>
       <a href="{base}contact.html#offerteWizard" class="btn btn-primary btn-sm">Offerte aanvragen</a>
       <label for="menuCheckbox" class="menu-toggle" aria-label="Menu openen">{icon('list')}</label>
@@ -716,7 +721,8 @@ def calculator_block():
     kern_cities = WERKGEBIED_KERN + WERKGEBIED_OVERIG
     cities_data = _json.dumps({
         "all": CALCULATOR_CITIES,
-        "kern": kern_cities
+        "kern": kern_cities,
+        "priority": CALCULATOR_CITIES_PRIORITY
     }, ensure_ascii=False)
     return f"""
   <script>window.CALC_CITIES_DATA = {cities_data};</script>
@@ -1023,6 +1029,11 @@ def build_home():
         <li>{icon('check')}Professionele medewerkers</li>
         <li>{icon('check')}Actief in heel Noord-Brabant</li>
       </ul>
+      <!-- Gereserveerde plek voor een Google Reviews-widget (bijv. Elfsight of Trustindex).
+           Plaats hier de embed-code zodra je die kiest; de stijl (.hero-review-slot) staat al
+           klaar en is afgestemd op de donkere hero-achtergrond. Standaard leeg, dus geen
+           effect op layout of laadtijd totdat er content in komt. -->
+      <div class="hero-review-slot" id="heroReviewSlot"></div>
     </div>
   </section>
 
