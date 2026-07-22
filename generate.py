@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "85"
+ASSET_VERSION = "86"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -36,6 +36,7 @@ ICONS = {
     "arrow": '<path d="M5 12h14M13 6l6 6-6 6"/>',
     "shop": '<path d="M3 9l1-5h16l1 5"/><path d="M4 9v11h16V9"/><path d="M9 20v-6h6v6"/>',
     "practice": '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
+    "school": '<path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/>',
     "stairs": '<path d="M4 20h4v-4h4v-4h4V8h4"/><path d="M4 20V8h4"/>',
 }
 
@@ -724,6 +725,107 @@ def build_home():
   <section class="section-tight">
     <div class="wrap">
       {reviews_widget_block()}
+    </div>
+  </section>
+
+  <section id="calculator" style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Prijsindicatie</span>
+        <h2>Bereken direct uw richtprijs.</h2>
+        <p>Een eerste indicatie in 30 seconden \u2014 de exacte prijs bepalen we samen tijdens een kort kennismakingsgesprek.</p>
+      </div>
+      <div class="calc-grid reveal">
+        <div class="calc-form">
+
+          <div class="calc-block">
+            <h3>1. Wat wilt u laten schoonmaken?</h3>
+            <div class="calc-type-grid" id="calcType">
+              <button type="button" class="calc-card active" data-value="1.0" data-label="Kantoor">{icon('office')}<span>Kantoor</span></button>
+              <button type="button" class="calc-card" data-value="0.85" data-label="VvE">{icon('building')}<span>VvE</span></button>
+              <button type="button" class="calc-card" data-value="1.1" data-label="Praktijk">{icon('practice')}<span>Praktijk</span></button>
+              <button type="button" class="calc-card" data-value="0.9" data-label="School">{icon('school')}<span>School</span></button>
+              <button type="button" class="calc-card" data-value="1.0" data-label="Winkel">{icon('shop')}<span>Winkel</span></button>
+              <button type="button" class="calc-card" data-value="1.0" data-label="Anders">{icon('doc')}<span>Anders</span></button>
+            </div>
+          </div>
+
+          <div class="calc-block">
+            <h3>2. Oppervlakte (m&sup2;)</h3>
+            <div class="calc-slider-row">
+              <input type="range" id="calcM2Range" min="50" max="2000" step="10" value="250">
+              <input type="number" id="calcM2Number" min="10" max="20000" value="250">
+            </div>
+            <div class="calc-slider-labels"><span>50 m&sup2;</span><span>1.000 m&sup2;</span><span>2.000+ m&sup2;</span></div>
+          </div>
+
+          <div class="calc-block">
+            <h3>3. Hoe vaak wilt u dat wij schoonmaken?</h3>
+            <div class="calc-freq-grid" id="calcFreq">
+              <button type="button" class="calc-card" data-value="4.33" data-label="1x per week"><span>1x</span><small>per week</small></button>
+              <button type="button" class="calc-card active" data-value="8.66" data-label="2x per week"><span>2x</span><small>per week</small><em class="calc-badge">Aanbevolen</em></button>
+              <button type="button" class="calc-card" data-value="13" data-label="3x per week"><span>3x</span><small>per week</small></button>
+              <button type="button" class="calc-card" data-value="21.65" data-label="5x per week"><span>5x</span><small>per week</small></button>
+              <button type="button" class="calc-card" data-value="26" data-label="Dagelijks"><span>Dagelijks</span></button>
+            </div>
+          </div>
+
+          <div class="calc-block">
+            <h3>4. Extra diensten <span class="calc-optional">(optioneel)</span></h3>
+            <div class="calc-extra-grid" id="calcExtra">
+              <label class="calc-check"><input type="checkbox" data-value="25"><span>{icon('check')}</span>Glasbewassing</label>
+              <label class="calc-check"><input type="checkbox" data-value="40"><span>{icon('check')}</span>Vloeronderhoud</label>
+              <label class="calc-check"><input type="checkbox" data-value="20"><span>{icon('check')}</span>Sanitaire reiniging</label>
+              <label class="calc-check"><input type="checkbox" data-value="60"><span>{icon('check')}</span>Gevelreiniging</label>
+              <label class="calc-check"><input type="checkbox" data-value="0"><span>{icon('check')}</span>Opleveringsschoonmaak</label>
+              <label class="calc-check"><input type="checkbox" data-value="30"><span>{icon('check')}</span>Desinfectie</label>
+            </div>
+          </div>
+
+          <div class="calc-block">
+            <h3>5. Waar bevindt het pand zich?</h3>
+            <select id="calcPlaats">
+              {"".join(f'<option>{c}</option>' for c in WERKGEBIED_KERN + WERKGEBIED_OVERIG)}
+              <option>Elders in Noord-Brabant</option>
+            </select>
+            <p class="calc-note">{icon('check')}Wij zijn actief in heel Noord-Brabant.</p>
+          </div>
+
+          <div class="calc-block">
+            <h3>6. Wanneer wilt u dat wij schoonmaken?</h3>
+            <div class="calc-time-grid" id="calcTime">
+              <button type="button" class="calc-card" data-label="Ochtend"><span>Ochtend</span><small>06:00 - 12:00</small></button>
+              <button type="button" class="calc-card" data-label="Middag"><span>Middag</span><small>12:00 - 17:00</small></button>
+              <button type="button" class="calc-card" data-label="Avond"><span>Avond</span><small>17:00 - 22:00</small></button>
+              <button type="button" class="calc-card" data-label="Nacht"><span>Nacht</span><small>22:00 - 06:00</small></button>
+              <button type="button" class="calc-card active" data-label="Geen voorkeur"><span>Geen voorkeur</span><small>Flexibel</small></button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="calc-price-wrap">
+          <div class="calc-price-card" id="calcPriceCard">
+            <div class="calc-price-header">Uw prijsindicatie</div>
+            <div class="calc-price-range" id="calcPriceRange">&euro;400 &ndash; &euro;550</div>
+            <div class="calc-price-sub">per maand, indicatief (excl. btw)</div>
+            <p class="calc-price-disclaimer">{icon('doc')}Dit is een grove inschatting op basis van uw invoer. De exacte prijs bepalen we samen tijdens een kort, vrijblijvend kennismakingsgesprek.</p>
+            <ul class="calc-price-includes">
+              <li>{icon('check')}Vast contactpersoon</li>
+              <li>{icon('check')}Professioneel personeel</li>
+              <li>{icon('check')}Kwaliteitscontrole</li>
+              <li>{icon('check')}Flexibel op- en afschalen</li>
+            </ul>
+            <div class="calc-price-inzet" id="calcPriceInzet">{icon('clock')}<span class="calc-inzet-text">Geschatte inzet: ~2,0 uur per bezoek</span></div>
+            <a href="{base}contact.html#offerteWizard" class="btn btn-primary calc-price-cta">Vraag definitieve offerte aan</a>
+            <p class="calc-price-footnote">{icon('check')}Reactie binnen \u00e9\u00e9n werkdag</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="calc-mobile-bar" id="calcMobileBar">
+      <span id="calcMobilePrice">&euro;400 &ndash; &euro;550 / mnd</span>
+      <button type="button" id="calcMobileBtn">Bekijk uw prijs {icon('arrow')}</button>
     </div>
   </section>
 

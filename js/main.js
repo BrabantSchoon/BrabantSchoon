@@ -106,3 +106,101 @@ if (revealEls.length) {
   }, { threshold: 0.12 });
   revealEls.forEach(el => io.observe(el));
 }
+
+// Prijscalculator (indicatie, realtime, geen submit)
+(function() {
+  const calc = document.getElementById('calculator');
+  if (!calc) return;
+
+  // Configuratie: eenvoudig hier aan te passen zodra echte tarieven bekend zijn.
+  const CONFIG = {
+    baseRatePerM2PerVisit: 0.11,   // basisprijs per m² per schoonmaakbeurt
+    minMonthly: 150,               // ondergrens per maand
+    rangeSpread: 0.16,             // 16% marge onder/boven het middelpunt
+    minutesPerM2: 0.9               // geschatte tijd (minuten) per m² per beurt
+  };
+
+  let typeFactor = 1.0;
+  let freqPerMonth = 8.66;
+  let extrasTotal = 0;
+
+  const typeButtons = calc.querySelectorAll('#calcType .calc-card');
+  const freqButtons = calc.querySelectorAll('#calcFreq .calc-card');
+  const timeButtons = calc.querySelectorAll('#calcTime .calc-card');
+  const m2Range = document.getElementById('calcM2Range');
+  const m2Number = document.getElementById('calcM2Number');
+  const extraChecks = calc.querySelectorAll('#calcExtra input[type="checkbox"]');
+  const priceRangeEl = document.getElementById('calcPriceRange');
+  const priceInzetEl = document.getElementById('calcPriceInzet');
+  const mobilePriceEl = document.getElementById('calcMobilePrice');
+
+  function selectCard(buttons, btn) {
+    buttons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  typeButtons.forEach(btn => btn.addEventListener('click', () => {
+    selectCard(typeButtons, btn);
+    typeFactor = parseFloat(btn.dataset.value);
+    calculate();
+  }));
+  freqButtons.forEach(btn => btn.addEventListener('click', () => {
+    selectCard(freqButtons, btn);
+    freqPerMonth = parseFloat(btn.dataset.value);
+    calculate();
+  }));
+  timeButtons.forEach(btn => btn.addEventListener('click', () => selectCard(timeButtons, btn)));
+
+  function syncM2(value) {
+    value = Math.max(10, Math.min(20000, parseInt(value) || 0));
+    m2Range.value = Math.min(2000, value);
+    m2Number.value = value;
+    calculate();
+  }
+  if (m2Range) m2Range.addEventListener('input', e => syncM2(e.target.value));
+  if (m2Number) m2Number.addEventListener('input', e => syncM2(e.target.value));
+
+  extraChecks.forEach(chk => chk.addEventListener('change', () => {
+    extrasTotal = Array.from(extraChecks).filter(c => c.checked).reduce((sum, c) => sum + parseFloat(c.dataset.value || 0), 0);
+    calculate();
+  }));
+
+  function formatEuro(n) {
+    return '\u20ac' + Math.round(n).toLocaleString('nl-NL');
+  }
+
+  function calculate() {
+    const m2 = parseInt(m2Number.value) || 250;
+    const base = m2 * CONFIG.baseRatePerM2PerVisit * freqPerMonth * typeFactor;
+    let monthly = Math.max(CONFIG.minMonthly, base) + extrasTotal;
+
+    const low = monthly * (1 - CONFIG.rangeSpread);
+    const high = monthly * (1 + CONFIG.rangeSpread);
+    const rangeText = formatEuro(low) + ' \u2013 ' + formatEuro(high);
+
+    if (priceRangeEl) priceRangeEl.textContent = rangeText;
+    if (mobilePriceEl) mobilePriceEl.textContent = rangeText + ' / mnd';
+
+    const minutesPerVisit = m2 * CONFIG.minutesPerM2 * typeFactor;
+    const hoursPerVisit = Math.max(0.5, minutesPerVisit / 60);
+    if (priceInzetEl) {
+      const inzetTextNode = priceInzetEl.querySelector('.calc-inzet-text');
+      if (inzetTextNode) {
+        inzetTextNode.textContent = `Geschatte inzet: ~${hoursPerVisit.toFixed(1)} uur per bezoek`;
+      }
+    }
+  }
+
+  calculate();
+
+  // Mobiele sticky-balk: opent/scrollt naar de prijskaart
+  const mobileBtn = document.getElementById('calcMobileBtn');
+  const priceCard = document.getElementById('calcPriceCard');
+  if (mobileBtn && priceCard) {
+    mobileBtn.addEventListener('click', () => {
+      priceCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      priceCard.classList.add('calc-price-flash');
+      setTimeout(() => priceCard.classList.remove('calc-price-flash'), 900);
+    });
+  }
+})();
