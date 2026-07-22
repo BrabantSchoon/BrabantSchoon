@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "83"
+ASSET_VERSION = "84"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -431,6 +431,7 @@ WERKGEBIED_GEMEENTEN = {
 
 def werkgebied_kaart(highlight_slug, base="../"):
     shapes = []
+    active = WERKGEBIED_GEMEENTEN[highlight_slug]
     for slug, g in WERKGEBIED_GEMEENTEN.items():
         if slug == highlight_slug:
             shapes.append(f'''<g class="wg-shape wg-shape-active">
@@ -447,19 +448,29 @@ def werkgebied_kaart(highlight_slug, base="../"):
         </foreignObject>
       </a>''')
     shapes_html = "\n      ".join(shapes)
-    active = WERKGEBIED_GEMEENTEN[highlight_slug]
-    label_left, label_top = active["cx"] / 380 * 100, active["cy"] / 260 * 100
+
+    anchor_x, anchor_y = active["cx"], active["cy"]
+    place_right = anchor_x < 300
+    label_x = anchor_x + (55 if place_right else -55)
+    line_end_x = label_x + (-4 if place_right else 4)
+    box_x = label_x if place_right else label_x - 90
+    justify = 'flex-start' if place_right else 'flex-end'
+    callout = f'''<g class="wg-callout">
+        <line x1="{anchor_x}" y1="{anchor_y}" x2="{line_end_x}" y2="{anchor_y}" class="wg-callout-line"/>
+        <circle cx="{anchor_x}" cy="{anchor_y}" r="2.5" class="wg-callout-dot"/>
+        <foreignObject x="{box_x}" y="{anchor_y - 12}" width="90" height="24" style="overflow:visible;">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex; justify-content:{justify};">
+            <span class="wg-callout-label">{active['naam']}</span>
+          </div>
+        </foreignObject>
+      </g>'''
     return f'''<div class="wg-map-wrap">
       <svg viewBox="0 0 380 260" class="wg-map" role="img" aria-label="Kaart van Noord-Brabant met het werkgebied uitgelicht">
         <path d="M336.7,55.4 L341.1,56.7 L341.1,60.6 L342.6,64.6 L345.6,67.2 L353.1,67.2 L356.1,69.9 L359.1,81.8 L362.1,85.7 L360.6,88.4 L362.1,89.7 L363.6,91.0 L365.1,92.3 L369.6,99.0 L369.6,100.3 L371.1,101.6 L372.6,110.8 L374.1,114.8 L374.1,116.1 L371.1,120.1 L366.6,116.1 L363.6,116.1 L354.6,118.8 L348.6,120.1 L347.1,120.1 L339.6,117.4 L332.2,116.1 L335.2,135.9 L339.6,154.4 L347.1,163.7 L351.6,174.3 L344.1,180.9 L339.6,184.8 L333.7,186.1 L320.2,190.1 L300.7,196.7 L296.2,202.0 L294.8,203.3 L291.8,209.9 L288.8,220.5 L288.8,223.1 L287.3,224.5 L285.8,225.8 L284.3,225.8 L278.3,227.1 L275.3,228.4 L275.3,228.4 L273.8,227.1 L273.8,219.2 L272.3,213.9 L269.3,208.6 L264.8,206.0 L260.3,204.6 L255.8,207.3 L246.9,212.6 L243.9,215.2 L219.9,213.9 L213.9,215.2 L212.4,215.2 L209.5,215.2 L209.5,203.3 L205.0,199.4 L202.0,198.0 L194.5,199.4 L191.5,196.7 L190.0,195.4 L188.5,187.5 L187.0,184.8 L179.5,178.2 L178.0,174.3 L179.5,167.7 L181.0,162.4 L182.5,157.1 L178.0,150.5 L172.0,146.5 L172.0,145.2 L169.0,146.5 L167.6,147.8 L167.6,150.5 L166.1,154.4 L163.1,159.7 L158.6,166.3 L152.6,171.6 L148.1,171.6 L140.6,169.0 L137.6,167.7 L124.2,167.7 L119.7,165.0 L121.2,161.0 L122.7,161.0 L131.6,165.0 L130.1,159.7 L130.1,154.4 L131.6,150.5 L131.6,145.2 L130.1,142.6 L125.7,141.2 L122.7,139.9 L119.7,138.6 L113.7,142.6 L98.7,161.0 L95.7,162.4 L92.7,163.7 L89.7,163.7 L83.8,162.4 L77.8,163.7 L76.3,163.7 L71.8,161.0 L71.8,157.1 L73.3,153.1 L74.8,147.8 L73.3,145.2 L70.3,145.2 L64.3,146.5 L53.8,150.5 L43.3,155.8 L46.3,158.4 L44.8,161.0 L43.3,163.7 L43.3,166.3 L44.8,169.0 L49.3,174.3 L50.8,178.2 L49.3,183.5 L46.3,184.8 L37.4,184.8 L32.9,183.5 L25.4,179.5 L23.9,179.5 L23.9,179.5 L23.9,176.9 L23.9,175.6 L20.9,172.9 L20.9,167.7 L20.9,163.7 L20.9,162.4 L20.9,161.0 L22.4,159.7 L20.9,155.8 L20.9,155.8 L23.9,154.4 L26.9,147.8 L25.4,139.9 L20.9,134.6 L16.4,132.0 L14.9,132.0 L14.9,132.0 L16.4,125.4 L16.4,124.1 L16.4,120.1 L14.9,116.1 L14.9,114.8 L8.9,109.5 L8.9,109.5 L8.9,102.9 L5.9,100.3 L5.9,100.3 L7.4,93.7 L7.4,93.7 L16.4,91.0 L23.9,91.0 L34.4,88.4 L41.9,83.1 L47.8,71.2 L68.8,75.2 L76.3,75.2 L83.8,73.9 L91.2,69.9 L95.7,68.6 L101.7,68.6 L112.2,56.7 L115.2,50.1 L119.7,46.1 L125.7,42.1 L136.1,40.8 L140.6,39.5 L148.1,32.9 L154.1,32.9 L163.1,34.2 L169.0,34.2 L169.0,34.2 L169.0,36.9 L169.0,38.2 L172.0,42.1 L179.5,47.4 L184.0,47.4 L187.0,47.4 L193.0,52.7 L193.0,58.0 L191.5,62.0 L193.0,63.3 L228.9,59.3 L233.4,56.7 L236.4,54.0 L239.4,50.1 L240.9,44.8 L242.4,38.2 L245.4,36.9 L254.3,36.9 L257.3,35.5 L261.8,32.9 L266.3,31.6 L269.3,34.2 L272.3,34.2 L284.3,32.9 L293.3,34.2 L294.8,36.9 L297.7,42.1 L299.2,43.5 L303.7,44.8 L317.2,54.0 L336.7,55.4 Z"
           fill="var(--bg-soft)" stroke="var(--line)" stroke-width="1.5"/>
         {shapes_html}
+        {callout}
       </svg>
-      <div class="wg-map-label" style="left:{label_left:.2f}%; top:{label_top:.2f}%;">
-        <span class="wg-marker-pulse"></span>
-        <span class="wg-marker-dot"></span>
-        <span class="wg-marker-label">{active['naam']}</span>
-      </div>
     </div>'''
 
 def cta_band(heading="Interesse in onze diensten?", sub="Vraag een vrijblijvende offerte aan of neem direct contact op.", base=""):
