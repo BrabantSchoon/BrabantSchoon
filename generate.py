@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "97"
+ASSET_VERSION = "98"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -453,7 +453,7 @@ WERKGEBIED_GEMEENTEN = {
     "geldrop-mierlo": {"naam": "Geldrop-Mierlo", "cx": 281.6, "cy": 158.6, "d": "M282.24,150.26 L278.48,156.62 L274.72,158.85 L270.37,160.75 L270.57,168.07 L278.48,167.75 L285.01,163.94 L292.93,162.66 L296.29,151.53 L286.79,153.76 L282.24,150.26 Z"},
 }
 
-def werkgebied_kaart(highlight_slug, base="../"):
+def werkgebied_kaart(highlight_slug, base=""):
     shapes = []
     active = WERKGEBIED_GEMEENTEN[highlight_slug]
     for slug, g in WERKGEBIED_GEMEENTEN.items():
@@ -463,7 +463,7 @@ def werkgebied_kaart(highlight_slug, base="../"):
       </g>''')
         else:
             tt_x, tt_y = g["cx"] - 55, g["cy"] - 30
-            shapes.append(f'''<a href="{base}locaties/{slug}.html" class="wg-shape" aria-label="Werkgebied {g['naam']}">
+            shapes.append(f'''<a href="{base}schoonmaakbedrijf-{slug}.html" class="wg-shape" aria-label="Werkgebied {g['naam']}">
         <path d="{g["d"]}" />
         <foreignObject x="{tt_x}" y="{tt_y}" width="110" height="30" class="wg-tooltip-fo">
           <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex; justify-content:center; background:transparent; margin:0; padding:0;">
@@ -1311,13 +1311,13 @@ def build_werkgebied():
                       "Gemert-Bakel":"gemert-bakel","Laarbeek":"laarbeek","Eindhoven":"eindhoven",
                       "Geldrop-Mierlo":"geldrop-mierlo","Nuenen":"nuenen","Mierlo":"geldrop-mierlo"}
     city_cards = "\n        ".join(
-        f'<a href="{base}locaties/{city_slug_map[c]}.html" class="wg-card" style="text-decoration:none; color:inherit;">'
+        f'<a href="{base}schoonmaakbedrijf-{city_slug_map[c]}.html" class="wg-card" style="text-decoration:none; color:inherit;">'
         f'<div class="wg-icon">{icon("pin")}</div><h3>{c}</h3><p>{WERKGEBIED_TEKST[c]}</p>'
         f'<span class="wg-btn">Bekijk {c} {icon("arrow")}</span></a>'
         for c in all_cities
     )
     location_cards = "\n        ".join(
-        f'<a href="{base}locaties/{loc["slug"]}.html" class="wg-card" style="text-decoration:none; color:inherit;">'
+        f'<a href="{base}schoonmaakbedrijf-{loc["slug"]}.html" class="wg-card" style="text-decoration:none; color:inherit;">'
         f'<div class="wg-icon">{icon("pin")}</div><h3>{loc["name"]}</h3><p>{loc["intro"][:100]}&hellip;</p>'
         f'<span class="wg-btn">Bekijk werkgebied {icon("arrow")}</span></a>'
         for loc in LOCATIONS if loc["slug"] != "eindhoven"
@@ -1355,6 +1355,74 @@ def build_werkgebied():
 # =================================================================
 # LOCATIEPAGINA'S (steden buiten het kerngebied)
 # =================================================================
+def seo_service_paragraphs(stad):
+    """Genereert 4 keyword-rijke paragrafen (kantoorreiniging, VvE, oplevering, glasbewassing)
+    per stad. Gebruikt geroteerde formuleringsvarianten (op basis van de plaatsnaam) zodat
+    elke pagina tekstueel verschilt, ook al is de onderliggende informatie hetzelfde."""
+    idx = sum(ord(c) for c in stad) % 3
+
+    kantoor = [
+        f"Voor kantoorreiniging in {stad} werken we met een vast team dat uw pand kent en op een vaste dag en tijd langskomt. Denk aan het legen van prullenbakken, stofzuigen, het reinigen van bureaus en gemeenschappelijke ruimtes, en sanitair.",
+        f"Bedrijven in {stad} kiezen voor onze kantoorreiniging omdat u altijd hetzelfde, vertrouwde team over de vloer krijgt. We plannen buiten kantoortijden, zodat uw medewerkers nergens last van hebben.",
+        f"Kantoorreiniging in {stad} verzorgen we volgens een vast schema dat u zelf mede bepaalt: van dagelijks tot wekelijks, afgestemd op de grootte en het gebruik van uw pand.",
+    ][idx]
+
+    vve = [
+        f"Voor VvE-schoonmaak in {stad} verzorgen we gemeenschappelijke ruimtes zoals trappenhuizen, entrees, liften en bergingen. We stemmen de frequentie af met het bestuur en werken met een vast contactpersoon namens de VvE.",
+        f"VvE's in {stad} vertrouwen op ons voor de schoonmaak van hun gemeenschappelijke ruimtes. We overleggen rechtstreeks met het bestuur of de beheerder over frequentie en aandachtspunten.",
+        f"De schoonmaak van uw VvE in {stad} pakken we planmatig aan: trappenhuis, entree en overige gedeelde ruimtes op een vast ritme, met korte lijnen naar het bestuur.",
+    ][idx]
+
+    oplevering = [
+        f"Bij opleveringsschoonmaak in {stad} zorgen we dat een pand grondig schoon is voor de sleuteloverdracht \u2014 of het nu gaat om nieuwbouw, renovatie of een verhuizing. We stemmen de opleverdatum met u af.",
+        f"Voor opleveringsschoonmaak in {stad} plannen we rondom uw opleverdatum, zodat het pand op het juiste moment brandschoon wordt overgedragen. Zowel nieuwbouw als renovatie behoort tot de mogelijkheden.",
+        f"Opleveringsschoonmaak in {stad} vraagt om precisie en planning. We werken toe naar uw opleverdatum en zorgen dat er niets over het hoofd wordt gezien.",
+    ][idx]
+
+    glas = [
+        f"Glasbewassing en specialistische reiniging in {stad} bieden we aan als aanvulling op periodieke schoonmaak \u2014 denk aan ramen, kozijnen, vloeronderhoud of gevelreiniging, naar wens in te plannen.",
+        f"Naast reguliere schoonmaak verzorgen we in {stad} ook glasbewassing en specialistische reiniging, zoals vloeronderhoud en gevelreiniging, als losse toevoeging op uw contract.",
+        f"Voor glasbewassing en specialistische reiniging in {stad} \u2014 ramen, kozijnen, vloeren of gevels \u2014 kunt u bij ons terecht als aanvullende dienst naast uw vaste schoonmaakcontract.",
+    ][idx]
+
+    return f"""<p class="prose">{kantoor}</p>
+      <p class="prose" style="margin-top:14px;">{vve}</p>
+      <p class="prose" style="margin-top:14px;">{oplevering}</p>
+      <p class="prose" style="margin-top:14px;">{glas}</p>"""
+
+def seo_trust_paragraphs(stad):
+    """Extra, geroteerde content over werkwijze en vertrouwen, per stad."""
+    idx = sum(ord(c) for c in stad) % 3
+
+    werkwijze = [
+        f"Onze werkwijze in {stad} begint altijd met een kort kennismakingsgesprek. We bekijken samen met u welke ruimtes schoongemaakt moeten worden, welke frequentie logisch is en of er specifieke aandachtspunten zijn. Op basis daarvan stellen we een vrijblijvende offerte op, zonder verrassingen achteraf.",
+        f"In {stad} starten we ieder nieuw contract met een rondleiding door het pand. Zo weten we precies wat er nodig is en kunnen we een realistische inschatting maken van de benodigde tijd per bezoek. Pas daarna ontvangt u een offerte op maat.",
+        f"Voordat we in {stad} beginnen, plannen we een kennismaking op locatie. Dat geeft ons de kans om uw pand en wensen goed in kaart te brengen, en u de kans om te zien met wie u in zee gaat.",
+    ][idx]
+
+    team = [
+        f"U krijgt in {stad} een vast schoonmaakteam toegewezen dat uw pand na een paar bezoeken door en door kent. Wisselende gezichten en steeds opnieuw uitleggen hoe u het wilt hebben, doen we liever niet \u2014 vaste mensen werken nu eenmaal prettiger en efficiënter.",
+        f"Bij ons in {stad} werkt u niet met wisselende invalkrachten, maar met een vast team. Dat scheelt in de kwaliteit: mensen die uw pand kennen, weten ook waar extra aandacht nodig is.",
+        f"Continuïteit is voor ons belangrijk, ook in {stad}: hetzelfde team komt telkens terug, zodat de kwaliteit gelijk blijft en u niet steeds opnieuw hoeft uit te leggen hoe u het wilt.",
+    ][idx]
+
+    flexibiliteit = [
+        f"Werkzaamheden of drukte veranderen weleens. Daarom kunt u in {stad} de frequentie of omvang van de schoonmaak tussentijds aanpassen, zonder dat u vastzit aan een star contract.",
+        f"Uw situatie in {stad} kan veranderen \u2014 een verbouwing, meer of minder gebruik van het pand. We denken graag mee en passen de planning waar nodig aan.",
+        f"Een vast contract hoeft niet star te zijn. In {stad} schalen we desgewenst op of af, afhankelijk van wat uw pand op dat moment nodig heeft.",
+    ][idx]
+
+    duurzaam = [
+        f"Waar mogelijk werken we in {stad} met milieuvriendelijke schoonmaakmiddelen, zonder dat dit ten koste gaat van het resultaat. Een schone werkomgeving hoeft niet zwaar te wegen op het milieu.",
+        f"In {stad} letten we bewust op de producten die we gebruiken: effectief, maar met oog voor het milieu waar dat kan.",
+        f"Duurzaamheid speelt ook in {stad} een rol in onze keuzes: we gebruiken milieuvriendelijke middelen zonder concessies te doen aan hygiëne.",
+    ][idx]
+
+    return f"""<p class="prose">{werkwijze}</p>
+      <p class="prose" style="margin-top:14px;">{team}</p>
+      <p class="prose" style="margin-top:14px;">{flexibiliteit}</p>
+      <p class="prose" style="margin-top:14px;">{duurzaam}</p>"""
+
 KERNGEBIED = [
     {
         "slug": "helmond", "name": "Helmond",
@@ -1467,11 +1535,11 @@ KERNGEBIED = [
 ]
 
 def build_kerngebied_pages():
-    base = "../"
+    base = ""
     by_slug = {k["slug"]: k for k in KERNGEBIED}
     for k in KERNGEBIED:
         neighbor_cards = "\n        ".join(
-            f'<a href="{by_slug[n]["slug"]}.html" class="wg-card" style="text-decoration:none; color:inherit;">'
+            f'<a href="schoonmaakbedrijf-{by_slug[n]["slug"]}.html" class="wg-card" style="text-decoration:none; color:inherit;">'
             f'<div class="wg-icon">{icon("pin")}</div><h3>{by_slug[n]["name"]}</h3>'
             f'<span class="wg-btn">Bekijk {by_slug[n]["name"]} {icon("arrow")}</span></a>'
             for n in k["neighbors"]
@@ -1482,7 +1550,7 @@ def build_kerngebied_pages():
     </a>""" for s in SERVICES[:6])
         faq_html = faq_block(k["faqs"])
         body = f"""
-  {page_hero("Werkgebied", f"Schoonmaakbedrijf in {k['name']}.", k['intro'], base, k['name'])}
+  {page_hero("Werkgebied", f"Schoonmaakbedrijf {k['name']}", k['intro'], base, k['name'])}
   <section class="section-tight">
     <div class="wrap">
       <div class="two-col reveal">
@@ -1497,7 +1565,7 @@ def build_kerngebied_pages():
           </div>
         </div>
         <div>
-          <div class="wg-map-panel wg-map-panel-lg">{werkgebied_kaart(k['slug'])}</div>
+          <div class="wg-map-panel wg-map-panel-lg">{werkgebied_kaart(k['slug'], base)}</div>
           <p class="prose" style="text-align:center; margin-top:14px; font-size:13.5px;">{k['kaart_tekst']}</p>
         </div>
       </div>
@@ -1510,13 +1578,24 @@ def build_kerngebied_pages():
     </div>
   </section>
   <section class="section-tight">
-
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Uitgelicht</span><h2>Onze diensten in {k['name']} nader toegelicht</h2></div>
+      <div style="max-width:760px; margin:0 auto;">{seo_service_paragraphs(k['name'])}</div>
+    </div>
+  </section>
+  <section class="section-tight" style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Werkwijze</span><h2>Zo werken wij in {k['name']}</h2></div>
+      <div style="max-width:760px; margin:0 auto;">{seo_trust_paragraphs(k['name'])}</div>
+    </div>
+  </section>
+  <section class="section-tight">
     <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Veelgestelde vragen</span><h2>Over {k['name']}</h2></div>
       <div class="faq reveal">{faq_html}</div>
     </div>
   </section>
-  <section class="section-tight" style="background:var(--bg-soft);">
+  <section class="section-tight">
     <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Ook interessant</span><h2>Andere gemeenten in de buurt</h2></div>
       <div class="grid-3 reveal">{neighbor_cards}</div>
@@ -1525,23 +1604,25 @@ def build_kerngebied_pages():
   <section><div class="wrap">{cta_band(f"Schoonmaak nodig in {k['name']}?", "Vraag een vrijblijvende offerte aan.", base)}</div></section>
 """
         title = f"Schoonmaakbedrijf {k['name']} | BrabantSchoon"
-        desc = f"BrabantSchoon verzorgt kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak in {k['name']}. Vast team, vrijblijvende offerte."
-        write(f"locaties/{k['slug']}.html", page_shell(
-            title, desc, f"locaties/{k['slug']}.html", base, "werkgebied.html", body,
-            breadcrumb_schema(k['name'], f"locaties/{k['slug']}.html") + "\n" + faq_schema(k['faqs'])
+        desc = f"Schoonmaakbedrijf in {k['name']}? BrabantSchoon verzorgt kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak. Vrijblijvende offerte binnen 1 werkdag."
+        url = f"schoonmaakbedrijf-{k['slug']}.html"
+        write(url, page_shell(
+            title, desc, url, base, url, body,
+            breadcrumb_schema(k['name'], url) + "\n" + faq_schema(k['faqs']) + "\n" + LOCALBUSINESS_SCHEMA
         ))
 
+
 def build_location_pages():
-    base = "../"
+    base = ""
     for loc in LOCATIONS:
         others = [o for o in LOCATIONS if o["slug"] != loc["slug"]][:3]
-        others_html = "\n        ".join(f'<a href="{o["slug"]}.html" class="card" style="display:block; text-decoration:none; color:inherit;"><h3 style="font-family:\'Inter\',sans-serif; font-size:16px; font-weight:700;">{o["name"]}</h3></a>' for o in others)
+        others_html = "\n        ".join(f'<a href="schoonmaakbedrijf-{o["slug"]}.html" class="card" style="display:block; text-decoration:none; color:inherit;"><h3 style="font-family:\'Inter\',sans-serif; font-size:16px; font-weight:700;">{o["name"]}</h3></a>' for o in others)
         service_mentions = "\n        ".join(f"""<a href="{base}diensten/{s['slug']}.html" class="service-card">
       <div class="thumb {s['tint']}">{service_visual(s)}</div>
       <div class="body"><h3>{s['name']}</h3><p>{s['short']}</p></div>
     </a>""" for s in SERVICES[:6])
         body = f"""
-  {page_hero("Werkgebied", f"Schoonmaakbedrijf voor {loc['name']}.", loc['intro'], base, loc['name'])}
+  {page_hero("Werkgebied", f"Schoonmaakbedrijf {loc['name']}", loc['intro'], base, loc['name'])}
   <section>
     <div class="wrap">
       <div class="two-col reveal">
@@ -1553,7 +1634,7 @@ def build_location_pages():
           </div>
         </div>
         <div>
-          <div class="wg-map-panel wg-map-panel-lg">{werkgebied_kaart(loc['slug'])}</div>
+          <div class="wg-map-panel wg-map-panel-lg">{werkgebied_kaart(loc['slug'], base)}</div>
           <p class="prose" style="text-align:center; margin-top:14px; font-size:13.5px;">{loc['kaart_tekst']}</p>
         </div>
       </div>
@@ -1567,11 +1648,23 @@ def build_location_pages():
   </section>
   <section>
     <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Uitgelicht</span><h2>Onze diensten in {loc['name']} nader toegelicht</h2></div>
+      <div style="max-width:760px; margin:0 auto;">{seo_service_paragraphs(loc['name'])}</div>
+    </div>
+  </section>
+  <section style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Werkwijze</span><h2>Zo werken wij in {loc['name']}</h2></div>
+      <div style="max-width:760px; margin:0 auto;">{seo_trust_paragraphs(loc['name'])}</div>
+    </div>
+  </section>
+  <section>
+    <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Veelgestelde vraag</span><h2>Over {loc['name']}</h2></div>
       <div class="faq reveal">{faq_block([(loc['faq_q'], loc['faq_a'])])}</div>
     </div>
   </section>
-  <section style="background:var(--bg-soft);">
+  <section>
     <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Ook interessant</span><h2>Andere regio's</h2></div>
       <div class="grid-3 reveal">{others_html}</div>
@@ -1580,10 +1673,11 @@ def build_location_pages():
   <section><div class="wrap">{cta_band(f"Schoonmaak nodig in {loc['name']}?", "Vraag een vrijblijvende offerte aan.", base)}</div></section>
 """
         title = f"Schoonmaakbedrijf {loc['name']} | BrabantSchoon"
-        desc = f"BrabantSchoon verzorgt kantoorreiniging en VvE-schoonmaak voor grotere opdrachten in {loc['name']}. Gevestigd in Helmond."
-        write(f"locaties/{loc['slug']}.html", page_shell(
-            title, desc, f"locaties/{loc['slug']}.html", base, "werkgebied.html", body,
-            breadcrumb_schema(loc['name'], f"locaties/{loc['slug']}.html") + "\n" + faq_schema([(loc['faq_q'], loc['faq_a'])])
+        desc = f"Schoonmaakbedrijf voor {loc['name']}? BrabantSchoon verzorgt kantoorreiniging en VvE-schoonmaak voor grotere opdrachten, vanuit Helmond. Vrijblijvende offerte."
+        url = f"schoonmaakbedrijf-{loc['slug']}.html"
+        write(url, page_shell(
+            title, desc, url, base, url, body,
+            breadcrumb_schema(loc['name'], url) + "\n" + faq_schema([(loc['faq_q'], loc['faq_a'])]) + "\n" + LOCALBUSINESS_SCHEMA
         ))
 
 def build_contact():
@@ -1687,8 +1781,8 @@ def build_seo_files():
         ("privacy.html", "0.3"), ("voorwaarden.html", "0.3"), ("cookiebeleid.html", "0.3"),
     ]
     urls += [(f"diensten/{s['slug']}.html", "0.8") for s in SERVICES]
-    urls += [(f"locaties/{loc['slug']}.html", "0.8") for loc in LOCATIONS]
-    urls += [(f"locaties/{k['slug']}.html", "0.85") for k in KERNGEBIED]
+    urls += [(f"schoonmaakbedrijf-{loc['slug']}.html", "0.8") for loc in LOCATIONS]
+    urls += [(f"schoonmaakbedrijf-{k['slug']}.html", "0.85") for k in KERNGEBIED]
     entries = "\n  ".join(
         f"<url><loc>{SITE_URL}/{u}</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>{p}</priority></url>"
         for u, p in urls
