@@ -145,7 +145,7 @@ function getVolumeDiscountFactor(hoursPerMonth) {
   if (hoursPerMonth <= 8) return 0.90;    // kleine opdrachten
   if (hoursPerMonth <= 20) return 0.85;   // kleine-tot-middelgrote opdrachten
   if (hoursPerMonth <= 45) return 0.86;   // gemiddelde zakelijke opdrachten
-  return 0.87;                             // grote, structurele contracten
+  return 0.89;                             // grote, structurele contracten
 }
 
 function calculatePricing(input) {
