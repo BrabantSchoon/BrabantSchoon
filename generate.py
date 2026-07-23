@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "106"
+ASSET_VERSION = "107"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -1019,8 +1019,8 @@ def build_home():
     <div class="hero-full-overlay"></div>
     <div class="wrap hero-full-content">
       <span class="eyebrow" style="color:#BFE0FF;">Professionele schoonmaak voor bedrijven</span>
-      <h1>Professionele schoonmaak. Altijd geregeld.</h1>
-      <p class="lead" style="color:rgba(255,255,255,0.9);">Periodieke, eenmalige en specialistische schoonmaak voor kantoren, VvE's, scholen en organisaties in heel Noord-Brabant.</p>
+      <h1>Schoonmaakbedrijf Helmond voor bedrijven, VvE's en organisaties</h1>
+      <p class="lead" style="color:rgba(255,255,255,0.9);">BrabantSchoon is uw schoonmaakbedrijf in Helmond en de Peelgemeenten: periodieke, eenmalige en specialistische schoonmaak voor kantoren, VvE's, scholen en organisaties in heel Noord-Brabant.</p>
       <div class="hero-actions">
         <a href="contact.html#offerteWizard" class="btn btn-primary">Gratis offerte aanvragen</a>
         <a href="#diensten" class="btn btn-ghost-light">Bekijk onze diensten</a>
@@ -1100,6 +1100,15 @@ def build_home():
     </div>
   </section>
 
+  <section class="section-tight">
+    <div class="wrap">
+      <div style="max-width:760px; margin:0 auto;">
+        <p class="prose reveal">Als schoonmaakbedrijf in Helmond is BrabantSchoon actief in de hele regio: van Eindhoven en Deurne tot Gemert-Bakel, Asten, Someren, Geldrop-Mierlo en Laarbeek. Kortom, als schoonmaakbedrijf in Brabant bent u bij ons aan het juiste adres, in de Peelgemeenten en daarbuiten.</p>
+        <p class="prose reveal" style="margin-top:14px;">Wij verzorgen kantoorreiniging voor bedrijfspanden, VvE-schoonmaak voor gemeenschappelijke ruimtes, en periodieke schoonmaak op een vast ritme dat bij uw organisatie past. Daarnaast bieden we glasbewassing en opleveringsschoonmaak aan, zodat u voor vrijwel elke schoonmaakvraag bij één vaste partner terechtkunt.</p>
+      </div>
+    </div>
+  </section>
+
   <section id="contact">
     <div class="wrap">
       <div class="benefits-strip reveal">
@@ -1134,8 +1143,8 @@ def build_home():
   {trust_strip()}
 """
     write("index.html", page_shell(
-        "BrabantSchoon | Schoonmaakbedrijf Helmond &amp; Peelgemeenten",
-        f"BrabantSchoon verzorgt kantoorreiniging, glasbewassing en VvE-schoonmaak voor bedrijven in Helmond en de Peelgemeenten. Vraag een vrijblijvende offerte aan.",
+        "Schoonmaakbedrijf Helmond | Kantoren &amp; VvE&#39;s | BrabantSchoon",
+        f"Schoonmaakbedrijf in Helmond voor kantoorreiniging, VvE-schoonmaak en periodieke schoonmaak in de Peelgemeenten. Vraag een offerte aan.",
         "", base, "/", body, LOCALBUSINESS_SCHEMA + "\n" + faq_schema(FAQ_ITEMS[:5]),
         preload_image="images/hero.jpg"
     ))

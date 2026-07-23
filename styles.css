@@ -113,8 +113,7 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 .mobile-menu-close svg{width:17px; height:17px;}
 .mobile-menu-links{padding:8px 20px 4px;}
 .mobile-sidebar a{display:block; padding:15px 4px; font-size:16.5px; font-weight:600; text-decoration:none; color:var(--ink); border-bottom:1px solid var(--line);}
-.mobile-phone-link{display:flex !important; align-items:center; gap:10px; color:var(--link) !important; border-bottom:none !important;}
-.mobile-phone-link svg{width:18px; height:18px; color:var(--link); flex-shrink:0;}
+.mobile-phone-link{color:var(--link) !important; border-bottom:none !important;}
 .mobile-menu-cta-wrap{padding:20px; border-top:1px solid var(--line); margin-top:8px;}
 .mobile-menu-cta-wrap .mobile-cta{margin:0; width:100%; text-align:center; padding-top:15px; padding-bottom:15px; color:#fff !important;}
 
@@ -159,7 +158,7 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
   display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:var(--ink-soft);
   text-transform:uppercase; letter-spacing:0.04em;
 }
-.trustindex-widget-wrap{width:100%; max-width:720px; min-height:1px;}
+.trustindex-widget-wrap{width:100%; min-height:1px;}
 
 /* ---------- PRIJSCALCULATOR ---------- */
 .calc-cta-band{
