@@ -1,0 +1,74 @@
+{
+  "redirects": [
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/locaties/tilburg.html",
+      "destination": "/schoonmaakbedrijf-tilburg.html",
+      "permanent": true
+    },
+    {
+      "source": "/locaties/breda.html",
+      "destination": "/schoonmaakbedrijf-breda.html",
+      "permanent": true
+    },
+    {
+      "source": "/locaties/den-bosch.html",
+      "destination": "/schoonmaakbedrijf-den-bosch.html",
+      "permanent": true
+    },
+    {
+      "source": "/locaties/waalwijk.html",
+      "destination": "/schoonmaakbedrijf-waalwijk.html",
+      "permanent": true
+    },
+    {
+      "source": "/locaties/helmond.html",
+      "destination": "/schoonmaakbedrijf-helmond.html",
+      "permanent": true
+    },
+    {
+      "source": "/locaties/deurne.html",
+      "destination": "/schoonmaakbedrijf-deurne.html",
+      "permanent": true
+    },
+    {
+      "source": "/locaties/asten.html",
+      "destination": "/schoonmaakbedrijf-asten.html",
+      "permanent": true
+    },
+    {
+      "source": "/locaties/someren.html",
+      "destination": "/schoonmaakbedrijf-someren.html",
+      "permanent": true
+    },
+    {
+      "source": "/locaties/gemert-bakel.html",
+      "destination": "/schoonmaakbedrijf-gemert-bakel.html",
+      "permanent": true
+    },
+    {
+      "source": "/locaties/laarbeek.html",
+      "destination": "/schoonmaakbedrijf-laarbeek.html",
+      "permanent": true
+    },
+    {
+      "source": "/locaties/nuenen.html",
+      "destination": "/schoonmaakbedrijf-nuenen.html",
+      "permanent": true
+    },
+    {
+      "source": "/locaties/geldrop-mierlo.html",
+      "destination": "/schoonmaakbedrijf-geldrop-mierlo.html",
+      "permanent": true
+    },
+    {
+      "source": "/locaties/eindhoven.html",
+      "destination": "/schoonmaakbedrijf-eindhoven.html",
+      "permanent": true
+    }
+  ]
+}

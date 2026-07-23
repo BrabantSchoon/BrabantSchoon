@@ -362,6 +362,14 @@ if (revealEls.length) {
     return '\u20ac' + Math.round(n).toLocaleString('nl-NL');
   }
 
+  // Rondt af op halve uren voor een professionelere weergave (2,3 uur -> 2,5 uur).
+  // Wordt uitsluitend gebruikt voor de weergave; de prijsberekening zelf blijft
+  // rekenen met de exacte waarde, zodat de prijs nauwkeurig blijft.
+  function formatHoursHalfStep(hours) {
+    const rounded = Math.round(hours * 2) / 2;
+    return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1).replace('.', ',');
+  }
+
   // Vloeiende telanimatie van het ene bedrag naar het andere (easing, geen abrupte sprong)
   function animateValue(el, from, to, duration) {
     if (!el) return;
@@ -409,7 +417,7 @@ if (revealEls.length) {
       if (priceHeaderEl) priceHeaderEl.textContent = 'Uw prijsindicatie';
       if (priceSubEl) priceSubEl.textContent = 'per maand, excl. btw';
       if (priceHoursBlock) priceHoursBlock.hidden = false;
-      if (hoursVisitEl) hoursVisitEl.textContent = result.customer.estimatedLaborHoursPerVisit.toFixed(1).replace('.', ',');
+      if (hoursVisitEl) hoursVisitEl.textContent = formatHoursHalfStep(result.customer.estimatedLaborHoursPerVisit);
       if (hoursMonthEl) hoursMonthEl.textContent = Math.round(result.customer.estimatedLaborHoursPerMonth);
       if (modalPriceSuffixEl) modalPriceSuffixEl.textContent = ' per maand';
       if (mobilePriceEl) mobilePriceEl.textContent = formatEuro(low) + ' \u2013 ' + formatEuro(high) + ' / mnd';

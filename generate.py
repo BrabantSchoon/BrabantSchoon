@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "100"
+ASSET_VERSION = "102"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -361,7 +361,7 @@ def render_header(base, active):
   </div>
   <div class="mobile-menu-links">
     {mobile_links}
-    <a href="tel:{PHONE_TEL}" class="mobile-phone-link">{icon('phone')}{PHONE_DISPLAY}</a>
+    <a href="tel:{PHONE_TEL}" class="mobile-phone-link">{PHONE_DISPLAY}</a>
   </div>
   <div class="mobile-menu-cta-wrap">
     <a href="{base}contact.html#offerteWizard" class="btn btn-primary mobile-cta">Offerte aanvragen</a>
@@ -527,7 +527,7 @@ def reviews_widget_block():
         <span>Beoordeeld op Google Reviews</span>
       </div>
       <div class="trustindex-widget-wrap">
-        <script defer async src='https://cdn.trustindex.io/loader.js?f96010677d3c4441ed1605368d0'></script>
+        <script defer async src='https://cdn.trustindex.io/loader.js?54d027577bfc487e4e96c81f1bc'></script>
       </div>
     </div>"""
 
