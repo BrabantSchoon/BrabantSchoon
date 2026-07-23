@@ -158,7 +158,7 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
   display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:var(--ink-soft);
   text-transform:uppercase; letter-spacing:0.04em;
 }
-.trustindex-widget-wrap{width:100%; max-width:720px; min-height:1px;}
+.trustindex-widget-wrap{width:100%; min-height:1px;}
 
 /* ---------- PRIJSCALCULATOR ---------- */
 .calc-cta-band{
