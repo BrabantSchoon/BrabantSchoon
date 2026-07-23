@@ -136,6 +136,18 @@ function getRecommendedFrequency(propertyType, surfaceM2) {
  * @param {number} input.extraServicesSurchargePercentage - som van gekozen toeslagen
  * @returns {Object} interne uitsplitsing + klant-bandbreedte (nooit NaN, altijd geldige getallen)
  */
+// Schaalvoordeel: grotere, structurele opdrachten zijn efficiënter in te plannen
+// (minder relatieve impact van reistijd en vaste overhead per gewerkt uur), en
+// krijgen daarom een korting op de opslag. Dit houdt het effectieve verkoopuurtarief
+// voor kleine opdrachten iets hoger en voor grote opdrachten duidelijk lager,
+// zoals gebruikelijk in de zakelijke schoonmaakmarkt.
+function getVolumeDiscountFactor(hoursPerMonth) {
+  if (hoursPerMonth <= 8) return 0.90;    // kleine opdrachten
+  if (hoursPerMonth <= 20) return 0.85;   // kleine-tot-middelgrote opdrachten
+  if (hoursPerMonth <= 45) return 0.86;   // gemiddelde zakelijke opdrachten
+  return 0.87;                             // grote, structurele contracten
+}
+
 function calculatePricing(input) {
   // Validatie van alle invoer, met veilige standaardwaarden bij ontbrekende/ongeldige input
   const surfaceM2 = Math.max(1, safeNumber(input && input.surfaceM2, 250));
@@ -169,13 +181,21 @@ function calculatePricing(input) {
   const overheadCost = directCosts * (PRICING_CONFIG.companyOverheadPercentage / 100);
   const totalCostPrice = directCosts + overheadCost;
 
-  // 4. Winstmarge - pas hierna toegevoegd
+  // 4. Winstmarge - pas hierna toegevoegd (percentage blijft ongewijzigd, zoals afgesproken)
   const profitMarginAmount = totalCostPrice * (PRICING_CONFIG.profitMarginPercentage / 100);
   let customerMonthlyPrice = totalCostPrice + profitMarginAmount;
 
   // 5. Extra diensten (toeslag op de klantprijs)
   const extraServicesAmount = customerMonthlyPrice * (extraServicesSurchargePercentage / 100);
   customerMonthlyPrice += extraServicesAmount;
+
+  // 5b. Schaalvoordeel: een aparte, transparante correctie op de totaalprijs voor grotere
+  // opdrachten. De basistarieven en -percentages hierboven blijven ongewijzigd; dit is
+  // een losse stap die het effectieve verkoopuurtarief bij schaal omlaag brengt, zoals
+  // gebruikelijk bij structurele zakelijke contracten.
+  const volumeDiscountFactor = getVolumeDiscountFactor(estimatedLaborHoursPerMonth);
+  const volumeDiscountAmount = customerMonthlyPrice * (1 - volumeDiscountFactor);
+  customerMonthlyPrice *= volumeDiscountFactor;
 
   // 6. Ondergrens
   customerMonthlyPrice = Math.max(PRICING_CONFIG.minimumMonthlyPrice, customerMonthlyPrice);
@@ -204,6 +224,7 @@ function calculatePricing(input) {
       totalCostPrice: finalize(totalCostPrice),
       profitMarginAmount: finalize(profitMarginAmount),
       extraServicesAmount: finalize(extraServicesAmount),
+      volumeDiscountAmount: finalize(volumeDiscountAmount),
       customerMonthlyPrice: finalize(customerMonthlyPrice)
     },
     // --- Publiek: alleen dit mag zichtbaar zijn voor de bezoeker ---
