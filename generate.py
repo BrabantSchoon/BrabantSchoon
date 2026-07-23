@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "107"
+ASSET_VERSION = "108"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -384,7 +384,6 @@ def render_footer(base):
         <a href="{base}diensten.html">Diensten</a>
         <a href="{base}over-ons.html">Over ons</a>
         <a href="{base}werkgebied.html">Werkgebied</a>
-        <a href="{base}bereken-schoonmaakkosten.html">Prijscalculator</a>
         <a href="{base}contact.html">Contact</a>
         <a href="{base}contact.html#offerteWizard">Offerte aanvragen</a>
       </div>
@@ -693,7 +692,6 @@ def page_shell(title, description, path, base, active, body, extra_schema="", pr
   <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
   <a href="{base}contact.html#offerteWizard" class="btn btn-primary">Vrijblijvende offerte</a>
 </div>
-<script src="{base}js/pricing-engine.js?v={ASSET_VERSION}" defer></script>
 <script src="{base}js/main.js?v={ASSET_VERSION}" defer></script>
 </body>
 </html>
@@ -1037,19 +1035,6 @@ def build_home():
   <section class="reviews-strip">
     <div class="wrap">
       {reviews_widget_block()}
-    </div>
-  </section>
-
-  <section id="calculator-cta" style="background:var(--bg-soft);">
-    <div class="wrap">
-      <div class="calc-cta-band reveal">
-        <div class="calc-cta-icon">{icon('doc')}</div>
-        <div class="calc-cta-text">
-          <h2>Bereken uw schoonmaakkosten in 30 seconden.</h2>
-          <p>Direct een indicatie voor uw kantoor, VvE, praktijk of bedrijfspand \u2014 zonder verplichtingen.</p>
-        </div>
-        <a href="bereken-schoonmaakkosten.html" class="btn btn-primary calc-cta-btn">Start de calculator {icon('arrow')}</a>
-      </div>
     </div>
   </section>
 
@@ -1834,7 +1819,6 @@ def build_seo_files():
     today = datetime.date.today().isoformat()
     urls = [
         ("", "1.0"), ("diensten.html", "0.9"), ("werkgebied.html", "0.9"),
-        ("bereken-schoonmaakkosten.html", "0.9"),
         ("over-ons.html", "0.7"), ("contact.html", "0.8"),
         ("privacy.html", "0.3"), ("voorwaarden.html", "0.3"), ("cookiebeleid.html", "0.3"),
     ]
@@ -1876,7 +1860,7 @@ if __name__ == "__main__":
     build_service_pages()
     build_over_ons()
     build_werkgebied()
-    build_calculator_page()
+    # build_calculator_page()  # tijdelijk uitgeschakeld op verzoek van de klant
     build_kerngebied_pages()
     build_location_pages()
     build_contact()
