@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "103"
+ASSET_VERSION = "104"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -769,6 +769,15 @@ def calculator_block():
             <div class="calc-slider-labels"><span>50 m&sup2;</span><span>1.000 m&sup2;</span><span>2.000+ m&sup2;</span></div>
           </div>
 
+          <div class="calc-block" data-job-group="periodiek oplevering dieptereiniging" id="calcSoilingBlock">
+            <h3>Vervuilingsgraad</h3>
+            <div class="calc-type-grid" id="calcSoiling" style="grid-template-columns:repeat(3,1fr);">
+              <button type="button" class="calc-card" data-soiling-key="light"><span>Licht</span><small>Kantoor, weinig gebruik</small></button>
+              <button type="button" class="calc-card active" data-soiling-key="normal"><span>Normaal</span><small>Gangbaar gebruik</small></button>
+              <button type="button" class="calc-card" data-soiling-key="heavy"><span>Zwaar</span><small>Intensief gebruik</small></button>
+            </div>
+          </div>
+
           <div class="calc-block" data-job-group="periodiek" id="calcFreqBlock">
             <h3>4. Hoe vaak wilt u dat wij schoonmaken?</h3>
             <div class="calc-freq-grid" id="calcFreq">
@@ -838,7 +847,7 @@ def calculator_block():
             <div class="calc-price-header" id="calcPriceHeader">Uw prijsindicatie</div>
             <div class="calc-price-range"><span id="calcPriceLow">&euro;400</span> &ndash; <span id="calcPriceHigh">&euro;550</span></div>
             <div class="calc-price-sub" id="calcPriceSub">per maand, excl. btw</div>
-            <p class="calc-price-disclaimer">Gebaseerd op uw invoer. De definitieve offerte bepalen we tijdens een korte inventarisatie.</p>
+            <p class="calc-price-disclaimer">Deze prijs is een vrijblijvende indicatie op basis van uw ingevulde gegevens. De definitieve offerte wordt opgesteld na beoordeling van de locatie.</p>
             <div class="calc-price-hours" id="calcPriceHours">
               <div><span id="calcHoursVisit">2,0</span><small>uur per bezoek</small></div>
               <div><span id="calcHoursMonth">16</span><small>uur per maand</small></div>

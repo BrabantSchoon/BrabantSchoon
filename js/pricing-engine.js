@@ -17,22 +17,30 @@ const PRICING_CONFIG = {
   contractorHourlyRate: 30.00,      // interne kostprijs per uur (zzp-inhuur), NOOIT aan klant tonen
   materialCostPerHour: 2.50,        // materiaalkosten per gewerkt uur
   travelCostPerVisit: 12.50,        // reiskosten per bezoek
-  companyOverheadPercentage: 10,    // bedrijfskosten, percentage over de kostprijs
-  profitMarginPercentage: 25,       // winstmarge, percentage over kostprijs + overhead
-  minimumVisitDuration: 2,          // minimale bezoekduur in uren
-  minimumMonthlyPrice: 250,         // ondergrens voor de klantprijs per maand
-  priceRangeSpreadPercentage: 10    // getoonde bandbreedte rondom de berekende prijs
+  companyOverheadPercentage: 8,     // bedrijfskosten, percentage over de kostprijs
+  profitMarginPercentage: 20,       // winstmarge, percentage over kostprijs + overhead
+  minimumVisitDuration: 1.5,        // minimale bezoekduur in uren
+  minimumMonthlyPrice: 220,         // ondergrens voor de klantprijs per maand
+  priceRangeSpreadPercentage: 8     // getoonde bandbreedte rondom de berekende prijs (marktconform, geen grote spreiding)
 };
 
-// Normtijden: minuten per 100 m², per pandtype
+// Normtijden: minuten per 100 m², per pandtype. Gebaseerd op gangbare productiviteit
+// in de zakelijke schoonmaakbranche (circa 150-220 m²/uur voor regulier onderhoud).
 const NORM_TIMES_MINUTES_PER_100M2 = {
-  office: 55,
-  vve: 60,
-  practice: 75,
-  school: 70,
-  retail: 65,
-  warehouse: 45,
-  other: 55
+  office: 40,
+  vve: 45,
+  practice: 55,
+  school: 50,
+  retail: 45,
+  warehouse: 30,
+  other: 40
+};
+
+// Vervuilingsgraad: vermenigvuldigt de benodigde tijd. 'Normaal' is de standaardwaarde.
+const SOILING_LEVEL_MULTIPLIER = {
+  light: 0.85,
+  normal: 1.0,
+  heavy: 1.2
 };
 
 // Bezoeken per maand, per gekozen frequentie
@@ -135,14 +143,18 @@ function calculatePricing(input) {
     NORM_TIMES_MINUTES_PER_100M2[input && input.propertyType],
     NORM_TIMES_MINUTES_PER_100M2.office
   );
+  const soilingMultiplier = safeNumber(
+    SOILING_LEVEL_MULTIPLIER[input && input.soilingLevel],
+    SOILING_LEVEL_MULTIPLIER.normal
+  );
   const visitsPerMonth = safeNumber(
     VISITS_PER_MONTH[input && input.frequencyKey],
     VISITS_PER_MONTH.weekly2
   );
   const extraServicesSurchargePercentage = safeNumber(input && input.extraServicesSurchargePercentage, 0);
 
-  // 1. Geschatte schoonmaaktijd
-  const rawMinutesPerVisit = (surfaceM2 / 100) * normTimeMinutesPer100m2;
+  // 1. Geschatte schoonmaaktijd (inclusief vervuilingsgraad)
+  const rawMinutesPerVisit = (surfaceM2 / 100) * normTimeMinutesPer100m2 * soilingMultiplier;
   const rawHoursPerVisit = rawMinutesPerVisit / 60;
   const estimatedLaborHoursPerVisit = Math.max(PRICING_CONFIG.minimumVisitDuration, rawHoursPerVisit);
   const estimatedLaborHoursPerMonth = estimatedLaborHoursPerVisit * visitsPerMonth;
@@ -168,10 +180,12 @@ function calculatePricing(input) {
   // 6. Ondergrens
   customerMonthlyPrice = Math.max(PRICING_CONFIG.minimumMonthlyPrice, customerMonthlyPrice);
 
-  // 7. Bandbreedte voor de klant
+  // 7. Bandbreedte voor de klant, afgerond op tientallen voor een geloofwaardig, professioneel bedrag
+  // (geen "€861 - €1.052", wel "€860 - €1.050")
+  const roundToTen = (n) => Math.round(n / 10) * 10;
   const spread = PRICING_CONFIG.priceRangeSpreadPercentage / 100;
-  const customerPriceLow = customerMonthlyPrice * (1 - spread);
-  const customerPriceHigh = customerMonthlyPrice * (1 + spread);
+  const customerPriceLow = roundToTen(customerMonthlyPrice * (1 - spread));
+  const customerPriceHigh = roundToTen(customerMonthlyPrice * (1 + spread));
 
   // Laatste veiligheidscontrole: mocht er, ondanks alle validatie hierboven, toch ergens
   // een ongeldig getal ontstaan zijn, dan valt het resultaat terug op 0 in plaats van NaN.
@@ -210,7 +224,7 @@ function calculatePricing(input) {
    ========================================================================== */
 const ONE_TIME_CONFIG = {
   oneTimeSurchargePercentage: 25,   // opslag t.o.v. het normale uurtarief voor eenmalig werk
-  rangeSpreadPercentage: 15,        // eenmalige klussen variëren meer, dus bredere bandbreedte
+  rangeSpreadPercentage: 12,        // eenmalige klussen variëren iets meer dan periodiek, maar niet extreem
   minimumOneTimePrice: 145          // eigen, lagere ondergrens dan de maandprijs-minimum
 };
 
@@ -236,7 +250,8 @@ function calculateOneTimePricing(jobType, input) {
   }
 
   const surfaceM2 = Math.max(1, safeNumber(input.surfaceM2, 100));
-  const rawHours = (surfaceM2 / 100) * normTime / 60;
+  const soilingMultiplier = safeNumber(SOILING_LEVEL_MULTIPLIER[input.soilingLevel], SOILING_LEVEL_MULTIPLIER.normal);
+  const rawHours = (surfaceM2 / 100) * normTime * soilingMultiplier / 60;
   const estimatedLaborHours = Math.max(PRICING_CONFIG.minimumVisitDuration, rawHours);
 
   // Pand niet leeg bij verhuisschoonmaak = meer voorzichtig/tijdrovend werken
@@ -267,8 +282,8 @@ function calculateOneTimePricing(jobType, input) {
       totalPrice: finalize(totalPrice)
     },
     customer: {
-      priceLow: finalize(totalPrice * (1 - spread)),
-      priceHigh: finalize(totalPrice * (1 + spread)),
+      priceLow: finalize(Math.round(totalPrice * (1 - spread) / 10) * 10),
+      priceHigh: finalize(Math.round(totalPrice * (1 + spread) / 10) * 10),
       estimatedLaborHours: finalize(estimatedLaborHours)
     }
   };

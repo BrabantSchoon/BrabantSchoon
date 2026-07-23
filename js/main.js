@@ -116,6 +116,7 @@ if (revealEls.length) {
 
   let currentJobType = 'periodiek';
   let currentTypeKey = 'office';
+  let currentSoilingKey = 'normal';
   let currentFreqKey = null; // null = nog geen handmatige keuze, volgt het advies
   let extraPctTotal = 0;
   let verhuisExtraPctTotal = 0;
@@ -126,6 +127,7 @@ if (revealEls.length) {
   const jobTypeButtons = calc.querySelectorAll('#calcJobType .calc-card');
   const jobGroupBlocks = calc.querySelectorAll('[data-job-group]');
   const typeButtons = calc.querySelectorAll('#calcType .calc-card');
+  const soilingButtons = calc.querySelectorAll('#calcSoiling .calc-card');
   const freqButtons = calc.querySelectorAll('#calcFreq .calc-card');
   const verhuisTypeButtons = calc.querySelectorAll('#calcVerhuisType .calc-card');
   const opleveringTypeButtons = calc.querySelectorAll('#calcOpleveringType .calc-card');
@@ -217,6 +219,11 @@ if (revealEls.length) {
   typeButtons.forEach(btn => btn.addEventListener('click', () => {
     selectCard(typeButtons, btn);
     currentTypeKey = btn.dataset.typeKey;
+    calculate();
+  }));
+  soilingButtons.forEach(btn => btn.addEventListener('click', () => {
+    selectCard(soilingButtons, btn);
+    currentSoilingKey = btn.dataset.soilingKey;
     calculate();
   }));
   freqButtons.forEach(btn => btn.addEventListener('click', () => {
@@ -410,6 +417,7 @@ if (revealEls.length) {
 
       result = calculatePricing({
         surfaceM2: m2, propertyType: currentTypeKey, frequencyKey: activeFreqKey,
+        soilingLevel: currentSoilingKey,
         extraServicesSurchargePercentage: extraPctTotal
       });
       low = result.customer.priceLow; high = result.customer.priceHigh;
@@ -423,7 +431,7 @@ if (revealEls.length) {
       if (mobilePriceEl) mobilePriceEl.textContent = formatEuro(low) + ' \u2013 ' + formatEuro(high) + ' / mnd';
     } else {
       // Eenmalige opdrachten: oplevering, verhuis, dieptereiniging
-      const oneTimeInput = { surfaceM2: m2 };
+      const oneTimeInput = { surfaceM2: m2, soilingLevel: currentSoilingKey };
       if (currentJobType === 'oplevering') {
         oneTimeInput.opleveringType = opleveringType;
       } else if (currentJobType === 'verhuis') {
