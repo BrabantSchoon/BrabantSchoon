@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="css/styles.css?v=108">
+<link rel="stylesheet" href="css/styles.css?v=110">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
@@ -403,6 +403,7 @@
         <a href="cookiebeleid.html">Cookiebeleid</a>
         <a href="voorwaarden.html">Algemene voorwaarden</a>
         <a href="sitemap.xml">Sitemap</a>
+        <a href="#" onclick="window.reopenCookieBanner && window.reopenCookieBanner(); return false;">Cookievoorkeuren wijzigen</a>
       </div>
     </div>
   </div>
@@ -415,6 +416,18 @@
   <a href="tel:+31492313050" class="btn btn-outline">Bel direct</a>
   <a href="contact.html#offerteWizard" class="btn btn-primary">Vrijblijvende offerte</a>
 </div>
-<script src="js/main.js?v=108" defer></script>
+
+<div class="cookie-banner" id="cookieBanner" role="dialog" aria-live="polite" aria-label="Cookiemelding" hidden>
+  <div class="cookie-banner-inner">
+    <p>Wij gebruiken alleen cookies die noodzakelijk zijn voor de werking van de site. Met uw toestemming gebruiken we ook Google Analytics om het gebruik van de website te meten. Lees ons <a href="cookiebeleid.html">cookiebeleid</a>.</p>
+    <div class="cookie-banner-actions">
+      <button type="button" class="btn btn-outline" id="cookieReject">Alleen noodzakelijk</button>
+      <button type="button" class="btn btn-primary" id="cookieAccept">Accepteren</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/consent.js?v=110" data-ga-id="G-DXH4VEW9TV"></script>
+<script src="js/main.js?v=110" defer></script>
 </body>
 </html>

@@ -11,7 +11,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "108"
+ASSET_VERSION = "110"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -418,6 +418,7 @@ def render_footer(base):
         <a href="{base}cookiebeleid.html">Cookiebeleid</a>
         <a href="{base}voorwaarden.html">Algemene voorwaarden</a>
         <a href="{base}sitemap.xml">Sitemap</a>
+        <a href="#" onclick="window.reopenCookieBanner && window.reopenCookieBanner(); return false;">Cookievoorkeuren wijzigen</a>
       </div>
     </div>
   </div>
@@ -692,6 +693,18 @@ def page_shell(title, description, path, base, active, body, extra_schema="", pr
   <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
   <a href="{base}contact.html#offerteWizard" class="btn btn-primary">Vrijblijvende offerte</a>
 </div>
+
+<div class="cookie-banner" id="cookieBanner" role="dialog" aria-live="polite" aria-label="Cookiemelding" hidden>
+  <div class="cookie-banner-inner">
+    <p>Wij gebruiken alleen cookies die noodzakelijk zijn voor de werking van de site. Met uw toestemming gebruiken we ook Google Analytics om het gebruik van de website te meten. Lees ons <a href="{base}cookiebeleid.html">cookiebeleid</a>.</p>
+    <div class="cookie-banner-actions">
+      <button type="button" class="btn btn-outline" id="cookieReject">Alleen noodzakelijk</button>
+      <button type="button" class="btn btn-primary" id="cookieAccept">Accepteren</button>
+    </div>
+  </div>
+</div>
+
+<script src="{base}js/consent.js?v={ASSET_VERSION}" data-ga-id="G-DXH4VEW9TV"></script>
 <script src="{base}js/main.js?v={ASSET_VERSION}" defer></script>
 </body>
 </html>
@@ -1799,8 +1812,12 @@ def build_legal():
   {page_hero("Juridisch", "Cookiebeleid.", "Welke cookies en externe diensten deze website gebruikt.", base, "Cookiebeleid")}
   <section><div class="wrap-narrow prose reveal">
     <p><em>Dit is een voorbeeldtekst. Laat deze controleren door een jurist voordat u ze publiceert.</em></p>
-    <h2>Gebruikt deze website cookies?</h2>
-    <p>Deze website plaatst geen advertentie- of trackingcookies. Er wordt alleen gebruikgemaakt van functionele onderdelen die nodig zijn om de site goed te laten werken.</p>
+    <h2>Welke cookies gebruikt deze website?</h2>
+    <p>Deze website gebruikt alleen strikt noodzakelijke, functionele cookies om goed te werken. Daarnaast gebruiken we, uitsluitend met uw toestemming, Google Analytics om te meten hoe bezoekers de website gebruiken. Analytics wordt pas geladen nadat u hier via de cookiemelding expliciet toestemming voor geeft \u2014 zonder toestemming worden er geen Analytics-cookies geplaatst.</p>
+    <h2>Uw voorkeur wijzigen</h2>
+    <p>U kunt uw cookievoorkeur op elk moment wijzigen via de link "Cookievoorkeuren wijzigen" onderaan iedere pagina.</p>
+    <h2>Google Analytics</h2>
+    <p>Bij toestemming gebruiken we Google Analytics 4 om geanonimiseerde statistieken te verzamelen over websitebezoek, zoals bezochte pagina's en algemene herkomst van bezoekers. Deze gegevens worden verwerkt door Google conform het eigen privacybeleid van Google.</p>
     <h2>Google Maps</h2>
     <p>Op de contactpagina tonen we een kaart via Google Maps. Google kan hierbij gegevens verzamelen conform het eigen privacybeleid van Google.</p>
     <h2>Offerteformulier</h2>
