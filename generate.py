@@ -7,11 +7,76 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 SITE_URL = "https://www.brabantschoon.nl"
 PHONE_DISPLAY = "0492 - 31 30 50"
 PHONE_TEL = "+31492313050"
+GA_MEASUREMENT_ID = "G-DXH4VEW9TV"
+
+def consent_script_inline():
+    # Bewust INLINE (niet als los .js-bestand) geladen: veel adblockers en
+    # privacybrowsers (uBlock Origin, Brave, Firefox met strikte bescherming)
+    # blokkeren standaard bestanden met namen als 'consent.js' of 'cookie-banner.js',
+    # omdat dat patroon op bekende blokkeerlijsten (EasyList/EasyPrivacy) staat.
+    # Een los bestand zou daardoor voor een deel van de bezoekers stil falen,
+    # zonder dat daar een foutmelding van te zien is. Inline in de HTML is dat
+    # risico er niet, omdat er geen apart, blokkeerbaar netwerkverzoek is.
+    return f"""<script>
+(function () {{
+  var STORAGE_KEY = 'brabantschoon_cookie_consent';
+  var gaId = '{GA_MEASUREMENT_ID}';
+  var banner = document.getElementById('cookieBanner');
+  var acceptBtn = document.getElementById('cookieAccept');
+  var rejectBtn = document.getElementById('cookieReject');
+
+  function loadGoogleAnalytics() {{
+    if (!gaId || window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {{ window.dataLayer.push(arguments); }}
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', gaId, {{ anonymize_ip: true }});
+  }}
+
+  function removeAnalyticsCookies() {{
+    document.cookie.split(';').forEach(function (c) {{
+      var name = c.split('=')[0].trim();
+      if (name.indexOf('_ga') === 0) {{
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + location.hostname + ';';
+      }}
+    }});
+  }}
+
+  function hideBanner() {{ if (banner) banner.hidden = true; }}
+  function showBanner() {{ if (banner) banner.hidden = false; }}
+  function getConsent() {{ try {{ return localStorage.getItem(STORAGE_KEY); }} catch (e) {{ return null; }} }}
+  function setConsent(v) {{ try {{ localStorage.setItem(STORAGE_KEY, v); }} catch (e) {{}} }}
+
+  function applyStoredConsent() {{
+    var consent = getConsent();
+    if (consent === 'accepted') {{ loadGoogleAnalytics(); hideBanner(); }}
+    else if (consent === 'rejected') {{ hideBanner(); }}
+    else {{ showBanner(); }}
+  }}
+
+  if (acceptBtn) acceptBtn.addEventListener('click', function () {{
+    setConsent('accepted'); loadGoogleAnalytics(); hideBanner();
+  }});
+  if (rejectBtn) rejectBtn.addEventListener('click', function () {{
+    setConsent('rejected'); removeAnalyticsCookies(); hideBanner();
+  }});
+
+  window.reopenCookieBanner = function () {{ showBanner(); }};
+  applyStoredConsent();
+}})();
+</script>"""
 EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "110"
+ASSET_VERSION = "111"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -704,7 +769,7 @@ def page_shell(title, description, path, base, active, body, extra_schema="", pr
   </div>
 </div>
 
-<script src="{base}js/consent.js?v={ASSET_VERSION}" data-ga-id="G-DXH4VEW9TV"></script>
+{consent_script_inline()}
 <script src="{base}js/main.js?v={ASSET_VERSION}" defer></script>
 </body>
 </html>

@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="css/styles.css?v=110">
+<link rel="stylesheet" href="css/styles.css?v=111">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
@@ -177,7 +177,61 @@
   </div>
 </div>
 
-<script src="js/consent.js?v=110" data-ga-id="G-DXH4VEW9TV"></script>
-<script src="js/main.js?v=110" defer></script>
+<script>
+(function () {
+  var STORAGE_KEY = 'brabantschoon_cookie_consent';
+  var gaId = 'G-DXH4VEW9TV';
+  var banner = document.getElementById('cookieBanner');
+  var acceptBtn = document.getElementById('cookieAccept');
+  var rejectBtn = document.getElementById('cookieReject');
+
+  function loadGoogleAnalytics() {
+    if (!gaId || window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', gaId, { anonymize_ip: true });
+  }
+
+  function removeAnalyticsCookies() {
+    document.cookie.split(';').forEach(function (c) {
+      var name = c.split('=')[0].trim();
+      if (name.indexOf('_ga') === 0) {
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + location.hostname + ';';
+      }
+    });
+  }
+
+  function hideBanner() { if (banner) banner.hidden = true; }
+  function showBanner() { if (banner) banner.hidden = false; }
+  function getConsent() { try { return localStorage.getItem(STORAGE_KEY); } catch (e) { return null; } }
+  function setConsent(v) { try { localStorage.setItem(STORAGE_KEY, v); } catch (e) {} }
+
+  function applyStoredConsent() {
+    var consent = getConsent();
+    if (consent === 'accepted') { loadGoogleAnalytics(); hideBanner(); }
+    else if (consent === 'rejected') { hideBanner(); }
+    else { showBanner(); }
+  }
+
+  if (acceptBtn) acceptBtn.addEventListener('click', function () {
+    setConsent('accepted'); loadGoogleAnalytics(); hideBanner();
+  });
+  if (rejectBtn) rejectBtn.addEventListener('click', function () {
+    setConsent('rejected'); removeAnalyticsCookies(); hideBanner();
+  });
+
+  window.reopenCookieBanner = function () { showBanner(); };
+  applyStoredConsent();
+})();
+</script>
+<script src="js/main.js?v=111" defer></script>
 </body>
 </html>
