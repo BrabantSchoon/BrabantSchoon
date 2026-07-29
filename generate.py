@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "113"
+ASSET_VERSION = "116"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -589,11 +589,9 @@ FAQ_ITEMS = [
 def reviews_widget_block():
     return """<div class="reviews-compact reveal">
       <div class="reviews-compact-label">
-        <span>Beoordeeld op Google Reviews</span>
+        <span>Benieuwd naar onze beoordelingen?</span>
       </div>
-      <div class="trustindex-widget-wrap">
-        <script defer async src='https://cdn.trustindex.io/loader.js?54d027577bfc487e4e96c81f1bc'></script>
-      </div>
+      <a href="https://www.google.com/search?q=BrabantSchoon+Helmond" target="_blank" rel="noopener" class="btn btn-outline">Bekijk onze reviews op Google</a>
     </div>"""
 
 FORM_SERVICE_OPTIONS = [
@@ -1654,7 +1652,7 @@ def build_kerngebied_pages():
             for n in k["neighbors"]
         )
         service_mentions = "\n        ".join(f"""<a href="{base}diensten/{s['slug']}.html" class="service-card">
-      <div class="thumb {s['tint']}">{service_visual(s)}</div>
+      <div class="thumb {s['tint']}">{service_visual_from_root(s)}</div>
       <div class="body"><h3>{s['name']}</h3><p>{s['short']}</p></div>
     </a>""" for s in SERVICES[:6])
         faq_html = faq_block(k["faqs"])
@@ -1733,7 +1731,7 @@ def build_location_pages():
         others = [o for o in LOCATIONS if o["slug"] != loc["slug"]][:3]
         others_html = "\n        ".join(f'<a href="schoonmaakbedrijf-{o["slug"]}.html" class="card" style="display:block; text-decoration:none; color:inherit;"><h3 style="font-family:\'Inter\',sans-serif; font-size:16px; font-weight:700;">{o["name"]}</h3></a>' for o in others)
         service_mentions = "\n        ".join(f"""<a href="{base}diensten/{s['slug']}.html" class="service-card">
-      <div class="thumb {s['tint']}">{service_visual(s)}</div>
+      <div class="thumb {s['tint']}">{service_visual_from_root(s)}</div>
       <div class="body"><h3>{s['name']}</h3><p>{s['short']}</p></div>
     </a>""" for s in SERVICES[:6])
         body = f"""
