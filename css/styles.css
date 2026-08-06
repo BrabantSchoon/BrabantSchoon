@@ -747,3 +747,66 @@ footer.site-footer{background:var(--bg-navy); color:var(--ink-on-navy); padding:
   .cookie-banner-actions{width:100%;}
   .cookie-banner-actions .btn{flex:1;}
 }
+
+/* ===== Brabantschoon v2 — homepage header + hero ===== */
+.home-page h1,.home-page h2,.home-page h3{font-family:'League Spartan',sans-serif;}
+.home-page .site-header{background:#fff; border-bottom:1px solid rgba(0,43,92,.08); box-shadow:0 1px 0 rgba(0,43,92,.03);}
+.home-page .nav{min-height:86px; padding:12px 0;}
+.home-page .logo img{height:37px; width:auto;}
+.home-page nav.links{gap:34px; font-family:'League Spartan',sans-serif; font-size:15px; font-weight:600;}
+.home-page nav.links>a{position:relative; color:#26364b;}
+.home-page nav.links>a::after{content:""; position:absolute; left:0; right:0; bottom:1px; height:2px; background:var(--green); transform:scaleX(0); transform-origin:center; transition:transform .2s ease;}
+.home-page nav.links>a:hover::after,.home-page nav.links>a.active::after{transform:scaleX(1);}
+.home-page .phone-link{font-family:'League Spartan',sans-serif; font-size:16px;}
+.home-page .nav-actions{gap:16px;}
+.home-page .btn-primary{background:var(--green); box-shadow:0 12px 24px -12px rgba(0,122,51,.65);}
+.home-page .btn-primary:hover{background:#00672b; box-shadow:0 16px 30px -14px rgba(0,122,51,.72);}
+
+.home-hero{position:relative; isolation:isolate; min-height:clamp(690px,calc(100vh - 86px),900px); overflow:hidden; display:flex; align-items:center; background:#f8faf9;}
+.home-hero-media{position:absolute; inset:0; z-index:-3;}
+.home-hero-media img{width:100%; height:100%; object-fit:cover; object-position:62% center;}
+.home-hero-shade{position:absolute; inset:0; z-index:-2; background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.98) 27%,rgba(255,255,255,.88) 39%,rgba(255,255,255,.58) 51%,rgba(255,255,255,.18) 64%,rgba(255,255,255,0) 77%); pointer-events:none;}
+.home-hero-inner{width:100%; padding-top:74px; padding-bottom:78px;}
+.home-hero-copy{max-width:620px;}
+.home-hero-kicker{display:inline-flex; align-items:center; gap:10px; color:var(--green); font-family:'League Spartan',sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:.12em; font-size:13px;}
+.home-hero-kicker::before{content:""; width:32px; height:2px; background:var(--green);}
+.home-hero h1{font-size:clamp(54px,5.25vw,82px); line-height:.92; letter-spacing:-.045em; color:var(--navy); margin:20px 0 24px; font-weight:800;}
+.home-hero h1 span{color:var(--green);}
+.home-hero-copy>p{max-width:550px; margin:0; color:#39475b; font-size:18px; line-height:1.65;}
+.home-hero-services{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px 22px; list-style:none; margin:28px 0 0; max-width:540px;}
+.home-hero-services li{position:relative; padding-left:28px; font-weight:650; color:var(--navy); font-size:15px;}
+.home-hero-services li::before{content:"✓"; position:absolute; left:0; top:1px; display:grid; place-items:center; width:19px; height:19px; border-radius:50%; background:var(--green); color:#fff; font-size:12px; font-weight:800;}
+.home-hero-actions{display:flex; flex-wrap:wrap; gap:14px; margin-top:34px;}
+.home-hero-actions .btn{min-height:56px; padding-inline:27px; font-size:15px;}
+.btn-hero-secondary{background:rgba(255,255,255,.72); color:var(--navy); border-color:rgba(0,43,92,.23); backdrop-filter:blur(8px);}
+.btn-hero-secondary:hover{background:#fff; border-color:var(--navy); transform:translateY(-1px);}
+
+@media(max-width:1100px){
+  .home-page nav.links{gap:20px;}
+  .home-page .phone-link{display:none;}
+  .home-hero-media img{object-position:66% center;}
+  .home-hero-shade{background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.98) 34%,rgba(255,255,255,.78) 50%,rgba(255,255,255,.28) 68%,transparent 82%);}
+}
+@media(max-width:899px){
+  .home-page .nav{min-height:72px;}
+  .home-page .logo img{height:31px;}
+  .home-page .nav-actions>.btn{display:none;}
+  .home-hero{min-height:760px; align-items:flex-start;}
+  .home-hero-media img{object-position:67% center;}
+  .home-hero-shade{background:linear-gradient(180deg,rgba(255,255,255,.99) 0%,rgba(255,255,255,.96) 42%,rgba(255,255,255,.55) 65%,rgba(255,255,255,.08) 86%);}
+  .home-hero-inner{padding-top:58px; padding-bottom:220px;}
+  .home-hero-copy{max-width:600px;}
+  .home-hero h1{font-size:clamp(46px,10vw,68px);}
+}
+@media(max-width:600px){
+  .home-hero{min-height:780px;}
+  .home-hero-media img{object-position:68% center;}
+  .home-hero-inner{padding-top:42px; padding-bottom:255px;}
+  .home-hero-kicker{font-size:11px; letter-spacing:.09em;}
+  .home-hero-kicker::before{width:22px;}
+  .home-hero h1{font-size:46px; margin-top:16px; margin-bottom:18px;}
+  .home-hero-copy>p{font-size:16px; line-height:1.55;}
+  .home-hero-services{grid-template-columns:1fr; gap:9px; margin-top:22px;}
+  .home-hero-actions{flex-direction:column; align-items:stretch; margin-top:27px;}
+  .home-hero-actions .btn{width:100%;}
+}

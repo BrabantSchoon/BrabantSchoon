@@ -20,9 +20,9 @@
 <meta name="theme-color" content="#002B5C">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="image" href="images/hero.jpg" fetchpriority="high">
-<link rel="stylesheet" href="css/styles.css?v=120">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="images/hero-home.webp" type="image/webp" fetchpriority="high">
+<link rel="stylesheet" href="css/styles.css?v=200">
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -74,7 +74,7 @@
 }
 </script>
 </head>
-<body>
+<body class="home-page">
 <a href="#main-content" class="skip-link">Ga direct naar inhoud</a>
 <input type="checkbox" id="menuCheckbox" class="menu-checkbox">
 <header class="site-header">
@@ -116,23 +116,28 @@
 </aside>
 <main id="main-content">
 
-  <section class="hero-full hero-full-compact">
-    <img src="images/hero.jpg" alt="Bedrijfswagens en medewerker van BrabantSchoon bij een klant in Zuidoost-Brabant" class="hero-full-img" width="1600" height="1067" fetchpriority="high" decoding="async">
-    <div class="hero-full-overlay"></div>
-    <div class="wrap hero-full-content">
-      <span class="eyebrow" style="color:#BFE0FF;">Professionele schoonmaak voor bedrijven</span>
-      <h1>Schoonmaakbedrijf Helmond voor bedrijven, VvE's en organisaties</h1>
-      <p class="lead" style="color:rgba(255,255,255,0.9);">BrabantSchoon is uw schoonmaakbedrijf in Helmond en de Peelgemeenten: periodieke, eenmalige en specialistische schoonmaak voor kantoren, VvE's, scholen en organisaties in heel Noord-Brabant.</p>
-      <div class="hero-actions">
-        <a href="contact.html#offerteWizard" class="btn btn-primary">Gratis offerte aanvragen</a>
-        <a href="#diensten" class="btn btn-ghost-light">Bekijk onze diensten</a>
+  <section class="home-hero" aria-labelledby="hero-title">
+    <picture class="home-hero-media">
+      <source srcset="images/hero-home.webp" type="image/webp">
+      <img src="images/hero-home.png" alt="Team van Brabantschoon bij de bedrijfswagen voor een modern bedrijfspand" width="1536" height="1024" fetchpriority="high" decoding="async">
+    </picture>
+    <div class="home-hero-shade" aria-hidden="true"></div>
+    <div class="wrap home-hero-inner">
+      <div class="home-hero-copy">
+        <span class="home-hero-kicker">Professionele schoonmaak voor bedrijven</span>
+        <h1 id="hero-title">Professionele schoonmaak<br><span>in Noord-Brabant</span></h1>
+        <p>Voor kantoren, VvE's, scholen en organisaties. Met vaste afspraken, korte lijnen en een team dat uw locatie kent.</p>
+        <ul class="home-hero-services" aria-label="Onze belangrijkste diensten">
+          <li>Kantoorschoonmaak</li>
+          <li>Glasbewassing</li>
+          <li>VvE &amp; trappenhuizen</li>
+          <li>Bouw- &amp; opleveringsschoonmaak</li>
+        </ul>
+        <div class="home-hero-actions">
+          <a href="contact.html#offerteWizard" class="btn btn-primary">Gratis offerte aanvragen</a>
+          <a href="#diensten" class="btn btn-hero-secondary">Bekijk onze diensten</a>
+        </div>
       </div>
-      <ul class="hero-checklist">
-        <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Vast aanspreekpunt</li>
-        <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Flexibele planning</li>
-        <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Professionele medewerkers</li>
-        <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Actief in heel Noord-Brabant</li>
-      </ul>
     </div>
   </section>
 
