@@ -78,11 +78,14 @@ ul{margin:0; padding:0;}
 .btn-sm{padding:10px 18px; font-size:13.5px;}
 
 /* ---------- HEADER / NAV (simple, per brief) ---------- */
-header.site-header{position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--line);}
-.nav{display:flex; align-items:center; justify-content:space-between; padding:14px 0; gap:20px;}
+header.site-header{position:sticky; top:0; z-index:100; background:transparent; transition:background .25s ease, box-shadow .25s ease, border-color .25s ease; border-bottom:1px solid transparent;}
+header.site-header.scrolled{background:rgba(255,255,255,0.96); backdrop-filter:blur(12px); border-bottom:1px solid var(--line); box-shadow:0 4px 20px -10px rgba(0,43,92,0.12);}
+header.site-header .wrap{max-width:1440px;}
+.nav{display:flex; align-items:center; justify-content:space-between; padding:22px 0; gap:20px; min-height:44px;}
 .logo img{height:32px; width:auto;}
-nav.links{display:none; align-items:center; gap:30px; font-size:14.5px; font-weight:500;}
-nav.links > a{text-decoration:none; color:var(--ink-soft); transition:color .15s; padding:8px 0;}
+nav.links{display:none; align-items:center; gap:34px; font-size:14.5px; font-weight:600; font-family:'League Spartan',sans-serif;}
+nav.links > a{text-decoration:none; color:var(--ink-soft); transition:color .15s, text-shadow .25s; padding:8px 0; text-shadow:0 1px 8px rgba(255,255,255,0.5);}
+header.site-header.scrolled nav.links > a{text-shadow:none;}
 nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 @media(min-width:900px){nav.links{display:flex;}}
 .nav-actions{display:flex; align-items:center; gap:10px;}
@@ -95,7 +98,7 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 /* Pure-CSS sidebar (checkbox hack) — geen JavaScript nodig */
 .menu-checkbox{position:absolute; opacity:0; pointer-events:none;}
 .menu-overlay{
-  position:fixed; inset:0; background:rgba(10,22,64,0.45); z-index:150;
+  position:fixed; top:0; right:0; bottom:0; left:0; background:rgba(10,22,64,0.45); z-index:150;
   opacity:0; visibility:hidden; transition:opacity .25s ease, visibility .25s ease;
 }
 .mobile-sidebar{
@@ -120,25 +123,43 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 .hero{padding:64px 0 40px;}
 
 /* Volledig beeldvullende hero (foto-achtergrond, tekst erover) */
-.hero-full{position:relative; min-height:640px; display:flex; align-items:flex-end; overflow:hidden;}
-.hero-full-img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+.hero-full{position:relative; min-height:820px; overflow:hidden;}
+.hero-full-img{position:absolute; top:0; right:0; bottom:0; left:0; width:100%; height:100%; object-fit:cover; object-position:78% center;}
 .hero-full-overlay{
-  position:absolute; inset:0;
-  background:linear-gradient(0deg, rgba(10,22,64,0.94) 0%, rgba(10,22,64,0.68) 45%, rgba(10,22,64,0.32) 100%);
+  position:absolute; top:0; right:0; bottom:0; left:0;
+  background:linear-gradient(90deg,
+    rgba(255,255,255,0.98) 0%,
+    rgba(255,255,255,0.90) 22%,
+    rgba(255,255,255,0.70) 38%,
+    rgba(255,255,255,0.35) 52%,
+    rgba(255,255,255,0.08) 66%,
+    rgba(255,255,255,0) 78%
+  );
 }
-.hero-full-content{position:relative; z-index:1; padding:64px 0 56px; color:#fff;}
+.hero-full-content{position:absolute; top:50%; left:0; right:0; transform:translateY(-50%); z-index:1; padding:0; color:var(--navy); max-width:580px;}
 .hero-checklist{
-  display:flex; flex-wrap:wrap; gap:12px 28px; list-style:none; margin:28px 0 0; padding:0;
-  font-size:14px; font-weight:600; color:rgba(255,255,255,0.92);
+  display:flex; flex-direction:column; flex-wrap:wrap; gap:14px; list-style:none; margin:28px 0 0; padding:0;
+  font-size:15px; font-weight:600; color:var(--navy);
 }
-.hero-checklist li{display:flex; align-items:center; gap:8px;}
-.hero-checklist svg{width:17px; height:17px; color:#8FE0C1; flex-shrink:0;}
-.hero-full-content h1{color:#fff; font-size:clamp(36px,6vw,64px); line-height:1.05; margin-top:14px;}
-@media(min-width:760px){.hero-full{min-height:74vh;} .hero-full-content{padding:72px 0 72px;}}
-@media(max-width:640px){.hero-full{min-height:480px;}}
-.hero-full-compact{min-height:560px;}
-@media(min-width:760px){.hero-full-compact{min-height:64vh;} .hero-full-compact .hero-full-content{padding:56px 0 56px;}}
-@media(max-width:640px){.hero-full-compact{min-height:420px;}}
+.hero-checklist li{display:flex; align-items:center; gap:10px;}
+.hero-checklist svg{width:19px; height:19px; color:var(--green); flex-shrink:0;}
+.hero-full-content h1{
+  color:var(--navy); font-family:'League Spartan',sans-serif; font-weight:700;
+  font-size:clamp(3.2rem,5vw,5.8rem); line-height:0.95; letter-spacing:-0.04em; margin-top:14px;
+}
+.hero-full-content h1 span{color:var(--green);}
+.hero-full-content .hero-actions{display:flex; flex-wrap:wrap; gap:16px; margin-top:32px;}
+.hero-full-content .hero-actions .btn{min-height:54px; padding:0 28px;}
+.hero-full-content .btn-primary{background:#007A33; box-shadow:0 14px 28px -12px rgba(0,122,51,0.4);}
+.hero-full-content .btn-primary:hover{background:#00622A;}
+.hero-full-content .btn-outline{background:transparent; color:var(--navy); border:1px solid rgba(0,43,92,0.35);}
+.hero-full-content .btn-outline:hover{border-color:var(--navy); background:rgba(0,43,92,0.04);}
+.hero-full-content p{color:var(--ink-soft); font-size:17px; margin-top:20px; max-width:520px;}
+@media(min-width:760px){.hero-full-content{padding:72px 0;}}
+@media(max-width:640px){.hero-full{min-height:760px;} .hero-full-content{max-width:100%;}}
+.hero-full-compact{min-height:820px;}
+@media(min-width:760px){.hero-full-compact{min-height:820px;}}
+@media(max-width:640px){.hero-full-compact{min-height:760px;}}
 .hero-full-inner{min-height:400px;}
 @media(min-width:760px){.hero-full-inner{min-height:52vh;}}
 .hero-grid{display:grid; grid-template-columns:1fr; gap:44px; align-items:center;}
@@ -291,7 +312,7 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 
 /* ---------- OFFERTE-MODAL ---------- */
 .calc-modal-overlay{
-  position:fixed; inset:0; background:rgba(0,43,92,0.55); backdrop-filter:blur(3px);
+  position:fixed; top:0; right:0; bottom:0; left:0; background:rgba(0,43,92,0.55); backdrop-filter:blur(3px);
   display:flex; align-items:center; justify-content:center; padding:20px; z-index:200;
   opacity:0; pointer-events:none; transition:opacity .25s ease;
 }
@@ -407,11 +428,11 @@ section{padding:96px 0;}
   position:relative; border-radius:var(--radius-lg); overflow:hidden; aspect-ratio:16/10;
   box-shadow:var(--shadow-lg); user-select:none; max-width:900px; margin:0 auto;
 }
-.compare-slider .cs-layer{position:absolute; inset:0; overflow:hidden;}
+.compare-slider .cs-layer{position:absolute; top:0; right:0; bottom:0; left:0; overflow:hidden;}
 .compare-slider .cs-before, .compare-slider .cs-after{
-  position:absolute; inset:0; background-size:cover; background-position:center;
+  position:absolute; top:0; right:0; bottom:0; left:0; background-size:cover; background-position:center;
 }
-.compare-slider .cs-before-clip{position:absolute; inset:0; clip-path:inset(0 50% 0 0);}
+.compare-slider .cs-before-clip{position:absolute; top:0; right:0; bottom:0; left:0; clip-path:inset(0 50% 0 0);}
 .compare-slider .cs-label{
   position:absolute; top:16px; z-index:2; font-size:11.5px; font-weight:700; letter-spacing:0.06em;
   text-transform:uppercase; color:#fff; background:rgba(0,43,92,0.55); padding:6px 12px; border-radius:100px;
@@ -426,7 +447,7 @@ section{padding:96px 0;}
   background-repeat:no-repeat; background-position:center; background-size:22px;
 }
 .compare-slider input[type="range"]{
-  position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:ew-resize; z-index:3;
+  position:absolute; top:0; right:0; bottom:0; left:0; width:100%; height:100%; margin:0; opacity:0; cursor:ew-resize; z-index:3;
 }
 .grid-3{display:grid; grid-template-columns:1fr; gap:22px;}
 @media(min-width:680px){.grid-3{grid-template-columns:repeat(2,1fr);}}
@@ -467,10 +488,12 @@ section{padding:96px 0;}
 
 .service-card{
   display:flex; flex-direction:column; text-decoration:none; color:var(--ink);
-  background:#fff; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
-  box-shadow:var(--shadow-sm); transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  background:#fff; border:1px solid var(--line); border-radius:24px; overflow:hidden;
+  position:relative; transition:transform .2s ease, border-color .2s ease;
 }
-.service-card:hover{transform:translateY(-4px); box-shadow:var(--shadow-md); border-color:var(--link);}
+.service-card::after{content:''; position:absolute; left:0; right:0; bottom:0; height:3px; background:var(--green); transform:scaleX(0); transform-origin:left; transition:transform .2s ease;}
+.service-card:hover{transform:translateY(-4px); border-color:var(--green);}
+.service-card:hover::after{transform:scaleX(1);}
 .service-card .thumb{aspect-ratio:3/1.7; display:flex; align-items:center; justify-content:center; overflow:hidden;}
 .service-card .thumb svg{width:40%; height:40%;}
 .service-card .thumb img{transition:transform .35s ease, filter .35s ease; filter:brightness(1.07);}
@@ -684,7 +707,7 @@ footer.site-footer{background:var(--bg-navy); color:var(--ink-on-navy); padding:
   transition:transform .2s ease, box-shadow .2s ease;
 }
 .whatsapp-float::before{
-  content:''; position:absolute; inset:0; border-radius:50%; background:#25D366;
+  content:''; position:absolute; top:0; right:0; bottom:0; left:0; border-radius:50%; background:#25D366;
   animation:whatsappPulse 2.6s ease-out infinite; z-index:-1;
 }
 @keyframes whatsappPulse{
@@ -746,288 +769,4 @@ footer.site-footer{background:var(--bg-navy); color:var(--ink-on-navy); padding:
   .cookie-banner-inner{flex-direction:column; align-items:stretch;}
   .cookie-banner-actions{width:100%;}
   .cookie-banner-actions .btn{flex:1;}
-}
-
-/* ===== Brabantschoon v2 — homepage header + hero ===== */
-.home-page h1,.home-page h2,.home-page h3{font-family:'League Spartan',sans-serif;}
-.home-page .site-header{background:#fff; border-bottom:1px solid rgba(0,43,92,.08); box-shadow:0 1px 0 rgba(0,43,92,.03);}
-.home-page .nav{min-height:86px; padding:12px 0;}
-.home-page .logo img{height:37px; width:auto;}
-.home-page nav.links{gap:34px; font-family:'League Spartan',sans-serif; font-size:15px; font-weight:600;}
-.home-page nav.links>a{position:relative; color:#26364b;}
-.home-page nav.links>a::after{content:""; position:absolute; left:0; right:0; bottom:1px; height:2px; background:var(--green); transform:scaleX(0); transform-origin:center; transition:transform .2s ease;}
-.home-page nav.links>a:hover::after,.home-page nav.links>a.active::after{transform:scaleX(1);}
-.home-page .phone-link{font-family:'League Spartan',sans-serif; font-size:16px;}
-.home-page .nav-actions{gap:16px;}
-.home-page .btn-primary{background:var(--green); box-shadow:0 12px 24px -12px rgba(0,122,51,.65);}
-.home-page .btn-primary:hover{background:#00672b; box-shadow:0 16px 30px -14px rgba(0,122,51,.72);}
-
-.home-hero{position:relative; isolation:isolate; min-height:clamp(690px,calc(100vh - 86px),900px); overflow:hidden; display:flex; align-items:center; background:#f8faf9;}
-.home-hero-media{position:absolute; inset:0; z-index:-3;}
-.home-hero-media img{width:100%; height:100%; object-fit:cover; object-position:62% center;}
-.home-hero-shade{position:absolute; inset:0; z-index:-2; background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.98) 27%,rgba(255,255,255,.88) 39%,rgba(255,255,255,.58) 51%,rgba(255,255,255,.18) 64%,rgba(255,255,255,0) 77%); pointer-events:none;}
-.home-hero-inner{width:100%; padding-top:74px; padding-bottom:78px;}
-.home-hero-copy{max-width:620px;}
-.home-hero-kicker{display:inline-flex; align-items:center; gap:10px; color:var(--green); font-family:'League Spartan',sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:.12em; font-size:13px;}
-.home-hero-kicker::before{content:""; width:32px; height:2px; background:var(--green);}
-.home-hero h1{font-size:clamp(54px,5.25vw,82px); line-height:.92; letter-spacing:-.045em; color:var(--navy); margin:20px 0 24px; font-weight:800;}
-.home-hero h1 span{color:var(--green);}
-.home-hero-copy>p{max-width:550px; margin:0; color:#39475b; font-size:18px; line-height:1.65;}
-.home-hero-services{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px 22px; list-style:none; margin:28px 0 0; max-width:540px;}
-.home-hero-services li{position:relative; padding-left:28px; font-weight:650; color:var(--navy); font-size:15px;}
-.home-hero-services li::before{content:"✓"; position:absolute; left:0; top:1px; display:grid; place-items:center; width:19px; height:19px; border-radius:50%; background:var(--green); color:#fff; font-size:12px; font-weight:800;}
-.home-hero-actions{display:flex; flex-wrap:wrap; gap:14px; margin-top:34px;}
-.home-hero-actions .btn{min-height:56px; padding-inline:27px; font-size:15px;}
-.btn-hero-secondary{background:rgba(255,255,255,.72); color:var(--navy); border-color:rgba(0,43,92,.23); backdrop-filter:blur(8px);}
-.btn-hero-secondary:hover{background:#fff; border-color:var(--navy); transform:translateY(-1px);}
-
-@media(max-width:1100px){
-  .home-page nav.links{gap:20px;}
-  .home-page .phone-link{display:none;}
-  .home-hero-media img{object-position:66% center;}
-  .home-hero-shade{background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.98) 34%,rgba(255,255,255,.78) 50%,rgba(255,255,255,.28) 68%,transparent 82%);}
-}
-@media(max-width:899px){
-  .home-page .nav{min-height:72px;}
-  .home-page .logo img{height:31px;}
-  .home-page .nav-actions>.btn{display:none;}
-  .home-hero{min-height:760px; align-items:flex-start;}
-  .home-hero-media img{object-position:67% center;}
-  .home-hero-shade{background:linear-gradient(180deg,rgba(255,255,255,.99) 0%,rgba(255,255,255,.96) 42%,rgba(255,255,255,.55) 65%,rgba(255,255,255,.08) 86%);}
-  .home-hero-inner{padding-top:58px; padding-bottom:220px;}
-  .home-hero-copy{max-width:600px;}
-  .home-hero h1{font-size:clamp(46px,10vw,68px);}
-}
-@media(max-width:600px){
-  .home-hero{min-height:780px;}
-  .home-hero-media img{object-position:68% center;}
-  .home-hero-inner{padding-top:42px; padding-bottom:255px;}
-  .home-hero-kicker{font-size:11px; letter-spacing:.09em;}
-  .home-hero-kicker::before{width:22px;}
-  .home-hero h1{font-size:46px; margin-top:16px; margin-bottom:18px;}
-  .home-hero-copy>p{font-size:16px; line-height:1.55;}
-  .home-hero-services{grid-template-columns:1fr; gap:9px; margin-top:22px;}
-  .home-hero-actions{flex-direction:column; align-items:stretch; margin-top:27px;}
-  .home-hero-actions .btn{width:100%;}
-}
-
-/* ===== Homepage hero — exact reference composition ===== */
-.home-page{padding-bottom:0;}
-.home-page .site-header{
-  position:absolute;
-  inset:0 0 auto 0;
-  z-index:120;
-  background:transparent;
-  border:0;
-  box-shadow:none;
-  backdrop-filter:none;
-}
-.home-page .nav{
-  min-height:100px;
-  max-width:1580px;
-  padding:18px 34px;
-}
-.home-page .logo img{height:42px;width:auto;}
-.home-page nav.links{gap:42px;font-size:16px;font-family:'League Spartan',sans-serif;font-weight:500;}
-.home-page nav.links>a{color:#10264a;text-shadow:0 1px 12px rgba(255,255,255,.25);}
-.home-page nav.links>a.active::after{transform:scaleX(0);}
-.home-page .phone-link{display:none;}
-.home-page .nav-actions>.btn{min-height:54px;padding:0 25px;border-radius:7px;font-size:16px;font-family:'League Spartan',sans-serif;background:#007A33;box-shadow:0 12px 28px -14px rgba(0,122,51,.7);}
-
-.home-hero{
-  position:relative;
-  isolation:isolate;
-  min-height:clamp(800px,100vh,940px);
-  overflow:hidden;
-  display:flex;
-  align-items:center;
-  background:#fff;
-}
-.home-hero-media{position:absolute;inset:0;z-index:-3;display:block;}
-.home-hero-media img{width:100%;height:100%;object-fit:cover;object-position:center center;}
-.home-hero-shade{
-  position:absolute;inset:0;z-index:-2;pointer-events:none;
-  background:linear-gradient(90deg,
-    rgba(255,255,255,1) 0%,
-    rgba(255,255,255,.99) 17%,
-    rgba(255,255,255,.96) 27%,
-    rgba(255,255,255,.82) 36%,
-    rgba(255,255,255,.48) 45%,
-    rgba(255,255,255,.14) 55%,
-    rgba(255,255,255,0) 65%);
-}
-.home-hero-inner{width:100%;max-width:1580px;padding:140px 34px 70px;}
-.home-hero-copy{width:min(510px,42vw);max-width:none;}
-.home-hero h1{
-  margin:0;
-  font-family:'League Spartan',sans-serif;
-  font-size:clamp(62px,5vw,86px);
-  line-height:.89;
-  letter-spacing:-.048em;
-  font-weight:700;
-  color:#002B5C;
-}
-.home-hero h1 span{color:#007A33;}
-.home-hero-copy>p{margin:26px 0 0;color:#18375e;font-size:22px;line-height:1.48;font-weight:400;max-width:430px;}
-.home-hero-rule{width:48px;height:3px;background:#007A33;margin:26px 0 27px;border-radius:3px;}
-.home-hero-services{display:flex;flex-direction:column;gap:12px;list-style:none;margin:0;max-width:420px;}
-.home-hero-services li{position:relative;padding-left:33px;color:#17345a;font-size:18px;line-height:1.4;font-weight:500;}
-.home-hero-services li::before{content:"✓";position:absolute;left:0;top:1px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:#007A33;color:#fff;font-size:12px;font-weight:800;}
-.home-hero-actions{margin-top:32px;}
-.home-hero-actions .btn{min-height:54px;padding:0 24px;border-radius:7px;font-family:'League Spartan',sans-serif;font-size:16px;font-weight:600;background:#007A33;box-shadow:none;}
-.home-hero-actions .btn:hover{background:#00672b;transform:translateY(-1px);}
-.home-hero-actions .btn span{font-size:24px;font-weight:400;margin-left:8px;line-height:1;}
-
-@media (max-width:1200px){
-  .home-page .nav{padding-inline:24px;}
-  .home-page nav.links{gap:22px;font-size:14px;}
-  .home-hero-inner{padding-inline:24px;}
-  .home-hero-copy{width:min(500px,48vw);}
-  .home-hero-media img{object-position:57% center;}
-}
-@media (max-width:899px){
-  .home-page .site-header{position:absolute;}
-  .home-page .nav{min-height:76px;padding:12px 20px;}
-  .home-page .logo img{height:32px;}
-  .home-page .nav-actions>.btn{display:none;}
-  .home-hero{min-height:820px;align-items:flex-start;}
-  .home-hero-inner{padding:116px 20px 300px;}
-  .home-hero-copy{width:min(560px,92vw);}
-  .home-hero h1{font-size:clamp(52px,11vw,72px);}
-  .home-hero-copy>p{font-size:19px;}
-  .home-hero-media img{object-position:64% center;}
-  .home-hero-shade{background:linear-gradient(180deg,rgba(255,255,255,.99) 0%,rgba(255,255,255,.96) 40%,rgba(255,255,255,.66) 59%,rgba(255,255,255,.10) 78%,transparent 92%);}
-}
-@media (max-width:600px){
-  .home-hero{min-height:790px;}
-  .home-hero-inner{padding:104px 18px 270px;}
-  .home-hero h1{font-size:52px;}
-  .home-hero-copy>p{font-size:17px;margin-top:20px;}
-  .home-hero-rule{margin:20px 0 21px;}
-  .home-hero-services{gap:9px;}
-  .home-hero-services li{font-size:15px;padding-left:28px;}
-  .home-hero-services li::before{width:18px;height:18px;font-size:11px;}
-  .home-hero-actions{margin-top:25px;}
-  .home-hero-actions .btn{width:auto;min-height:50px;font-size:15px;}
-  .desktop-only{display:none;}
-  .home-hero-media img{object-position:67% center;}
-}
-
-/* =========================================================
-   BRABANTSCHOON V4 — PREMIUM EDITORIAL DESIGN SYSTEM
-   Rust, typografische hiërarchie, subtiele lijnen, geen drukke effecten.
-   ========================================================= */
-:root{
-  --bg-soft:#F4F7F5;
-  --line:#DDE4E1;
-  --ink:#112238;
-  --ink-soft:#5B6674;
-  --shadow-sm:none;
-  --shadow-md:none;
-  --shadow-lg:none;
-}
-body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--ink);}
-h1,h2,h3{font-family:'League Spartan',system-ui,sans-serif;letter-spacing:-.025em;}
-.wrap{max-width:1280px;padding-left:32px;padding-right:32px;}
-section{padding-top:104px;padding-bottom:104px;}
-.section-tight{padding-top:76px;padding-bottom:76px;}
-.sec-head{max-width:820px;margin-bottom:46px;}
-.sec-head h2{font-size:clamp(38px,5vw,64px);line-height:.98;color:var(--navy);}
-.eyebrow{color:var(--green);font-family:'League Spartan',sans-serif;font-size:13px;letter-spacing:.14em;}
-
-.btn{border-radius:12px;padding:14px 24px;font-family:'League Spartan',sans-serif;font-size:15px;font-weight:700;box-shadow:none;}
-.btn-primary{background:var(--green);box-shadow:none;}
-.btn-primary:hover{background:#00652b;box-shadow:none;}
-.btn-outline{background:rgba(255,255,255,.78);border-color:rgba(0,43,92,.24);backdrop-filter:blur(4px);}
-.btn-outline:hover{background:#fff;border-color:var(--navy);}
-
-header.site-header{position:absolute;left:0;right:0;top:0;background:transparent;border:0;backdrop-filter:none;color:var(--navy);}
-header.site-header .nav{min-height:92px;padding-top:18px;padding-bottom:18px;}
-.logo img{height:38px;}
-nav.links{gap:34px;font-family:'League Spartan',sans-serif;font-size:15px;font-weight:600;}
-nav.links>a{color:rgba(0,43,92,.76);position:relative;}
-nav.links>a::after{content:"";position:absolute;left:0;right:100%;bottom:2px;height:2px;background:var(--green);transition:right .2s ease;}
-nav.links>a:hover::after,nav.links>a.active::after{right:0;}
-.phone-link{font-family:'League Spartan',sans-serif;font-weight:700;}
-
-.home-hero{position:relative;min-height:860px;height:100vh;max-height:980px;display:flex;align-items:center;overflow:hidden;padding:0;}
-.home-hero-media{position:absolute;inset:0;}
-.home-hero-media img{width:100%;height:100%;object-fit:cover;object-position:61% center;}
-.home-hero-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.99) 0%,rgba(255,255,255,.93) 23%,rgba(255,255,255,.72) 39%,rgba(255,255,255,.34) 55%,rgba(255,255,255,.06) 70%,rgba(255,255,255,0) 82%);}
-.home-hero-inner{position:relative;z-index:2;width:100%;padding-top:112px;}
-.home-hero-copy{max-width:610px;}
-.home-hero-eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:22px;color:var(--green);font-family:'League Spartan',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;}
-.home-hero-eyebrow::before{content:"";width:32px;height:2px;background:var(--green);}
-.home-hero-copy h1{font-size:clamp(64px,7.2vw,108px);line-height:.84;color:var(--navy);letter-spacing:-.055em;}
-.home-hero-copy h1 span{color:var(--green);}
-.home-hero-copy>p{font-size:clamp(20px,1.8vw,26px);line-height:1.35;color:#445363;margin:30px 0 0;max-width:520px;}
-.home-hero-rule{width:72px;height:1px;background:rgba(0,43,92,.25);margin:28px 0 24px;}
-.home-hero-services{display:grid;gap:10px;list-style:none;}
-.home-hero-services li{display:flex;align-items:center;gap:12px;font-size:16px;font-weight:600;color:var(--navy);}
-.home-hero-services li::before{content:"✓";display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;font-size:13px;}
-.home-hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px;}
-.home-hero-actions .btn{min-height:54px;}
-
-.reviews-strip{padding:0;border-bottom:1px solid var(--line);background:#fff;}
-.reviews-compact{min-height:96px;flex-direction:row;justify-content:space-between;text-align:left;}
-.reviews-compact-label{font-family:'League Spartan',sans-serif;font-size:18px;color:var(--navy);}
-
-.grid-3{gap:24px;}
-.service-card{border:1px solid var(--line);border-radius:24px;overflow:hidden;background:#fff;box-shadow:none;transition:transform .2s ease,border-color .2s ease;}
-.service-card:hover{transform:translateY(-5px);border-color:rgba(0,122,51,.45);box-shadow:none;}
-.service-card .thumb{aspect-ratio:4/3;overflow:hidden;}
-.service-card .thumb img{transition:transform .45s ease;}
-.service-card:hover .thumb img{transform:scale(1.035);}
-.service-card .body{padding:28px 28px 30px;}
-.service-card h3{font-size:28px;color:var(--navy);}
-.service-card p{margin-top:8px;color:var(--ink-soft);line-height:1.55;}
-.sec-foot{margin-top:34px;}
-
-.usp-grid{gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
-.usp{padding:36px 30px;border-right:1px solid var(--line);background:transparent;border-radius:0;box-shadow:none;}
-.usp:last-child{border-right:0;}
-.usp .icon-circle{background:transparent;border:1px solid var(--line);border-radius:14px;}
-.usp h3{font-size:24px;color:var(--navy);margin-top:22px;}
-.usp p{color:var(--ink-soft);}
-.steps{gap:0!important;}
-.step{padding:30px;border-right:1px solid var(--line);}
-.step:last-child{border-right:0;}
-.stepnum{color:var(--green);font-family:'League Spartan',sans-serif;font-weight:700;}
-
-.area-tag{border-radius:10px;background:#fff;border:1px solid var(--line);box-shadow:none;}
-.area-tag.primary{background:var(--navy);color:#fff;border-color:var(--navy);}
-.benefits-strip{border:1px solid var(--line);border-radius:20px;box-shadow:none;background:#fff;}
-.contact-grid,.wizard-form,.faq details,.calc-form,.calc-price-card{box-shadow:none!important;border-color:var(--line)!important;}
-.faq details{border-radius:16px;}
-.site-footer{background:#071D36;}
-.footer-top{padding-top:76px;padding-bottom:66px;}
-
-@media(max-width:1050px){
-  .home-hero{min-height:800px;max-height:none;}
-  .home-hero-media img{object-position:67% center;}
-  .home-hero-copy{max-width:540px;}
-  .home-hero-copy h1{font-size:72px;}
-  .usp{border-right:0;border-bottom:1px solid var(--line);}
-}
-@media(max-width:899px){
-  header.site-header{position:absolute;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);}
-  .wrap{padding-left:20px;padding-right:20px;}
-  section{padding-top:76px;padding-bottom:76px;}
-  .home-hero{height:auto;min-height:820px;align-items:flex-end;}
-  .home-hero-media img{object-position:64% center;}
-  .home-hero-shade{background:linear-gradient(0deg,rgba(255,255,255,.99) 0%,rgba(255,255,255,.97) 35%,rgba(255,255,255,.68) 56%,rgba(255,255,255,.04) 79%);}
-  .home-hero-inner{padding-top:430px;padding-bottom:70px;}
-  .home-hero-copy{max-width:680px;}
-  .home-hero-copy h1{font-size:clamp(54px,12vw,78px);}
-  .reviews-compact{flex-direction:column;text-align:center;justify-content:center;padding:24px 0;}
-}
-@media(max-width:560px){
-  .home-hero{min-height:860px;}
-  .home-hero-inner{padding-top:390px;padding-bottom:58px;}
-  .home-hero-copy h1{font-size:54px;}
-  .home-hero-copy>p{font-size:19px;}
-  .home-hero-services li{font-size:15px;}
-  .home-hero-actions{display:grid;grid-template-columns:1fr;}
-  .home-hero-actions .btn{width:100%;}
-  .sec-head h2{font-size:43px;}
 }

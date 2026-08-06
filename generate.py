@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "120"
+ASSET_VERSION = "127"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -273,7 +273,9 @@ NAV_LINKS = [
     ("Home", "/"),
     ("Diensten", "diensten.html"),
     ("Over ons", "over-ons.html"),
+    ("Waarom BrabantSchoon", "/#waarom"),
     ("Werkgebied", "werkgebied.html"),
+    ("Recensies", "/#recensies"),
     ("Contact", "contact.html"),
 ]
 
@@ -305,7 +307,7 @@ def render_head(title, description, path, base, schema_extra="", preload_image=N
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 {preload_tag}
 <link rel="stylesheet" href="{base}css/styles.css?v={ASSET_VERSION}">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 {ORG_SCHEMA}
 {schema_extra}"""
 
@@ -1089,26 +1091,27 @@ def build_home():
 
     body = f"""
   <section class="hero-full hero-full-compact">
-    <img src="images/hero.jpg" alt="Bedrijfswagens en medewerker van BrabantSchoon bij een klant in Zuidoost-Brabant" class="hero-full-img" width="1600" height="1067" fetchpriority="high" decoding="async">
+    <img src="images/hero.jpg" alt="Vier medewerkers van BrabantSchoon in gesprek bij een modern kantoorpand, met de bedrijfsbus op de achtergrond" class="hero-full-img" width="1717" height="916" fetchpriority="high" decoding="async">
     <div class="hero-full-overlay"></div>
     <div class="wrap hero-full-content">
-      <span class="eyebrow" style="color:#BFE0FF;">Professionele schoonmaak voor bedrijven</span>
-      <h1>Schoonmaakbedrijf Helmond voor bedrijven, VvE's en organisaties</h1>
-      <p class="lead" style="color:rgba(255,255,255,0.9);">BrabantSchoon is uw schoonmaakbedrijf in Helmond en de Peelgemeenten: periodieke, eenmalige en specialistische schoonmaak voor kantoren, VvE's, scholen en organisaties in heel Noord-Brabant.</p>
+      <span class="eyebrow">Professionele schoonmaak voor bedrijven</span>
+      <h1>Schoonmaakbedrijf Helmond voor <span>bedrijven, VvE's en organisaties</span></h1>
+      <p>BrabantSchoon zorgt voor een schone, frisse en representatieve omgeving in Helmond en de Peelgemeenten. Met vaste afspraken, professionele medewerkers en korte lijnen.</p>
       <div class="hero-actions">
         <a href="contact.html#offerteWizard" class="btn btn-primary">Gratis offerte aanvragen</a>
-        <a href="#diensten" class="btn btn-ghost-light">Bekijk onze diensten</a>
+        <a href="#diensten" class="btn btn-outline">Bekijk onze diensten</a>
       </div>
       <ul class="hero-checklist">
-        <li>{icon('check')}Vast aanspreekpunt</li>
-        <li>{icon('check')}Flexibele planning</li>
-        <li>{icon('check')}Professionele medewerkers</li>
-        <li>{icon('check')}Actief in heel Noord-Brabant</li>
+        <li>{icon('check')}Kantoorschoonmaak</li>
+        <li>{icon('check')}Glasbewassing</li>
+        <li>{icon('check')}VvE &amp; trappenhuizen</li>
+        <li>{icon('check')}Gevelreiniging</li>
+        <li>{icon('check')}Bouw- &amp; opleveringsschoonmaak</li>
       </ul>
     </div>
   </section>
 
-  <section class="reviews-strip">
+  <section class="reviews-strip" id="recensies">
     <div class="wrap">
       {reviews_widget_block()}
     </div>
@@ -1127,7 +1130,7 @@ def build_home():
     </div>
   </section>
 
-  <section>
+  <section id="waarom">
     <div class="wrap">
       <div class="sec-head reveal">
         <span class="eyebrow">Waarom BrabantSchoon</span>
