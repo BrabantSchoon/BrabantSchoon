@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "116"
+ASSET_VERSION = "117"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -151,45 +151,45 @@ def service_visual(svc, css_class=""):
     """Geeft een <img> terug als er een foto is, anders de illustratie-SVG."""
     photo = SERVICE_PHOTOS.get(svc["slug"])
     if photo:
-        return f'<img src="../images/{photo}" alt="{svc["name"]} door BrabantSchoon in Zuidoost-Brabant" class="{css_class}" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;">'
+        return f'<img src="../images/{photo}" alt="{svc["name"]} door BrabantSchoon in Brabant" class="{css_class}" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;">'
     return service_illustration(svc["icon"])
 
 def service_visual_from_root(svc, css_class=""):
     """Zelfde als service_visual, maar met pad relatief vanaf de hoofdmap (voor home/diensten.html)."""
     photo = SERVICE_PHOTOS.get(svc["slug"])
     if photo:
-        return f'<img src="images/{photo}" alt="{svc["name"]} door BrabantSchoon in Zuidoost-Brabant" class="{css_class}" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;">'
+        return f'<img src="images/{photo}" alt="{svc["name"]} door BrabantSchoon in Brabant" class="{css_class}" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;">'
     return service_illustration(svc["icon"])
 
 def hero_illustration():
     return f"""<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="320" cy="90" r="70" fill="#0082E6" opacity="0.08"/>
-  <circle cx="70" cy="330" r="50" fill="#2FA84A" opacity="0.08"/>
-  <rect x="70" y="80" width="220" height="220" rx="18" fill="#FFFFFF" stroke="#10205C" stroke-width="3"/>
-  <line x1="180" y1="80" x2="180" y2="300" stroke="#10205C" stroke-width="3"/>
-  <line x1="70" y1="190" x2="290" y2="190" stroke="#10205C" stroke-width="3"/>
+  <circle cx="320" cy="90" r="70" fill="#0B3D73" opacity="0.08"/>
+  <circle cx="70" cy="330" r="50" fill="#007A33" opacity="0.08"/>
+  <rect x="70" y="80" width="220" height="220" rx="18" fill="#FFFFFF" stroke="#002B5C" stroke-width="3"/>
+  <line x1="180" y1="80" x2="180" y2="300" stroke="#002B5C" stroke-width="3"/>
+  <line x1="70" y1="190" x2="290" y2="190" stroke="#002B5C" stroke-width="3"/>
   <g transform="rotate(-32 200 190)">
-    <rect x="150" y="176" width="120" height="28" rx="14" fill="#2FA84A"/>
-    <rect x="255" y="184" width="70" height="12" rx="6" fill="#0082E6"/>
+    <rect x="150" y="176" width="120" height="28" rx="14" fill="#007A33"/>
+    <rect x="255" y="184" width="70" height="12" rx="6" fill="#0B3D73"/>
   </g>
-  {sparkle(320, 250, 14, '#0082E6')}
-  {sparkle(60, 100, 10, '#2FA84A')}
+  {sparkle(320, 250, 14, '#0B3D73')}
+  {sparkle(60, 100, 10, '#007A33')}
   {sparkle(300, 60, 8, '#F0A93B')}
   <g transform="translate(300,230)">
-    <rect x="0" y="26" width="46" height="80" rx="8" fill="#10205C"/>
-    <rect x="10" y="4" width="26" height="24" rx="5" fill="#0082E6"/>
+    <rect x="0" y="26" width="46" height="80" rx="8" fill="#002B5C"/>
+    <rect x="10" y="4" width="26" height="24" rx="5" fill="#0B3D73"/>
     <rect x="30" y="0" width="22" height="9" rx="4" fill="#565E72"/>
   </g>
 </svg>"""
 
-def service_illustration(icon_name, tint_stroke="#10205C"):
+def service_illustration(icon_name, tint_stroke="#002B5C"):
     body = ICONS[icon_name]
     return f"""<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="164" cy="40" r="20" fill="#0082E6" opacity="0.10"/>
-  <circle cx="30" cy="164" r="16" fill="#2FA84A" opacity="0.10"/>
+  <circle cx="164" cy="40" r="20" fill="#0B3D73" opacity="0.10"/>
+  <circle cx="30" cy="164" r="16" fill="#007A33" opacity="0.10"/>
   <g transform="translate(40,40) scale(5)" fill="none" stroke="{tint_stroke}" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">{body}</g>
   {sparkle(168, 156, 9, '#F0A93B')}
-  {sparkle(28, 32, 7, '#0082E6')}
+  {sparkle(28, 32, 7, '#0B3D73')}
 </svg>"""
 
 # ---------------------------------------------------------------
@@ -201,7 +201,7 @@ SERVICES = [
      "short": "Vaste of periodieke reiniging van uw kantoorpand, buiten werktijd.",
      "intro": "Een schone werkomgeving draagt bij aan hoe medewerkers en bezoekers uw bedrijf ervaren. We verzorgen de reiniging van uw kantoor op een vast, betrouwbaar ritme.",
      "bullets": ["Bureaus, vloeren en sanitair", "Pantry's en vergaderruimtes", "Afvalverwerking", "Frequentie in overleg"],
-     "for": "Kantoren en praktijken in Zuidoost-Brabant.", "faqs": [("Hoe vaak kan kantoorreiniging plaatsvinden?", "Dat bepaalt u zelf: van dagelijks tot wekelijks, afhankelijk van de grootte en het gebruik van uw kantoor."), ("Werken jullie buiten kantoortijden?", "Ja, we plannen de reiniging doorgaans buiten werktijd, zodat uw bedrijfsvoering geen hinder ondervindt.")]},
+     "for": "Kantoren en praktijken in heel Brabant.", "faqs": [("Hoe vaak kan kantoorreiniging plaatsvinden?", "Dat bepaalt u zelf: van dagelijks tot wekelijks, afhankelijk van de grootte en het gebruik van uw kantoor."), ("Werken jullie buiten kantoortijden?", "Ja, we plannen de reiniging doorgaans buiten werktijd, zodat uw bedrijfsvoering geen hinder ondervindt.")]},
     {"slug": "glasbewassing", "icon": "window", "tint": "tint-2",
      "name": "Glasbewassing",
      "short": "Ramen en kozijnen streeploos schoon, binnen en buiten.",
@@ -259,7 +259,7 @@ CALCULATOR_CITIES = [
     "Geldrop", "Mierlo", "Nuenen", "Deurne", "Gemert", "Bakel", "Milheeze", "Handel",
     "Someren", "Asten", "Laarbeek", "Beek en Donk", "Lieshout", "Erp", "Veghel",
     "Uden", "Boekel",
-    "Overige plaats in Noord-Brabant",
+    "Overige plaats in Brabant",
 ]
 
 FORM_SERVICE_OPTIONS = [
@@ -300,7 +300,7 @@ def render_head(title, description, path, base, schema_extra="", preload_image=N
 <meta name="twitter:description" content="{description}">
 <meta name="twitter:image" content="{og_image}">
 <link rel="icon" type="image/png" href="{base}images/favicon.png">
-<meta name="theme-color" content="#10205C">
+<meta name="theme-color" content="#002B5C">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 {preload_tag}
@@ -405,7 +405,7 @@ def render_header(base, active):
 <input type="checkbox" id="menuCheckbox" class="menu-checkbox">
 <header class="site-header">
   <div class="wrap nav">
-    <a href="/" class="logo"><img src="{base}images/logo.png" alt="BrabantSchoon" width="130" height="32"></a>
+    <a href="/" class="logo"><img src="{base}images/logo.png" alt="BrabantSchoon" width="242" height="28"></a>
     <nav class="links">
       {links_html}
     </nav>
@@ -419,7 +419,7 @@ def render_header(base, active):
 <label for="menuCheckbox" class="menu-overlay"></label>
 <aside class="mobile-sidebar">
   <div class="mobile-menu-top">
-    <img src="{base}images/logo.png" alt="BrabantSchoon" width="120" height="30">
+    <img src="{base}images/logo.png" alt="BrabantSchoon" width="225" height="26">
     <label for="menuCheckbox" class="mobile-menu-close" aria-label="Menu sluiten">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </label>
@@ -438,8 +438,8 @@ def render_footer(base):
   <div class="wrap">
     <div class="footer-top footer-top-3col">
       <div class="footer-col footer-brand-col">
-        <img src="{base}images/logo.png" alt="BrabantSchoon" width="130" height="32">
-        <p class="footer-tagline">Professionele schoonmaakpartner voor kantoren, VvE's en organisaties in heel Noord-Brabant.</p>
+        <img src="{base}images/logo.png" alt="BrabantSchoon" width="260" height="30">
+        <p class="footer-tagline">Professionele schoonmaakpartner voor bedrijven, VvE's en organisaties in heel Brabant.</p>
         <div class="footer-meta">KvK {KVK} &bull; BTW NL005380198B12</div>
       </div>
 
@@ -497,7 +497,7 @@ def render_footer(base):
 # SHARED BLOCKS
 # ---------------------------------------------------------------
 def trust_strip():
-    items = [("doc", f"KvK {KVK}"), ("pin", "Actief in heel Noord-Brabant"), ("chat", "Persoonlijk contact, geen callcenter"), ("clock", "Ook buiten kantooruren bereikbaar")]
+    items = [("doc", f"KvK {KVK}"), ("pin", "Actief in heel Brabant"), ("chat", "Persoonlijk contact, geen callcenter"), ("clock", "Ook buiten kantooruren bereikbaar")]
     spans = "\n      ".join(f'<span>{icon(n)}{t}</span>' for n, t in items)
     return f'<div class="trust"><div class="wrap trust-inner">{spans}</div></div>'
 
@@ -579,7 +579,7 @@ def faq_block(items):
 
 FAQ_ITEMS = [
     ("Wat kost een schoonmaakdienst van BrabantSchoon?", "Dat hangt af van de ruimte, frequentie en het type dienst. Na een kort, vrijblijvend gesprek ontvangt u een offerte op maat \u2014 zonder verplichtingen."),
-    ("In welke regio\u2019s is BrabantSchoon actief?", f"We zijn voornamelijk actief in {CITY} en de Peelgemeenten: Deurne, Asten, Someren, Gemert-Bakel en Laarbeek, en verder in Eindhoven, Geldrop-Mierlo, Nuenen en Mierlo. Voor grotere opdrachten rijden we graag verder, in heel Noord-Brabant."),
+    ("In welke regio\u2019s is BrabantSchoon actief?", f"BrabantSchoon is actief in heel Brabant, vanuit onze thuisbasis in {CITY}. Rond {CITY} en de Peelgemeenten \u2014 Deurne, Asten, Someren, Gemert-Bakel en Laarbeek \u2014 zijn we het snelst ter plaatse; voor opdrachten elders in de provincie rijden we graag mee."),
     ("Werk ik steeds met dezelfde persoon of hetzelfde team?", "Ja, u krijgt een vast aanspreekpunt en een vast team dat uw locatie kent \u2014 zodat u niet steeds opnieuw hoeft uit te leggen hoe u het wilt."),
     ("Kan ik ook een eenmalige schoonmaakbeurt aanvragen?", "Ja, naast vaste afspraken verzorgen we ook maatwerk voor eenmalige beurten, bijvoorbeeld bij een oplevering of verhuizing."),
     ("Hoe snel kunnen jullie starten?", "Dat verschilt per situatie, maar we plannen doorgaans snel een kennismaking in. Bij spoed zijn we ook buiten kantooruren bereikbaar via telefoon of WhatsApp."),
@@ -730,7 +730,7 @@ def contact_info_block(base="", show_heading=True):
     {heading}
     <div class="contact-line">{icon('phone')}<a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a></div>
     <div class="contact-line">{icon('mail')}<a href="mailto:{EMAIL}">{EMAIL}</a></div>
-    <div class="contact-line">{icon('pin')}<span style="font-weight:600; font-size:15.5px;">Actief vanuit {CITY}, heel Noord-Brabant</span></div>
+    <div class="contact-line">{icon('pin')}<span style="font-weight:600; font-size:15.5px;">Actief in heel Brabant \u2014 vanuit {CITY}</span></div>
     <div class="contact-actions">
       <a href="{WA_LINK}" class="btn btn-outline" target="_blank" rel="noopener">WhatsApp</a>
       <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
@@ -911,7 +911,7 @@ def calculator_block():
               <input type="text" id="calcPlaats" placeholder="Typ een plaatsnaam..." autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="calcPlaatsListbox" value="Helmond">
               <ul class="calc-autocomplete-list" id="calcPlaatsListbox" role="listbox" hidden></ul>
             </div>
-            <p class="calc-note" id="calcPlaatsNote">{icon('check')}<span>Wij zijn actief in heel Noord-Brabant.</span></p>
+            <p class="calc-note" id="calcPlaatsNote">{icon('check')}<span>Wij zijn actief in heel Brabant.</span></p>
           </div>
 
         </div>
@@ -1013,7 +1013,7 @@ def calculator_block():
 def build_calculator_page():
     base = ""
     body = f"""
-  {page_hero("Prijscalculator", "Bereken uw schoonmaakkosten.", "Ontvang binnen 30 seconden een vrijblijvende prijsindicatie voor professionele schoonmaak in Noord-Brabant. Geen verplichtingen.", base, "Prijscalculator")}
+  {page_hero("Prijscalculator", "Bereken uw schoonmaakkosten.", "Ontvang binnen 30 seconden een vrijblijvende prijsindicatie voor professionele schoonmaak in Brabant. Geen verplichtingen.", base, "Prijscalculator")}
   {calculator_block()}
   <section class="section-tight">
     <div class="wrap">
@@ -1025,7 +1025,7 @@ def build_calculator_page():
         ("Hoe wordt de prijs berekend?", "We rekenen met de oppervlakte, het pandtype en de gekozen frequentie om de benodigde schoonmaaktijd te schatten. Daarop baseren we een prijsindicatie, inclusief materiaal- en reiskosten."),
         ("Waarom is dit een indicatie en geen vaste prijs?", "Elk pand is anders: indeling, vloersoort en specifieke wensen be\u00efnvloeden de uiteindelijke prijs. Daarom bepalen we het definitieve bedrag pas na een korte kennismaking."),
         ("Hoe snel ontvang ik een offerte?", "Na het invullen van het formulier nemen we binnen \u00e9\u00e9n werkdag contact met u op voor een definitieve offerte."),
-        ("Werken jullie in heel Noord-Brabant?", "Ons kerngebied is Helmond en de Peelgemeenten. Voor grotere of terugkerende opdrachten zijn we ook actief in de rest van Noord-Brabant."),
+        ("Werken jullie in heel Brabant?", "Ja, BrabantSchoon is actief in heel Brabant. Ons kerngebied ligt rond Helmond en de Peelgemeenten; voor opdrachten verder weg in de provincie rijden we graag mee."),
         ("Zijn er verborgen kosten?", "Nee. De prijsindicatie is exclusief btw, verder rekenen we geen extra kosten die niet in de berekening zijn meegenomen. Eventuele extra diensten kiest u zelf, vooraf zichtbaar in de calculator."),
         ("Kan ik eerst kennismaken voordat ik een contract afsluit?", "Ja, een vrijblijvend kennismakingsgesprek gaat altijd vooraf aan een definitieve offerte of contract."),
       ])}</div>
@@ -1046,7 +1046,7 @@ def build_calculator_page():
         <div class="wg-card" style="cursor:default;">
           <div class="wg-icon">{icon('pin')}</div>
           <h3>Waarom verschilt de prijs per locatie?</h3>
-          <p>Reistijd en -kosten spelen mee in de prijsopbouw. Panden dichter bij ons kerngebied in de Peel zijn doorgaans iets voordeliger dan locaties verder weg in Noord-Brabant.</p>
+          <p>Reistijd en -kosten spelen mee in de prijsopbouw. Panden dichter bij ons kerngebied in de Peel zijn doorgaans iets voordeliger dan locaties verder weg in Brabant.</p>
         </div>
         <div class="wg-card" style="cursor:default;">
           <div class="wg-icon">{icon('check')}</div>
@@ -1088,23 +1088,26 @@ def build_home():
     kern_tags = "\n      ".join(f'<span class="area-tag">{c}</span>' for c in WERKGEBIED_KERN + WERKGEBIED_OVERIG)
 
     body = f"""
-  <section class="hero-full hero-full-compact">
-    <img src="images/hero.jpg" alt="Bedrijfswagens en medewerker van BrabantSchoon bij een klant in Zuidoost-Brabant" class="hero-full-img" width="1600" height="1067" fetchpriority="high" decoding="async">
-    <div class="hero-full-overlay"></div>
-    <div class="wrap hero-full-content">
-      <span class="eyebrow" style="color:#BFE0FF;">Professionele schoonmaak voor bedrijven</span>
-      <h1>Schoonmaakbedrijf Helmond voor bedrijven, VvE's en organisaties</h1>
-      <p class="lead" style="color:rgba(255,255,255,0.9);">BrabantSchoon is uw schoonmaakbedrijf in Helmond en de Peelgemeenten: periodieke, eenmalige en specialistische schoonmaak voor kantoren, VvE's, scholen en organisaties in heel Noord-Brabant.</p>
-      <div class="hero-actions">
-        <a href="contact.html#offerteWizard" class="btn btn-primary">Gratis offerte aanvragen</a>
-        <a href="#diensten" class="btn btn-ghost-light">Bekijk onze diensten</a>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">Professionele schoonmaak in Brabant</span>
+        <h1>Schoon werk.<br>Elke dag opnieuw.</h1>
+        <p class="lead">BrabantSchoon is de betrouwbare schoonmaakpartner voor bedrijven, VvE's en organisaties in heel Brabant &mdash; van periodieke schoonmaak tot specialistische reiniging, als schoonmaakbedrijf gevestigd in Helmond.</p>
+        <div class="hero-actions">
+          <a href="contact.html#offerteWizard" class="btn btn-primary">Gratis offerte aanvragen</a>
+          <a href="#diensten" class="btn btn-outline">Bekijk onze diensten</a>
+        </div>
+        <ul class="hero-usps">
+          <li>{icon('check')}Vast aanspreekpunt</li>
+          <li>{icon('check')}Flexibele planning</li>
+          <li>{icon('check')}Professionele medewerkers</li>
+          <li>{icon('check')}Actief in heel Brabant</li>
+        </ul>
       </div>
-      <ul class="hero-checklist">
-        <li>{icon('check')}Vast aanspreekpunt</li>
-        <li>{icon('check')}Flexibele planning</li>
-        <li>{icon('check')}Professionele medewerkers</li>
-        <li>{icon('check')}Actief in heel Noord-Brabant</li>
-      </ul>
+      <div class="illustration-panel hero-photo">
+        <img src="images/hero.jpg" alt="Medewerker van BrabantSchoon aan het werk bij een zakelijke opdrachtgever in Brabant" width="1600" height="1067" fetchpriority="high" decoding="async">
+      </div>
     </div>
   </section>
 
@@ -1176,7 +1179,7 @@ def build_home():
         <span>{icon('check')}Vrijblijvende offerte</span>
         <span>{icon('clock')}Reactie binnen \u00e9\u00e9n werkdag</span>
         <span>{icon('doc')}Geen verborgen kosten</span>
-        <span>{icon('pin')}Actief in heel Noord-Brabant</span>
+        <span>{icon('pin')}Actief in heel Brabant</span>
       </div>
       <div class="contact-grid reveal">
         {contact_info_block(base)}
@@ -1204,8 +1207,8 @@ def build_home():
   {trust_strip()}
 """
     write("index.html", page_shell(
-        "Schoonmaakbedrijf Helmond | Kantoren &amp; VvE&#39;s | BrabantSchoon",
-        f"Schoonmaakbedrijf in Helmond voor kantoorreiniging, VvE-schoonmaak en periodieke schoonmaak in de Peelgemeenten. Vraag een offerte aan.",
+        "Schoonmaakbedrijf in Brabant | Kantoren &amp; VvE&#39;s | BrabantSchoon",
+        f"BrabantSchoon is uw schoonmaakpartner voor kantoren, VvE's en organisaties in heel Brabant. Periodieke, eenmalige en specialistische schoonmaak. Vraag een offerte aan.",
         "", base, "/", body, LOCALBUSINESS_SCHEMA + "\n" + faq_schema(FAQ_ITEMS[:5]),
         preload_image="images/hero.jpg"
     ))
@@ -1250,7 +1253,7 @@ def build_diensten_overview():
   <section style="background:var(--bg-soft);"><div class="wrap">{cta_band(base=base)}</div></section>
 """
     write("diensten.html", page_shell(
-        "Diensten | Schoonmaakbedrijf Helmond &amp; Noord-Brabant",
+        "Diensten | Schoonmaakbedrijf voor heel Brabant | BrabantSchoon",
         f"Bekijk alle diensten van BrabantSchoon: kantoorreiniging, glasbewassing, gevelreiniging, opleveringsschoonmaak en meer in {CITY} en omgeving.",
         "diensten.html", base, "diensten.html", body, breadcrumb_schema("Diensten", "diensten.html")
     ))
@@ -1301,7 +1304,7 @@ def build_service_pages():
   <section><div class="wrap">{cta_band(f"Interesse in {s['name']}?", "Vraag een vrijblijvende offerte aan.", base)}</div></section>
   <section class="section-tight">
     <div class="wrap-narrow" style="text-align:center;">
-      <p class="prose">Actief in <a href="{base}werkgebied.html" style="color:var(--link); font-weight:600;">heel Noord-Brabant</a> &mdash; bekijk ook onze <a href="{base}diensten.html" style="color:var(--link); font-weight:600;">overige diensten</a>.</p>
+      <p class="prose">Actief in <a href="{base}werkgebied.html" style="color:var(--link); font-weight:600;">heel Brabant</a> &mdash; bekijk ook onze <a href="{base}diensten.html" style="color:var(--link); font-weight:600;">overige diensten</a>.</p>
     </div>
   </section>
 """
@@ -1332,7 +1335,7 @@ def build_over_ons():
 """
     write("over-ons.html", page_shell(
         "Over ons | BrabantSchoon Schoonmaakbedrijf",
-        f"BrabantSchoon is een schoonmaakbedrijf uit {CITY}, met de Peelgemeenten als kerngebied en actief in heel Noord-Brabant.",
+        f"BrabantSchoon is een professionele schoonmaakpartner voor heel Brabant, met een thuisbasis in {CITY}.",
         "over-ons.html", base, "over-ons.html", body, breadcrumb_schema("Over ons", "over-ons.html")
     ))
 
@@ -1404,7 +1407,7 @@ def build_werkgebied():
         for loc in LOCATIONS if loc["slug"] != "eindhoven"
     )
     body = f"""
-  {page_hero("Werkgebied", "Actief in heel Noord-Brabant.", f"Gevestigd in {CITY}, met de Peelgemeenten als kerngebied \u2014 en we rijden verder voor de juiste opdracht.", base, "Werkgebied")}
+  {page_hero("Werkgebied", "Actief in heel Brabant.", f"Vanuit {CITY} rijden we door de hele provincie \u2014 met de Peelgemeenten als vertrouwd kerngebied dichtbij huis.", base, "Werkgebied")}
   <section class="section-tight">
     <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Kerngebied</span><h2>Onze vaste regio.</h2></div>
@@ -1426,7 +1429,7 @@ def build_werkgebied():
 """
     write("werkgebied.html", page_shell(
         "Werkgebied | BrabantSchoon Helmond &amp; omstreken",
-        f"BrabantSchoon is gevestigd in Helmond, met de Peelgemeenten als kerngebied \u2014 en actief in heel Noord-Brabant.",
+        f"BrabantSchoon is uw schoonmaakpartner voor heel Brabant, gevestigd in Helmond met de Peelgemeenten als vertrouwd kerngebied.",
         "werkgebied.html", base, "werkgebied.html", body, breadcrumb_schema("Werkgebied", "werkgebied.html")
     ))
 
@@ -1810,7 +1813,7 @@ def build_contact():
         <span>{icon('check')}Vrijblijvende offerte</span>
         <span>{icon('clock')}Reactie binnen \u00e9\u00e9n werkdag</span>
         <span>{icon('doc')}Geen verborgen kosten</span>
-        <span>{icon('pin')}Actief in heel Noord-Brabant</span>
+        <span>{icon('pin')}Actief in heel Brabant</span>
       </div>
       <div class="contact-grid reveal">
         {contact_info_block(base, show_heading=False)}
@@ -1820,8 +1823,8 @@ def build_contact():
   </section>
 """
     write("contact.html", page_shell(
-        "Contact | BrabantSchoon Schoonmaakbedrijf Noord-Brabant",
-        "Neem contact op met BrabantSchoon of vraag direct een vrijblijvende offerte aan. Kerngebied Helmond en de Peelgemeenten, actief in heel Noord-Brabant.",
+        "Contact | BrabantSchoon Schoonmaakbedrijf Brabant",
+        "Neem contact op met BrabantSchoon of vraag direct een vrijblijvende offerte aan. Actief in heel Brabant, met Helmond en de Peelgemeenten als kerngebied.",
         "contact.html", base, "contact.html", body, LOCALBUSINESS_SCHEMA + "\n" + breadcrumb_schema("Contact", "contact.html")
     ))
 
@@ -1832,7 +1835,7 @@ def build_thanks():
     body = f"""
   <section style="min-height:56vh; display:flex; align-items:center; justify-content:center; text-align:center;">
     <div class="wrap-narrow">
-      <img src="images/logo.png" alt="BrabantSchoon" width="136" height="34" style="height:34px; width:auto; margin:0 auto 20px;">
+      <img src="images/logo.png" alt="BrabantSchoon" width="260" height="30" style="height:30px; width:auto; margin:0 auto 20px;">
       <h1 style="font-size:34px;">Bedankt voor uw aanvraag.</h1>
       <p class="prose" style="margin-top:12px;">We hebben uw bericht ontvangen en nemen binnen \u00e9\u00e9n werkdag contact met u op.</p>
       <a class="btn btn-primary" href="/" style="margin-top:24px;">Terug naar de website</a>

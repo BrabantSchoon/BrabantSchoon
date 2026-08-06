@@ -69,6 +69,106 @@
       "source": "/locaties/eindhoven.html",
       "destination": "/schoonmaakbedrijf-eindhoven.html",
       "permanent": true
+    },
+    {
+      "source": "/helmond.html",
+      "destination": "/schoonmaakbedrijf-helmond.html",
+      "permanent": true
+    },
+    {
+      "source": "/tilburg.html",
+      "destination": "/schoonmaakbedrijf-tilburg.html",
+      "permanent": true
+    },
+    {
+      "source": "/breda.html",
+      "destination": "/schoonmaakbedrijf-breda.html",
+      "permanent": true
+    },
+    {
+      "source": "/den-bosch.html",
+      "destination": "/schoonmaakbedrijf-den-bosch.html",
+      "permanent": true
+    },
+    {
+      "source": "/waalwijk.html",
+      "destination": "/schoonmaakbedrijf-waalwijk.html",
+      "permanent": true
+    },
+    {
+      "source": "/deurne.html",
+      "destination": "/schoonmaakbedrijf-deurne.html",
+      "permanent": true
+    },
+    {
+      "source": "/asten.html",
+      "destination": "/schoonmaakbedrijf-asten.html",
+      "permanent": true
+    },
+    {
+      "source": "/someren.html",
+      "destination": "/schoonmaakbedrijf-someren.html",
+      "permanent": true
+    },
+    {
+      "source": "/gemert-bakel.html",
+      "destination": "/schoonmaakbedrijf-gemert-bakel.html",
+      "permanent": true
+    },
+    {
+      "source": "/laarbeek.html",
+      "destination": "/schoonmaakbedrijf-laarbeek.html",
+      "permanent": true
+    },
+    {
+      "source": "/nuenen.html",
+      "destination": "/schoonmaakbedrijf-nuenen.html",
+      "permanent": true
+    },
+    {
+      "source": "/geldrop-mierlo.html",
+      "destination": "/schoonmaakbedrijf-geldrop-mierlo.html",
+      "permanent": true
+    },
+    {
+      "source": "/eindhoven.html",
+      "destination": "/schoonmaakbedrijf-eindhoven.html",
+      "permanent": true
+    },
+    {
+      "source": "/kantoorreiniging.html",
+      "destination": "/diensten/kantoorreiniging.html",
+      "permanent": true
+    },
+    {
+      "source": "/glasbewassing.html",
+      "destination": "/diensten/glasbewassing.html",
+      "permanent": true
+    },
+    {
+      "source": "/gevelreiniging.html",
+      "destination": "/diensten/gevelreiniging.html",
+      "permanent": true
+    },
+    {
+      "source": "/opleveringsschoonmaak.html",
+      "destination": "/diensten/opleveringsschoonmaak.html",
+      "permanent": true
+    },
+    {
+      "source": "/vve-schoonmaak.html",
+      "destination": "/diensten/vve-schoonmaak.html",
+      "permanent": true
+    },
+    {
+      "source": "/periodieke-schoonmaak.html",
+      "destination": "/diensten/periodieke-schoonmaak.html",
+      "permanent": true
+    },
+    {
+      "source": "/specialistische-reiniging.html",
+      "destination": "/diensten/specialistische-reiniging.html",
+      "permanent": true
     }
   ]
 }
