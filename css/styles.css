@@ -144,7 +144,8 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 .hero-grid{display:grid; grid-template-columns:1fr; gap:44px; align-items:center;}
 @media(min-width:960px){.hero-grid{grid-template-columns:1.05fr 1fr;}}
 .hero h1{font-size:clamp(34px,5.2vw,58px); line-height:1.06; margin-top:14px;}
-.hero p.lead{font-size:18px; color:var(--ink-soft); max-width:480px; margin-top:20px;}
+.hero p.hero-slogan{font-size:15.5px; font-weight:700; color:var(--green); margin-top:10px; letter-spacing:-0.005em;}
+.hero p.lead{font-size:18px; color:var(--ink-soft); max-width:480px; margin-top:14px;}
 .hero-actions{display:flex; gap:14px; margin-top:30px; flex-wrap:wrap;}
 .hero-usps{display:grid; grid-template-columns:1fr 1fr; gap:12px 24px; margin-top:32px; list-style:none;}
 .hero-usps li{display:flex; align-items:center; gap:9px; font-size:14.5px; font-weight:600; color:var(--ink);}

@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "117"
+ASSET_VERSION = "118"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -242,25 +242,6 @@ SERVICES = [
 
 WERKGEBIED_KERN = ["Helmond", "Deurne", "Asten", "Someren", "Gemert-Bakel", "Laarbeek"]
 WERKGEBIED_OVERIG = ["Eindhoven", "Geldrop-Mierlo", "Nuenen", "Mierlo"]
-
-# Plaatsenlijst voor de doorzoekbare locatie-invoer in de calculator.
-# Losstaand van WERKGEBIED_KERN/OVERIG omdat dit een bredere, servicegerichte
-# lijst is (ook plaatsen buiten het kerngebied), niet het officiele werkgebied.
-# Belangrijkste/grootste plaatsen: worden standaard getoond zodra het veld opent (nog niets getypt)
-CALCULATOR_CITIES_PRIORITY = [
-    "Eindhoven", "Tilburg", "Breda", "Den Bosch", "Helmond", "Best", "Veldhoven", "Oss",
-]
-
-# Volledige lijst, doorzoekbaar tijdens typen (grote steden + alle genoemde kleinere plaatsen)
-CALCULATOR_CITIES = [
-    "Eindhoven", "Tilburg", "Breda", "Den Bosch", "Helmond", "Oss", "Roosendaal",
-    "Bergen op Zoom", "Oosterhout", "Waalwijk", "Etten-Leur", "Best", "Veldhoven",
-    "Valkenswaard", "Oirschot", "Bladel", "Eersel", "Reusel", "Son en Breugel",
-    "Geldrop", "Mierlo", "Nuenen", "Deurne", "Gemert", "Bakel", "Milheeze", "Handel",
-    "Someren", "Asten", "Laarbeek", "Beek en Donk", "Lieshout", "Erp", "Veghel",
-    "Uden", "Boekel",
-    "Overige plaats in Brabant",
-]
 
 FORM_SERVICE_OPTIONS = [
     "Kantoorreiniging", "Glasbewassing", "Gevelreiniging", "VvE-schoonmaak",
@@ -783,288 +764,6 @@ def write(path, content):
 # =================================================================
 # HOME
 # =================================================================
-def calculator_block():
-    import json as _json
-    kern_cities = WERKGEBIED_KERN + WERKGEBIED_OVERIG
-    cities_data = _json.dumps({
-        "all": CALCULATOR_CITIES,
-        "kern": kern_cities,
-        "priority": CALCULATOR_CITIES_PRIORITY
-    }, ensure_ascii=False)
-    return f"""
-  <script>window.CALC_CITIES_DATA = {cities_data};</script>
-  <section id="calculator" style="background:var(--bg-soft);">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="eyebrow">Prijsindicatie</span>
-        <h2>Bereken direct uw richtprijs.</h2>
-        <p>Een eerste indicatie in 30 seconden \u2014 de exacte prijs bepalen we samen tijdens een kort kennismakingsgesprek.</p>
-      </div>
-      <div class="calc-grid reveal">
-        <div class="calc-form">
-
-          <div class="calc-block">
-            <h3>1. Wat voor opdracht wilt u laten uitvoeren?</h3>
-            <div class="calc-type-grid calc-jobtype-grid" id="calcJobType">
-              <button type="button" class="calc-card active" data-job="periodiek"><span class="calc-emoji">\U0001F5D3\uFE0F</span><span>Periodieke schoonmaak</span></button>
-              <button type="button" class="calc-card" data-job="oplevering"><span class="calc-emoji">\U0001F3D7\uFE0F</span><span>Opleveringsschoonmaak</span></button>
-              <button type="button" class="calc-card" data-job="verhuis"><span class="calc-emoji">\U0001F69A</span><span>Verhuisschoonmaak</span></button>
-              <button type="button" class="calc-card" data-job="dieptereiniging"><span class="calc-emoji">\U0001F9FC</span><span>Eenmalige dieptereiniging</span></button>
-            </div>
-          </div>
-
-          <div class="calc-block" data-job-group="periodiek oplevering dieptereiniging" id="calcTypeBlock">
-            <h3>2. Wat wilt u laten schoonmaken?</h3>
-            <div class="calc-type-grid" id="calcType">
-              <button type="button" class="calc-card active" data-type-key="office" data-label="Kantoor">{icon('office')}<span>Kantoor</span></button>
-              <button type="button" class="calc-card" data-type-key="vve" data-label="VvE">{icon('building')}<span>VvE</span></button>
-              <button type="button" class="calc-card" data-type-key="practice" data-label="Praktijk">{icon('practice')}<span>Praktijk</span></button>
-              <button type="button" class="calc-card" data-type-key="school" data-label="School">{icon('school')}<span>School</span></button>
-              <button type="button" class="calc-card" data-type-key="retail" data-label="Winkel">{icon('shop')}<span>Winkel</span></button>
-              <button type="button" class="calc-card" data-type-key="warehouse" data-label="Bedrijfshal / Magazijn">{icon('building')}<span>Bedrijfshal</span></button>
-              <button type="button" class="calc-card" data-type-key="other" data-label="Anders">{icon('doc')}<span>Anders</span></button>
-            </div>
-          </div>
-
-          <div class="calc-block" data-job-group="verhuis" hidden>
-            <h3>2. Type pand</h3>
-            <div class="calc-type-grid" id="calcVerhuisType">
-              <button type="button" class="calc-card active" data-label="Woning">{icon('building')}<span>Woning</span></button>
-              <button type="button" class="calc-card" data-label="Bedrijfspand">{icon('office')}<span>Bedrijfspand</span></button>
-            </div>
-          </div>
-
-          <div class="calc-block">
-            <h3>3. Oppervlakte (m&sup2;)</h3>
-            <div class="calc-slider-row">
-              <input type="range" id="calcM2Range" min="50" max="2000" step="10" value="250">
-              <input type="number" id="calcM2Number" min="10" max="20000" value="250">
-            </div>
-            <div class="calc-slider-labels"><span>50 m&sup2;</span><span>1.000 m&sup2;</span><span>2.000+ m&sup2;</span></div>
-          </div>
-
-          <div class="calc-block" data-job-group="periodiek oplevering dieptereiniging" id="calcSoilingBlock">
-            <h3>Vervuilingsgraad</h3>
-            <div class="calc-type-grid" id="calcSoiling" style="grid-template-columns:repeat(3,1fr);">
-              <button type="button" class="calc-card" data-soiling-key="light"><span>Licht</span><small>Kantoor, weinig gebruik</small></button>
-              <button type="button" class="calc-card active" data-soiling-key="normal"><span>Normaal</span><small>Gangbaar gebruik</small></button>
-              <button type="button" class="calc-card" data-soiling-key="heavy"><span>Zwaar</span><small>Intensief gebruik</small></button>
-            </div>
-          </div>
-
-          <div class="calc-block" data-job-group="periodiek" id="calcFreqBlock">
-            <h3>4. Hoe vaak wilt u dat wij schoonmaken?</h3>
-            <div class="calc-freq-grid" id="calcFreq">
-              <button type="button" class="calc-card" data-freq-key="weekly1" data-label="1x per week"><span>1x</span><small>per week</small></button>
-              <button type="button" class="calc-card" data-freq-key="weekly2" data-label="2x per week"><span>2x</span><small>per week</small></button>
-              <button type="button" class="calc-card" data-freq-key="weekly3" data-label="3x per week"><span>3x</span><small>per week</small></button>
-              <button type="button" class="calc-card" data-freq-key="weekly5" data-label="5x per week"><span>5x</span><small>per week</small></button>
-              <button type="button" class="calc-card" data-freq-key="daily" data-label="Dagelijks"><span>Dagelijks</span></button>
-            </div>
-            <p class="calc-note calc-freq-explain" id="calcFreqExplain">{icon('check')}<span>Advies wordt automatisch berekend op basis van pandtype en oppervlakte.</span></p>
-          </div>
-
-          <div class="calc-block" data-job-group="periodiek" id="calcExtraBlock">
-            <h3>5. Extra diensten <span class="calc-optional">(optioneel)</span></h3>
-            <div class="calc-extra-grid" id="calcExtra">
-              <label class="calc-check"><input type="checkbox" data-pct="15"><span>{icon('check')}</span>Glasbewassing</label>
-              <label class="calc-check"><input type="checkbox" data-pct="10"><span>{icon('check')}</span>Vloeronderhoud</label>
-              <label class="calc-check"><input type="checkbox" data-pct="8"><span>{icon('check')}</span>Sanitaire reiniging</label>
-              <label class="calc-check"><input type="checkbox" data-pct="20"><span>{icon('check')}</span>Gevelreiniging</label>
-              <label class="calc-check"><input type="checkbox" data-pct="12"><span>{icon('check')}</span>Tapijtreiniging</label>
-              <label class="calc-check"><input type="checkbox" data-pct="10"><span>{icon('check')}</span>Desinfectie</label>
-              <label class="calc-check"><input type="checkbox" data-pct="5"><span>{icon('check')}</span>Afvalbeheer</label>
-            </div>
-          </div>
-
-          <div class="calc-block" data-job-group="oplevering" hidden>
-            <h3>4. Nieuwbouw of renovatie?</h3>
-            <div class="calc-type-grid" id="calcOpleveringType">
-              <button type="button" class="calc-card active" data-value="nieuwbouw">{icon('building')}<span>Nieuwbouw</span></button>
-              <button type="button" class="calc-card" data-value="renovatie">{icon('doc')}<span>Renovatie</span></button>
-            </div>
-          </div>
-          <div class="calc-block" data-job-group="oplevering" hidden>
-            <h3>5. Gewenste opleverdatum <span class="calc-optional">(optioneel)</span></h3>
-            <input type="date" id="calcOpleverDatum">
-          </div>
-
-          <div class="calc-block" data-job-group="verhuis" hidden>
-            <h3>4. Is het pand al leeg?</h3>
-            <div class="calc-type-grid" id="calcPandLeeg">
-              <button type="button" class="calc-card active" data-value="ja">{icon('check')}<span>Ja, pand is leeg</span></button>
-              <button type="button" class="calc-card" data-value="nee">{icon('doc')}<span>Nee, nog vol</span></button>
-            </div>
-          </div>
-          <div class="calc-block" data-job-group="verhuis" hidden>
-            <h3>5. Extra werkzaamheden <span class="calc-optional">(optioneel)</span></h3>
-            <div class="calc-extra-grid" id="calcVerhuisExtra">
-              <label class="calc-check"><input type="checkbox" data-pct="10"><span>{icon('check')}</span>Binnenkant kasten</label>
-              <label class="calc-check"><input type="checkbox" data-pct="8"><span>{icon('check')}</span>Ramen en kozijnen</label>
-              <label class="calc-check"><input type="checkbox" data-pct="12"><span>{icon('check')}</span>Balkon of tuin opruimen</label>
-            </div>
-          </div>
-
-          <div class="calc-block">
-            <h3>6. Waar bevindt het pand zich?</h3>
-            <div class="calc-autocomplete" id="calcPlaatsWrap">
-              <input type="text" id="calcPlaats" placeholder="Typ een plaatsnaam..." autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="calcPlaatsListbox" value="Helmond">
-              <ul class="calc-autocomplete-list" id="calcPlaatsListbox" role="listbox" hidden></ul>
-            </div>
-            <p class="calc-note" id="calcPlaatsNote">{icon('check')}<span>Wij zijn actief in heel Brabant.</span></p>
-          </div>
-
-        </div>
-
-        <div class="calc-price-wrap">
-          <div class="calc-price-card" id="calcPriceCard">
-            <div class="calc-price-header" id="calcPriceHeader">Uw prijsindicatie</div>
-            <div class="calc-price-range"><span id="calcPriceLow">&euro;400</span> &ndash; <span id="calcPriceHigh">&euro;550</span></div>
-            <div class="calc-price-sub" id="calcPriceSub">per maand, excl. btw</div>
-            <p class="calc-price-disclaimer">Deze prijs is een vrijblijvende indicatie op basis van uw ingevulde gegevens. De definitieve offerte wordt opgesteld na beoordeling van de locatie.</p>
-            <div class="calc-price-hours" id="calcPriceHours">
-              <div><span id="calcHoursVisit">2,0</span><small>uur per bezoek</small></div>
-              <div><span id="calcHoursMonth">16</span><small>uur per maand</small></div>
-            </div>
-            <div class="calc-summary" id="calcSummary">
-              <div class="calc-summary-title">Uw selectie</div>
-              <div class="calc-summary-grid">
-                <span>{icon('doc')}<b id="calcSumJobType">Periodieke schoonmaak</b></span>
-                <span>{icon('office')}<b id="calcSumType">Kantoor</b></span>
-                <span>{icon('doc')}<b id="calcSumM2">250 m&sup2;</b></span>
-                <span>{icon('pin')}<b id="calcSumPlaats">Helmond</b></span>
-                <span id="calcSumFreqWrap">{icon('clock')}<b id="calcSumFreq">2x per week</b></span>
-              </div>
-              <div class="calc-summary-extras" id="calcSumExtras"></div>
-            </div>
-            <ul class="calc-price-includes">
-              <li>{icon('check')}Vast contactpersoon</li>
-              <li>{icon('check')}Professioneel personeel</li>
-              <li>{icon('check')}Kwaliteitscontrole</li>
-              <li>{icon('check')}Milieuvriendelijke producten</li>
-              <li>{icon('check')}Flexibel op- en afschalen</li>
-              <li>{icon('check')}Planning op maat</li>
-            </ul>
-            <button type="button" class="btn btn-primary calc-price-cta" id="calcOpenModal">Vraag definitieve offerte aan</button>
-            <p class="calc-price-footnote">{icon('check')}Reactie binnen \u00e9\u00e9n werkdag</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="calc-mobile-bar" id="calcMobileBar">
-      <span id="calcMobilePrice">&euro;400 &ndash; &euro;550 / mnd</span>
-      <button type="button" id="calcMobileBtn">Bekijk uw prijs {icon('arrow')}</button>
-    </div>
-  </section>
-
-  <div class="calc-modal-overlay" id="calcModalOverlay">
-    <div class="calc-modal" role="dialog" aria-modal="true" aria-labelledby="calcModalTitle">
-      <div class="calc-modal-header">
-        <div>
-          <h3 id="calcModalTitle">Vraag uw definitieve offerte aan</h3>
-          <p class="calc-modal-sub">Uw indicatie: <strong id="calcModalPrice">&euro;400 &ndash; &euro;550</strong><span id="calcModalPriceSuffix"> per maand</span></p>
-        </div>
-        <button type="button" class="calc-modal-close" id="calcModalClose" aria-label="Sluiten">{icon('close')}</button>
-      </div>
-      <form name="calculator-offerte" method="POST" action="https://api.web3forms.com/submit" enctype="multipart/form-data" class="calc-modal-form">
-        <div class="calc-modal-body">
-          <input type="hidden" name="access_key" value="abc98c0d-af16-42b0-ae5c-3337f35e5299">
-          <input type="hidden" name="subject" value="Nieuwe offerteaanvraag via de prijscalculator">
-          <input type="hidden" name="redirect" value="{SITE_URL}/thanks.html">
-          <input type="hidden" name="prijsindicatie" id="calcModalPriceField" value="">
-          <input type="hidden" name="calculator_details" id="calcModalDetailsField" value="">
-          <input type="hidden" name="interne_kostprijs_uitsplitsing" id="calcModalInternalField" value="">
-          <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
-          <div class="calc-modal-row">
-            <input type="text" name="naam" placeholder="Naam" required>
-            <input type="text" name="bedrijfsnaam" placeholder="Bedrijfsnaam">
-          </div>
-          <div class="calc-modal-row">
-            <input type="email" name="email" placeholder="E-mailadres" required>
-            <input type="tel" name="telefoon" placeholder="Telefoonnummer" required>
-          </div>
-          <input type="text" name="adres" placeholder="Adres">
-          <div class="calc-modal-block">
-            <label class="calc-modal-label">Voorkeur schoonmaaktijd</label>
-            <div class="calc-time-grid" id="calcModalTime">
-              <button type="button" class="calc-card" data-label="Ochtend"><span>Ochtend</span><small>06:00 - 12:00</small></button>
-              <button type="button" class="calc-card" data-label="Middag"><span>Middag</span><small>12:00 - 17:00</small></button>
-              <button type="button" class="calc-card" data-label="Avond"><span>Avond</span><small>17:00 - 22:00</small></button>
-              <button type="button" class="calc-card" data-label="Nacht"><span>Nacht</span><small>22:00 - 06:00</small></button>
-              <button type="button" class="calc-card active" data-label="Geen voorkeur"><span>Geen voorkeur</span><small>Flexibel</small></button>
-            </div>
-            <input type="hidden" name="voorkeur_tijdstip" id="calcModalTimeField" value="Geen voorkeur">
-          </div>
-          <textarea name="opmerkingen" placeholder="Opmerkingen (optioneel)" rows="3"></textarea>
-          <label class="calc-modal-upload">
-            <input type="file" name="fotos" accept="image/*" multiple>
-            {icon('doc')}<span>Foto's toevoegen <em>(optioneel)</em></span>
-          </label>
-        </div>
-        <div class="calc-modal-footer">
-          <button type="submit" class="btn btn-primary calc-modal-submit">Verstuur offerteaanvraag</button>
-          <p class="calc-price-footnote">{icon('check')}Vrijblijvend &middot; Reactie binnen \u00e9\u00e9n werkdag</p>
-        </div>
-      </form>
-    </div>
-  </div>
-"""
-
-def build_calculator_page():
-    base = ""
-    body = f"""
-  {page_hero("Prijscalculator", "Bereken uw schoonmaakkosten.", "Ontvang binnen 30 seconden een vrijblijvende prijsindicatie voor professionele schoonmaak in Brabant. Geen verplichtingen.", base, "Prijscalculator")}
-  {calculator_block()}
-  <section class="section-tight">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="eyebrow">Veelgestelde vragen</span>
-        <h2>Over de prijscalculator</h2>
-      </div>
-      <div class="faq reveal">{faq_block([
-        ("Hoe wordt de prijs berekend?", "We rekenen met de oppervlakte, het pandtype en de gekozen frequentie om de benodigde schoonmaaktijd te schatten. Daarop baseren we een prijsindicatie, inclusief materiaal- en reiskosten."),
-        ("Waarom is dit een indicatie en geen vaste prijs?", "Elk pand is anders: indeling, vloersoort en specifieke wensen be\u00efnvloeden de uiteindelijke prijs. Daarom bepalen we het definitieve bedrag pas na een korte kennismaking."),
-        ("Hoe snel ontvang ik een offerte?", "Na het invullen van het formulier nemen we binnen \u00e9\u00e9n werkdag contact met u op voor een definitieve offerte."),
-        ("Werken jullie in heel Brabant?", "Ja, BrabantSchoon is actief in heel Brabant. Ons kerngebied ligt rond Helmond en de Peelgemeenten; voor opdrachten verder weg in de provincie rijden we graag mee."),
-        ("Zijn er verborgen kosten?", "Nee. De prijsindicatie is exclusief btw, verder rekenen we geen extra kosten die niet in de berekening zijn meegenomen. Eventuele extra diensten kiest u zelf, vooraf zichtbaar in de calculator."),
-        ("Kan ik eerst kennismaken voordat ik een contract afsluit?", "Ja, een vrijblijvend kennismakingsgesprek gaat altijd vooraf aan een definitieve offerte of contract."),
-      ])}</div>
-    </div>
-  </section>
-  <section class="section-tight" style="background:var(--bg-soft);">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="eyebrow">Achtergrond</span>
-        <h2>Hoe wij onze schoonmaakprijzen bepalen</h2>
-      </div>
-      <div class="grid-3 reveal">
-        <div class="wg-card" style="cursor:default;">
-          <div class="wg-icon">{icon('doc')}</div>
-          <h3>Waaruit bestaat een schoonmaakprijs?</h3>
-          <p>De prijs is opgebouwd uit de benodigde schoonmaaktijd, materiaalkosten, reiskosten en een redelijke marge. Meer oppervlakte of een hogere frequentie betekent meer uren, en dus een hogere prijs.</p>
-        </div>
-        <div class="wg-card" style="cursor:default;">
-          <div class="wg-icon">{icon('pin')}</div>
-          <h3>Waarom verschilt de prijs per locatie?</h3>
-          <p>Reistijd en -kosten spelen mee in de prijsopbouw. Panden dichter bij ons kerngebied in de Peel zijn doorgaans iets voordeliger dan locaties verder weg in Brabant.</p>
-        </div>
-        <div class="wg-card" style="cursor:default;">
-          <div class="wg-icon">{icon('check')}</div>
-          <h3>Voordelen van periodieke schoonmaak</h3>
-          <p>Een vast schema zorgt voor een consistent schone werkomgeving, voorkomt achterstallig onderhoud en is per beurt vaak voordeliger dan losse, eenmalige schoonmaakopdrachten.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-  <section><div class="wrap">{cta_band("Liever direct persoonlijk contact?", "Bel of mail ons voor een vrijblijvend gesprek.", base)}</div></section>
-"""
-    write("bereken-schoonmaakkosten.html", page_shell(
-        "Schoonmaak Calculator | Bereken Schoonmaakkosten",
-        "Bereken direct uw schoonmaakkosten met de gratis prijscalculator van BrabantSchoon. Prijsindicatie voor kantoor, VvE, praktijk en bedrijfspand in 30 seconden.",
-        "bereken-schoonmaakkosten.html", base, "bereken-schoonmaakkosten.html", body,
-        breadcrumb_schema("Prijscalculator", "bereken-schoonmaakkosten.html")
-    ))
-
 def build_home():
     base = ""
     service_cards = "\n    ".join(f"""<a href="diensten/{s['slug']}.html" class="service-card">
@@ -1092,8 +791,9 @@ def build_home():
     <div class="wrap hero-grid">
       <div>
         <span class="eyebrow">Professionele schoonmaak in Brabant</span>
-        <h1>Schoon werk.<br>Elke dag opnieuw.</h1>
-        <p class="lead">BrabantSchoon is de betrouwbare schoonmaakpartner voor bedrijven, VvE's en organisaties in heel Brabant &mdash; van periodieke schoonmaak tot specialistische reiniging, als schoonmaakbedrijf gevestigd in Helmond.</p>
+        <h1>De schoonmaakpartner van Brabant</h1>
+        <p class="hero-slogan">Schoon werk. Elke dag opnieuw.</p>
+        <p class="lead">BrabantSchoon is een professioneel schoonmaakbedrijf voor bedrijven, VvE's en organisaties in heel Brabant. Van periodieke kantoorreiniging tot specialistische reiniging &mdash; met een vast aanspreekpunt en heldere afspraken, vanuit onze thuisbasis in Helmond.</p>
         <div class="hero-actions">
           <a href="contact.html#offerteWizard" class="btn btn-primary">Gratis offerte aanvragen</a>
           <a href="#diensten" class="btn btn-outline">Bekijk onze diensten</a>
@@ -1106,7 +806,7 @@ def build_home():
         </ul>
       </div>
       <div class="illustration-panel hero-photo">
-        <img src="images/hero.jpg" alt="Medewerker van BrabantSchoon aan het werk bij een zakelijke opdrachtgever in Brabant" width="1600" height="1067" fetchpriority="high" decoding="async">
+        <img src="images/hero.jpg" alt="Team van BrabantSchoon bij een zakelijke opdrachtgever in Brabant" width="1077" height="916" fetchpriority="high" decoding="async">
       </div>
     </div>
   </section>
@@ -1254,7 +954,7 @@ def build_diensten_overview():
 """
     write("diensten.html", page_shell(
         "Diensten | Schoonmaakbedrijf voor heel Brabant | BrabantSchoon",
-        f"Bekijk alle diensten van BrabantSchoon: kantoorreiniging, glasbewassing, gevelreiniging, opleveringsschoonmaak en meer in {CITY} en omgeving.",
+        "Bekijk alle diensten van BrabantSchoon: kantoorreiniging, glasbewassing, gevelreiniging, opleveringsschoonmaak en meer, voor bedrijven in heel Brabant.",
         "diensten.html", base, "diensten.html", body, breadcrumb_schema("Diensten", "diensten.html")
     ))
 
@@ -1308,9 +1008,11 @@ def build_service_pages():
     </div>
   </section>
 """
+        SERVICE_LABEL_OVERRIDES = {"VvE-schoonmaak": "VvE-schoonmaak"}
+        service_label = SERVICE_LABEL_OVERRIDES.get(s['name'], s['name'][0].lower() + s['name'][1:])
         write(f"diensten/{s['slug']}.html", page_shell(
-            f"{s['name']} {CITY} | BrabantSchoon",
-            f"{s['short']} BrabantSchoon verzorgt {s['name'].lower()} in {CITY} en de Peelgemeenten.",
+            f"{s['name']} | BrabantSchoon",
+            f"{s['short']} BrabantSchoon verzorgt {service_label} voor bedrijven, VvE's en organisaties in heel Brabant.",
             f"diensten/{s['slug']}.html", base, "diensten.html",
             body, service_schema(s) + "\n" + breadcrumb_schema(s['name'], f"diensten/{s['slug']}.html") + "\n" + faq_schema(s["faqs"])
         ))
@@ -1321,7 +1023,7 @@ def build_service_pages():
 def build_over_ons():
     base = ""
     body = f"""
-  {page_hero("Over ons", "Persoonlijk en professioneel.", f"Een schoonmaakpartner uit {CITY}, met korte lijnen en heldere afspraken.", base, "Over ons", image="images/over-ons.jpg", image_alt="Medewerker van BrabantSchoon bij de receptie in Helmond")}
+  {page_hero("Over ons", "Persoonlijk en professioneel.", f"Een schoonmaakpartner uit {CITY}, met korte lijnen en heldere afspraken.", base, "Over ons", image="images/over-ons.jpg", image_alt="Medewerker van BrabantSchoon bij de bedrijfswagen")}
   <section class="section-tight">
     <div class="wrap-narrow">
       <p class="prose">BrabantSchoon is de schoonmaakpartner voor kantoren, bedrijfsverzamelgebouwen, VvE's en scholen in {CITY} en de Peelgemeenten &mdash; en we rijden verder voor de juiste opdracht. Geen callcenter: direct contact met wie uw locatie kent, en afspraken die we nakomen.</p>
@@ -1407,7 +1109,7 @@ def build_werkgebied():
         for loc in LOCATIONS if loc["slug"] != "eindhoven"
     )
     body = f"""
-  {page_hero("Werkgebied", "Actief in heel Brabant.", f"Vanuit {CITY} rijden we door de hele provincie \u2014 met de Peelgemeenten als vertrouwd kerngebied dichtbij huis.", base, "Werkgebied")}
+  {page_hero("Werkgebied", "Actief in heel Brabant.", f"Vanuit {CITY} rijden we door de hele provincie \u2014 met de Peelgemeenten als vertrouwd kerngebied dichtbij huis.", base, "Werkgebied", image="images/werkgebied-kerngebied.jpg", image_alt="Medewerker van BrabantSchoon bij de bedrijfswagen op locatie")}
   <section class="section-tight">
     <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Kerngebied</span><h2>Onze vaste regio.</h2></div>
@@ -1428,7 +1130,7 @@ def build_werkgebied():
   </section>
 """
     write("werkgebied.html", page_shell(
-        "Werkgebied | BrabantSchoon Helmond &amp; omstreken",
+        "Werkgebied | Actief in heel Brabant | BrabantSchoon",
         f"BrabantSchoon is uw schoonmaakpartner voor heel Brabant, gevestigd in Helmond met de Peelgemeenten als vertrouwd kerngebied.",
         "werkgebied.html", base, "werkgebied.html", body, breadcrumb_schema("Werkgebied", "werkgebied.html")
     ))
@@ -1660,7 +1362,7 @@ def build_kerngebied_pages():
     </a>""" for s in SERVICES[:6])
         faq_html = faq_block(k["faqs"])
         body = f"""
-  {page_hero("Werkgebied", f"Schoonmaakbedrijf {k['name']}", k['intro'], base, k['name'])}
+  {page_hero("Werkgebied", f"Schoonmaakbedrijf {k['name']}", k['intro'], base, k['name'], image="images/werkgebied-kerngebied.jpg", image_alt=f"BrabantSchoon actief in {k['name']} en omgeving")}
   <section class="section-tight">
     <div class="wrap">
       <div class="two-col reveal">
@@ -1738,7 +1440,7 @@ def build_location_pages():
       <div class="body"><h3>{s['name']}</h3><p>{s['short']}</p></div>
     </a>""" for s in SERVICES[:6])
         body = f"""
-  {page_hero("Werkgebied", f"Schoonmaakbedrijf {loc['name']}", loc['intro'], base, loc['name'])}
+  {page_hero("Werkgebied", f"Schoonmaakbedrijf {loc['name']}", loc['intro'], base, loc['name'], image="images/werkgebied-regio.jpg", image_alt=f"BrabantSchoon actief in {loc['name']} en omgeving")}
   <section>
     <div class="wrap">
       <div class="two-col reveal">
@@ -1943,7 +1645,6 @@ if __name__ == "__main__":
     build_service_pages()
     build_over_ons()
     build_werkgebied()
-    # build_calculator_page()  # tijdelijk uitgeschakeld op verzoek van de klant
     build_kerngebied_pages()
     build_location_pages()
     build_contact()

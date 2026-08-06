@@ -169,6 +169,11 @@
       "source": "/specialistische-reiniging.html",
       "destination": "/diensten/specialistische-reiniging.html",
       "permanent": true
+    },
+    {
+      "source": "/bereken-schoonmaakkosten.html",
+      "destination": "/contact.html",
+      "permanent": true
     }
   ]
 }
