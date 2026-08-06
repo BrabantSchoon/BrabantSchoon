@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "127"
+ASSET_VERSION = "116"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -164,29 +164,29 @@ def service_visual_from_root(svc, css_class=""):
 def hero_illustration():
     return f"""<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
   <circle cx="320" cy="90" r="70" fill="#0082E6" opacity="0.08"/>
-  <circle cx="70" cy="330" r="50" fill="#007A33" opacity="0.08"/>
-  <rect x="70" y="80" width="220" height="220" rx="18" fill="#FFFFFF" stroke="#002B5C" stroke-width="3"/>
-  <line x1="180" y1="80" x2="180" y2="300" stroke="#002B5C" stroke-width="3"/>
-  <line x1="70" y1="190" x2="290" y2="190" stroke="#002B5C" stroke-width="3"/>
+  <circle cx="70" cy="330" r="50" fill="#2FA84A" opacity="0.08"/>
+  <rect x="70" y="80" width="220" height="220" rx="18" fill="#FFFFFF" stroke="#10205C" stroke-width="3"/>
+  <line x1="180" y1="80" x2="180" y2="300" stroke="#10205C" stroke-width="3"/>
+  <line x1="70" y1="190" x2="290" y2="190" stroke="#10205C" stroke-width="3"/>
   <g transform="rotate(-32 200 190)">
-    <rect x="150" y="176" width="120" height="28" rx="14" fill="#007A33"/>
+    <rect x="150" y="176" width="120" height="28" rx="14" fill="#2FA84A"/>
     <rect x="255" y="184" width="70" height="12" rx="6" fill="#0082E6"/>
   </g>
   {sparkle(320, 250, 14, '#0082E6')}
-  {sparkle(60, 100, 10, '#007A33')}
+  {sparkle(60, 100, 10, '#2FA84A')}
   {sparkle(300, 60, 8, '#F0A93B')}
   <g transform="translate(300,230)">
-    <rect x="0" y="26" width="46" height="80" rx="8" fill="#002B5C"/>
+    <rect x="0" y="26" width="46" height="80" rx="8" fill="#10205C"/>
     <rect x="10" y="4" width="26" height="24" rx="5" fill="#0082E6"/>
     <rect x="30" y="0" width="22" height="9" rx="4" fill="#565E72"/>
   </g>
 </svg>"""
 
-def service_illustration(icon_name, tint_stroke="#002B5C"):
+def service_illustration(icon_name, tint_stroke="#10205C"):
     body = ICONS[icon_name]
     return f"""<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
   <circle cx="164" cy="40" r="20" fill="#0082E6" opacity="0.10"/>
-  <circle cx="30" cy="164" r="16" fill="#007A33" opacity="0.10"/>
+  <circle cx="30" cy="164" r="16" fill="#2FA84A" opacity="0.10"/>
   <g transform="translate(40,40) scale(5)" fill="none" stroke="{tint_stroke}" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">{body}</g>
   {sparkle(168, 156, 9, '#F0A93B')}
   {sparkle(28, 32, 7, '#0082E6')}
@@ -273,9 +273,7 @@ NAV_LINKS = [
     ("Home", "/"),
     ("Diensten", "diensten.html"),
     ("Over ons", "over-ons.html"),
-    ("Waarom BrabantSchoon", "/#waarom"),
     ("Werkgebied", "werkgebied.html"),
-    ("Recensies", "/#recensies"),
     ("Contact", "contact.html"),
 ]
 
@@ -302,12 +300,12 @@ def render_head(title, description, path, base, schema_extra="", preload_image=N
 <meta name="twitter:description" content="{description}">
 <meta name="twitter:image" content="{og_image}">
 <link rel="icon" type="image/png" href="{base}images/favicon.png">
-<meta name="theme-color" content="#002B5C">
+<meta name="theme-color" content="#10205C">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 {preload_tag}
 <link rel="stylesheet" href="{base}css/styles.css?v={ASSET_VERSION}">
-<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 {ORG_SCHEMA}
 {schema_extra}"""
 
@@ -407,7 +405,7 @@ def render_header(base, active):
 <input type="checkbox" id="menuCheckbox" class="menu-checkbox">
 <header class="site-header">
   <div class="wrap nav">
-    <a href="/" class="logo"><img src="{base}images/logo.png" alt="BrabantSchoon" width="235" height="32"></a>
+    <a href="/" class="logo"><img src="{base}images/logo.png" alt="BrabantSchoon" width="130" height="32"></a>
     <nav class="links">
       {links_html}
     </nav>
@@ -421,7 +419,7 @@ def render_header(base, active):
 <label for="menuCheckbox" class="menu-overlay"></label>
 <aside class="mobile-sidebar">
   <div class="mobile-menu-top">
-    <img src="{base}images/logo.png" alt="BrabantSchoon" width="220" height="30">
+    <img src="{base}images/logo.png" alt="BrabantSchoon" width="120" height="30">
     <label for="menuCheckbox" class="mobile-menu-close" aria-label="Menu sluiten">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </label>
@@ -440,7 +438,7 @@ def render_footer(base):
   <div class="wrap">
     <div class="footer-top footer-top-3col">
       <div class="footer-col footer-brand-col">
-        <img src="{base}images/logo.png" alt="BrabantSchoon" width="235" height="32">
+        <img src="{base}images/logo.png" alt="BrabantSchoon" width="130" height="32">
         <p class="footer-tagline">Professionele schoonmaakpartner voor kantoren, VvE's en organisaties in heel Noord-Brabant.</p>
         <div class="footer-meta">KvK {KVK} &bull; BTW NL005380198B12</div>
       </div>
@@ -1091,27 +1089,26 @@ def build_home():
 
     body = f"""
   <section class="hero-full hero-full-compact">
-    <img src="images/hero.jpg" alt="Vier medewerkers van BrabantSchoon in gesprek bij een modern kantoorpand, met de bedrijfsbus op de achtergrond" class="hero-full-img" width="1717" height="916" fetchpriority="high" decoding="async">
+    <img src="images/hero.jpg" alt="Bedrijfswagens en medewerker van BrabantSchoon bij een klant in Zuidoost-Brabant" class="hero-full-img" width="1600" height="1067" fetchpriority="high" decoding="async">
     <div class="hero-full-overlay"></div>
     <div class="wrap hero-full-content">
-      <span class="eyebrow">Professionele schoonmaak voor bedrijven</span>
-      <h1>Schoonmaakbedrijf Helmond voor <span>bedrijven, VvE's en organisaties</span></h1>
-      <p>BrabantSchoon zorgt voor een schone, frisse en representatieve omgeving in Helmond en de Peelgemeenten. Met vaste afspraken, professionele medewerkers en korte lijnen.</p>
+      <span class="eyebrow" style="color:#BFE0FF;">Professionele schoonmaak voor bedrijven</span>
+      <h1>Schoonmaakbedrijf Helmond voor bedrijven, VvE's en organisaties</h1>
+      <p class="lead" style="color:rgba(255,255,255,0.9);">BrabantSchoon is uw schoonmaakbedrijf in Helmond en de Peelgemeenten: periodieke, eenmalige en specialistische schoonmaak voor kantoren, VvE's, scholen en organisaties in heel Noord-Brabant.</p>
       <div class="hero-actions">
         <a href="contact.html#offerteWizard" class="btn btn-primary">Gratis offerte aanvragen</a>
-        <a href="#diensten" class="btn btn-outline">Bekijk onze diensten</a>
+        <a href="#diensten" class="btn btn-ghost-light">Bekijk onze diensten</a>
       </div>
       <ul class="hero-checklist">
-        <li>{icon('check')}Kantoorschoonmaak</li>
-        <li>{icon('check')}Glasbewassing</li>
-        <li>{icon('check')}VvE &amp; trappenhuizen</li>
-        <li>{icon('check')}Gevelreiniging</li>
-        <li>{icon('check')}Bouw- &amp; opleveringsschoonmaak</li>
+        <li>{icon('check')}Vast aanspreekpunt</li>
+        <li>{icon('check')}Flexibele planning</li>
+        <li>{icon('check')}Professionele medewerkers</li>
+        <li>{icon('check')}Actief in heel Noord-Brabant</li>
       </ul>
     </div>
   </section>
 
-  <section class="reviews-strip" id="recensies">
+  <section class="reviews-strip">
     <div class="wrap">
       {reviews_widget_block()}
     </div>
@@ -1130,7 +1127,7 @@ def build_home():
     </div>
   </section>
 
-  <section id="waarom">
+  <section>
     <div class="wrap">
       <div class="sec-head reveal">
         <span class="eyebrow">Waarom BrabantSchoon</span>
@@ -1835,7 +1832,7 @@ def build_thanks():
     body = f"""
   <section style="min-height:56vh; display:flex; align-items:center; justify-content:center; text-align:center;">
     <div class="wrap-narrow">
-      <img src="images/logo.png" alt="BrabantSchoon" width="250" height="34" style="height:34px; width:auto; margin:0 auto 20px;">
+      <img src="images/logo.png" alt="BrabantSchoon" width="136" height="34" style="height:34px; width:auto; margin:0 auto 20px;">
       <h1 style="font-size:34px;">Bedankt voor uw aanvraag.</h1>
       <p class="prose" style="margin-top:12px;">We hebben uw bericht ontvangen en nemen binnen \u00e9\u00e9n werkdag contact met u op.</p>
       <a class="btn btn-primary" href="/" style="margin-top:24px;">Terug naar de website</a>
