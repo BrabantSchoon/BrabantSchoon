@@ -17,12 +17,12 @@
 <meta name="twitter:description" content="Ramen en kozijnen streeploos schoon, binnen en buiten. BrabantSchoon verzorgt glasbewassing in Helmond en de Peelgemeenten.">
 <meta name="twitter:image" content="https://www.brabantschoon.nl/images/og-image.png">
 <link rel="icon" type="image/png" href="../images/favicon.png">
-<meta name="theme-color" content="#002B5C">
+<meta name="theme-color" content="#10205C">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="../css/styles.css?v=127">
-<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/styles.css?v=106">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -78,14 +78,12 @@
 <input type="checkbox" id="menuCheckbox" class="menu-checkbox">
 <header class="site-header">
   <div class="wrap nav">
-    <a href="/" class="logo"><img src="../images/logo.png" alt="BrabantSchoon" width="235" height="32"></a>
+    <a href="/" class="logo"><img src="../images/logo.png" alt="BrabantSchoon" width="130" height="32"></a>
     <nav class="links">
       <a href="/" class="">Home</a>
       <a href="../diensten.html" class="active">Diensten</a>
       <a href="../over-ons.html" class="">Over ons</a>
-      <a href="/#waarom" class="">Waarom BrabantSchoon</a>
       <a href="../werkgebied.html" class="">Werkgebied</a>
-      <a href="/#recensies" class="">Recensies</a>
       <a href="../contact.html" class="">Contact</a>
     </nav>
     <div class="nav-actions">
@@ -98,7 +96,7 @@
 <label for="menuCheckbox" class="menu-overlay"></label>
 <aside class="mobile-sidebar">
   <div class="mobile-menu-top">
-    <img src="../images/logo.png" alt="BrabantSchoon" width="220" height="30">
+    <img src="../images/logo.png" alt="BrabantSchoon" width="120" height="30">
     <label for="menuCheckbox" class="mobile-menu-close" aria-label="Menu sluiten">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </label>
@@ -107,9 +105,7 @@
     <a href="/">Home</a>
       <a href="../diensten.html">Diensten</a>
       <a href="../over-ons.html">Over ons</a>
-      <a href="/#waarom">Waarom BrabantSchoon</a>
       <a href="../werkgebied.html">Werkgebied</a>
-      <a href="/#recensies">Recensies</a>
       <a href="../contact.html">Contact</a>
     <a href="tel:+31492313050" class="mobile-phone-link">0492 - 31 30 50</a>
   </div>
@@ -186,7 +182,7 @@
   <div class="wrap">
     <div class="footer-top footer-top-3col">
       <div class="footer-col footer-brand-col">
-        <img src="../images/logo.png" alt="BrabantSchoon" width="235" height="32">
+        <img src="../images/logo.png" alt="BrabantSchoon" width="130" height="32">
         <p class="footer-tagline">Professionele schoonmaakpartner voor kantoren, VvE's en organisaties in heel Noord-Brabant.</p>
         <div class="footer-meta">KvK 99274175 &bull; BTW NL005380198B12</div>
       </div>
@@ -197,6 +193,7 @@
         <a href="../diensten.html">Diensten</a>
         <a href="../over-ons.html">Over ons</a>
         <a href="../werkgebied.html">Werkgebied</a>
+        <a href="../bereken-schoonmaakkosten.html">Prijscalculator</a>
         <a href="../contact.html">Contact</a>
         <a href="../contact.html#offerteWizard">Offerte aanvragen</a>
       </div>
@@ -231,7 +228,6 @@
         <a href="../cookiebeleid.html">Cookiebeleid</a>
         <a href="../voorwaarden.html">Algemene voorwaarden</a>
         <a href="../sitemap.xml">Sitemap</a>
-        <a href="#" onclick="window.reopenCookieBanner && window.reopenCookieBanner(); return false;">Cookievoorkeuren wijzigen</a>
       </div>
     </div>
   </div>
@@ -244,72 +240,7 @@
   <a href="tel:+31492313050" class="btn btn-outline">Bel direct</a>
   <a href="../contact.html#offerteWizard" class="btn btn-primary">Vrijblijvende offerte</a>
 </div>
-
-<div class="cookie-banner" id="cookieBanner" role="dialog" aria-live="polite" aria-label="Cookiemelding" hidden>
-  <div class="cookie-banner-inner">
-    <p>Wij gebruiken alleen cookies die noodzakelijk zijn voor de werking van de site. Met uw toestemming gebruiken we ook Google Analytics om het gebruik van de website te meten. Lees ons <a href="../cookiebeleid.html">cookiebeleid</a>.</p>
-    <div class="cookie-banner-actions">
-      <button type="button" class="btn btn-outline" id="cookieReject">Alleen noodzakelijk</button>
-      <button type="button" class="btn btn-primary" id="cookieAccept">Accepteren</button>
-    </div>
-  </div>
-</div>
-
-<script>
-(function () {
-  var STORAGE_KEY = 'brabantschoon_cookie_consent';
-  var gaId = 'G-DXH4VEW9TV';
-  var banner = document.getElementById('cookieBanner');
-  var acceptBtn = document.getElementById('cookieAccept');
-  var rejectBtn = document.getElementById('cookieReject');
-
-  function loadGoogleAnalytics() {
-    if (!gaId || window.__gaLoaded) return;
-    window.__gaLoaded = true;
-    var s = document.createElement('script');
-    s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
-    document.head.appendChild(s);
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { window.dataLayer.push(arguments); }
-    window.gtag = gtag;
-    gtag('js', new Date());
-    gtag('config', gaId, { anonymize_ip: true });
-  }
-
-  function removeAnalyticsCookies() {
-    document.cookie.split(';').forEach(function (c) {
-      var name = c.split('=')[0].trim();
-      if (name.indexOf('_ga') === 0) {
-        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + location.hostname + ';';
-      }
-    });
-  }
-
-  function hideBanner() { if (banner) banner.hidden = true; }
-  function showBanner() { if (banner) banner.hidden = false; }
-  function getConsent() { try { return localStorage.getItem(STORAGE_KEY); } catch (e) { return null; } }
-  function setConsent(v) { try { localStorage.setItem(STORAGE_KEY, v); } catch (e) {} }
-
-  function applyStoredConsent() {
-    var consent = getConsent();
-    if (consent === 'accepted') { loadGoogleAnalytics(); hideBanner(); }
-    else if (consent === 'rejected') { hideBanner(); }
-    else { showBanner(); }
-  }
-
-  if (acceptBtn) acceptBtn.addEventListener('click', function () {
-    setConsent('accepted'); loadGoogleAnalytics(); hideBanner();
-  });
-  if (rejectBtn) rejectBtn.addEventListener('click', function () {
-    setConsent('rejected'); removeAnalyticsCookies(); hideBanner();
-  });
-
-  window.reopenCookieBanner = function () { showBanner(); };
-  applyStoredConsent();
-})();
-</script>
-<script src="../js/main.js?v=127" defer></script>
+<script src="../js/pricing-engine.js?v=106" defer></script>
+<script src="../js/main.js?v=106" defer></script>
 </body>
 </html>

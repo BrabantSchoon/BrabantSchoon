@@ -547,15 +547,3 @@ if (revealEls.length) {
     if (modalTimeField) modalTimeField.value = btn.dataset.label;
   }));
 })();
-
-// Header: transparant bovenaan, wit met schaduw na scroll
-(function () {
-  var header = document.querySelector('header.site-header');
-  if (!header) return;
-  function onScroll() {
-    if (window.scrollY > 20) header.classList.add('scrolled');
-    else header.classList.remove('scrolled');
-  }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-})();
