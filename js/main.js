@@ -84,19 +84,6 @@
   }
 })();
 
-// Voor/na-sleepbalk
-const csRange = document.getElementById('csRange');
-const csClip = document.getElementById('csBeforeClip');
-const csHandle = document.getElementById('csHandle');
-if (csRange && csClip && csHandle) {
-  const updateSlider = (v) => {
-    csClip.style.clipPath = `inset(0 ${100 - v}% 0 0)`;
-    csHandle.style.left = v + '%';
-  };
-  updateSlider(50);
-  csRange.addEventListener('input', (e) => updateSlider(e.target.value));
-}
-
 const revealEls = document.querySelectorAll('.reveal');
 if (revealEls.length) {
   const io = new IntersectionObserver((entries) => {

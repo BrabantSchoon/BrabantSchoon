@@ -412,31 +412,6 @@ section{padding:96px 0;}
 .sec-foot{text-align:center; margin-top:40px;}
 
 /* ---------- VOOR/NA SLEEPBALK ---------- */
-.compare-slider{
-  position:relative; border-radius:var(--radius-lg); overflow:hidden; aspect-ratio:16/10;
-  box-shadow:var(--shadow-lg); user-select:none; max-width:900px; margin:0 auto;
-}
-.compare-slider .cs-layer{position:absolute; inset:0; overflow:hidden;}
-.compare-slider .cs-before, .compare-slider .cs-after{
-  position:absolute; inset:0; background-size:cover; background-position:center;
-}
-.compare-slider .cs-before-clip{position:absolute; inset:0; clip-path:inset(0 50% 0 0);}
-.compare-slider .cs-label{
-  position:absolute; top:16px; z-index:2; font-size:11.5px; font-weight:700; letter-spacing:0.06em;
-  text-transform:uppercase; color:#fff; background:rgba(0,43,92,0.55); padding:6px 12px; border-radius:100px;
-}
-.compare-slider .cs-label.before{left:16px;} .compare-slider .cs-label.after{right:16px;}
-.compare-slider .cs-handle{position:absolute; top:0; bottom:0; left:50%; transform:translateX(-50%); width:0; pointer-events:none; z-index:2;}
-.compare-slider .cs-handle::before{content:''; position:absolute; top:0; bottom:0; left:-1.5px; width:3px; background:#fff; box-shadow:0 0 0 1px rgba(0,0,0,0.1);}
-.compare-slider .cs-handle::after{
-  content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:46px; height:46px;
-  background:#fff; border-radius:50%; box-shadow:0 8px 20px rgba(0,43,92,0.3);
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2310205C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 7l-5 5 5 5M16 7l5 5-5 5'/%3E%3C/svg%3E");
-  background-repeat:no-repeat; background-position:center; background-size:22px;
-}
-.compare-slider input[type="range"]{
-  position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:ew-resize; z-index:3;
-}
 .grid-3{display:grid; grid-template-columns:1fr; gap:22px;}
 @media(min-width:680px){.grid-3{grid-template-columns:repeat(2,1fr);}}
 @media(min-width:980px){.grid-3{grid-template-columns:repeat(3,1fr);}}
