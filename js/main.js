@@ -160,6 +160,23 @@
   const preChecked = form.querySelector('input[name="klanttype"]:checked');
   if (preChecked) applyKlanttype(TYPE_MAP[preChecked.value] || preChecked.value.toLowerCase());
 
+  // Klanttype voorselecteren via ?type=zakelijk|vve|particulier in de URL,
+  // bijv. vanaf de knop "Offerte aanvragen" op de zakelijke of particuliere
+  // pagina. De keuze blijft daarna gewoon handmatig aan te passen.
+  const QUERY_TYPE_MAP = { zakelijk: 'Bedrijf', bedrijf: 'Bedrijf', vve: 'VvE / organisatie', particulier: 'Particulier' };
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const requested = (params.get('type') || '').toLowerCase();
+    const wanted = QUERY_TYPE_MAP[requested];
+    if (wanted) {
+      const radio = Array.from(form.querySelectorAll('input[name="klanttype"]')).find(r => r.value === wanted);
+      if (radio) {
+        radio.checked = true;
+        applyKlanttype(TYPE_MAP[wanted]);
+      }
+    }
+  } catch (e) { /* URLSearchParams niet beschikbaar: gewoon geen voorselectie */ }
+
   // === Samenvatting vóór verzending ===
   function escapeHtml(str) {
     const d = document.createElement('div');
