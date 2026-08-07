@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "137"
+ASSET_VERSION = "139"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -900,9 +900,8 @@ def build_home():
           <li>{icon('check')}Actief in Brabant</li>
         </ul>
         <div class="hero-audience-links">
-          <span class="hero-audience-label">Direct naar:</span>
-          <a href="zakelijke-schoonmaak.html">Voor bedrijven {icon('arrow')}</a>
-          <a href="schoonmaak-particulieren.html">Voor particulieren {icon('arrow')}</a>
+          <a href="zakelijke-schoonmaak.html" class="btn-audience">Voor bedrijven</a>
+          <a href="schoonmaak-particulieren.html" class="btn-audience">Voor particulieren</a>
         </div>
       </div>
     </div>
@@ -930,12 +929,6 @@ def build_home():
       <div class="usp-grid reveal">
         {usp_html}
       </div>
-      <div class="steps reveal" style="margin-top:56px; border-top:1px solid var(--line); padding-top:40px;">
-        <div class="step"><div class="stepnum">{icon('chat')}01</div><h3>Aanvraag</h3><p>U laat weten wat u nodig heeft; wij denken direct mee over de aanpak.</p></div>
-        <div class="step"><div class="stepnum">{icon('pin')}02</div><h3>Locatiebezoek</h3><p>Een vrijblijvend gesprek op locatie, zodat de offerte precies aansluit op uw situatie.</p></div>
-        <div class="step"><div class="stepnum">{icon('doc')}03</div><h3>Offerte</h3><p>Een heldere offerte met vaste prijs en planning, zonder kleine lettertjes.</p></div>
-        <div class="step"><div class="stepnum">{icon('check')}04</div><h3>Uitvoering</h3><p>Een vast team gaat aan de slag; kwaliteit wordt doorlopend gecontroleerd.</p></div>
-      </div>
     </div>
   </section>
 
@@ -951,25 +944,11 @@ def build_home():
       <div class="area-tags reveal" style="margin-top:14px;">
         {kern_tags}
       </div>
-      <p class="prose reveal" style="text-align:center; margin-top:20px;">Uw organisatie of locatie staat er niet bij? <a href="contact.html" style="color:var(--link); font-weight:600;">Neem contact op</a> &mdash; we denken graag mee.</p>
-    </div>
-  </section>
-
-  <section class="section-tight">
-    <div class="wrap">
-      <div style="max-width:760px; margin:0 auto;">
-        <p class="prose reveal">Vanuit Helmond bedienen we organisaties in de Peelgemeenten, regio Eindhoven en andere delen van Brabant — van Deurne en Gemert-Bakel tot Asten, Someren, Geldrop-Mierlo en Laarbeek.</p>
-        <p class="prose reveal" style="margin-top:14px;">Wij zijn inzetbaar voor kantoorreiniging van bedrijfspanden, VvE-schoonmaak van gemeenschappelijke ruimtes, en periodieke schoonmaak op een vast ritme dat bij uw organisatie past. Daarnaast bieden we glasbewassing en opleveringsschoonmaak aan, zodat u voor vrijwel elke schoonmaakvraag bij één vaste partner terechtkunt.</p>
-      </div>
     </div>
   </section>
 
   <section style="background:var(--bg-soft);">
     <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="eyebrow">Reviews</span>
-        <h2>Wat klanten over BrabantSchoon zeggen.</h2>
-      </div>
       <div class="elfsight-wrap reveal">
         <script src="https://elfsightcdn.com/platform.js" async></script>
         <div class="elfsight-app-7ea68963-3f6d-4b24-8a1b-e38a25bac6e2" data-elfsight-app-lazy></div>
