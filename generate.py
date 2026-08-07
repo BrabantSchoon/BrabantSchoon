@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "135"
+ASSET_VERSION = "136"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -232,8 +232,10 @@ WERKGEBIED_OVERIG = ["Eindhoven", "Geldrop-Mierlo", "Nuenen", "Mierlo"]
 NAV_LINKS = [
     ("Home", "/"),
     ("Diensten", "diensten.html"),
-    ("Over ons", "over-ons.html"),
+    ("Zakelijk", "zakelijke-schoonmaak.html"),
+    ("Particulier", "schoonmaak-particulieren.html"),
     ("Werkgebied", "werkgebied.html"),
+    ("Over ons", "over-ons.html"),
     ("Contact", "contact.html"),
 ]
 
@@ -399,7 +401,7 @@ def render_footer(base):
     <div class="footer-top footer-top-3col">
       <div class="footer-col footer-brand-col">
         <img src="{base}images/logo.png" alt="BrabantSchoon" width="260" height="30">
-        <p class="footer-tagline">Professionele schoonmaakpartner voor bedrijven, VvE's en organisaties in Brabant.</p>
+        <p class="footer-tagline">Professionele schoonmaakpartner voor bedrijven, VvE's, organisaties en particulieren in Brabant.</p>
         <div class="footer-meta">KvK {KVK} &bull; BTW NL005380198B12</div>
       </div>
 
@@ -407,6 +409,7 @@ def render_footer(base):
         <h4>Snelle links</h4>
         <a href="/">Home</a>
         <a href="{base}diensten.html">Diensten</a>
+        <a href="{base}zakelijke-schoonmaak.html">Zakelijke schoonmaak</a>
         <a href="{base}schoonmaak-particulieren.html">Particuliere schoonmaak</a>
         <a href="{base}over-ons.html">Over ons</a>
         <a href="{base}werkgebied.html">Werkgebied</a>
@@ -525,12 +528,13 @@ def werkgebied_kaart(highlight_slug, base=""):
       </svg>
     </div>'''
 
-def cta_band(heading="Interesse in onze diensten?", sub="Vraag een vrijblijvende offerte aan of neem direct contact op.", base=""):
+def cta_band(heading="Interesse in onze diensten?", sub="Vraag een vrijblijvende offerte aan of neem direct contact op.", base="", type_param=""):
+    type_qs = f"?type={type_param}" if type_param else ""
     return f"""<div class="cta-band reveal">
     <h2>{heading}</h2>
     <p>{sub}</p>
     <div class="hero-actions">
-      <a href="{base}contact.html#offerteWizard" class="btn btn-primary">Vrijblijvende offerte</a>
+      <a href="{base}contact.html{type_qs}#offerteWizard" class="btn btn-primary">Vrijblijvende offerte</a>
       <a href="tel:{PHONE_TEL}" class="btn btn-outline">Neem contact op</a>
     </div>
   </div>"""
@@ -546,6 +550,42 @@ FAQ_ITEMS = [
     ("Hoe snel kunt u starten?", "Dat verschilt per situatie, maar we plannen doorgaans snel een kennismaking in. Bij spoed zijn we ook buiten kantooruren bereikbaar via telefoon of WhatsApp."),
     ("Is een offerte altijd vrijblijvend?", "Ja, elke offerte is geheel vrijblijvend en kosteloos. U beslist zelf of en hoe u verdergaat."),
 ]
+
+def choice_cards_block(base=""):
+    zakelijk_tags = "".join(f"<li>{icon('check')}{t}</li>" for t in [
+        "Kantoren en bedrijfsruimtes", "VvE's en trappenhallen", "Scholen en organisaties",
+        "Zorglocaties", "Periodieke schoonmaak", "Specialistische reiniging",
+    ])
+    particulier_tags = "".join(f"<li>{icon('check')}{t}</li>" for t in [
+        "Grote schoonmaak", "Verhuisschoonmaak", "Schoonmaak na verbouwing",
+        "Opleveringsschoonmaak", "Periodieke schoonmaak",
+    ])
+    return f"""<div class="choice-grid reveal">
+      <a href="{base}zakelijke-schoonmaak.html" class="choice-card">
+        <div class="choice-media">
+          <img src="{base}images/diensten/kantoorreiniging.jpg" alt="Zakelijke schoonmaak door BrabantSchoon" width="1200" height="800" loading="lazy" decoding="async">
+        </div>
+        <div class="choice-body">
+          <span class="choice-label">Voor bedrijven</span>
+          <h3>Zakelijke schoonmaak</h3>
+          <p>Een representatieve en schone werkomgeving, met duidelijke afspraken en een vast aanspreekpunt.</p>
+          <ul class="choice-tags">{zakelijk_tags}</ul>
+          <span class="btn btn-primary">Bekijk zakelijke schoonmaak</span>
+        </div>
+      </a>
+      <a href="{base}schoonmaak-particulieren.html" class="choice-card">
+        <div class="choice-media choice-media-light">
+          {service_illustration('key')}
+        </div>
+        <div class="choice-body">
+          <span class="choice-label">Voor particulieren</span>
+          <h3>Particuliere schoonmaak</h3>
+          <p>Professionele schoonmaak voor uw woning, wanneer het echt grondig en goed moet gebeuren.</p>
+          <ul class="choice-tags">{particulier_tags}</ul>
+          <span class="btn btn-primary">Bekijk particuliere schoonmaak</span>
+        </div>
+      </a>
+    </div>"""
 
 def reviews_widget_block():
     return """<div class="reviews-compact reveal">
@@ -863,9 +903,13 @@ def build_home():
     </div>
   </section>
 
-  <section class="reviews-strip">
+  <section id="keuze" class="section-tight">
     <div class="wrap">
-      {reviews_widget_block()}
+      <div class="sec-head reveal">
+        <span class="eyebrow">Zakelijk of particulier?</span>
+        <h2>Waarvoor zoekt u schoonmaak?</h2>
+      </div>
+      {choice_cards_block(base)}
     </div>
   </section>
 
@@ -879,7 +923,6 @@ def build_home():
         {service_cards}
       </div>
       <div class="sec-foot"><a href="diensten.html" class="btn btn-outline">Alle diensten</a></div>
-      <p class="prose reveal" style="text-align:center; margin-top:18px;">Particulier op zoek naar schoonmaak voor uw woning? Bekijk <a href="schoonmaak-particulieren.html" style="color:var(--link); font-weight:600;">schoonmaak voor particulieren</a>.</p>
     </div>
   </section>
 
@@ -887,7 +930,7 @@ def build_home():
     <div class="wrap">
       <div class="sec-head reveal">
         <span class="eyebrow">Waarom BrabantSchoon</span>
-        <h2>Waarom bedrijven voor BrabantSchoon kiezen.</h2>
+        <h2>Waarom klanten voor BrabantSchoon kiezen.</h2>
       </div>
       <div class="usp-grid reveal">
         {usp_html}
@@ -897,6 +940,19 @@ def build_home():
         <div class="step"><div class="stepnum">{icon('pin')}02</div><h3>Locatiebezoek</h3><p>Een vrijblijvend gesprek op locatie, zodat de offerte precies aansluit op uw situatie.</p></div>
         <div class="step"><div class="stepnum">{icon('doc')}03</div><h3>Offerte</h3><p>Een heldere offerte met vaste prijs en planning, zonder kleine lettertjes.</p></div>
         <div class="step"><div class="stepnum">{icon('check')}04</div><h3>Uitvoering</h3><p>Een vast team gaat aan de slag; kwaliteit wordt doorlopend gecontroleerd.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Reviews</span>
+        <h2>Wat klanten over BrabantSchoon zeggen.</h2>
+      </div>
+      <div class="elfsight-wrap reveal">
+        <script src="https://elfsightcdn.com/platform.js" async></script>
+        <div class="elfsight-app-7ea68963-3f6d-4b24-8a1b-e38a25bac6e2" data-elfsight-app-lazy></div>
       </div>
     </div>
   </section>
@@ -999,38 +1055,23 @@ def page_hero(eyebrow, title, lead, base, crumb_label, image=None, image_alt="")
 # =================================================================
 def build_diensten_overview():
     base = ""
-    cards = "\n    ".join(f"""<a href="diensten/{s['slug']}.html" class="service-card">
-      <div class="thumb {s['tint']}">{service_visual_from_root(s)}</div>
-      <div class="body"><h3>{s['name']}</h3><p>{s['short']}</p><span class="sc-link">Meer informatie {icon('arrow')}</span></div>
-    </a>""" for s in SERVICES)
-    particulier_card = f"""<a href="schoonmaak-particulieren.html" class="service-card">
-      <div class="thumb tint-1">{service_illustration('key')}</div>
-      <div class="body"><h3>Schoonmaak voor particulieren</h3><p>Verhuisschoonmaak, grote schoonmaak, schoonmaak na verbouwing en meer voor uw woning.</p><span class="sc-link">Meer informatie {icon('arrow')}</span></div>
-    </a>"""
     body = f"""
-  {page_hero("Diensten", "Onze diensten.", "Van dagelijks onderhoud tot specialistisch werk.", base, "Diensten")}
+  {page_hero("Diensten", "Onze diensten.", "Van dagelijks onderhoud tot specialistisch werk \u2014 voor bedrijven en particulieren.", base, "Diensten")}
   <section class="section-tight" style="padding-bottom:0;">
     <div class="wrap-narrow">
-      <p class="prose reveal">Elk pand is anders. De juiste aanpak en frequentie hangen af van het type ruimte, het gebruik ervan en de wensen van uw organisatie \u2014 daarom stemmen we onderstaande diensten altijd af op uw specifieke situatie, in plaats van een standaardpakket aan te bieden.</p>
+      <p class="prose reveal">Elke locatie is anders. De juiste aanpak en frequentie hangen af van het type ruimte, het gebruik ervan en uw wensen \u2014 daarom stemmen we onze diensten altijd af op uw specifieke situatie. Kies hieronder de richting die bij u past voor een volledig overzicht.</p>
     </div>
   </section>
   <section>
     <div class="wrap">
-      <div class="sec-head reveal"><span class="eyebrow">Zakelijk</span><h2>Zakelijke schoonmaak.</h2></div>
-      <div class="grid-3 reveal">{cards}</div>
+      {choice_cards_block(base)}
     </div>
   </section>
-  <section style="background:var(--bg-soft);">
-    <div class="wrap">
-      <div class="sec-head reveal"><span class="eyebrow">Particulier</span><h2>Particuliere schoonmaak.</h2></div>
-      <div class="grid-3 reveal" style="max-width:400px;">{particulier_card}</div>
-    </div>
-  </section>
-  <section><div class="wrap">{cta_band(base=base)}</div></section>
+  <section style="background:var(--bg-soft);"><div class="wrap">{cta_band(base=base)}</div></section>
 """
     write("diensten.html", page_shell(
-        "Diensten | Schoonmaakbedrijf voor Brabant | BrabantSchoon",
-        "Bekijk alle diensten van BrabantSchoon: kantoorreiniging, glasbewassing, gevelreiniging, opleveringsschoonmaak en meer, voor bedrijven in Brabant.",
+        "Diensten | Zakelijk &amp; particulier | BrabantSchoon",
+        "Bekijk de diensten van BrabantSchoon: zakelijke schoonmaak voor kantoren en VvE's, en particuliere schoonmaak voor uw woning. Vraag een offerte aan.",
         "diensten.html", base, "diensten.html", body, breadcrumb_schema("Diensten", "diensten.html")
     ))
 
@@ -1060,7 +1101,7 @@ def build_service_pages():
           <p class="prose">{s['intro']}</p>
           <ul class="prose" style="margin-top:16px;">{bullets_html}</ul>
           <div class="hero-actions" style="margin-top:24px;">
-            <a href="{base}contact.html#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
+            <a href="{base}contact.html?type=zakelijk#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
           </div>
         </div>
@@ -1092,6 +1133,80 @@ def build_service_pages():
             f"diensten/{s['slug']}.html", base, "diensten.html",
             body, service_schema(s) + "\n" + breadcrumb_schema(s['name'], f"diensten/{s['slug']}.html") + "\n" + faq_schema(s["faqs"])
         ))
+
+# =================================================================
+# ZAKELIJKE SCHOONMAAK
+# =================================================================
+def build_zakelijke_pagina():
+    base = ""
+    service_grid_html = "\n    ".join(f"""<a href="diensten/{s['slug']}.html" class="service-card">
+      <div class="thumb {s['tint']}">{service_visual_from_root(s)}</div>
+      <div class="body"><h3>{s['name']}</h3><p>{s['short']}</p><span class="sc-link">Meer informatie {icon('arrow')}</span></div>
+    </a>""" for s in SERVICES)
+    sector_tags = "\n      ".join(f'<span class="area-tag primary">{s}</span>' for s in
+        ["Kantoren", "Bedrijfsverzamelgebouwen", "VvE's", "Scholen", "Zorglocaties", "Winkels &amp; praktijken", "Bedrijfsruimtes"])
+    zakelijke_faqs = [
+        ("Werken jullie met een vast contract of ook eenmalig?", "Beide is mogelijk \u2014 van een vaste, periodieke schoonmaakbeurt tot een eenmalige opdracht zoals een opleveringsschoonmaak."),
+        ("Wat kost zakelijke schoonmaak?", "Dat hangt af van het pand, de oppervlakte, de gewenste frequentie en de werkzaamheden. We werken met een offerte op maat in plaats van vaste tarieven."),
+        ("Werken jullie ook voor scholen en zorglocaties?", "Ja, naast kantoren en VvE's zijn we ook inzetbaar voor onderwijs- en zorglocaties, met oog voor de hygiëne-eisen die daarbij horen."),
+        ("Hoe snel kunnen jullie starten?", "Na een kort kennismakingsgesprek bespreken we de mogelijkheden en een realistische startdatum."),
+    ]
+    faq_html = faq_block(zakelijke_faqs)
+    hero = page_hero("Zakelijke schoonmaak", "Schoonmaak voor bedrijven en organisaties.",
+                      "Een representatieve, schone werkomgeving voor kantoren, VvE's, scholen en andere organisaties \u2014 met duidelijke afspraken en een vast aanspreekpunt.",
+                      base, "Zakelijke schoonmaak")
+    body = f"""
+  {hero}
+  <section class="section-tight">
+    <div class="wrap-narrow">
+      <p class="prose reveal">BrabantSchoon verzorgt zakelijke schoonmaak op maat: de juiste aanpak en frequentie hangen af van uw pand, het gebruik ervan en uw wensen. Van een vast, periodiek contract tot een eenmalige opdracht \u2014 hieronder vindt u een overzicht van onze zakelijke dienstverlening.</p>
+    </div>
+  </section>
+  <section class="section-tight" style="padding-top:0;">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Onze diensten</span><h2>Waarvoor u ons kunt inschakelen.</h2></div>
+      <div class="grid-3 reveal">{service_grid_html}</div>
+    </div>
+  </section>
+  <section style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Voor wie</span><h2>Sectoren die we bedienen.</h2></div>
+      <div class="area-tags reveal">
+      {sector_tags}
+      </div>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="wrap">
+      <div class="two-col reveal">
+        <div>
+          <p class="prose"><strong style="color:var(--ink);">Geschikt voor:</strong> kantoren, bedrijfsverzamelgebouwen, VvE's, scholen, zorglocaties, winkels, praktijken en andere organisaties met een terugkerende of eenmalige schoonmaakvraag.</p>
+          <div class="hero-actions" style="margin-top:24px;">
+            <a href="{base}contact.html?type=zakelijk#offerteWizard" class="btn btn-primary">Vraag vrijblijvend een offerte aan</a>
+            <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
+          </div>
+        </div>
+        <div>
+          <div class="faq">{faq_html}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section style="background:var(--bg-soft);"><div class="wrap">{cta_band("Interesse in zakelijke schoonmaak?", "Vraag vrijblijvend een offerte aan of neem direct contact op.", base, type_param="zakelijk")}</div></section>
+  <section class="section-tight">
+    <div class="wrap-narrow" style="text-align:center;">
+      <p class="prose">Actief in <a href="{base}werkgebied.html" style="color:var(--link); font-weight:600;">Brabant</a>, vanuit {CITY} \u2014 op zoek naar schoonmaak voor uw eigen woning? Bekijk <a href="{base}schoonmaak-particulieren.html" style="color:var(--link); font-weight:600;">particuliere schoonmaak</a>.</p>
+    </div>
+  </section>
+"""
+    zakelijk_svc_schema = {"name": "Zakelijke schoonmaak", "short": "Professionele zakelijke schoonmaak voor kantoren, VvE's, scholen, zorglocaties en andere organisaties in Brabant."}
+    write("zakelijke-schoonmaak.html", page_shell(
+        "Zakelijke schoonmaak | BrabantSchoon",
+        "Zakelijke schoonmaak door BrabantSchoon: kantoren, VvE's, scholen en zorglocaties in Brabant. Vraag vrijblijvend een offerte op maat aan.",
+        "zakelijke-schoonmaak.html", base, "zakelijke-schoonmaak.html",
+        body,
+        service_schema(zakelijk_svc_schema) + "\n" + breadcrumb_schema("Zakelijke schoonmaak", "zakelijke-schoonmaak.html") + "\n" + faq_schema(zakelijke_faqs)
+    ))
 
 # =================================================================
 # PARTICULIERE SCHOONMAAK
@@ -1147,7 +1262,7 @@ def build_particulieren_page():
         <div>
           <p class="prose"><strong style="color:var(--ink);">Geschikt voor:</strong> particulieren met een verhuizing, een grote schoonmaakklus, een woning na verbouwing, of behoefte aan periodieke ondersteuning bij het schoonhouden van hun woning.</p>
           <div class="hero-actions" style="margin-top:24px;">
-            <a href="{base}contact.html#offerteWizard" class="btn btn-primary">Vraag vrijblijvend een offerte aan</a>
+            <a href="{base}contact.html?type=particulier#offerteWizard" class="btn btn-primary">Vraag vrijblijvend een offerte aan</a>
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
           </div>
         </div>
@@ -1163,10 +1278,10 @@ def build_particulieren_page():
       <div class="grid-3 reveal">{related_html}</div>
     </div>
   </section>
-  <section style="background:var(--bg-soft);"><div class="wrap">{cta_band("Interesse in particuliere schoonmaak?", "Vraag vrijblijvend een offerte aan of neem direct contact op.", base)}</div></section>
+  <section style="background:var(--bg-soft);"><div class="wrap">{cta_band("Interesse in particuliere schoonmaak?", "Vraag vrijblijvend een offerte aan of neem direct contact op.", base, type_param="particulier")}</div></section>
   <section class="section-tight">
     <div class="wrap-narrow" style="text-align:center;">
-      <p class="prose">Particuliere schoonmaak bieden we vanuit {CITY} en in omliggende plaatsen. Voor grotere opdrachten zijn ook werkzaamheden elders in <a href="{base}werkgebied.html" style="color:var(--link); font-weight:600;">Brabant</a> bespreekbaar \u2014 bekijk ook onze <a href="{base}diensten.html" style="color:var(--link); font-weight:600;">zakelijke diensten</a>.</p>
+      <p class="prose">Particuliere schoonmaak bieden we vanuit {CITY} en in omliggende plaatsen. Voor grotere opdrachten zijn ook werkzaamheden elders in <a href="{base}werkgebied.html" style="color:var(--link); font-weight:600;">Brabant</a> bespreekbaar \u2014 op zoek naar schoonmaak voor uw bedrijf? Bekijk onze <a href="{base}zakelijke-schoonmaak.html" style="color:var(--link); font-weight:600;">zakelijke schoonmaak</a>.</p>
     </div>
   </section>
 """
@@ -1510,7 +1625,7 @@ def build_kerngebied_pages():
           <p class="prose" style="margin-top:14px;">{k['waarom']}</p>
           <p class="prose" style="margin-top:12px;"><strong style="color:var(--ink);">Voor wie:</strong> {k['klanten']}.</p>
           <div class="hero-actions" style="margin-top:24px;">
-            <a href="{base}contact.html#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
+            <a href="{base}contact.html?type=zakelijk#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
           </div>
         </div>
@@ -1585,7 +1700,7 @@ def build_location_pages():
         <div>
           <p class="prose">Ons kerngebied is Helmond en de Peelgemeenten \u2014 vandaar rijden we uit. Voor {loc['name']} werken we vooral bij grotere of terugkerende opdrachten, zoals een vast kantoorcontract, VvE-schoonmaak of een omvangrijke opleveringsschoonmaak.</p>
           <div class="hero-actions" style="margin-top:26px;">
-            <a href="{base}contact.html#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
+            <a href="{base}contact.html?type=zakelijk#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
           </div>
         </div>
@@ -1726,6 +1841,8 @@ def build_legal():
     <p>Bij toestemming gebruiken we Google Analytics 4 om geanonimiseerde statistieken te verzamelen over websitebezoek, zoals bezochte pagina's en algemene herkomst van bezoekers. Deze gegevens worden verwerkt door Google conform het eigen privacybeleid van Google.</p>
     <h2>Google Maps</h2>
     <p>Op de contactpagina kunt u desgewenst een kaart van Google Maps laden om onze locatie te bekijken. Deze kaart wordt niet automatisch geladen: pas wanneer u zelf op "Kaart laden" klikt, wordt de iframe van Google ingeladen. Voor die klik worden er geen gegevens met Google gedeeld via deze kaart. Zodra u de kaart laadt, kan Google gegevens verzamelen conform het eigen privacybeleid van Google.</p>
+    <h2>Google Reviews (Elfsight)</h2>
+    <p>Op de homepage tonen we onze Google-beoordelingen via een widget van Elfsight. Elfsight kan hierbij cookies of vergelijkbare technieken plaatsen, conform het eigen privacybeleid van Elfsight.</p>
     <h2>Offerteformulier</h2>
     <p>Het offerteformulier wordt verwerkt via een externe formulierdienst. Zie onze <a href="{base}privacy.html" style="color:var(--link); font-weight:600;">privacyverklaring</a> voor meer informatie over hoe wij met uw gegevens omgaan.</p>
     <h2>Vragen</h2>
@@ -1741,7 +1858,7 @@ def build_seo_files():
     import datetime
     today = datetime.date.today().isoformat()
     urls = [
-        ("", "1.0"), ("diensten.html", "0.9"), ("schoonmaak-particulieren.html", "0.85"), ("werkgebied.html", "0.9"),
+        ("", "1.0"), ("diensten.html", "0.9"), ("zakelijke-schoonmaak.html", "0.9"), ("schoonmaak-particulieren.html", "0.9"), ("werkgebied.html", "0.9"),
         ("over-ons.html", "0.7"), ("contact.html", "0.8"),
         ("privacy.html", "0.3"), ("voorwaarden.html", "0.3"), ("cookiebeleid.html", "0.3"),
     ]
@@ -1760,6 +1877,7 @@ if __name__ == "__main__":
     build_home()
     build_diensten_overview()
     build_service_pages()
+    build_zakelijke_pagina()
     build_particulieren_page()
     build_over_ons()
     build_werkgebied()

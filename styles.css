@@ -90,7 +90,7 @@ body.home-hero main{padding-top:76px;}
 body.home-hero .hero-full-home{margin-top:-76px;}
 .nav{display:flex; align-items:center; justify-content:space-between; padding:14px 0; gap:20px;}
 .logo img{height:28px; width:auto;}
-nav.links{display:none; align-items:center; gap:30px; font-size:14.5px; font-weight:500;}
+nav.links{display:none; align-items:center; gap:20px; font-size:14px; font-weight:500;}
 nav.links > a{text-decoration:none; color:var(--ink-soft); transition:color .15s; padding:8px 0;}
 nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 @media(min-width:900px){nav.links{display:flex;}}
@@ -532,6 +532,33 @@ section{padding:96px 0;}
   font-size:13px; font-weight:600; color:var(--link); transition:color .2s ease;
 }
 .service-card .sc-link svg{width:13px; height:13px; flex-shrink:0; transition:transform .2s ease;}
+
+/* ---------- Keuze-kaarten: zakelijk / particulier ---------- */
+.choice-grid{display:grid; grid-template-columns:1fr; gap:26px;}
+@media(min-width:760px){.choice-grid{grid-template-columns:1fr 1fr;}}
+.choice-card{
+  display:flex; flex-direction:column; text-decoration:none; color:var(--ink);
+  background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg); overflow:hidden;
+  box-shadow:var(--shadow-sm); transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.choice-card:hover{transform:translateY(-4px); box-shadow:var(--shadow-md); border-color:var(--link);}
+.choice-media{aspect-ratio:16/9; overflow:hidden; background:var(--bg-soft);}
+.choice-media img{width:100%; height:100%; object-fit:cover; transition:transform .35s ease;}
+.choice-card:hover .choice-media img{transform:scale(1.05);}
+.choice-media-light{display:flex; align-items:center; justify-content:center; background:linear-gradient(150deg,#EAF3FF 0%,#EFFBF3 100%);}
+.choice-media-light svg{width:34%; height:34%;}
+.choice-body{padding:24px 26px 28px; display:flex; flex-direction:column; flex-grow:1;}
+.choice-label{font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--link);}
+.choice-body h3{font-size:22px; margin-top:8px;}
+.choice-body > p{color:var(--ink-soft); font-size:14.5px; margin-top:10px; line-height:1.55;}
+.choice-tags{list-style:none; margin:16px 0 0; padding:0; display:grid; grid-template-columns:1fr; gap:8px 16px;}
+@media(min-width:420px){.choice-tags{grid-template-columns:1fr 1fr;}}
+.choice-tags li{display:flex; align-items:center; gap:7px; font-size:13px; font-weight:600; color:var(--ink);}
+.choice-tags svg{width:15px; height:15px; color:var(--green); flex-shrink:0;}
+.choice-body .btn{margin-top:22px; align-self:flex-start; pointer-events:none;}
+
+/* ---------- Elfsight Google Reviews ---------- */
+.elfsight-wrap{max-width:920px; margin:0 auto; overflow:hidden;}
 .service-card:hover .sc-link{color:var(--navy);}
 .service-card:hover .sc-link svg{transform:translateX(3px);}
 
