@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "119"
+ASSET_VERSION = "124"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -187,13 +187,13 @@ SERVICES = [
      "short": "Vaste of periodieke reiniging van uw kantoorpand, buiten werktijd.",
      "intro": "Een schone werkomgeving draagt bij aan hoe medewerkers en bezoekers uw bedrijf ervaren. We verzorgen de reiniging van uw kantoor op een vast, betrouwbaar ritme.",
      "bullets": ["Bureaus, vloeren en sanitair", "Pantry's en vergaderruimtes", "Afvalverwerking", "Frequentie in overleg"],
-     "for": "Kantoren en praktijken in Brabant.", "faqs": [("Hoe vaak kan kantoorreiniging plaatsvinden?", "Dat bepaalt u zelf: van dagelijks tot wekelijks, afhankelijk van de grootte en het gebruik van uw kantoor."), ("Werken jullie buiten kantoortijden?", "Ja, we plannen de reiniging doorgaans buiten werktijd, zodat uw bedrijfsvoering geen hinder ondervindt.")]},
+     "for": "Kantoren en praktijken in Brabant.", "faqs": [("Hoe vaak kan kantoorreiniging plaatsvinden?", "Dat bepaalt u zelf: van dagelijks tot wekelijks, afhankelijk van de grootte en het gebruik van uw kantoor."), ("Werkt u buiten kantoortijden?", "Ja, we plannen de reiniging doorgaans buiten werktijd, zodat uw bedrijfsvoering geen hinder ondervindt.")]},
     {"slug": "glasbewassing", "icon": "window", "tint": "tint-2",
      "name": "Glasbewassing",
      "short": "Ramen en kozijnen streeploos schoon, binnen en buiten.",
      "intro": "Helder glaswerk maakt direct verschil in de uitstraling van een pand. We reinigen ramen en kozijnen zorgvuldig, eenmalig of op een vast interval.",
      "bullets": ["Binnen- en buitenzijde", "Kozijnen en sponningen", "Op aanvraag of vast interval"],
-     "for": "Kantoren, winkels en woningen.", "faqs": [("Hoe vaak is glasbewassing nodig?", "Dat hangt af van de locatie; een vast interval van enkele weken tot maandelijks is gebruikelijk."), ("Kunnen jullie ook hoger gelegen ramen reinigen?", "Ja, met de juiste hulpmiddelen reinigen we ramen op verschillende hoogtes.")]},
+     "for": "Kantoren, winkels en woningen.", "faqs": [("Hoe vaak is glasbewassing nodig?", "Dat hangt af van de locatie; een vast interval van enkele weken tot maandelijks is gebruikelijk."), ("Kunt u ook hoger gelegen ramen laten reinigen?", "Ja, met de juiste hulpmiddelen reinigen we ramen op verschillende hoogtes.")]},
     {"slug": "gevelreiniging", "icon": "facade", "tint": "tint-3",
      "name": "Gevelreiniging",
      "short": "Reiniging van gevels en buitenmuren.",
@@ -223,18 +223,11 @@ SERVICES = [
      "short": "Maatwerk voor vloeren, tapijt en bijzondere oppervlakken.",
      "intro": "Sommige oppervlakken vragen specifieke kennis. Van tapijtreiniging tot vloerbehandeling: we pakken werk aan dat verder gaat dan regulier onderhoud.",
      "bullets": ["Tapijt- en stofferingreiniging", "Vloerbehandeling", "Op aanvraag"],
-     "for": "Bedrijven met specifieke reinigingsvragen.", "faqs": [("Welke oppervlakken kunnen jullie specialistisch reinigen?", "Onder andere tapijt, stoffering en diverse vloertypen, afhankelijk van de vraag."), ("Is specialistische reiniging ook eenmalig mogelijk?", "Ja, dit is vaak maatwerk en prima als eenmalige beurt aan te vragen.")]},
+     "for": "Bedrijven met specifieke reinigingsvragen.", "faqs": [("Welke oppervlakken kunt u specialistisch laten reinigen?", "Onder andere tapijt, stoffering en diverse vloertypen, afhankelijk van de vraag."), ("Is specialistische reiniging ook eenmalig mogelijk?", "Ja, dit is vaak maatwerk en prima als eenmalige beurt aan te vragen.")]},
 ]
 
 WERKGEBIED_KERN = ["Helmond", "Deurne", "Asten", "Someren", "Gemert-Bakel", "Laarbeek"]
 WERKGEBIED_OVERIG = ["Eindhoven", "Geldrop-Mierlo", "Nuenen", "Mierlo"]
-
-FORM_SERVICE_OPTIONS = [
-    "Kantoorreiniging", "Glasbewassing", "Gevelreiniging", "VvE-schoonmaak",
-    "Opleveringsschoonmaak", "Specialistische reiniging", "Winkelreiniging",
-    "Praktijkreiniging", "Trappenhuisreiniging", "Periodieke schoonmaak",
-    "Eenmalige schoonmaak", "Anders...",
-]
 
 NAV_LINKS = [
     ("Home", "/"),
@@ -422,23 +415,23 @@ def render_footer(base):
       </div>
 
       <div class="footer-col footer-form-col">
-        <h4>Vrijblijvend kennismaken?</h4>
-        <p class="footer-form-intro">Laat uw gegevens achter, wij nemen doorgaans binnen \u00e9\u00e9n werkdag contact op.</p>
-        <form name="footer-offerte" method="POST" action="https://api.web3forms.com/submit" class="footer-form">
+        <h4>Snel contact aanvragen</h4>
+        <p class="footer-form-intro">Laat uw naam en telefoonnummer achter. Wij nemen doorgaans binnen \u00e9\u00e9n werkdag contact met u op.</p>
+        <form name="footer-terugbel" method="POST" action="https://api.web3forms.com/submit" class="footer-form">
           <input type="hidden" name="access_key" value="abc98c0d-af16-42b0-ae5c-3337f35e5299">
-          <input type="hidden" name="subject" value="Nieuwe offerteaanvraag via de footer">
+          <input type="hidden" name="subject" value="Terugbelverzoek via de footer (geen volledige offerteaanvraag)">
           <input type="hidden" name="redirect" value="{SITE_URL}/thanks.html">
           <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
           <div class="footer-form-row">
             <input type="text" name="naam" placeholder="Naam" required>
-            <input type="tel" name="telefoon" placeholder="Telefoonnummer" required>
+            <input type="tel" name="telefoon" placeholder="Telefoonnummer" required pattern="[0-9+\\-\\s()]{{6,}}" title="Gebruik alleen cijfers, spaties en +/-/()">
           </div>
           <div class="footer-form-row">
             <input type="email" name="email" placeholder="E-mailadres" required>
             <input type="text" name="bedrijfsnaam" placeholder="Bedrijfsnaam (optioneel)">
           </div>
-          <textarea name="bericht" placeholder="Bericht" rows="2"></textarea>
-          <button type="submit" class="btn btn-primary footer-form-submit">Neem contact met ons op</button>
+          <textarea name="bericht" placeholder="Bericht (optioneel)" rows="2"></textarea>
+          <button type="submit" class="btn btn-primary footer-form-submit">Laat mij terugbellen</button>
         </form>
       </div>
     </div>
@@ -550,7 +543,7 @@ FAQ_ITEMS = [
     ("In welke regio\u2019s is BrabantSchoon actief?", f"BrabantSchoon is actief in Brabant, vanuit onze thuisbasis in {CITY}. Rond {CITY} en de Peelgemeenten \u2014 Deurne, Asten, Someren, Gemert-Bakel en Laarbeek \u2014 zijn we het snelst ter plaatse; voor opdrachten elders in de provincie rijden we graag mee."),
     ("Werk ik steeds met dezelfde persoon of hetzelfde team?", "Ja, u krijgt een vast aanspreekpunt en een vast team dat uw locatie kent \u2014 zodat u niet steeds opnieuw hoeft uit te leggen hoe u het wilt."),
     ("Kan ik ook een eenmalige schoonmaakbeurt aanvragen?", "Ja, naast vaste afspraken verzorgen we ook maatwerk voor eenmalige beurten, bijvoorbeeld bij een oplevering of verhuizing."),
-    ("Hoe snel kunnen jullie starten?", "Dat verschilt per situatie, maar we plannen doorgaans snel een kennismaking in. Bij spoed zijn we ook buiten kantooruren bereikbaar via telefoon of WhatsApp."),
+    ("Hoe snel kunt u starten?", "Dat verschilt per situatie, maar we plannen doorgaans snel een kennismaking in. Bij spoed zijn we ook buiten kantooruren bereikbaar via telefoon of WhatsApp."),
     ("Is een offerte altijd vrijblijvend?", "Ja, elke offerte is geheel vrijblijvend en kosteloos. U beslist zelf of en hoe u verdergaat."),
 ]
 
@@ -562,37 +555,40 @@ def reviews_widget_block():
       <a href="https://www.google.com/search?q=BrabantSchoon+Helmond" target="_blank" rel="noopener" class="btn btn-outline">Bekijk onze reviews op Google</a>
     </div>"""
 
-FORM_SERVICE_OPTIONS = [
-    "Kantoorreiniging", "Glasbewassing", "Gevelreiniging", "VvE-schoonmaak",
-    "Opleveringsschoonmaak", "Specialistische reiniging", "Winkelreiniging",
-    "Praktijkreiniging", "Trappenhuisreiniging", "Periodieke schoonmaak",
-    "Eenmalige schoonmaak", "Anders...",
-]
-
 WIZARD_KLANTTYPE = [
     ("Bedrijf", "office", "Kantoor, winkel of ander bedrijfspand"),
     ("VvE / organisatie", "building", "Vereniging van eigenaars of instelling"),
     ("Particulier", "key", "Schoonmaak voor uw eigen woning"),
 ]
 
-WIZARD_DIENSTEN = [
-    ("Kantoorreiniging", "office", "Kantoor, praktijk of bedrijfspand"),
-    ("Glasbewassing", "window", "Ramen en kozijnen binnen en buiten"),
-    ("Gevelreiniging", "facade", "Buitengevel of buitenmuur"),
-    ("VvE-schoonmaak", "building", "Trappenhuis of gemeenschappelijke ruimte"),
-    ("Opleveringsschoonmaak", "key", "Verhuizing, oplevering of verbouwing"),
-    ("Specialistische reiniging", "spark", "Tapijt, vloer of maatwerk"),
-    ("Winkelreiniging", "shop", "Winkel of showroom"),
-    ("Praktijkreiniging", "practice", "Zorg- of behandelpraktijk"),
-    ("Trappenhuisreiniging", "stairs", "Gemeenschappelijk trappenhuis"),
-    ("Periodieke schoonmaak", "clock", "Vast ritme, wekelijks of maandelijks"),
-    ("Eenmalige schoonmaak", "check", "Losse, eenmalige beurt"),
-    ("Verhuisschoonmaak", "key", "Woning schoon voor of na de verhuizing"),
-    ("Grote schoonmaak woning", "spark", "Eenmalige, grondige beurt voor uw woning"),
-    ("Schoonmaak na verbouwing", "check", "Bouwstof en normaal schoonmaakvuil verwijderen"),
-    ("Periodieke schoonmaak (particulier)", "clock", "Vaste, terugkerende schoonmaak van uw woning"),
-    ("Schoonmaak bij verkoop/verhuur", "doc", "Woning schoon voor bezichtiging of oplevering"),
-    ("Anders...", "chat", "Vertel ons uw situatie"),
+# Centrale dienstenlijst. Elke dienst hoort bij 1 of meer klanttypes ("bedrijf",
+# "vve", "particulier"). De wizard rendert alle opties EENMAAL in de HTML (met
+# data-customer-types), en JavaScript toont/verbergt per klanttype — zo blijft de
+# lijst 1 onderhoudbare bron in plaats van 3 losse, uit de pas lopende lijsten.
+MASTER_DIENSTEN = [
+    ("Kantoorreiniging", "office", "Kantoor, praktijk of bedrijfspand", ["bedrijf"]),
+    ("Periodieke bedrijfsschoonmaak", "clock", "Vast ritme, wekelijks of maandelijks", ["bedrijf"]),
+    ("Winkel- of showroomreiniging", "shop", "Winkel of showroom", ["bedrijf"]),
+    ("Praktijk- of zorglocatiereiniging", "practice", "Zorg- of behandelpraktijk", ["bedrijf"]),
+    ("Industri\u00eble schoonmaak", "building", "Bedrijfshal of productieruimte", ["bedrijf"]),
+    ("Evenementenreiniging", "check", "Voor of na een evenement", ["bedrijf"]),
+    ("VvE-schoonmaak", "building", "Trappenhuis of gemeenschappelijke ruimte", ["vve"]),
+    ("Trappenhuisreiniging", "stairs", "Gemeenschappelijk trappenhuis", ["vve"]),
+    ("Schoonmaak van gemeenschappelijke ruimtes", "building", "Entree, gangen en bergingen", ["vve"]),
+    ("Periodieke schoonmaak", "clock", "Vast ritme, wekelijks of maandelijks", ["vve"]),
+    ("Schoonmaak van scholen of instellingen", "school", "Onderwijs- of instellingslocatie", ["vve"]),
+    ("Zorglocaties", "practice", "Zorginstelling of behandellocatie", ["vve"]),
+    ("Glasbewassing", "window", "Ramen en kozijnen binnen en buiten", ["bedrijf", "vve"]),
+    ("Gevelreiniging", "facade", "Buitengevel of buitenmuur", ["bedrijf", "vve"]),
+    ("Opleveringsschoonmaak", "key", "Verhuizing, oplevering of verbouwing", ["bedrijf", "vve"]),
+    ("Specialistische reiniging", "spark", "Tapijt, vloer of maatwerk", ["bedrijf", "vve"]),
+    ("Periodieke huishoudelijke schoonmaak", "clock", "Vaste, terugkerende schoonmaak van uw woning", ["particulier"]),
+    ("Eenmalige grote schoonmaak", "spark", "Grondige beurt zonder vast contract", ["particulier"]),
+    ("Verhuisschoonmaak", "key", "Woning schoon voor of na de verhuizing", ["particulier"]),
+    ("Schoonmaak na verbouwing", "check", "Bouwstof en normaal schoonmaakvuil verwijderen", ["particulier"]),
+    ("Opleveringsschoonmaak bij verkoop of verhuur", "doc", "Woning schoon voor bezichtiging of oplevering", ["particulier"]),
+    ("Ramen wassen / glasbewassing", "window", "Ramen en kozijnen van uw woning", ["particulier"]),
+    ("Anders / eigen omschrijving", "chat", "Vertel ons uw situatie", ["bedrijf", "vve", "particulier"]),
 ]
 
 WIZARD_OPPERVLAKTE = [
@@ -611,51 +607,78 @@ WIZARD_FREQUENTIE = [
     ("In overleg", "We bespreken de frequentie samen"),
 ]
 
+# Vraag- en hulpteksten per stap, per klanttype. Wordt door JavaScript ingezet
+# zodra een klanttype gekozen is (zie main.js), zodat bijv. "Hoe groot is de
+# locatie?" voor een particulier "Hoe groot is de woning ongeveer?" wordt.
+WIZARD_STEP_LABELS = {
+    "bedrijf": {
+        "oppervlakte_q": "Hoe groot is de locatie ongeveer?",
+        "oppervlakte_sub": "Een schatting is voldoende.",
+    },
+    "vve": {
+        "oppervlakte_q": "Hoe groot is het gebouw of de gemeenschappelijke ruimte ongeveer?",
+        "oppervlakte_sub": "Een schatting is voldoende.",
+    },
+    "particulier": {
+        "oppervlakte_q": "Hoe groot is de woning ongeveer?",
+        "oppervlakte_sub": "Een schatting is voldoende.",
+    },
+}
+
 def radio_cards(name, options, columns=3):
     cards = []
     for opt in options:
-        if len(opt) == 3:
+        types = None
+        if len(opt) == 4:
+            label, icon_name, desc, types = opt
+        elif len(opt) == 3:
             label, icon_name, desc = opt
-            icon_html = f'<div class="rc-icon">{icon(icon_name)}</div>'
         else:
             label, desc = opt
-            icon_html = ""
+            icon_name = None
+        icon_html = f'<div class="rc-icon">{icon(icon_name)}</div>' if icon_name else ""
         opt_id = f"{name}-{re.sub(r'[^a-z0-9]+', '-', label.lower())}"
-        cards.append(f"""<input type="radio" name="{name}" id="{opt_id}" value="{label}" class="rc-input" required>
+        type_attr = f' data-customer-types="{" ".join(types)}"' if types else ""
+        wrapper_open = f'<div class="rc-wrap"{type_attr}>' if types else ""
+        wrapper_close = "</div>" if types else ""
+        cards.append(f"""{wrapper_open}<input type="radio" name="{name}" id="{opt_id}" value="{label}" class="rc-input" required>
       <label for="{opt_id}" class="rc-card">
         {icon_html}
         <span class="rc-label">{label}</span>
         <span class="rc-desc">{desc}</span>
-      </label>""")
+      </label>{wrapper_close}""")
     return f'<div class="radio-cards cols-{columns}">' + "\n      ".join(cards) + "</div>"
 
 def contact_form():
     klanttype_cards = radio_cards("klanttype", WIZARD_KLANTTYPE, columns=3)
-    dienst_cards = radio_cards("dienst", WIZARD_DIENSTEN, columns=3)
+    dienst_cards = radio_cards("dienst", MASTER_DIENSTEN, columns=3)
     opp_cards = radio_cards("oppervlakte", WIZARD_OPPERVLAKTE, columns=2)
     freq_cards = radio_cards("frequentie", WIZARD_FREQUENTIE, columns=2)
+    L = WIZARD_STEP_LABELS
     return f"""<noscript><p class="prose" style="background:#FFF7E6; border:1px solid #F0D9A0; border-radius:12px; padding:16px 20px; margin-bottom:16px;">Dit formulier werkt het best met JavaScript ingeschakeld. Lukt dat niet? Bel of mail ons gerust rechtstreeks: <a href="tel:{PHONE_TEL}" style="color:var(--link); font-weight:600;">{PHONE_DISPLAY}</a> of <a href="mailto:{EMAIL}" style="color:var(--link); font-weight:600;">{EMAIL}</a>.</p></noscript>
-  <form name="offerte" method="POST" action="https://api.web3forms.com/submit" class="wizard-form" id="offerteWizard">
+  <form name="offerte" method="POST" action="https://api.web3forms.com/submit" class="wizard-form" id="offerteWizard" novalidate>
+    <p id="wizardLive" class="sr-only" role="status" aria-live="polite"></p>
     <input type="hidden" name="access_key" value="abc98c0d-af16-42b0-ae5c-3337f35e5299">
-    <input type="hidden" name="subject" value="Nieuwe offerteaanvraag via de website">
+    <input type="hidden" name="subject" value="Nieuwe offerteaanvraag via de website" id="wizardSubject">
     <input type="hidden" name="redirect" value="{SITE_URL}/thanks.html">
     <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
 
     <div class="wizard-progress" aria-hidden="true">
       <div class="wizard-progress-bar"><div class="wizard-progress-fill" id="wizardFill"></div></div>
-      <div class="wizard-progress-steps">
+      <div class="wizard-progress-steps" id="wizardStepLabels">
         <span class="wp-step active" data-step-label="1">1<em>Klanttype</em></span>
         <span class="wp-step" data-step-label="2">2<em>Dienst</em></span>
-        <span class="wp-step" data-step-label="3">3<em>Oppervlakte</em></span>
+        <span class="wp-step" data-step-label="3">3<em>Omvang</em></span>
         <span class="wp-step" data-step-label="4">4<em>Frequentie</em></span>
         <span class="wp-step" data-step-label="5">5<em>Toelichting</em></span>
         <span class="wp-step" data-step-label="6">6<em>Gegevens</em></span>
+        <span class="wp-step" data-step-label="7">7<em>Controle</em></span>
       </div>
     </div>
 
     <div class="wizard-step" data-step="1">
       <h3 class="wizard-q">Ik vraag een offerte aan als:</h3>
-      <p class="wizard-sub">Zo kunnen we de vervolgvragen beter afstemmen.</p>
+      <p class="wizard-sub">Zo tonen we alleen de vragen en diensten die voor u relevant zijn.</p>
       {klanttype_cards}
     </div>
 
@@ -666,8 +689,14 @@ def contact_form():
     </div>
 
     <div class="wizard-step" data-step="3" hidden>
-      <h3 class="wizard-q">Hoe groot is de locatie ongeveer?</h3>
-      <p class="wizard-sub">Een schatting is voldoende.</p>
+      <h3 class="wizard-q" id="oppervlakteQ"
+          data-q-bedrijf="{L['bedrijf']['oppervlakte_q']}"
+          data-q-vve="{L['vve']['oppervlakte_q']}"
+          data-q-particulier="{L['particulier']['oppervlakte_q']}">{L['bedrijf']['oppervlakte_q']}</h3>
+      <p class="wizard-sub" id="oppervlakteSub"
+          data-q-bedrijf="{L['bedrijf']['oppervlakte_sub']}"
+          data-q-vve="{L['vve']['oppervlakte_sub']}"
+          data-q-particulier="{L['particulier']['oppervlakte_sub']}">{L['bedrijf']['oppervlakte_sub']}</p>
       {opp_cards}
     </div>
 
@@ -684,6 +713,10 @@ def contact_form():
         <label for="startdatum">Gewenste datum/periode <span style="font-weight:400;">(optioneel)</span></label>
         <input id="startdatum" name="startdatum" type="text" placeholder="Bijv. zo snel mogelijk">
       </div>
+      <div id="fieldAantalLocaties" style="margin-top:14px;" hidden>
+        <label for="aantal_locaties">Aantal locaties <span style="font-weight:400;">(indien van toepassing, optioneel)</span></label>
+        <input id="aantal_locaties" name="aantal_locaties" type="text" placeholder="Bijv. 1, of 3 vestigingen" disabled>
+      </div>
       <div style="margin-top:14px;">
         <label for="bericht">Omschrijf uw opdracht <span style="font-weight:400;">(optioneel)</span></label>
         <textarea id="bericht" name="bericht" rows="4" placeholder="Vertel kort wat er schoongemaakt moet worden, hoe groot de locatie is en of er bijzonderheden zijn."></textarea>
@@ -695,14 +728,20 @@ def contact_form():
       <p class="wizard-sub">Zodat we contact met u kunnen opnemen.</p>
       <div class="row2">
         <div><label for="naam">Naam</label><input id="naam" name="naam" type="text" required placeholder="Voor- en achternaam"></div>
-        <div id="fieldBedrijfsnaam"><label for="bedrijfsnaam">Bedrijfsnaam <span style="font-weight:400;">(optioneel)</span></label><input id="bedrijfsnaam" name="bedrijfsnaam" type="text" placeholder="Naam van uw bedrijf of VvE"></div>
-        <div id="fieldTypeWoning" hidden><label for="typewoning">Type woning <span style="font-weight:400;">(optioneel)</span></label><input id="typewoning" name="typewoning" type="text" placeholder="Bijv. eengezinswoning, appartement"></div>
+        <div id="fieldBedrijfsnaam"><label for="bedrijfsnaam">Bedrijfsnaam of VvE <span style="font-weight:400;">(optioneel)</span></label><input id="bedrijfsnaam" name="bedrijfsnaam" type="text" placeholder="Naam van uw bedrijf of VvE"></div>
+        <div id="fieldTypeWoning" hidden><label for="typewoning">Type woning <span style="font-weight:400;">(optioneel)</span></label><input id="typewoning" name="typewoning" type="text" placeholder="Bijv. eengezinswoning, appartement" disabled></div>
       </div>
       <div class="row2">
         <div><label for="email">E-mailadres</label><input id="email" name="email" type="email" required placeholder="jij@voorbeeld.nl"></div>
-        <div><label for="telefoon">Telefoonnummer</label><input id="telefoon" name="telefoon" type="tel" required placeholder="06 - 12 34 56 78"></div>
+        <div><label for="telefoon">Telefoonnummer</label><input id="telefoon" name="telefoon" type="tel" required pattern="[0-9+\\-\\s()]{{6,}}" title="Gebruik alleen cijfers, spaties en +/-/()" placeholder="06 - 12 34 56 78"></div>
       </div>
       <div><label for="plaats">Plaats / postcode</label><input id="plaats" name="plaats" type="text" required placeholder="Bijv. Helmond of 5701 AB"></div>
+    </div>
+
+    <div class="wizard-step" data-step="7" hidden>
+      <h3 class="wizard-q">Controleer uw aanvraag</h3>
+      <p class="wizard-sub">Klopt alles? Dan kunt u de aanvraag verzenden. Wilt u iets aanpassen, gebruik dan "Terug".</p>
+      <dl class="wizard-summary" id="wizardSummary" aria-live="polite"></dl>
     </div>
 
     <div class="wizard-nav">
@@ -710,10 +749,18 @@ def contact_form():
       <button type="button" class="btn btn-primary wizard-next" id="wizardNext">Volgende</button>
       <button type="submit" class="btn btn-primary wizard-submit" id="wizardSubmit" hidden>Vraag vrijblijvende offerte aan</button>
     </div>
+    <p class="wizard-status" id="wizardStatus" aria-live="polite"></p>
   </form>"""
 
-def contact_info_block(base="", show_heading=True):
-    heading = '<span class="eyebrow">Contact</span>\n    <h2>Vraag uw offerte aan.</h2>\n    <p>Neem contact op via telefoon, e-mail of het formulier. We reageren binnen \u00e9\u00e9n werkdag.</p>' if show_heading else ''
+def contact_info_block(base="", show_heading=True, show_map=True):
+    heading = '<span class="eyebrow">Contact</span>\n    <h2>Vraag uw offerte aan.</h2>\n    <p>Neem contact op via telefoon, e-mail of het formulier. We reageren doorgaans binnen \u00e9\u00e9n werkdag.</p>' if show_heading else ''
+    maps_src = f"https://www.google.com/maps?q={CITY},+Noord-Brabant&output=embed"
+    map_html = f"""<div class="contact-map" id="mapWrap" data-src="{maps_src}">
+      <div class="map-placeholder">
+        <p>De kaart van Google Maps wordt pas geladen na uw klik, zodat er vooraf geen gegevens met Google worden gedeeld.</p>
+        <button type="button" class="btn btn-outline map-load-btn" data-target="mapWrap">Kaart laden</button>
+      </div>
+    </div>""" if show_map else ""
     return f"""<div class="contact-info">
     {heading}
     <div class="contact-line">{icon('phone')}<a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a></div>
@@ -723,9 +770,7 @@ def contact_info_block(base="", show_heading=True):
       <a href="{WA_LINK}" class="btn btn-outline" target="_blank" rel="noopener">WhatsApp</a>
       <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
     </div>
-    <div class="contact-map">
-      <iframe src="https://www.google.com/maps?q={CITY},+Noord-Brabant&output=embed" width="100%" height="280" style="border:0; border-radius:16px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="BrabantSchoon werkgebied - {CITY}"></iframe>
-    </div>
+    {map_html}
   </div>"""
 
 def page_shell(title, description, path, base, active, body, extra_schema="", preload_image=None):
@@ -885,13 +930,20 @@ def build_home():
     <div class="wrap">
       <div class="benefits-strip reveal">
         <span>{icon('check')}Vrijblijvende offerte</span>
-        <span>{icon('clock')}Reactie binnen \u00e9\u00e9n werkdag</span>
-        <span>{icon('doc')}Geen verborgen kosten</span>
+        <span>{icon('clock')}Reactie doorgaans binnen \u00e9\u00e9n werkdag</span>
+        <span>{icon('doc')}Duidelijke offerte</span>
         <span>{icon('pin')}Actief in Brabant</span>
       </div>
-      <div class="contact-grid reveal">
-        {contact_info_block(base)}
-        {contact_form()}
+      <div class="two-col reveal">
+        {contact_info_block(base, show_map=False)}
+        <div class="quick-cta-card">
+          <h3>Benieuwd wat wij voor u kunnen betekenen?</h3>
+          <p>Vraag vrijblijvend een offerte aan. We nemen doorgaans binnen \u00e9\u00e9n werkdag contact met u op om uw wensen te bespreken.</p>
+          <div class="hero-actions">
+            <a href="{base}contact.html#offerteWizard" class="btn btn-primary">Offerte aanvragen</a>
+            <a href="{base}contact.html" class="btn btn-outline">Neem contact op</a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -1053,10 +1105,10 @@ PARTICULIER_SUBDIENSTEN = [
 ]
 
 PARTICULIER_FAQS = [
-    ("Werken jullie ook voor particulieren, niet alleen voor bedrijven?", "Ja, naast bedrijven, VvE's en organisaties zijn we ook inzetbaar voor particuliere woningen \u2014 van een eenmalige grote schoonmaak tot periodiek onderhoud."),
+    ("Werkt u ook voor particulieren, niet alleen voor bedrijven?", "Ja, naast bedrijven, VvE's en organisaties zijn we ook inzetbaar voor particuliere woningen \u2014 van een eenmalige grote schoonmaak tot periodiek onderhoud."),
     ("Wat kost particuliere schoonmaak?", "Dat hangt af van de woning, de werkzaamheden en de frequentie. We werken met een offerte op maat in plaats van vaste tarieven \u2014 vraag vrijblijvend een offerte aan."),
-    ("Werken jullie ook buiten Helmond voor particulieren?", "Particuliere schoonmaak bieden we vanuit Helmond en in omliggende plaatsen. Voor grotere opdrachten zijn ook werkzaamheden elders in Brabant bespreekbaar."),
-    ("Verwijderen jullie ook bouwafval of gevaarlijke stoffen na een verbouwing?", "Nee, wij verzorgen het verwijderen van bouwstof en normaal schoonmaakvuil na een verbouwing. Voor grofvuil, bouwafval of gevaarlijke stoffen verwijst u naar een gespecialiseerd bedrijf."),
+    ("Werkt u ook buiten Helmond voor particulieren?", "Particuliere schoonmaak bieden we vanuit Helmond en in omliggende plaatsen. Voor grotere opdrachten zijn ook werkzaamheden elders in Brabant bespreekbaar."),
+    ("Verwijdert u ook bouwafval of gevaarlijke stoffen na een verbouwing?", "Nee, wij verzorgen het verwijderen van bouwstof en normaal schoonmaakvuil na een verbouwing. Voor grofvuil, bouwafval of gevaarlijke stoffen verwijst u naar een gespecialiseerd bedrijf."),
 ]
 
 def build_particulieren_page():
@@ -1078,7 +1130,7 @@ def build_particulieren_page():
   {hero}
   <section class="section-tight">
     <div class="wrap-narrow">
-      <p class="prose reveal">Naast bedrijven, VvE's en organisaties is BrabantSchoon ook inzetbaar voor particuliere woningen. Van een eenmalige grote schoonmaak tot periodieke ondersteuning: dezelfde professionele aanpak, heldere afspraken en een vast aanspreekpunt die u van onze zakelijke dienstverlening kent.</p>
+      <p class="prose reveal">Naast bedrijven, VvE's en organisaties is BrabantSchoon ook inzetbaar voor particuliere woningen. Van een eenmalige grote schoonmaak tot periodieke ondersteuning: dezelfde professionele aanpak, heldere afspraken en een vast aanspreekpunt dat u van onze zakelijke dienstverlening kent.</p>
     </div>
   </section>
   <section class="section-tight" style="padding-top:0;">
@@ -1194,7 +1246,7 @@ LOCATIONS = [
     {
         "slug": "tilburg", "name": "Tilburg",
         "intro": "Tilburg ligt buiten ons kerngebied in de Peel, maar we rijden geregeld uit naar de stad voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak. Vooral voor grotere of terugkerende opdrachten is een vaste planning vanuit Helmond goed te combineren.",
-        "faq_q": "Rijden jullie ook naar Tilburg voor kleinere klussen?",
+        "faq_q": "Rijdt u ook naar Tilburg voor kleinere klussen?",
         "kaart_tekst": "Voor grotere en terugkerende opdrachten is BrabantSchoon in Tilburg inzetbaar voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak.",
         "uitgelicht": ('Tilburg is een grote studentenstad met een textielverleden en, dankzij de ligging aan de A58 en A65, een belangrijke logistieke sector met veel distributiecentra. Voor kantoren en bedrijfsverzamelgebouwen in de stad zijn we inzetbaar voor kantoorreiniging en VvE-schoonmaak.', 'Voor grotere of terugkerende opdrachten — zoals een vast kantoorcontract of een omvangrijke opleveringsschoonmaak — is een vaste planning vanuit Helmond goed te combineren met de rest van onze route.'),
         "faq_a": "Voor kleine, eenmalige klussen in Tilburg is de reistijd vanuit Helmond niet altijd rendabel. Voor grotere of terugkerende opdrachten, zoals wekelijkse kantoorreiniging, bespreken we graag de mogelijkheden.",
@@ -1210,7 +1262,7 @@ LOCATIONS = [
     {
         "slug": "den-bosch", "name": "Den Bosch",
         "intro": "'s-Hertogenbosch ligt op een goed bereikbare afstand vanuit Helmond. Voor kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak zijn we hier inzetbaar.",
-        "faq_q": "Werken jullie ook voor VvE's in Den Bosch?",
+        "faq_q": "Werkt u ook voor VvE's in Den Bosch?",
         "kaart_tekst": "Voor kantoren, VvE's en bedrijfsverzamelgebouwen in 's-Hertogenbosch zijn we inzetbaar voor periodieke en facilitaire schoonmaak.",
         "uitgelicht": ("'s-Hertogenbosch is als provinciehoofdstad van Noord-Brabant een stad met veel kantoren van overheid, onderwijs en dienstverlening, onder meer rond het moderne Paleiskwartier bij het station. Voor kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak zijn we hier inzetbaar.", 'De goede bereikbaarheid vanuit Helmond maakt het mogelijk om ook structurele, terugkerende opdrachten in Den Bosch in te plannen, naast eenmalige klussen zoals een opleveringsschoonmaak.'),
         "faq_a": "Ja, we zijn inzetbaar voor schoonmaak van trappenhuizen en gemeenschappelijke ruimtes voor VvE's in en rond 's-Hertogenbosch, in overleg met het bestuur.",
@@ -1218,7 +1270,7 @@ LOCATIONS = [
     {
         "slug": "waalwijk", "name": "Waalwijk",
         "intro": "Waalwijk ligt tussen Tilburg en 's-Hertogenbosch in. Voor bedrijven en VvE's in Waalwijk zijn we inzetbaar op aanvraag, vooral bij grotere of vaste opdrachten.",
-        "faq_q": "Kunnen jullie een vast schoonmaakcontract voor Waalwijk verzorgen?",
+        "faq_q": "Kunt u een vast schoonmaakcontract voor Waalwijk laten verzorgen?",
         "kaart_tekst": "In Waalwijk zijn we inzetbaar voor vaste schoonmaakcontracten en grotere eenmalige opdrachten voor bedrijven en VvE's.",
         "uitgelicht": ("Waalwijk staat historisch bekend om de schoen- en lederindustrie — zichtbaar in het Schoenenkwartier — en heeft dankzij de ligging aan de A59 een flinke logistieke sector met distributiecentra. Voor bedrijven en VvE's hier zijn we inzetbaar op aanvraag, vooral bij grotere of vaste opdrachten.", 'Voor een vast, terugkerend contract is Waalwijk goed inpasbaar in onze planning; voor kleinere eenmalige klussen bespreken we per situatie of dit rendabel te combineren is met andere ritten in de regio.'),
         "faq_a": "Ja, voor een vast, terugkerend contract is Waalwijk goed inpasbaar in onze planning. Neem contact op om de mogelijkheden te bespreken.",
@@ -1313,8 +1365,8 @@ KERNGEBIED = [
         "uitgelicht": ('Als vestigingsplaats is Helmond ons voornaamste werkgebied: van kantoren op en rond de Automotive Campus tot bedrijfsverzamelgebouwen in Suytkade en het centrum. Kantoorreiniging en VvE-schoonmaak vormen hier de kern van onze dienstverlening, aangevuld met opleveringsschoonmaak bij verhuizingen of nieuwbouw.', 'Door de korte afstand tot ons kantoor kunnen we in Helmond ook kleinere of onregelmatige klussen inplannen die verder weg minder snel rendabel zijn — denk aan een eenmalige beurt of een spoedklus tussen de vaste planning door.'),
         "doelgroep_lokaal": "In Helmond zijn we inzetbaar voor uiteenlopende organisaties: kantoren, bedrijfsverzamelgebouwen, VvE's, winkels en praktijken. Omdat dit onze thuisbasis is, bespreken we hier snel de mogelijkheden voor een kennismaking op locatie.",
         "faqs": [
-            ("Werken jullie ook 's avonds of in het weekend in Helmond?", "Ja, voor veel kantoren en winkels plannen we de schoonmaak juist buiten openingstijden, zodat het uw bedrijfsvoering niet verstoort."),
-            ("Kunnen jullie snel starten met een nieuwe klant in Helmond?", "Vaak wel — omdat we hier gevestigd zijn, bespreken we de mogelijkheden voor een kennismaking op locatie snel."),
+            ("Werkt u ook 's avonds of in het weekend in Helmond?", "Ja, voor veel kantoren en winkels plannen we de schoonmaak juist buiten openingstijden, zodat het uw bedrijfsvoering niet verstoort."),
+            ("Kunt u snel starten als nieuwe klant in Helmond?", "Vaak wel — omdat we hier gevestigd zijn, bespreken we de mogelijkheden voor een kennismaking op locatie snel."),
         ],
         "neighbors": ["deurne", "gemert-bakel"],
     },
@@ -1327,7 +1379,7 @@ KERNGEBIED = [
         "uitgelicht": ('Deurne combineert bedrijventerreinen zoals Kranenmortel met een sterke agrarische en logistieke sector. Voor bedrijfspanden en loodsen zijn we vooral inzetbaar voor periodieke kantoor- en hallenreiniging, en bij verbouwing of verhuizing opleveringsschoonmaak.', 'Ook praktijken in het centrum van Deurne — huisartsen, fysiotherapie en vergelijkbare zorgpraktijken — vragen om hygiënische, buiten openingstijden uitgevoerde schoonmaak. Dat combineren we goed met onze planning rond Helmond, waar Deurne aan grenst.'),
         "doelgroep_lokaal": 'Organisaties waarvoor wij in Deurne inzetbaar zijn: met name bedrijfspanden, praktijken, logistieke en productiebedrijven. Voor deze laatste groep bieden we ook specialistische reiniging van hallen en werkvloeren.',
         "faqs": [
-            ("Verzorgen jullie ook praktijken in Deurne?", "Ja, we zijn inzetbaar voor praktijkruimtes zoals huisartsenposten en fysiotherapiepraktijken, buiten de openingstijden."),
+            ("Verzorgt u ook praktijken in Deurne?", "Ja, we zijn inzetbaar voor praktijkruimtes zoals huisartsenposten en fysiotherapiepraktijken, buiten de openingstijden."),
             ("Is eenmalige schoonmaak in Deurne mogelijk?", "Zeker, bijvoorbeeld bij een verhuizing of oplevering. Neem contact op voor de mogelijkheden."),
         ],
         "neighbors": ["helmond", "asten"],
@@ -1341,7 +1393,7 @@ KERNGEBIED = [
         "uitgelicht": ('Asten en de kern Heusden liggen in De Peel, een regio met relatief veel agrarische bedrijven en kleinere bedrijfsterreinen zoals Molenakkers. Voor kantoren en bedrijfsruimtes hier zijn we inzetbaar voor zowel periodieke schoonmaak als eenmalige beurten.', 'Door de korte afstand vanuit Helmond kunnen we in Asten ook kleinere opdrachten rendabel inplannen — iets wat verder van ons kerngebied minder vanzelfsprekend is.'),
         "doelgroep_lokaal": "In Asten zijn we inzetbaar voor kantoren, bedrijfsruimtes, VvE's en productiebedrijven. Voor VvE's gaat het met name om trappenhuizen en gemeenschappelijke ruimtes, in overleg met het bestuur.",
         "faqs": [
-            ("Rijden jullie ook naar Heusden?", "Ja, Heusden valt binnen ons werkgebied rond Asten."),
+            ("Rijdt u ook naar Heusden?", "Ja, Heusden valt binnen ons werkgebied rond Asten."),
             ("Wat kost schoonmaak in Asten?", "Dat hangt af van de ruimte en frequentie. Na een kort gesprek ontvangt u een vrijblijvende offerte op maat."),
         ],
         "neighbors": ["deurne", "someren"],
@@ -1355,7 +1407,7 @@ KERNGEBIED = [
         "uitgelicht": ('Someren en de kernen Someren-Eind en Lierop kennen een sterke glastuinbouwsector, naast kantoren en lokale bedrijvigheid. Voor kantoren en bedrijfsruimtes hier bieden we periodieke schoonmaak op een vast, wekelijks ritme.', "Scholen en VvE's in Someren vragen vaak om schoonmaak buiten lesuren of avonduren — daar stemmen we onze planning bewust op af, met hetzelfde vaste team per bezoek."),
         "doelgroep_lokaal": "Organisaties waarvoor wij in Someren inzetbaar zijn: kantoren, VvE's, bedrijfspanden en scholen. Voor scholen letten we extra op hygiëne in gemeenschappelijke ruimtes zoals gangen, toiletten en kantines.",
         "faqs": [
-            ("Werken jullie met een vast team in Someren?", "Ja, u krijgt een vast aanspreekpunt toegewezen zodra u klant wordt."),
+            ("Werkt u met een vast team in Someren?", "Ja, u krijgt een vast aanspreekpunt toegewezen zodra u klant wordt."),
             ("Is een offerte vrijblijvend?", "Altijd, en zonder verplichtingen."),
         ],
         "neighbors": ["asten", "gemert-bakel"],
@@ -1369,8 +1421,8 @@ KERNGEBIED = [
         "uitgelicht": ('Gemert-Bakel heeft een sterke agrifoodsector — met de champignonteelt als bekende bedrijfstak — en huisvest onderwijsinstellingen zoals Helicon. Voor bedrijfspanden in deze sector zijn we inzetbaar voor facilitaire schoonmaak en, bij verbouwing of verhuizing, opleveringsschoonmaak.', 'Ook in het centrum van Gemert, rond Kasteel Gemert, zitten kantoren en praktijken die om periodieke schoonmaak vragen — vaak in combinatie met glasbewassing van etalages of kantoorramen.'),
         "doelgroep_lokaal": "Organisaties waarvoor wij in Gemert-Bakel inzetbaar zijn: bedrijfspanden, VvE's, logistieke bedrijven en organisaties met een opleveringsklus. De agrarische en foodsector in de regio betekent dat hygiëne vaak net iets meer aandacht vraagt dan gemiddeld.",
         "faqs": [
-            ("Doen jullie ook opleveringsschoonmaak in Gemert-Bakel?", "Ja, opleveringsschoonmaak is een van de diensten die we hier aanbieden."),
-            ("Hoe snel kunnen jullie starten?", "Neem contact op voor een kort kennismakingsgesprek, dan bespreken we de mogelijkheden snel."),
+            ("Doet u ook opleveringsschoonmaak in Gemert-Bakel?", "Ja, opleveringsschoonmaak is een van de diensten die we hier aanbieden."),
+            ("Hoe snel kunt u starten?", "Neem contact op voor een kort kennismakingsgesprek, dan bespreken we de mogelijkheden snel."),
         ],
         "neighbors": ["helmond", "laarbeek"],
     },
@@ -1383,8 +1435,8 @@ KERNGEBIED = [
         "uitgelicht": ('Laarbeek — met de kernen Beek en Donk, Aarle-Rixtel en Mariahout — kent een mix van agrarische bedrijven, de paardensector en kleinere bedrijventerreinen zoals Bemmerpark in Beek en Donk. Voor kantoren en bedrijfsverzamelgebouwen hier zijn we inzetbaar voor periodieke en eenmalige schoonmaak.', 'Doordat de kernen van Laarbeek dicht bij elkaar liggen, kunnen we hier efficiënt plannen — verschillende panden op één route, zonder dat dit ten koste gaat van de aandacht per locatie.'),
         "doelgroep_lokaal": "Organisaties waarvoor wij in Laarbeek inzetbaar zijn: kantoren, VvE's, winkels en bedrijfsverzamelgebouwen in Beek en Donk, Aarle-Rixtel en Mariahout. Voor winkels plannen we het liefst vroeg in de ochtend, vóór openingstijd.",
         "faqs": [
-            ("Werken jullie in alle kernen van Laarbeek?", "Ja, in Beek en Donk, Aarle-Rixtel en Mariahout zijn we inzetbaar."),
-            ("Bieden jullie ook periodieke schoonmaak?", "Ja, naast vaste contracten ook periodieke beurten op afspraak."),
+            ("Werkt u in alle kernen van Laarbeek?", "Ja, in Beek en Donk, Aarle-Rixtel en Mariahout zijn we inzetbaar."),
+            ("Biedt u ook periodieke schoonmaak?", "Ja, naast vaste contracten ook periodieke beurten op afspraak."),
         ],
         "neighbors": ["gemert-bakel", "helmond"],
     },
@@ -1397,7 +1449,7 @@ KERNGEBIED = [
         "uitgelicht": ('Nuenen is vooral bekend als woonplaats van Vincent van Gogh en heeft een overwegend kleinschalig, welvarend ondernemersklimaat: veel zelfstandige praktijken en kleinere kantoren, minder zware industrie dan in de rest van de regio.', 'Dat vertaalt zich in onze aanpak: periodieke schoonmaak op maat voor praktijkruimtes en kantoren, waarbij representativiteit en een persoonlijke aanpak vaak net iets zwaarder wegen dan bij grootschalige bedrijfspanden.'),
         "doelgroep_lokaal": 'Organisaties waarvoor wij in Nuenen inzetbaar zijn: kantoren, praktijken, scholen en organisaties met een eigen bedrijfspand — van eenmanszaak tot grotere praktijk, telkens met een offerte op maat.',
         "faqs": [
-            ("Werken jullie voor organisaties van elke omvang in Nuenen?", "Zeker, van eenmanszaak tot grotere praktijk stellen we een passende offerte op."),
+            ("Werkt u voor organisaties van elke omvang in Nuenen?", "Zeker, van eenmanszaak tot grotere praktijk stellen we een passende offerte op."),
             ("Is de eerste afspraak vrijblijvend?", "Ja, een kennismaking en offerte zijn altijd kosteloos en vrijblijvend."),
         ],
         "neighbors": ["eindhoven", "geldrop-mierlo"],
@@ -1412,7 +1464,7 @@ KERNGEBIED = [
         "doelgroep_lokaal": "Organisaties waarvoor wij in Geldrop-Mierlo inzetbaar zijn: kantoren, bedrijfsverzamelgebouwen, VvE's en productiebedrijven, zowel in Geldrop als in Mierlo.",
         "faqs": [
             ("Ook actief in Mierlo zelf?", "Ja, voor Mierlo hanteren we dezelfde vaste aanpak als voor Geldrop."),
-            ("Kunnen jullie een vast wekelijks contract verzorgen?", "Ja, dat behoort tot de mogelijkheden in deze regio."),
+            ("Kunt u een vast wekelijks contract laten verzorgen?", "Ja, dat behoort tot de mogelijkheden in deze regio."),
         ],
         "neighbors": ["nuenen", "eindhoven"],
     },
@@ -1426,7 +1478,7 @@ KERNGEBIED = [
         "doelgroep_lokaal": "Organisaties waarvoor wij in Eindhoven inzetbaar zijn: kantoren, bedrijfsverzamelgebouwen, VvE's, zorginstellingen en gemeentelijke instellingen. Bij bedrijfsverzamelgebouwen met meerdere huurders werken we met één vast aanspreekpunt voor het hele pand.",
         "faqs": [
             ("Is een vast schoonmaakcontract in Eindhoven mogelijk?", "Ja, Eindhoven ligt goed bereikbaar vanuit Helmond en we zijn hier inzetbaar voor vaste, terugkerende schoonmaak."),
-            ("Werken jullie ook voor bedrijfsverzamelgebouwen in Eindhoven?", "Ja, met meerdere huurders onder één dak werken we met één vast aanspreekpunt voor het hele pand."),
+            ("Werkt u ook voor bedrijfsverzamelgebouwen in Eindhoven?", "Ja, met meerdere huurders onder één dak werken we met één vast aanspreekpunt voor het hele pand."),
         ],
         "neighbors": ["geldrop-mierlo", "nuenen"],
     },
@@ -1593,14 +1645,14 @@ def build_location_pages():
 def build_contact():
     base = ""
     body = f"""
-  {page_hero("Contact", "Neem contact op.", "We reageren binnen \u00e9\u00e9n werkdag \u2014 voor bedrijven, VvE's, organisaties en particulieren.", base, "Contact")}
+  {page_hero("Contact", "Neem contact op.", "We reageren doorgaans binnen \u00e9\u00e9n werkdag \u2014 voor bedrijven, VvE's, organisaties en particulieren.", base, "Contact")}
   <section>
     <div class="wrap">
       {reviews_widget_block()}
       <div class="benefits-strip reveal">
         <span>{icon('check')}Vrijblijvende offerte</span>
-        <span>{icon('clock')}Reactie binnen \u00e9\u00e9n werkdag</span>
-        <span>{icon('doc')}Geen verborgen kosten</span>
+        <span>{icon('clock')}Reactie doorgaans binnen \u00e9\u00e9n werkdag</span>
+        <span>{icon('doc')}Duidelijke offerte</span>
         <span>{icon('pin')}Actief in Brabant</span>
       </div>
       <div class="contact-grid reveal">
@@ -1673,7 +1725,7 @@ def build_legal():
     <h2>Google Analytics</h2>
     <p>Bij toestemming gebruiken we Google Analytics 4 om geanonimiseerde statistieken te verzamelen over websitebezoek, zoals bezochte pagina's en algemene herkomst van bezoekers. Deze gegevens worden verwerkt door Google conform het eigen privacybeleid van Google.</p>
     <h2>Google Maps</h2>
-    <p>Op de contactpagina tonen we een kaart via Google Maps. Google kan hierbij gegevens verzamelen conform het eigen privacybeleid van Google.</p>
+    <p>Op de contactpagina kunt u desgewenst een kaart van Google Maps laden om onze locatie te bekijken. Deze kaart wordt niet automatisch geladen: pas wanneer u zelf op "Kaart laden" klikt, wordt de iframe van Google ingeladen. Voor die klik worden er geen gegevens met Google gedeeld via deze kaart. Zodra u de kaart laadt, kan Google gegevens verzamelen conform het eigen privacybeleid van Google.</p>
     <h2>Offerteformulier</h2>
     <p>Het offerteformulier wordt verwerkt via een externe formulierdienst. Zie onze <a href="{base}privacy.html" style="color:var(--link); font-weight:600;">privacyverklaring</a> voor meer informatie over hoe wij met uw gegevens omgaan.</p>
     <h2>Vragen</h2>
