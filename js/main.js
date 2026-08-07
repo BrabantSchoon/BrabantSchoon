@@ -56,7 +56,7 @@
   });
 
   // Automatisch doorgaan bij het kiezen van een kaartje (alleen bij keuzestappen, niet bij tekstvelden)
-  const autoAdvanceSteps = [1, 2, 3];
+  const autoAdvanceSteps = [1, 2, 3, 4];
   steps.forEach(stepEl => {
     const stepNum = parseInt(stepEl.dataset.step, 10);
     if (!autoAdvanceSteps.includes(stepNum)) return;
@@ -69,6 +69,21 @@
       });
     });
   });
+
+  // Toon 'Bedrijfsnaam' of 'Type woning' in de laatste stap, afhankelijk van het gekozen klanttype
+  const bedrijfsnaamField = document.getElementById('fieldBedrijfsnaam');
+  const typeWoningField = document.getElementById('fieldTypeWoning');
+  if (bedrijfsnaamField && typeWoningField) {
+    form.querySelectorAll('input[name="klanttype"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const isParticulier = radio.value === 'Particulier' && radio.checked;
+        if (radio.checked) {
+          bedrijfsnaamField.hidden = isParticulier;
+          typeWoningField.hidden = !isParticulier;
+        }
+      });
+    });
+  }
 
   show(current, false);
 

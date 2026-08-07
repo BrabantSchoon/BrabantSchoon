@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "118"
+ASSET_VERSION = "119"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -193,7 +193,7 @@ SERVICES = [
      "short": "Ramen en kozijnen streeploos schoon, binnen en buiten.",
      "intro": "Helder glaswerk maakt direct verschil in de uitstraling van een pand. We reinigen ramen en kozijnen zorgvuldig, eenmalig of op een vast interval.",
      "bullets": ["Binnen- en buitenzijde", "Kozijnen en sponningen", "Op aanvraag of vast interval"],
-     "for": "Kantoren, winkels en woningen.", "faqs": [("Hoe vaak is glasbewassing nodig?", "Dat hangt af van de locatie; de meeste klanten kiezen voor een vast interval van enkele weken tot maandelijks."), ("Kunnen jullie ook hoger gelegen ramen reinigen?", "Ja, met de juiste hulpmiddelen reinigen we ramen op verschillende hoogtes.")]},
+     "for": "Kantoren, winkels en woningen.", "faqs": [("Hoe vaak is glasbewassing nodig?", "Dat hangt af van de locatie; een vast interval van enkele weken tot maandelijks is gebruikelijk."), ("Kunnen jullie ook hoger gelegen ramen reinigen?", "Ja, met de juiste hulpmiddelen reinigen we ramen op verschillende hoogtes.")]},
     {"slug": "gevelreiniging", "icon": "facade", "tint": "tint-3",
      "name": "Gevelreiniging",
      "short": "Reiniging van gevels en buitenmuren.",
@@ -205,7 +205,7 @@ SERVICES = [
      "short": "Een pand schoon opgeleverd bij sleuteloverdracht.",
      "intro": "Bij verhuizing, verbouwing of nieuwbouw moet een pand vaak op korte termijn klaar zijn. We zorgen dat de ruimte gereed is voor gebruik of oplevering.",
      "bullets": ["Bouwstof en resten verwijderen", "Kozijnen, kasten en sanitair", "Snel inplanbaar"],
-     "for": "Verhuurders, aannemers en particulieren.", "faqs": [("Hoe snel kan opleveringsschoonmaak worden ingepland?", "Vaak binnen enkele dagen, afhankelijk van de planning en de grootte van het pand."), ("Is opleveringsschoonmaak ook geschikt na een verbouwing?", "Ja, we verwijderen bouwstof en resten zodat het pand klaar is voor gebruik of oplevering.")]},
+     "for": "Verhuurders, aannemers en particulieren.", "faqs": [("Hoe snel kan opleveringsschoonmaak worden ingepland?", "We bespreken de mogelijkheden snel, afhankelijk van de planning en de grootte van het pand."), ("Is opleveringsschoonmaak ook geschikt na een verbouwing?", "Ja, we verwijderen bouwstof en resten zodat het pand klaar is voor gebruik of oplevering.")]},
     {"slug": "vve-schoonmaak", "icon": "building", "tint": "tint-5",
      "name": "VvE-schoonmaak",
      "short": "Onderhoud van trappenhuizen en gemeenschappelijke ruimtes.",
@@ -414,6 +414,7 @@ def render_footer(base):
         <h4>Snelle links</h4>
         <a href="/">Home</a>
         <a href="{base}diensten.html">Diensten</a>
+        <a href="{base}schoonmaak-particulieren.html">Particuliere schoonmaak</a>
         <a href="{base}over-ons.html">Over ons</a>
         <a href="{base}werkgebied.html">Werkgebied</a>
         <a href="{base}contact.html">Contact</a>
@@ -568,6 +569,12 @@ FORM_SERVICE_OPTIONS = [
     "Eenmalige schoonmaak", "Anders...",
 ]
 
+WIZARD_KLANTTYPE = [
+    ("Bedrijf", "office", "Kantoor, winkel of ander bedrijfspand"),
+    ("VvE / organisatie", "building", "Vereniging van eigenaars of instelling"),
+    ("Particulier", "key", "Schoonmaak voor uw eigen woning"),
+]
+
 WIZARD_DIENSTEN = [
     ("Kantoorreiniging", "office", "Kantoor, praktijk of bedrijfspand"),
     ("Glasbewassing", "window", "Ramen en kozijnen binnen en buiten"),
@@ -580,6 +587,11 @@ WIZARD_DIENSTEN = [
     ("Trappenhuisreiniging", "stairs", "Gemeenschappelijk trappenhuis"),
     ("Periodieke schoonmaak", "clock", "Vast ritme, wekelijks of maandelijks"),
     ("Eenmalige schoonmaak", "check", "Losse, eenmalige beurt"),
+    ("Verhuisschoonmaak", "key", "Woning schoon voor of na de verhuizing"),
+    ("Grote schoonmaak woning", "spark", "Eenmalige, grondige beurt voor uw woning"),
+    ("Schoonmaak na verbouwing", "check", "Bouwstof en normaal schoonmaakvuil verwijderen"),
+    ("Periodieke schoonmaak (particulier)", "clock", "Vaste, terugkerende schoonmaak van uw woning"),
+    ("Schoonmaak bij verkoop/verhuur", "doc", "Woning schoon voor bezichtiging of oplevering"),
     ("Anders...", "chat", "Vertel ons uw situatie"),
 ]
 
@@ -618,6 +630,7 @@ def radio_cards(name, options, columns=3):
     return f'<div class="radio-cards cols-{columns}">' + "\n      ".join(cards) + "</div>"
 
 def contact_form():
+    klanttype_cards = radio_cards("klanttype", WIZARD_KLANTTYPE, columns=3)
     dienst_cards = radio_cards("dienst", WIZARD_DIENSTEN, columns=3)
     opp_cards = radio_cards("oppervlakte", WIZARD_OPPERVLAKTE, columns=2)
     freq_cards = radio_cards("frequentie", WIZARD_FREQUENTIE, columns=2)
@@ -631,57 +644,65 @@ def contact_form():
     <div class="wizard-progress" aria-hidden="true">
       <div class="wizard-progress-bar"><div class="wizard-progress-fill" id="wizardFill"></div></div>
       <div class="wizard-progress-steps">
-        <span class="wp-step active" data-step-label="1">1<em>Dienst</em></span>
-        <span class="wp-step" data-step-label="2">2<em>Oppervlakte</em></span>
-        <span class="wp-step" data-step-label="3">3<em>Frequentie</em></span>
-        <span class="wp-step" data-step-label="4">4<em>Toelichting</em></span>
-        <span class="wp-step" data-step-label="5">5<em>Gegevens</em></span>
+        <span class="wp-step active" data-step-label="1">1<em>Klanttype</em></span>
+        <span class="wp-step" data-step-label="2">2<em>Dienst</em></span>
+        <span class="wp-step" data-step-label="3">3<em>Oppervlakte</em></span>
+        <span class="wp-step" data-step-label="4">4<em>Frequentie</em></span>
+        <span class="wp-step" data-step-label="5">5<em>Toelichting</em></span>
+        <span class="wp-step" data-step-label="6">6<em>Gegevens</em></span>
       </div>
     </div>
 
     <div class="wizard-step" data-step="1">
+      <h3 class="wizard-q">Ik vraag een offerte aan als:</h3>
+      <p class="wizard-sub">Zo kunnen we de vervolgvragen beter afstemmen.</p>
+      {klanttype_cards}
+    </div>
+
+    <div class="wizard-step" data-step="2" hidden>
       <h3 class="wizard-q">Waar wilt u een offerte voor aanvragen?</h3>
       <p class="wizard-sub">Kies de dienst die het beste bij uw situatie past.</p>
       {dienst_cards}
     </div>
 
-    <div class="wizard-step" data-step="2" hidden>
+    <div class="wizard-step" data-step="3" hidden>
       <h3 class="wizard-q">Hoe groot is de locatie ongeveer?</h3>
       <p class="wizard-sub">Een schatting is voldoende.</p>
       {opp_cards}
     </div>
 
-    <div class="wizard-step" data-step="3" hidden>
+    <div class="wizard-step" data-step="4" hidden>
       <h3 class="wizard-q">Hoe vaak wilt u schoonmaak?</h3>
       <p class="wizard-sub">U kunt dit later altijd nog aanpassen.</p>
       {freq_cards}
     </div>
 
-    <div class="wizard-step" data-step="4" hidden>
+    <div class="wizard-step" data-step="5" hidden>
       <h3 class="wizard-q">Nog iets toe te lichten?</h3>
-      <p class="wizard-sub">Beide velden zijn optioneel.</p>
+      <p class="wizard-sub">Alle velden hieronder zijn optioneel.</p>
       <div>
-        <label for="startdatum">Gewenste startdatum <span style="font-weight:400;">(optioneel)</span></label>
+        <label for="startdatum">Gewenste datum/periode <span style="font-weight:400;">(optioneel)</span></label>
         <input id="startdatum" name="startdatum" type="text" placeholder="Bijv. zo snel mogelijk">
       </div>
       <div style="margin-top:14px;">
         <label for="bericht">Omschrijf uw opdracht <span style="font-weight:400;">(optioneel)</span></label>
-        <textarea id="bericht" name="bericht" rows="4" placeholder="Vertel kort wat er schoongemaakt moet worden, hoe groot de locatie is en hoe vaak u schoonmaak wenst."></textarea>
+        <textarea id="bericht" name="bericht" rows="4" placeholder="Vertel kort wat er schoongemaakt moet worden, hoe groot de locatie is en of er bijzonderheden zijn."></textarea>
       </div>
     </div>
 
-    <div class="wizard-step" data-step="5" hidden>
+    <div class="wizard-step" data-step="6" hidden>
       <h3 class="wizard-q">Uw gegevens</h3>
       <p class="wizard-sub">Zodat we contact met u kunnen opnemen.</p>
       <div class="row2">
         <div><label for="naam">Naam</label><input id="naam" name="naam" type="text" required placeholder="Voor- en achternaam"></div>
-        <div><label for="bedrijfsnaam">Bedrijfsnaam <span style="font-weight:400;">(optioneel)</span></label><input id="bedrijfsnaam" name="bedrijfsnaam" type="text" placeholder="Naam van uw bedrijf"></div>
+        <div id="fieldBedrijfsnaam"><label for="bedrijfsnaam">Bedrijfsnaam <span style="font-weight:400;">(optioneel)</span></label><input id="bedrijfsnaam" name="bedrijfsnaam" type="text" placeholder="Naam van uw bedrijf of VvE"></div>
+        <div id="fieldTypeWoning" hidden><label for="typewoning">Type woning <span style="font-weight:400;">(optioneel)</span></label><input id="typewoning" name="typewoning" type="text" placeholder="Bijv. eengezinswoning, appartement"></div>
       </div>
       <div class="row2">
         <div><label for="email">E-mailadres</label><input id="email" name="email" type="email" required placeholder="jij@voorbeeld.nl"></div>
         <div><label for="telefoon">Telefoonnummer</label><input id="telefoon" name="telefoon" type="tel" required placeholder="06 - 12 34 56 78"></div>
       </div>
-      <div><label for="plaats">Plaats</label><input id="plaats" name="plaats" type="text" required placeholder="Bijv. Helmond"></div>
+      <div><label for="plaats">Plaats / postcode</label><input id="plaats" name="plaats" type="text" required placeholder="Bijv. Helmond of 5701 AB"></div>
     </div>
 
     <div class="wizard-nav">
@@ -779,7 +800,7 @@ def build_home():
         <span class="eyebrow">Professionele schoonmaak in Brabant</span>
         <h1>De schoonmaakpartner van Brabant</h1>
         <p class="hero-slogan">Schoon werk. Elke dag opnieuw.</p>
-        <p class="lead">BrabantSchoon is een professioneel schoonmaakbedrijf voor bedrijven, VvE's en organisaties in Brabant. Van periodieke kantoorreiniging tot specialistische reiniging &mdash; met een vast aanspreekpunt en heldere afspraken, vanuit onze thuisbasis in Helmond.</p>
+        <p class="lead">BrabantSchoon is uw schoonmaakpartner voor bedrijven, VvE's, organisaties en particulieren. Vanuit Helmond actief in Brabant, met een vast aanspreekpunt en heldere afspraken.</p>
         <div class="hero-actions">
           <a href="contact.html#offerteWizard" class="btn btn-primary">Gratis offerte aanvragen</a>
           <a href="#diensten" class="btn btn-outline">Bekijk onze diensten</a>
@@ -813,6 +834,7 @@ def build_home():
         {service_cards}
       </div>
       <div class="sec-foot"><a href="diensten.html" class="btn btn-outline">Alle diensten</a></div>
+      <p class="prose reveal" style="text-align:center; margin-top:18px;">Particulier op zoek naar schoonmaak voor uw woning? Bekijk <a href="schoonmaak-particulieren.html" style="color:var(--link); font-weight:600;">schoonmaak voor particulieren</a>.</p>
     </div>
   </section>
 
@@ -853,8 +875,8 @@ def build_home():
   <section class="section-tight">
     <div class="wrap">
       <div style="max-width:760px; margin:0 auto;">
-        <p class="prose reveal">Als schoonmaakbedrijf in Helmond is BrabantSchoon actief in de hele regio: van Eindhoven en Deurne tot Gemert-Bakel, Asten, Someren, Geldrop-Mierlo en Laarbeek. Kortom, als schoonmaakbedrijf in Brabant bent u bij ons aan het juiste adres, in de Peelgemeenten en daarbuiten.</p>
-        <p class="prose reveal" style="margin-top:14px;">Wij verzorgen kantoorreiniging voor bedrijfspanden, VvE-schoonmaak voor gemeenschappelijke ruimtes, en periodieke schoonmaak op een vast ritme dat bij uw organisatie past. Daarnaast bieden we glasbewassing en opleveringsschoonmaak aan, zodat u voor vrijwel elke schoonmaakvraag bij één vaste partner terechtkunt.</p>
+        <p class="prose reveal">Vanuit Helmond bedienen we organisaties in de Peelgemeenten, regio Eindhoven en andere delen van Brabant — van Deurne en Gemert-Bakel tot Asten, Someren, Geldrop-Mierlo en Laarbeek.</p>
+        <p class="prose reveal" style="margin-top:14px;">Wij zijn inzetbaar voor kantoorreiniging van bedrijfspanden, VvE-schoonmaak van gemeenschappelijke ruimtes, en periodieke schoonmaak op een vast ritme dat bij uw organisatie past. Daarnaast bieden we glasbewassing en opleveringsschoonmaak aan, zodat u voor vrijwel elke schoonmaakvraag bij één vaste partner terechtkunt.</p>
       </div>
     </div>
   </section>
@@ -894,7 +916,7 @@ def build_home():
 """
     write("index.html", page_shell(
         "Schoonmaakbedrijf in Brabant | Kantoren &amp; VvE&#39;s | BrabantSchoon",
-        f"BrabantSchoon is uw schoonmaakpartner voor kantoren, VvE's en organisaties in Brabant. Vrijblijvende offerte binnen één werkdag.",
+        f"BrabantSchoon is uw schoonmaakpartner voor kantoren, VvE's, organisaties en particulieren in Brabant. Vrijblijvende offerte binnen één werkdag.",
         "", base, "/", body, LOCALBUSINESS_SCHEMA + "\n" + faq_schema(FAQ_ITEMS[:5]),
         preload_image="images/hero.jpg"
     ))
@@ -929,14 +951,30 @@ def build_diensten_overview():
       <div class="thumb {s['tint']}">{service_visual_from_root(s)}</div>
       <div class="body"><h3>{s['name']}</h3><p>{s['short']}</p><span class="sc-link">Meer informatie {icon('arrow')}</span></div>
     </a>""" for s in SERVICES)
+    particulier_card = f"""<a href="schoonmaak-particulieren.html" class="service-card">
+      <div class="thumb tint-1">{service_illustration('key')}</div>
+      <div class="body"><h3>Schoonmaak voor particulieren</h3><p>Verhuisschoonmaak, grote schoonmaak, schoonmaak na verbouwing en meer voor uw woning.</p><span class="sc-link">Meer informatie {icon('arrow')}</span></div>
+    </a>"""
     body = f"""
   {page_hero("Diensten", "Onze diensten.", "Van dagelijks onderhoud tot specialistisch werk.", base, "Diensten")}
+  <section class="section-tight" style="padding-bottom:0;">
+    <div class="wrap-narrow">
+      <p class="prose reveal">Elk pand is anders. De juiste aanpak en frequentie hangen af van het type ruimte, het gebruik ervan en de wensen van uw organisatie \u2014 daarom stemmen we onderstaande diensten altijd af op uw specifieke situatie, in plaats van een standaardpakket aan te bieden.</p>
+    </div>
+  </section>
   <section>
     <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Zakelijk</span><h2>Zakelijke schoonmaak.</h2></div>
       <div class="grid-3 reveal">{cards}</div>
     </div>
   </section>
-  <section style="background:var(--bg-soft);"><div class="wrap">{cta_band(base=base)}</div></section>
+  <section style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Particulier</span><h2>Particuliere schoonmaak.</h2></div>
+      <div class="grid-3 reveal" style="max-width:400px;">{particulier_card}</div>
+    </div>
+  </section>
+  <section><div class="wrap">{cta_band(base=base)}</div></section>
 """
     write("diensten.html", page_shell(
         "Diensten | Schoonmaakbedrijf voor Brabant | BrabantSchoon",
@@ -1004,10 +1042,103 @@ def build_service_pages():
         ))
 
 # =================================================================
+# PARTICULIERE SCHOONMAAK
+# =================================================================
+PARTICULIER_SUBDIENSTEN = [
+    ("key", "Verhuisschoonmaak", "Uw oude woning schoon opgeleverd, of uw nieuwe woning grondig schoongemaakt v\u00f3\u00f3r de verhuizing."),
+    ("spark", "Eenmalige grote schoonmaak", "Een grondige beurt voor uw hele woning, zonder dat daar direct een vaste overeenkomst voor nodig is."),
+    ("check", "Schoonmaak na verbouwing", "Verwijderen van bouwstof en normaal schoonmaakvuil na een renovatie of verbouwing."),
+    ("clock", "Periodieke schoonmaak", "Terugkerende professionele schoonmaak van uw woning, op een ritme dat u zelf bepaalt."),
+    ("doc", "Bij verkoop, verhuur of oplevering", "Uw woning schoon voor bezichtigingen, verhuur of de sleuteloverdracht."),
+]
+
+PARTICULIER_FAQS = [
+    ("Werken jullie ook voor particulieren, niet alleen voor bedrijven?", "Ja, naast bedrijven, VvE's en organisaties zijn we ook inzetbaar voor particuliere woningen \u2014 van een eenmalige grote schoonmaak tot periodiek onderhoud."),
+    ("Wat kost particuliere schoonmaak?", "Dat hangt af van de woning, de werkzaamheden en de frequentie. We werken met een offerte op maat in plaats van vaste tarieven \u2014 vraag vrijblijvend een offerte aan."),
+    ("Werken jullie ook buiten Helmond voor particulieren?", "Particuliere schoonmaak bieden we vanuit Helmond en in omliggende plaatsen. Voor grotere opdrachten zijn ook werkzaamheden elders in Brabant bespreekbaar."),
+    ("Verwijderen jullie ook bouwafval of gevaarlijke stoffen na een verbouwing?", "Nee, wij verzorgen het verwijderen van bouwstof en normaal schoonmaakvuil na een verbouwing. Voor grofvuil, bouwafval of gevaarlijke stoffen verwijst u naar een gespecialiseerd bedrijf."),
+]
+
+def build_particulieren_page():
+    base = ""
+    sub_html = "\n    ".join(
+        f'<div class="usp"><div class="icon-circle">{icon(n)}</div><h3>{t}</h3><p>{d}</p></div>'
+        for n, t, d in PARTICULIER_SUBDIENSTEN
+    )
+    faq_html = faq_block(PARTICULIER_FAQS)
+    related = [s for s in SERVICES if s["slug"] in ("glasbewassing", "opleveringsschoonmaak")]
+    related_html = "\n    ".join(f"""<a href="diensten/{r['slug']}.html" class="service-card">
+      <div class="thumb {r['tint']}">{service_visual_from_root(r)}</div>
+      <div class="body"><h3>{r['name']}</h3><p>{r['short']}</p></div>
+    </a>""" for r in related)
+    hero = page_hero("Particuliere schoonmaak", "Schoonmaak voor particulieren.",
+                      "Professionele schoonmaak voor uw woning \u2014 dezelfde zorgvuldige aanpak die bedrijven en VvE's van BrabantSchoon gewend zijn.",
+                      base, "Schoonmaak voor particulieren")
+    body = f"""
+  {hero}
+  <section class="section-tight">
+    <div class="wrap-narrow">
+      <p class="prose reveal">Naast bedrijven, VvE's en organisaties is BrabantSchoon ook inzetbaar voor particuliere woningen. Van een eenmalige grote schoonmaak tot periodieke ondersteuning: dezelfde professionele aanpak, heldere afspraken en een vast aanspreekpunt die u van onze zakelijke dienstverlening kent.</p>
+    </div>
+  </section>
+  <section class="section-tight" style="padding-top:0;">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Onze diensten</span><h2>Waarvoor u ons kunt inschakelen.</h2></div>
+      <div class="usp-grid reveal">
+        {sub_html}
+      </div>
+    </div>
+  </section>
+  <section class="section-tight" style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="two-col reveal">
+        <div>
+          <p class="prose"><strong style="color:var(--ink);">Geschikt voor:</strong> particulieren met een verhuizing, een grote schoonmaakklus, een woning na verbouwing, of behoefte aan periodieke ondersteuning bij het schoonhouden van hun woning.</p>
+          <div class="hero-actions" style="margin-top:24px;">
+            <a href="{base}contact.html#offerteWizard" class="btn btn-primary">Vraag vrijblijvend een offerte aan</a>
+            <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
+          </div>
+        </div>
+        <div>
+          <div class="faq">{faq_html}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Ook interessant</span><h2>Vaak in combinatie gevraagd</h2></div>
+      <div class="grid-3 reveal">{related_html}</div>
+    </div>
+  </section>
+  <section style="background:var(--bg-soft);"><div class="wrap">{cta_band("Interesse in particuliere schoonmaak?", "Vraag vrijblijvend een offerte aan of neem direct contact op.", base)}</div></section>
+  <section class="section-tight">
+    <div class="wrap-narrow" style="text-align:center;">
+      <p class="prose">Particuliere schoonmaak bieden we vanuit {CITY} en in omliggende plaatsen. Voor grotere opdrachten zijn ook werkzaamheden elders in <a href="{base}werkgebied.html" style="color:var(--link); font-weight:600;">Brabant</a> bespreekbaar \u2014 bekijk ook onze <a href="{base}diensten.html" style="color:var(--link); font-weight:600;">zakelijke diensten</a>.</p>
+    </div>
+  </section>
+"""
+    particulier_svc_schema = {"name": "Schoonmaak voor particulieren", "short": "Professionele schoonmaak voor particuliere woningen: verhuisschoonmaak, grote schoonmaak, schoonmaak na verbouwing, periodieke schoonmaak en schoonmaak bij verkoop of verhuur."}
+    write("schoonmaak-particulieren.html", page_shell(
+        "Schoonmaak voor particulieren | BrabantSchoon",
+        "Particuliere schoonmaak door BrabantSchoon: verhuisschoonmaak, grote schoonmaakbeurten en schoonmaak na verbouwing. Vraag vrijblijvend een offerte aan.",
+        "schoonmaak-particulieren.html", base, "schoonmaak-particulieren.html",
+        body,
+        service_schema(particulier_svc_schema) + "\n" + breadcrumb_schema("Schoonmaak voor particulieren", "schoonmaak-particulieren.html") + "\n" + faq_schema(PARTICULIER_FAQS)
+    ))
+
+# =================================================================
 # OVER ONS
 # =================================================================
 def build_over_ons():
     base = ""
+    about_items = [
+        ("chat", "Persoonlijke aanpak", "Voor ons is schoonmaak geen anoniem proces. We nemen de tijd om uw pand en wensen te leren kennen, zodat de aanpak aansluit op uw situatie \u2014 geen standaardpakket."),
+        ("phone", "Direct contact, geen callcenter", "Vragen of een aanpassing nodig? U belt of appt rechtstreeks met uw vaste aanspreekpunt bij BrabantSchoon \u2014 niet met een callcenter of wisselende medewerkers."),
+        ("check", "Vaste afspraken en kwaliteitscontrole", "Wat we afspreken, komen we na. Daarnaast controleren we resultaat en afspraken steekproefsgewijs, ook nadat de eerste schoonmaakbeurt achter de rug is."),
+        ("spark", "Herkenbare, professionele medewerkers", "Onze medewerkers werken in herkenbare BrabantSchoon-bedrijfskleding en weten wat er van hen verwacht wordt: representatief, zorgvuldig en met oog voor detail."),
+    ]
+    about_html = "\n    ".join(f'<div class="usp"><div class="icon-circle">{icon(n)}</div><h3>{t}</h3><p>{d}</p></div>' for n, t, d in about_items)
     body = f"""
   {page_hero("Over ons", "Persoonlijk en professioneel.", f"Een schoonmaakpartner uit {CITY}, met korte lijnen en heldere afspraken.", base, "Over ons", image="images/over-ons.jpg", image_alt="Medewerker van BrabantSchoon bij de bedrijfswagen")}
   <section class="section-tight">
@@ -1017,6 +1148,20 @@ def build_over_ons():
         <a href="{base}diensten.html" class="btn btn-outline">Onze diensten</a>
         <a href="{base}werkgebied.html" class="btn btn-outline">Ons werkgebied</a>
       </div>
+    </div>
+  </section>
+  <section style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Onze aanpak</span><h2>Waar we voor staan.</h2></div>
+      <div class="usp-grid reveal">
+        {about_html}
+      </div>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="wrap-narrow">
+      <div class="sec-head reveal" style="text-align:left;"><span class="eyebrow">Waarom BrabantSchoon</span><h2>Ontstaan uit een simpel uitgangspunt.</h2></div>
+      <p class="prose reveal" style="margin-top:14px;">BrabantSchoon is opgericht vanuit de overtuiging dat schoonmaak persoonlijker en transparanter kan: één vast aanspreekpunt in plaats van een callcenter, een team dat uw pand leert kennen in plaats van wisselende invalkrachten, en heldere afspraken zonder kleine lettertjes. Die uitgangspunten vormen nog steeds de basis van hoe we werken.</p>
     </div>
   </section>
   <section style="background:var(--bg-soft);"><div class="wrap">{cta_band(base=base)}</div></section>
@@ -1037,8 +1182,8 @@ WERKGEBIED_TEKST = {
     "Someren": "Kantoren en VvE's, persoonlijke aanpak voor lokale organisaties.",
     "Gemert-Bakel": "Gemert en Bakel, met dezelfde zorg als in Helmond zelf.",
     "Laarbeek": "Beek en Donk, Aarle-Rixtel en Mariahout, vast en betrouwbaar.",
-    "Eindhoven": "Kantoorreiniging en opleveringsschoonmaak, regelmatig actief.",
-    "Geldrop-Mierlo": "Op de route Helmond-Eindhoven, structureel inzetbaar.",
+    "Eindhoven": "Kantoorreiniging en opleveringsschoonmaak, inzetbaar op aanvraag.",
+    "Geldrop-Mierlo": "Op de route Helmond-Eindhoven, goed inzetbaar.",
     "Nuenen": "Kleinere kantoren en praktijken, persoonlijk contact voorop.",
     "Mierlo": "Onderdeel van Geldrop-Mierlo, dezelfde vaste aanpak.",
 }
@@ -1050,32 +1195,32 @@ LOCATIONS = [
         "slug": "tilburg", "name": "Tilburg",
         "intro": "Tilburg ligt buiten ons kerngebied in de Peel, maar we rijden geregeld uit naar de stad voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak. Vooral voor grotere of terugkerende opdrachten is een vaste planning vanuit Helmond goed te combineren.",
         "faq_q": "Rijden jullie ook naar Tilburg voor kleinere klussen?",
-        "kaart_tekst": "Voor grotere en terugkerende opdrachten verzorgt BrabantSchoon in Tilburg kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak.",
-        "uitgelicht": ('Tilburg is een grote studentenstad met een textielverleden en, dankzij de ligging aan de A58 en A65, een belangrijke logistieke sector met veel distributiecentra. Voor kantoren en bedrijfsverzamelgebouwen in de stad verzorgen we kantoorreiniging en VvE-schoonmaak.', 'Voor grotere of terugkerende opdrachten — zoals een vast kantoorcontract of een omvangrijke opleveringsschoonmaak — is een vaste planning vanuit Helmond goed te combineren met de rest van onze route.'),
-        "faq_a": "Voor kleine, eenmalige klussen in Tilburg is de reistijd vanuit Helmond niet altijd rendabel. Voor grotere of terugkerende opdrachten, zoals wekelijkse kantoorreiniging, is dit meestal wel mogelijk. Neem contact op om de mogelijkheden te bespreken.",
+        "kaart_tekst": "Voor grotere en terugkerende opdrachten is BrabantSchoon in Tilburg inzetbaar voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak.",
+        "uitgelicht": ('Tilburg is een grote studentenstad met een textielverleden en, dankzij de ligging aan de A58 en A65, een belangrijke logistieke sector met veel distributiecentra. Voor kantoren en bedrijfsverzamelgebouwen in de stad zijn we inzetbaar voor kantoorreiniging en VvE-schoonmaak.', 'Voor grotere of terugkerende opdrachten — zoals een vast kantoorcontract of een omvangrijke opleveringsschoonmaak — is een vaste planning vanuit Helmond goed te combineren met de rest van onze route.'),
+        "faq_a": "Voor kleine, eenmalige klussen in Tilburg is de reistijd vanuit Helmond niet altijd rendabel. Voor grotere of terugkerende opdrachten, zoals wekelijkse kantoorreiniging, bespreken we graag de mogelijkheden.",
     },
     {
         "slug": "breda", "name": "Breda",
-        "intro": "Breda ligt verder van ons kerngebied in de Peel, maar voor substanti\u00eble opdrachten \u2014 zoals een vast kantoorcontract, VvE-schoonmaak of een grote opleveringsschoonmaak \u2014 rijden we ook hiernaartoe.",
+        "intro": "Breda ligt verder van ons kerngebied in de Peel, maar voor substantiële opdrachten — zoals een vast kantoorcontract, VvE-schoonmaak of een grote opleveringsschoonmaak — rijden we ook hiernaartoe.",
         "faq_q": "Is een eenmalige beurt in Breda mogelijk?",
         "kaart_tekst": "In Breda richten we ons op substantiële, structurele schoonmaakopdrachten voor kantoren en VvE's.",
         "uitgelicht": ('Breda combineert een historisch centrum met een groeiende sector aan kantoren en bedrijfsverzamelgebouwen, mede dankzij onderwijsinstellingen als Breda University of Applied Sciences. Voor substantiële opdrachten — een vast kantoorcontract, VvE-schoonmaak of een grote opleveringsschoonmaak — rijden we ook hiernaartoe.', 'Voor kleinere, eenmalige klussen in Breda is de reistijd vanuit Helmond niet altijd rendabel; voor grotere of terugkerende opdrachten wel. Neem gerust contact op om de mogelijkheden voor uw specifieke situatie te bespreken.'),
-        "faq_a": "Dat hangt af van de omvang van de klus. Neem contact op met de details van uw situatie, dan laten we u weten of het rendabel is in te plannen.",
+        "faq_a": "Dat hangt af van de omvang van de klus. Neem contact op met de details van uw situatie, dan bespreken we of het rendabel is in te plannen.",
     },
     {
         "slug": "den-bosch", "name": "Den Bosch",
-        "intro": "'s-Hertogenbosch ligt op een goed bereikbare afstand vanuit Helmond. Voor kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak zijn we hier regelmatig inzetbaar.",
+        "intro": "'s-Hertogenbosch ligt op een goed bereikbare afstand vanuit Helmond. Voor kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak zijn we hier inzetbaar.",
         "faq_q": "Werken jullie ook voor VvE's in Den Bosch?",
-        "kaart_tekst": "Voor kantoren, VvE's en bedrijfsverzamelgebouwen in 's-Hertogenbosch verzorgen we periodieke en facilitaire schoonmaak.",
-        "uitgelicht": ("'s-Hertogenbosch is als provinciehoofdstad van Noord-Brabant een stad met veel kantoren van overheid, onderwijs en dienstverlening, onder meer rond het moderne Paleiskwartier bij het station. Voor kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak zijn we hier regelmatig inzetbaar.", 'De goede bereikbaarheid vanuit Helmond maakt het mogelijk om ook structurele, terugkerende opdrachten in Den Bosch in te plannen, naast eenmalige klussen zoals een opleveringsschoonmaak.'),
-        "faq_a": "Ja, we verzorgen schoonmaak van trappenhuizen en gemeenschappelijke ruimtes voor VvE's in en rond 's-Hertogenbosch, in overleg met het bestuur.",
+        "kaart_tekst": "Voor kantoren, VvE's en bedrijfsverzamelgebouwen in 's-Hertogenbosch zijn we inzetbaar voor periodieke en facilitaire schoonmaak.",
+        "uitgelicht": ("'s-Hertogenbosch is als provinciehoofdstad van Noord-Brabant een stad met veel kantoren van overheid, onderwijs en dienstverlening, onder meer rond het moderne Paleiskwartier bij het station. Voor kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak zijn we hier inzetbaar.", 'De goede bereikbaarheid vanuit Helmond maakt het mogelijk om ook structurele, terugkerende opdrachten in Den Bosch in te plannen, naast eenmalige klussen zoals een opleveringsschoonmaak.'),
+        "faq_a": "Ja, we zijn inzetbaar voor schoonmaak van trappenhuizen en gemeenschappelijke ruimtes voor VvE's in en rond 's-Hertogenbosch, in overleg met het bestuur.",
     },
     {
         "slug": "waalwijk", "name": "Waalwijk",
-        "intro": "Waalwijk ligt tussen Tilburg en 's-Hertogenbosch in. Voor bedrijven en VvE's in Waalwijk verzorgen we schoonmaak op aanvraag, vooral bij grotere of vaste opdrachten.",
+        "intro": "Waalwijk ligt tussen Tilburg en 's-Hertogenbosch in. Voor bedrijven en VvE's in Waalwijk zijn we inzetbaar op aanvraag, vooral bij grotere of vaste opdrachten.",
         "faq_q": "Kunnen jullie een vast schoonmaakcontract voor Waalwijk verzorgen?",
-        "kaart_tekst": "In Waalwijk verzorgen we vaste schoonmaakcontracten en grotere eenmalige opdrachten voor bedrijven en VvE's.",
-        "uitgelicht": ("Waalwijk staat historisch bekend om de schoen- en lederindustrie — zichtbaar in het Schoenenkwartier — en heeft dankzij de ligging aan de A59 een flinke logistieke sector met distributiecentra. Voor bedrijven en VvE's hier verzorgen we schoonmaak op aanvraag, vooral bij grotere of vaste opdrachten.", 'Voor een vast, terugkerend contract is Waalwijk goed inpasbaar in onze planning; voor kleinere eenmalige klussen bespreken we per situatie of dit rendabel te combineren is met andere ritten in de regio.'),
+        "kaart_tekst": "In Waalwijk zijn we inzetbaar voor vaste schoonmaakcontracten en grotere eenmalige opdrachten voor bedrijven en VvE's.",
+        "uitgelicht": ("Waalwijk staat historisch bekend om de schoen- en lederindustrie — zichtbaar in het Schoenenkwartier — en heeft dankzij de ligging aan de A59 een flinke logistieke sector met distributiecentra. Voor bedrijven en VvE's hier zijn we inzetbaar op aanvraag, vooral bij grotere of vaste opdrachten.", 'Voor een vast, terugkerend contract is Waalwijk goed inpasbaar in onze planning; voor kleinere eenmalige klussen bespreken we per situatie of dit rendabel te combineren is met andere ritten in de regio.'),
         "faq_a": "Ja, voor een vast, terugkerend contract is Waalwijk goed inpasbaar in onze planning. Neem contact op om de mogelijkheden te bespreken.",
     },
 ]
@@ -1099,7 +1244,7 @@ def build_werkgebied():
         for loc in LOCATIONS if loc["slug"] != "eindhoven"
     )
     body = f"""
-  {page_hero("Werkgebied", "Actief in heel Brabant.", f"Vanuit {CITY} rijden we door de hele provincie \u2014 met de Peelgemeenten als vertrouwd kerngebied dichtbij huis.", base, "Werkgebied", image="images/werkgebied-kerngebied.jpg", image_alt="Medewerker van BrabantSchoon bij de bedrijfswagen op locatie")}
+  {page_hero("Werkgebied", "Actief in Brabant.", f"Vanuit {CITY} zijn we actief in Brabant, met Zuidoost-Brabant en de Peelgemeenten als vertrouwd kerngebied.", base, "Werkgebied", image="images/werkgebied-kerngebied.jpg", image_alt="Medewerker van BrabantSchoon bij de bedrijfswagen op locatie")}
   <section class="section-tight">
     <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Kerngebied</span><h2>Onze vaste regio.</h2></div>
@@ -1120,8 +1265,8 @@ def build_werkgebied():
   </section>
 """
     write("werkgebied.html", page_shell(
-        "Werkgebied | Actief in heel Brabant | BrabantSchoon",
-        f"BrabantSchoon is uw schoonmaakpartner voor Brabant, gevestigd in Helmond met de Peelgemeenten als vertrouwd kerngebied.",
+        "Werkgebied | Actief in Brabant | BrabantSchoon",
+        f"BrabantSchoon is uw schoonmaakpartner voor Brabant, vanuit Helmond actief in Zuidoost-Brabant en de Peelgemeenten als kerngebied.",
         "werkgebied.html", base, "werkgebied.html", body, breadcrumb_schema("Werkgebied", "werkgebied.html")
     ))
 
@@ -1161,40 +1306,40 @@ def local_doelgroep(loc):
 KERNGEBIED = [
     {
         "slug": "helmond", "name": "Helmond",
-        "intro": "Als thuisbasis van BrabantSchoon kennen we Helmond het beste. Van dagelijkse en wekelijkse schoonmaak tot bredere facilitaire dienstverlening \u2014 we zijn hier voor kantoren, bedrijfsverzamelgebouwen en winkelpanden dagelijks onderweg.",
-        "waarom": "Doordat we in Helmond zelf gevestigd zijn, is de reistijd naar elke locatie kort. Dat betekent snel kunnen schakelen bij een spoedklus, en een vast team dat uw pand door en door kent.",
+        "intro": "Als thuisbasis van BrabantSchoon is Helmond ons voornaamste werkgebied. Van periodieke tot eenmalige schoonmaak en bredere facilitaire dienstverlening — we zijn hier inzetbaar voor kantoren, bedrijfsverzamelgebouwen en winkelpanden.",
+        "waarom": "Doordat we in Helmond zelf gevestigd zijn, is de reistijd naar elke locatie kort. Dat betekent snel kunnen schakelen bij een spoedklus, en een team dat zich snel inwerkt in uw pand.",
         "klanten": "kantoren, bedrijfsverzamelgebouwen, VvE's, winkels, praktijken en andere zakelijke organisaties",
-        "kaart_tekst": "BrabantSchoon verzorgt vanuit Helmond periodieke, dagelijkse en eenmalige schoonmaak voor kantoren, VvE's en winkels in de hele regio.",
-        "uitgelicht": ('Als vestigingsplaats is Helmond ons dagelijkse werkgebied: van kantoren op en rond de Automotive Campus tot bedrijfsverzamelgebouwen in Suytkade en het centrum. Kantoorreiniging en VvE-schoonmaak vormen hier de kern van ons werk, aangevuld met opleveringsschoonmaak bij verhuizingen of nieuwbouw.', 'Door de korte afstand tot ons kantoor kunnen we in Helmond ook kleinere of onregelmatige klussen inplannen die verder weg minder snel rendabel zijn — denk aan een eenmalige beurt of een spoedklus tussen de vaste planning door.'),
-        "doelgroep_lokaal": "In Helmond werken we voor uiteenlopende opdrachtgevers: kantoren, bedrijfsverzamelgebouwen, VvE's, winkels en praktijken. Juist omdat dit onze thuisbasis is, is een kennismaking op locatie hier meestal binnen enkele dagen te plannen.",
+        "kaart_tekst": "BrabantSchoon is vanuit Helmond inzetbaar voor periodieke en eenmalige schoonmaak, voor kantoren, VvE's en winkels in de hele regio.",
+        "uitgelicht": ('Als vestigingsplaats is Helmond ons voornaamste werkgebied: van kantoren op en rond de Automotive Campus tot bedrijfsverzamelgebouwen in Suytkade en het centrum. Kantoorreiniging en VvE-schoonmaak vormen hier de kern van onze dienstverlening, aangevuld met opleveringsschoonmaak bij verhuizingen of nieuwbouw.', 'Door de korte afstand tot ons kantoor kunnen we in Helmond ook kleinere of onregelmatige klussen inplannen die verder weg minder snel rendabel zijn — denk aan een eenmalige beurt of een spoedklus tussen de vaste planning door.'),
+        "doelgroep_lokaal": "In Helmond zijn we inzetbaar voor uiteenlopende organisaties: kantoren, bedrijfsverzamelgebouwen, VvE's, winkels en praktijken. Omdat dit onze thuisbasis is, bespreken we hier snel de mogelijkheden voor een kennismaking op locatie.",
         "faqs": [
             ("Werken jullie ook 's avonds of in het weekend in Helmond?", "Ja, voor veel kantoren en winkels plannen we de schoonmaak juist buiten openingstijden, zodat het uw bedrijfsvoering niet verstoort."),
-            ("Kunnen jullie snel starten met een nieuwe klant in Helmond?", "Vaak wel \u2014 omdat we hier gevestigd zijn, is een kennismaking op locatie meestal al binnen enkele dagen te plannen."),
+            ("Kunnen jullie snel starten met een nieuwe klant in Helmond?", "Vaak wel — omdat we hier gevestigd zijn, bespreken we de mogelijkheden voor een kennismaking op locatie snel."),
         ],
         "neighbors": ["deurne", "gemert-bakel"],
     },
     {
         "slug": "deurne", "name": "Deurne",
-        "intro": "Deurne kennen we goed: van bedrijfspanden op de bedrijventerreinen tot praktijken in het centrum. We verzorgen hier zowel reguliere kantoorreiniging als opleveringsschoonmaak en specialistische reiniging.",
+        "intro": "Deurne ligt dicht bij ons kerngebied: van bedrijfspanden op de bedrijventerreinen tot praktijken in het centrum. We zijn hier inzetbaar voor reguliere kantoorreiniging, opleveringsschoonmaak en specialistische reiniging.",
         "waarom": "Deurne ligt op korte afstand van ons kerngebied Helmond, waardoor we hier net zo snel kunnen schakelen als in onze thuisstad.",
         "klanten": "bedrijfspanden, praktijken, logistieke bedrijven en productiebedrijven",
-        "kaart_tekst": "Vanuit ons kerngebied verzorgen we in Deurne periodieke schoonmaak, opleveringsschoonmaak en specialistische reiniging voor bedrijven en praktijken.",
-        "uitgelicht": ('Deurne combineert bedrijventerreinen zoals Kranenmortel met een sterke agrarische en logistieke sector. Voor bedrijfspanden en loodsen verzorgen we vooral periodieke kantoor- en hallenreiniging, en bij verbouwing of verhuizing opleveringsschoonmaak.', 'Ook praktijken in het centrum van Deurne — huisartsen, fysiotherapie en vergelijkbare zorgpraktijken — vragen om hygiënische, buiten openingstijden uitgevoerde schoonmaak. Dat combineren we goed met onze planning rond Helmond, waar Deurne aan grenst.'),
-        "doelgroep_lokaal": 'Onze opdrachtgevers in Deurne zijn met name bedrijfspanden, praktijken, logistieke en productiebedrijven. Voor deze laatste groep werken we ook met specialistische reiniging van hallen en werkvloeren.',
+        "kaart_tekst": "Vanuit ons kerngebied zijn we in Deurne inzetbaar voor periodieke schoonmaak, opleveringsschoonmaak en specialistische reiniging voor bedrijven en praktijken.",
+        "uitgelicht": ('Deurne combineert bedrijventerreinen zoals Kranenmortel met een sterke agrarische en logistieke sector. Voor bedrijfspanden en loodsen zijn we vooral inzetbaar voor periodieke kantoor- en hallenreiniging, en bij verbouwing of verhuizing opleveringsschoonmaak.', 'Ook praktijken in het centrum van Deurne — huisartsen, fysiotherapie en vergelijkbare zorgpraktijken — vragen om hygiënische, buiten openingstijden uitgevoerde schoonmaak. Dat combineren we goed met onze planning rond Helmond, waar Deurne aan grenst.'),
+        "doelgroep_lokaal": 'Organisaties waarvoor wij in Deurne inzetbaar zijn: met name bedrijfspanden, praktijken, logistieke en productiebedrijven. Voor deze laatste groep bieden we ook specialistische reiniging van hallen en werkvloeren.',
         "faqs": [
-            ("Verzorgen jullie ook praktijken in Deurne?", "Ja, we reinigen regelmatig praktijkruimtes zoals huisartsenposten en fysiotherapiepraktijken, buiten de openingstijden."),
+            ("Verzorgen jullie ook praktijken in Deurne?", "Ja, we zijn inzetbaar voor praktijkruimtes zoals huisartsenposten en fysiotherapiepraktijken, buiten de openingstijden."),
             ("Is eenmalige schoonmaak in Deurne mogelijk?", "Zeker, bijvoorbeeld bij een verhuizing of oplevering. Neem contact op voor de mogelijkheden."),
         ],
         "neighbors": ["helmond", "asten"],
     },
     {
         "slug": "asten", "name": "Asten",
-        "intro": "Asten en de kern Heusden liggen goed bereikbaar vanuit Helmond. We verzorgen hier zowel eenmalige als periodieke schoonmaak, op een ritme dat bij uw organisatie past.",
+        "intro": "Asten en de kern Heusden liggen goed bereikbaar vanuit Helmond. We zijn hier inzetbaar voor zowel eenmalige als periodieke schoonmaak, op een ritme dat bij uw organisatie past.",
         "waarom": "De korte afstand vanuit Helmond maakt het voor ons eenvoudig om ook kleinere opdrachten in Asten rendabel in te plannen.",
         "klanten": "kantoren, bedrijfsruimtes, VvE's en productiebedrijven",
-        "kaart_tekst": "BrabantSchoon verzorgt in Asten zowel eenmalige als terugkerende schoonmaak voor kantoren, bedrijfsruimtes en VvE's.",
-        "uitgelicht": ('Asten en de kern Heusden liggen in De Peel, een regio met relatief veel agrarische bedrijven en kleinere bedrijfsterreinen zoals Molenakkers. Voor kantoren en bedrijfsruimtes hier verzorgen we zowel periodieke schoonmaak als eenmalige beurten.', 'Door de korte afstand vanuit Helmond kunnen we in Asten ook kleinere opdrachten rendabel inplannen — iets wat verder van ons kerngebied minder vanzelfsprekend is.'),
-        "doelgroep_lokaal": "In Asten werken we voor kantoren, bedrijfsruimtes, VvE's en productiebedrijven. Voor VvE's verzorgen we met name trappenhuizen en gemeenschappelijke ruimtes, in overleg met het bestuur.",
+        "kaart_tekst": "BrabantSchoon is in Asten inzetbaar voor zowel eenmalige als terugkerende schoonmaak, voor kantoren, bedrijfsruimtes en VvE's.",
+        "uitgelicht": ('Asten en de kern Heusden liggen in De Peel, een regio met relatief veel agrarische bedrijven en kleinere bedrijfsterreinen zoals Molenakkers. Voor kantoren en bedrijfsruimtes hier zijn we inzetbaar voor zowel periodieke schoonmaak als eenmalige beurten.', 'Door de korte afstand vanuit Helmond kunnen we in Asten ook kleinere opdrachten rendabel inplannen — iets wat verder van ons kerngebied minder vanzelfsprekend is.'),
+        "doelgroep_lokaal": "In Asten zijn we inzetbaar voor kantoren, bedrijfsruimtes, VvE's en productiebedrijven. Voor VvE's gaat het met name om trappenhuizen en gemeenschappelijke ruimtes, in overleg met het bestuur.",
         "faqs": [
             ("Rijden jullie ook naar Heusden?", "Ja, Heusden valt binnen ons werkgebied rond Asten."),
             ("Wat kost schoonmaak in Asten?", "Dat hangt af van de ruimte en frequentie. Na een kort gesprek ontvangt u een vrijblijvende offerte op maat."),
@@ -1203,85 +1348,85 @@ KERNGEBIED = [
     },
     {
         "slug": "someren", "name": "Someren",
-        "intro": "In Someren werken we voor kantoren, VvE's en scholen die op zoek zijn naar een persoonlijke, vaste schoonmaakpartner \u2014 van wekelijkse onderhoudsbeurten tot eenmalige klussen.",
-        "waarom": "Someren heeft veel lokale organisaties die op zoek zijn naar een vaste, betrokken schoonmaakpartner \u2014 daar sluit onze aanpak van \u00e9\u00e9n vast team en korte lijnen goed op aan.",
+        "intro": "In Someren zijn we inzetbaar voor kantoren, VvE's en scholen die op zoek zijn naar een persoonlijke, vaste schoonmaakpartner — van wekelijkse onderhoudsbeurten tot eenmalige klussen.",
+        "waarom": "Someren heeft veel lokale organisaties die op zoek zijn naar een vaste, betrokken schoonmaakpartner — daar sluit onze aanpak van één vast team en korte lijnen goed op aan.",
         "klanten": "kantoren, VvE's, bedrijfspanden en scholen",
-        "kaart_tekst": "In Someren bieden we periodieke en wekelijkse schoonmaak voor kantoren, VvE's en scholen in de regio.",
+        "kaart_tekst": "In Someren zijn we inzetbaar voor periodieke en wekelijkse schoonmaak, voor kantoren, VvE's en scholen in de regio.",
         "uitgelicht": ('Someren en de kernen Someren-Eind en Lierop kennen een sterke glastuinbouwsector, naast kantoren en lokale bedrijvigheid. Voor kantoren en bedrijfsruimtes hier bieden we periodieke schoonmaak op een vast, wekelijks ritme.', "Scholen en VvE's in Someren vragen vaak om schoonmaak buiten lesuren of avonduren — daar stemmen we onze planning bewust op af, met hetzelfde vaste team per bezoek."),
-        "doelgroep_lokaal": "Onze opdrachtgevers in Someren zijn kantoren, VvE's, bedrijfspanden en scholen. Voor scholen letten we extra op hygiëne in gemeenschappelijke ruimtes zoals gangen, toiletten en kantines.",
+        "doelgroep_lokaal": "Organisaties waarvoor wij in Someren inzetbaar zijn: kantoren, VvE's, bedrijfspanden en scholen. Voor scholen letten we extra op hygiëne in gemeenschappelijke ruimtes zoals gangen, toiletten en kantines.",
         "faqs": [
-            ("Werken jullie met een vast team in Someren?", "Ja, u krijgt een vast aanspreekpunt dat uw locatie kent."),
+            ("Werken jullie met een vast team in Someren?", "Ja, u krijgt een vast aanspreekpunt toegewezen zodra u klant wordt."),
             ("Is een offerte vrijblijvend?", "Altijd, en zonder verplichtingen."),
         ],
         "neighbors": ["asten", "gemert-bakel"],
     },
     {
         "slug": "gemert-bakel", "name": "Gemert-Bakel",
-        "intro": "Gemert en Bakel behoren tot ons kerngebied. Of het nu gaat om facilitaire schoonmaak voor een bedrijfspand in Gemert of een opleveringsschoonmaak in Bakel, we plannen dit met dezelfde zorg als in Helmond zelf.",
-        "waarom": "Als vaste partij in de Peelregio kennen we de lokale bedrijven en hun specifieke wensen.",
+        "intro": "Gemert en Bakel behoren tot ons kerngebied. Of het nu gaat om facilitaire schoonmaak voor een bedrijfspand in Gemert of een opleveringsschoonmaak in Bakel, we pakken dit met dezelfde zorg aan als in Helmond zelf.",
+        "waarom": "Als schoonmaakbedrijf in de Peelregio hebben we oog voor de wensen van lokale bedrijven.",
         "klanten": "bedrijfspanden, VvE's, logistieke bedrijven en organisaties met een opleveringsklus",
-        "kaart_tekst": "BrabantSchoon verzorgt in Gemert-Bakel facilitaire schoonmaak, opleveringsschoonmaak en periodiek onderhoud voor bedrijven en VvE's.",
-        "uitgelicht": ('Gemert-Bakel heeft een sterke agrifoodsector — met de champignonteelt als bekende bedrijfstak — en huisvest onderwijsinstellingen zoals Helicon. Voor bedrijfspanden in deze sector verzorgen we facilitaire schoonmaak en, bij verbouwing of verhuizing, opleveringsschoonmaak.', 'Ook in het centrum van Gemert, rond Kasteel Gemert, zitten kantoren en praktijken die om periodieke schoonmaak vragen — vaak in combinatie met glasbewassing van etalages of kantoorramen.'),
-        "doelgroep_lokaal": "In Gemert-Bakel werken we voor bedrijfspanden, VvE's, logistieke bedrijven en organisaties met een opleveringsklus. De agrarische en foodsector in de regio betekent dat hygiëne vaak net iets meer aandacht vraagt dan gemiddeld.",
+        "kaart_tekst": "BrabantSchoon is in Gemert-Bakel inzetbaar voor facilitaire schoonmaak, opleveringsschoonmaak en periodiek onderhoud, voor bedrijven en VvE's.",
+        "uitgelicht": ('Gemert-Bakel heeft een sterke agrifoodsector — met de champignonteelt als bekende bedrijfstak — en huisvest onderwijsinstellingen zoals Helicon. Voor bedrijfspanden in deze sector zijn we inzetbaar voor facilitaire schoonmaak en, bij verbouwing of verhuizing, opleveringsschoonmaak.', 'Ook in het centrum van Gemert, rond Kasteel Gemert, zitten kantoren en praktijken die om periodieke schoonmaak vragen — vaak in combinatie met glasbewassing van etalages of kantoorramen.'),
+        "doelgroep_lokaal": "Organisaties waarvoor wij in Gemert-Bakel inzetbaar zijn: bedrijfspanden, VvE's, logistieke bedrijven en organisaties met een opleveringsklus. De agrarische en foodsector in de regio betekent dat hygiëne vaak net iets meer aandacht vraagt dan gemiddeld.",
         "faqs": [
-            ("Doen jullie ook opleveringsschoonmaak in Gemert-Bakel?", "Ja, dat is een van onze kernactiviteiten in deze regio."),
-            ("Hoe snel kunnen jullie starten?", "Meestal binnen enkele dagen na een kort kennismakingsgesprek."),
+            ("Doen jullie ook opleveringsschoonmaak in Gemert-Bakel?", "Ja, opleveringsschoonmaak is een van de diensten die we hier aanbieden."),
+            ("Hoe snel kunnen jullie starten?", "Neem contact op voor een kort kennismakingsgesprek, dan bespreken we de mogelijkheden snel."),
         ],
         "neighbors": ["helmond", "laarbeek"],
     },
     {
         "slug": "laarbeek", "name": "Laarbeek",
-        "intro": "In Laarbeek, met de kernen Beek en Donk, Aarle-Rixtel en Mariahout, verzorgen we periodieke en dagelijkse schoonmaak voor kantoren, winkels en VvE's die op zoek zijn naar een vast en betrouwbaar schoonmaakteam.",
-        "waarom": "De verschillende kernen van Laarbeek liggen dicht bij elkaar, waardoor we hier efficient kunnen plannen \u2014 dat voordeel geven we door in scherpe tarieven.",
+        "intro": "In Laarbeek, met de kernen Beek en Donk, Aarle-Rixtel en Mariahout, zijn we inzetbaar voor periodieke en eenmalige schoonmaak, voor kantoren, winkels en VvE's die op zoek zijn naar een vast en betrouwbaar schoonmaakteam.",
+        "waarom": "De verschillende kernen van Laarbeek liggen dicht bij elkaar, waardoor we hier efficiënt kunnen plannen — dat voordeel geven we door in scherpe tarieven.",
         "klanten": "kantoren, VvE's, winkels en bedrijfsverzamelgebouwen in Beek en Donk, Aarle-Rixtel en Mariahout",
-        "kaart_tekst": "In Laarbeek verzorgen we periodieke en dagelijkse schoonmaak voor kantoren, winkels en bedrijfsverzamelgebouwen.",
-        "uitgelicht": ('Laarbeek — met de kernen Beek en Donk, Aarle-Rixtel en Mariahout — kent een mix van agrarische bedrijven, de paardensector en kleinere bedrijventerreinen zoals Bemmerpark in Beek en Donk. Voor kantoren en bedrijfsverzamelgebouwen hier verzorgen we periodieke en dagelijkse schoonmaak.', 'Doordat de kernen van Laarbeek dicht bij elkaar liggen, kunnen we hier efficiënt plannen — verschillende panden op één route, zonder dat dit ten koste gaat van de aandacht per locatie.'),
-        "doelgroep_lokaal": "Onze opdrachtgevers in Laarbeek zijn kantoren, VvE's, winkels en bedrijfsverzamelgebouwen in Beek en Donk, Aarle-Rixtel en Mariahout. Voor winkels plannen we het liefst vroeg in de ochtend, vóór openingstijd.",
+        "kaart_tekst": "In Laarbeek zijn we inzetbaar voor periodieke en eenmalige schoonmaak, voor kantoren, winkels en bedrijfsverzamelgebouwen.",
+        "uitgelicht": ('Laarbeek — met de kernen Beek en Donk, Aarle-Rixtel en Mariahout — kent een mix van agrarische bedrijven, de paardensector en kleinere bedrijventerreinen zoals Bemmerpark in Beek en Donk. Voor kantoren en bedrijfsverzamelgebouwen hier zijn we inzetbaar voor periodieke en eenmalige schoonmaak.', 'Doordat de kernen van Laarbeek dicht bij elkaar liggen, kunnen we hier efficiënt plannen — verschillende panden op één route, zonder dat dit ten koste gaat van de aandacht per locatie.'),
+        "doelgroep_lokaal": "Organisaties waarvoor wij in Laarbeek inzetbaar zijn: kantoren, VvE's, winkels en bedrijfsverzamelgebouwen in Beek en Donk, Aarle-Rixtel en Mariahout. Voor winkels plannen we het liefst vroeg in de ochtend, vóór openingstijd.",
         "faqs": [
-            ("Werken jullie in alle kernen van Laarbeek?", "Ja, in Beek en Donk, Aarle-Rixtel en Mariahout."),
+            ("Werken jullie in alle kernen van Laarbeek?", "Ja, in Beek en Donk, Aarle-Rixtel en Mariahout zijn we inzetbaar."),
             ("Bieden jullie ook periodieke schoonmaak?", "Ja, naast vaste contracten ook periodieke beurten op afspraak."),
         ],
         "neighbors": ["gemert-bakel", "helmond"],
     },
     {
         "slug": "nuenen", "name": "Nuenen",
-        "intro": "In Nuenen verzorgen we zowel periodieke als eenmalige schoonmaak voor kantoren, praktijken en scholen, waarbij persoonlijk contact en een vast aanspreekpunt voorop staan.",
-        "waarom": "Nuenen heeft veel zelfstandige ondernemers en professionele praktijken \u2014 juist daar telt een schoonmaakpartner die meedenkt in plaats van alleen uitvoert.",
+        "intro": "In Nuenen zijn we inzetbaar voor zowel periodieke als eenmalige schoonmaak, voor kantoren, praktijken en scholen, waarbij persoonlijk contact en een vast aanspreekpunt voorop staan.",
+        "waarom": "Nuenen heeft veel zelfstandige ondernemers en professionele praktijken — juist daar telt een schoonmaakpartner die meedenkt in plaats van alleen uitvoert.",
         "klanten": "kantoren, praktijken, scholen en organisaties met een eigen bedrijfspand",
-        "kaart_tekst": "BrabantSchoon verzorgt in Nuenen periodieke en eenmalige schoonmaak voor kantoren, praktijken en scholen.",
+        "kaart_tekst": "BrabantSchoon is in Nuenen inzetbaar voor periodieke en eenmalige schoonmaak, voor kantoren, praktijken en scholen.",
         "uitgelicht": ('Nuenen is vooral bekend als woonplaats van Vincent van Gogh en heeft een overwegend kleinschalig, welvarend ondernemersklimaat: veel zelfstandige praktijken en kleinere kantoren, minder zware industrie dan in de rest van de regio.', 'Dat vertaalt zich in onze aanpak: periodieke schoonmaak op maat voor praktijkruimtes en kantoren, waarbij representativiteit en een persoonlijke aanpak vaak net iets zwaarder wegen dan bij grootschalige bedrijfspanden.'),
-        "doelgroep_lokaal": 'In Nuenen werken we voor kantoren, praktijken, scholen en organisaties met een eigen bedrijfspand — van eenmanszaak tot grotere praktijk, telkens met een offerte op maat.',
+        "doelgroep_lokaal": 'Organisaties waarvoor wij in Nuenen inzetbaar zijn: kantoren, praktijken, scholen en organisaties met een eigen bedrijfspand — van eenmanszaak tot grotere praktijk, telkens met een offerte op maat.',
         "faqs": [
-            ("Werken jullie voor organisaties van elke omvang in Nuenen?", "Zeker, van eenmanszaak tot grotere praktijk maken we een passende offerte."),
+            ("Werken jullie voor organisaties van elke omvang in Nuenen?", "Zeker, van eenmanszaak tot grotere praktijk stellen we een passende offerte op."),
             ("Is de eerste afspraak vrijblijvend?", "Ja, een kennismaking en offerte zijn altijd kosteloos en vrijblijvend."),
         ],
         "neighbors": ["eindhoven", "geldrop-mierlo"],
     },
     {
         "slug": "geldrop-mierlo", "name": "Geldrop-Mierlo",
-        "intro": "Geldrop en Mierlo, samen de gemeente Geldrop-Mierlo, liggen op de route tussen Helmond en Eindhoven. Dat maakt het voor ons goed mogelijk om hier structurele en facilitaire schoonmaak te verzorgen, van dagelijks onderhoud tot vaste contracten.",
-        "waarom": "De ligging tussen onze twee belangrijkste werkgebieden in maakt Geldrop-Mierlo makkelijk te combineren met andere afspraken \u2014 dat scheelt in de planning en dus in de prijs.",
+        "intro": "Geldrop en Mierlo, samen de gemeente Geldrop-Mierlo, liggen op de route tussen Helmond en Eindhoven. Dat maakt het voor ons goed mogelijk om hier structurele en facilitaire schoonmaak aan te bieden, van periodiek onderhoud tot vaste contracten.",
+        "waarom": "De ligging tussen onze twee belangrijkste werkgebieden in maakt Geldrop-Mierlo makkelijk te combineren met andere afspraken — dat scheelt in de planning en dus in de prijs.",
         "klanten": "kantoren, bedrijfsverzamelgebouwen, VvE's en productiebedrijven",
-        "kaart_tekst": "In Geldrop-Mierlo bieden we structurele en facilitaire schoonmaak voor kantoren, bedrijfsverzamelgebouwen en VvE's.",
-        "uitgelicht": ('Geldrop-Mierlo heeft een industrieel verleden in de textielsector en ligt precies op de route tussen Helmond en Eindhoven. Voor kantoren en bedrijfsverzamelgebouwen op bedrijventerreinen zoals Bogardeind verzorgen we structurele, facilitaire schoonmaak.', 'De ligging tussen onze twee belangrijkste werkgebieden maakt het voor ons goed te combineren met andere afspraken in de regio — dat komt de planning, en daarmee de prijs, ten goede.'),
-        "doelgroep_lokaal": "In Geldrop-Mierlo werken we voor kantoren, bedrijfsverzamelgebouwen, VvE's en productiebedrijven, zowel in Geldrop als in Mierlo.",
+        "kaart_tekst": "In Geldrop-Mierlo zijn we inzetbaar voor structurele en facilitaire schoonmaak, voor kantoren, bedrijfsverzamelgebouwen en VvE's.",
+        "uitgelicht": ('Geldrop-Mierlo heeft een industrieel verleden in de textielsector en ligt precies op de route tussen Helmond en Eindhoven. Voor kantoren en bedrijfsverzamelgebouwen op bedrijventerreinen zoals Bogardeind zijn we inzetbaar voor structurele, facilitaire schoonmaak.', 'De ligging tussen onze twee belangrijkste werkgebieden maakt het voor ons goed te combineren met andere afspraken in de regio — dat komt de planning, en daarmee de prijs, ten goede.'),
+        "doelgroep_lokaal": "Organisaties waarvoor wij in Geldrop-Mierlo inzetbaar zijn: kantoren, bedrijfsverzamelgebouwen, VvE's en productiebedrijven, zowel in Geldrop als in Mierlo.",
         "faqs": [
-            ("Ook actief in Mierlo zelf?", "Ja, Mierlo valt onder dezelfde vaste aanpak als Geldrop."),
-            ("Kunnen jullie een vast wekelijks contract verzorgen?", "Ja, dat is een groot deel van ons werk in deze regio."),
+            ("Ook actief in Mierlo zelf?", "Ja, voor Mierlo hanteren we dezelfde vaste aanpak als voor Geldrop."),
+            ("Kunnen jullie een vast wekelijks contract verzorgen?", "Ja, dat behoort tot de mogelijkheden in deze regio."),
         ],
         "neighbors": ["nuenen", "eindhoven"],
     },
     {
         "slug": "eindhoven", "name": "Eindhoven",
-        "intro": "Eindhoven ligt op korte afstand van ons kerngebied in de Peel. We zijn hier regelmatig actief met kantoorreiniging, facilitaire schoonmaak, VvE-schoonmaak en specialistische reiniging \u2014 van eenmalige klussen tot vaste contracten.",
-        "waarom": "Eindhoven is de grootste stad in onze regio, met veel kantoren, bedrijfsverzamelgebouwen en VvE's. We investeren daarom bewust in structurele aanwezigheid hier, niet alleen incidentele ritjes.",
+        "intro": "Eindhoven ligt op korte afstand van ons kerngebied in de Peel. We zijn hier inzetbaar voor kantoorreiniging, facilitaire schoonmaak, VvE-schoonmaak en specialistische reiniging — van eenmalige klussen tot vaste contracten.",
+        "waarom": "Eindhoven is de grootste stad in onze regio, met veel kantoren, bedrijfsverzamelgebouwen en VvE's. Daarom zijn we hier goed inzetbaar voor zowel incidentele als structurele opdrachten.",
         "klanten": "kantoren, bedrijfsverzamelgebouwen, VvE's, zorginstellingen en gemeentelijke instellingen",
-        "kaart_tekst": "BrabantSchoon verzorgt in Eindhoven periodieke, eenmalige en specialistische schoonmaak voor kantoren, VvE's, zorginstellingen en gemeentelijke instellingen.",
-        "uitgelicht": ('Eindhoven is met Brainport en de High Tech Campus de grootste en meest kantorendichte stad in onze regio. Voor kantoren en bedrijfsverzamelgebouwen hier verzorgen we periodieke en facilitaire schoonmaak, van een enkele verdieping tot een compleet pand.', "Door het grote aantal VvE's, zorginstellingen en gemeentelijke gebouwen in Eindhoven investeren we hier bewust in structurele aanwezigheid — niet incidenteel, maar met vaste teams die de stad en specifieke panden goed kennen."),
-        "doelgroep_lokaal": "Onze opdrachtgevers in Eindhoven zijn kantoren, bedrijfsverzamelgebouwen, VvE's, zorginstellingen en gemeentelijke instellingen. Bij bedrijfsverzamelgebouwen met meerdere huurders werken we met één vast aanspreekpunt voor het hele pand.",
+        "kaart_tekst": "BrabantSchoon is in Eindhoven inzetbaar voor periodieke, eenmalige en specialistische schoonmaak, voor kantoren, VvE's, zorginstellingen en gemeentelijke instellingen.",
+        "uitgelicht": ('Eindhoven is met Brainport en de High Tech Campus de grootste en meest kantorendichte stad in onze regio. Voor kantoren en bedrijfsverzamelgebouwen hier zijn we inzetbaar voor periodieke en facilitaire schoonmaak, van een enkele verdieping tot een compleet pand.', "Door het grote aantal VvE's, zorginstellingen en gemeentelijke gebouwen in Eindhoven zijn we hier goed inzetbaar voor structurele opdrachten — met een vast team dat zich snel inwerkt in uw pand."),
+        "doelgroep_lokaal": "Organisaties waarvoor wij in Eindhoven inzetbaar zijn: kantoren, bedrijfsverzamelgebouwen, VvE's, zorginstellingen en gemeentelijke instellingen. Bij bedrijfsverzamelgebouwen met meerdere huurders werken we met één vast aanspreekpunt voor het hele pand.",
         "faqs": [
-            ("Is een vast schoonmaakcontract in Eindhoven mogelijk?", "Ja, Eindhoven ligt goed bereikbaar vanuit Helmond en we verzorgen hier regelmatig vaste, terugkerende schoonmaak."),
-            ("Werken jullie ook voor bedrijfsverzamelgebouwen in Eindhoven?", "Ja, met meerdere huurders onder \u00e9\u00e9n dak werken we met \u00e9\u00e9n vast aanspreekpunt voor het hele pand."),
+            ("Is een vast schoonmaakcontract in Eindhoven mogelijk?", "Ja, Eindhoven ligt goed bereikbaar vanuit Helmond en we zijn hier inzetbaar voor vaste, terugkerende schoonmaak."),
+            ("Werken jullie ook voor bedrijfsverzamelgebouwen in Eindhoven?", "Ja, met meerdere huurders onder één dak werken we met één vast aanspreekpunt voor het hele pand."),
         ],
         "neighbors": ["geldrop-mierlo", "nuenen"],
     },
@@ -1344,7 +1489,7 @@ def build_kerngebied_pages():
   </section>
   <section class="section-tight">
     <div class="wrap">
-      <div class="sec-head reveal"><span class="eyebrow">Voor wie</span><h2>Onze opdrachtgevers in {k['name']}</h2></div>
+      <div class="sec-head reveal"><span class="eyebrow">Voor wie</span><h2>Inzetbaar voor deze organisaties in {k['name']}</h2></div>
       <div style="max-width:760px; margin:0 auto;">{local_doelgroep(k)}</div>
     </div>
   </section>
@@ -1419,7 +1564,7 @@ def build_location_pages():
   </section>
   <section>
     <div class="wrap">
-      <div class="sec-head reveal"><span class="eyebrow">Voor wie</span><h2>Onze opdrachtgevers in {loc['name']}</h2></div>
+      <div class="sec-head reveal"><span class="eyebrow">Voor wie</span><h2>Inzetbaar voor deze organisaties in {loc['name']}</h2></div>
       <div style="max-width:760px; margin:0 auto;">{local_doelgroep(loc)}</div>
     </div>
   </section>
@@ -1448,7 +1593,7 @@ def build_location_pages():
 def build_contact():
     base = ""
     body = f"""
-  {page_hero("Contact", "Neem contact op.", "We reageren binnen \u00e9\u00e9n werkdag.", base, "Contact")}
+  {page_hero("Contact", "Neem contact op.", "We reageren binnen \u00e9\u00e9n werkdag \u2014 voor bedrijven, VvE's, organisaties en particulieren.", base, "Contact")}
   <section>
     <div class="wrap">
       {reviews_widget_block()}
@@ -1467,7 +1612,7 @@ def build_contact():
 """
     write("contact.html", page_shell(
         "Contact | BrabantSchoon Schoonmaakbedrijf Brabant",
-        "Neem contact op met BrabantSchoon of vraag direct een vrijblijvende offerte aan. Actief in Brabant, met Helmond en de Peelgemeenten als kerngebied.",
+        "Neem contact op met BrabantSchoon of vraag direct een vrijblijvende offerte aan \u2014 voor bedrijven, VvE's, organisaties en particulieren.",
         "contact.html", base, "contact.html", body, LOCALBUSINESS_SCHEMA + "\n" + breadcrumb_schema("Contact", "contact.html")
     ))
 
@@ -1494,7 +1639,7 @@ def build_legal():
   <section><div class="wrap-narrow prose reveal">
     <p><em>Dit is een voorbeeldtekst. Laat deze controleren door een jurist voordat u ze publiceert.</em></p>
     <h2>Welke gegevens verzamelen wij</h2>
-    <p>Via het offerteformulier verzamelen we naam, telefoonnummer, e-mailadres, plaats en uw bericht, uitsluitend om contact met u op te nemen.</p>
+    <p>Via het offerteformulier verzamelen we naam, telefoonnummer, e-mailadres, plaats, het type aanvraag (bedrijf, VvE/organisatie of particulier) en uw bericht, uitsluitend om contact met u op te nemen.</p>
     <h2>Gebruik van gegevens</h2>
     <p>Wij gebruiken uw gegevens uitsluitend om uw aanvraag te behandelen en, indien u klant wordt, de dienstverlening uit te voeren.</p>
     <h2>Uw rechten</h2>
@@ -1506,7 +1651,7 @@ def build_legal():
     voorwaarden = f"""
   {page_hero("Juridisch", "Algemene voorwaarden.", "De voorwaarden die van toepassing zijn op onze dienstverlening.", base, "Algemene voorwaarden")}
   <section><div class="wrap-narrow prose reveal">
-    <p><em>Dit is een voorbeeldtekst. Laat deze opstellen of controleren door een jurist voordat u ze publiceert.</em></p>
+    <p><em>Dit is een voorbeeldtekst. Laat deze opstellen of controleren door een jurist voordat u ze publiceert &mdash; met name nu BrabantSchoon naast zakelijke opdrachtgevers ook particuliere klanten bedient, gelden er mogelijk aanvullende wettelijke consumentenrechten (zoals herroepingsrecht) die apart moeten worden opgenomen.</em></p>
     <h2>Toepasselijkheid</h2>
     <p>Deze voorwaarden zijn van toepassing op alle offertes en overeenkomsten tussen BrabantSchoon en haar klanten.</p>
     <h2>Offertes</h2>
@@ -1544,7 +1689,7 @@ def build_seo_files():
     import datetime
     today = datetime.date.today().isoformat()
     urls = [
-        ("", "1.0"), ("diensten.html", "0.9"), ("werkgebied.html", "0.9"),
+        ("", "1.0"), ("diensten.html", "0.9"), ("schoonmaak-particulieren.html", "0.85"), ("werkgebied.html", "0.9"),
         ("over-ons.html", "0.7"), ("contact.html", "0.8"),
         ("privacy.html", "0.3"), ("voorwaarden.html", "0.3"), ("cookiebeleid.html", "0.3"),
     ]
@@ -1563,6 +1708,7 @@ if __name__ == "__main__":
     build_home()
     build_diensten_overview()
     build_service_pages()
+    build_particulieren_page()
     build_over_ons()
     build_werkgebied()
     build_kerngebied_pages()
