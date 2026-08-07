@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "139"
+ASSET_VERSION = "141"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -859,14 +859,6 @@ def write(path, content):
 # =================================================================
 def build_home():
     base = ""
-    service_cards = "\n    ".join(f"""<a href="diensten/{s['slug']}.html" class="service-card">
-      <div class="thumb {s['tint']}">{service_visual_from_root(s)}</div>
-      <div class="body">
-        <h3>{s['name']}</h3>
-        <p>{s['short']}</p>
-      </div>
-    </a>""" for s in SERVICES[:6])
-
     usp_items = [
         ("chat", "Vast aanspreekpunt", "U spreekt altijd met iemand die uw locatie en wensen kent \u2014 geen callcenter."),
         ("check", "Afspraak is afspraak", "Heldere planning die we nakomen, zonder verrassingen achteraf."),
@@ -875,8 +867,6 @@ def build_home():
     ]
     usp_html = "\n    ".join(f'<div class="usp"><div class="icon-circle">{icon(n)}</div><h3>{t}</h3><p>{d}</p></div>' for n, t, d in usp_items)
 
-    sector_tags = "\n      ".join(f'<span class="area-tag primary">{s}</span>' for s in
-        ["Kantoren", "Bedrijfsverzamelgebouwen", "VvE's", "Scholen", "Vastgoedbeheerders", "Winkels &amp; praktijken"])
     kern_tags = "\n      ".join(f'<span class="area-tag">{c}</span>' for c in WERKGEBIED_KERN + WERKGEBIED_OVERIG)
 
     body = f"""
@@ -889,34 +879,22 @@ def build_home():
         <h1>De schoonmaakpartner van Brabant</h1>
         <p class="hero-slogan-dark">Schoon werk. Elke dag opnieuw.</p>
         <p class="lead" style="color:rgba(255,255,255,0.92);">BrabantSchoon is uw schoonmaakpartner voor bedrijven, VvE's, organisaties en particulieren. Vanuit Helmond actief in Brabant, met een vast aanspreekpunt en heldere afspraken.</p>
-        <div class="hero-actions">
-          <a href="contact.html#offerteWizard" class="btn btn-primary">Gratis offerte aanvragen</a>
-          <a href="#diensten" class="btn btn-ghost-light">Bekijk onze diensten</a>
+        <div class="hero-audience-choice">
+          <a href="zakelijke-schoonmaak.html" class="btn-audience-lg">Voor bedrijven</a>
+          <a href="schoonmaak-particulieren.html" class="btn-audience-lg">Voor particulieren</a>
         </div>
-        <ul class="hero-checklist">
-          <li>{icon('check')}Vast aanspreekpunt</li>
-          <li>{icon('check')}Flexibele planning</li>
-          <li>{icon('check')}Professionele medewerkers</li>
-          <li>{icon('check')}Actief in Brabant</li>
-        </ul>
-        <div class="hero-audience-links">
-          <a href="zakelijke-schoonmaak.html" class="btn-audience">Voor bedrijven</a>
-          <a href="schoonmaak-particulieren.html" class="btn-audience">Voor particulieren</a>
+        <div class="hero-actions hero-actions-secondary">
+          <a href="contact.html#offerteWizard" class="btn btn-ghost-light btn-sm">Offerte aanvragen</a>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="diensten">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="eyebrow">Diensten</span>
-        <h2>Wat wij doen.</h2>
-      </div>
-      <div class="grid-3 reveal">
-        {service_cards}
-      </div>
-      <div class="sec-foot"><a href="diensten.html" class="btn btn-outline">Alle diensten</a></div>
+  <section class="section-tight">
+    <div class="wrap-narrow" style="text-align:center;">
+      <span class="eyebrow">Over BrabantSchoon</span>
+      <h2 style="margin-top:8px;">Uw schoonmaakpartner in Brabant.</h2>
+      <p class="prose reveal" style="margin-top:14px;">BrabantSchoon verzorgt professionele schoonmaak voor bedrijven, VvE's, organisaties en particulieren in Brabant. Vanuit Helmond werken we met een vast aanspreekpunt, heldere afspraken en oog voor detail \u2014 of het nu gaat om een kantoor, een gemeenschappelijke ruimte of uw eigen woning.</p>
     </div>
   </section>
 
@@ -935,13 +913,10 @@ def build_home():
   <section style="background:var(--bg-soft);">
     <div class="wrap">
       <div class="sec-head reveal">
-        <span class="eyebrow">Voor wie, en waar</span>
-        <h2>Sectoren &amp; werkgebied.</h2>
+        <span class="eyebrow">Werkgebied</span>
+        <h2>Actief in heel Brabant.</h2>
       </div>
       <div class="area-tags reveal">
-        {sector_tags}
-      </div>
-      <div class="area-tags reveal" style="margin-top:14px;">
         {kern_tags}
       </div>
     </div>

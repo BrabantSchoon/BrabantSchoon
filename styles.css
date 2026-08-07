@@ -138,23 +138,19 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
   background:linear-gradient(0deg, rgba(10,22,64,0.94) 0%, rgba(10,22,64,0.68) 45%, rgba(10,22,64,0.32) 100%);
 }
 .hero-full-content{position:relative; z-index:1; padding:64px 0 56px; color:#fff;}
-.hero-checklist{
-  display:flex; flex-wrap:wrap; gap:12px 28px; list-style:none; margin:28px 0 0; padding:0;
-  font-size:14px; font-weight:600; color:rgba(255,255,255,0.92);
+/* Twee grote, gelijkwaardige doelgroepknoppen: dit is nu de hoofdkeuze in de
+   hero (Bedrijven vs. Particulieren), dus bewust hoog contrast (effen wit)
+   zodat ze duidelijk als eerste opvallen. Platte tekstknoppen, geen iconen. */
+.hero-audience-choice{display:flex; gap:14px; margin-top:26px; flex-wrap:wrap;}
+.btn-audience-lg{
+  display:inline-flex; align-items:center; justify-content:center; flex:1 1 auto; min-width:160px;
+  padding:16px 26px; border-radius:100px; font-weight:700; font-size:15.5px; text-align:center;
+  color:var(--navy); text-decoration:none; background:#fff; border:none;
+  transition:background .15s ease, transform .15s ease, box-shadow .15s ease;
+  box-shadow:0 10px 24px -10px rgba(0,0,0,0.35);
 }
-.hero-checklist li{display:flex; align-items:center; gap:8px;}
-.hero-checklist svg{width:17px !important; height:17px !important; color:#8FE0C1; flex-shrink:0;}
-/* Twee kleine, echte knoppen (geen kaarten, geen grote sectie) om zakelijke
-   en particuliere bezoekers direct door te sturen, duidelijk kleiner en
-   rustiger dan de hoofd-CTA's erboven. */
-.hero-audience-links{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px;}
-.btn-audience{
-  display:inline-flex; align-items:center; padding:9px 18px; border-radius:100px;
-  font-size:13px; font-weight:600; color:#fff; text-decoration:none;
-  background:rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.45);
-  backdrop-filter:blur(4px); transition:background .15s ease, transform .15s ease;
-}
-.btn-audience:hover{background:rgba(255,255,255,0.22); transform:translateY(-1px);}
+.btn-audience-lg:hover{background:#EEF2F6; transform:translateY(-2px);}
+.hero-actions-secondary{margin-top:16px;}
 .hero-full-content h1{color:#fff; font-size:clamp(36px,6vw,64px); line-height:1.05; margin-top:14px;}
 @media(min-width:760px){.hero-full{min-height:74vh;} .hero-full-content{padding:72px 0 72px;}}
 @media(max-width:640px){.hero-full{min-height:480px;}}
@@ -200,14 +196,8 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 .hero-full-content-home{max-width:600px; padding:96px 0 64px;}
 @media(max-width:899px){.hero-full-content-home{padding-bottom:80px;}}
 @media(max-width:640px){.hero-full-content-home{padding-top:80px;}}
-/* Op mobiel mag de hero duidelijk compacter: de 4 voordelen-checklist voegt
-   vooral extra hoogte toe zonder nieuwe informatie (staat al genoemd in de
-   introtekst) en wordt daarom verborgen; de twee doelgroepknoppen blijven
-   wel staan, want dat is juist de belangrijkste snelkoppeling op mobiel. */
-@media(max-width:640px){.hero-checklist{display:none;}}
 @media(max-width:480px){
   .hero-full-content-home .hero-actions{margin-top:18px;}
-  .hero-full-content-home .hero-checklist{margin-top:16px;}
   .hero-full-content-home .lead{margin-top:10px;}
 }
 .hero-text-panel{
