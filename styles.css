@@ -143,7 +143,22 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
   font-size:14px; font-weight:600; color:rgba(255,255,255,0.92);
 }
 .hero-checklist li{display:flex; align-items:center; gap:8px;}
-.hero-checklist svg{width:17px; height:17px; color:#8FE0C1; flex-shrink:0;}
+.hero-checklist svg{width:17px !important; height:17px !important; color:#8FE0C1; flex-shrink:0;}
+/* Compacte, secundaire doelgroep-links in de hero: bewust klein en met een
+   dunne scheidingslijn t.o.v. de hoofd-CTA's erboven, zodat ze duidelijk
+   ondergeschikt blijven aan "Gratis offerte aanvragen". */
+.hero-audience-links{
+  display:flex; flex-wrap:wrap; align-items:center; gap:6px 16px; margin-top:22px;
+  padding-top:18px; border-top:1px solid rgba(255,255,255,0.18);
+}
+.hero-audience-label{font-size:12.5px; font-weight:600; color:rgba(255,255,255,0.65); text-transform:uppercase; letter-spacing:0.04em;}
+.hero-audience-links a{
+  display:inline-flex; align-items:center; gap:5px; font-size:13.5px; font-weight:600;
+  color:#fff; text-decoration:none; border-bottom:1px solid rgba(255,255,255,0.4); padding-bottom:1px;
+  transition:border-color .15s ease, opacity .15s ease;
+}
+.hero-audience-links a:hover{border-color:#fff;}
+.hero-audience-links a svg{width:12px !important; height:12px !important; flex-shrink:0;}
 .hero-full-content h1{color:#fff; font-size:clamp(36px,6vw,64px); line-height:1.05; margin-top:14px;}
 @media(min-width:760px){.hero-full{min-height:74vh;} .hero-full-content{padding:72px 0 72px;}}
 @media(max-width:640px){.hero-full{min-height:480px;}}
@@ -554,11 +569,20 @@ section{padding:96px 0;}
 .choice-tags{list-style:none; margin:16px 0 0; padding:0; display:grid; grid-template-columns:1fr; gap:8px 16px;}
 @media(min-width:420px){.choice-tags{grid-template-columns:1fr 1fr;}}
 .choice-tags li{display:flex; align-items:center; gap:7px; font-size:13px; font-weight:600; color:var(--ink);}
-.choice-tags svg{width:15px; height:15px; color:var(--green); flex-shrink:0;}
+.choice-tags svg{width:15px !important; height:15px !important; color:var(--green); flex-shrink:0;}
 .choice-body .btn{margin-top:22px; align-self:flex-start; pointer-events:none;}
 
 /* ---------- Elfsight Google Reviews ---------- */
-.elfsight-wrap{max-width:920px; margin:0 auto; overflow:hidden;}
+/* transform (elke waarde, ook 'none' i.c.m. translateZ) maakt dit element
+   het containing block voor eventuele position:fixed/sticky-kinderen die de
+   ingesloten widget zelf zou injecteren. Zo kan de widget nooit "los" over
+   de pagina heen blijven zweven tijdens scrollen, maar blijft hij netjes
+   begrensd tot deze sectie, zoals een normaal onderdeel van de pagina. */
+.elfsight-wrap{
+  max-width:920px; margin:0 auto; overflow:hidden; position:relative;
+  transform:translateZ(0); isolation:isolate; min-height:80px;
+}
+.elfsight-wrap, .elfsight-wrap * { max-width:100%; }
 .service-card:hover .sc-link{color:var(--navy);}
 .service-card:hover .sc-link svg{transform:translateX(3px);}
 
@@ -577,7 +601,7 @@ section{padding:96px 0;}
 @media(min-width:980px){.usp-grid{grid-template-columns:repeat(4,1fr);}}
 .usp{text-align:center;}
 .usp .icon-circle{width:48px; height:48px; border-radius:50%; margin:0 auto 16px; background:var(--bg-soft); display:flex; align-items:center; justify-content:center;}
-.usp .icon-circle svg{width:22px; height:22px; color:var(--navy);}
+.usp .icon-circle svg{width:22px !important; height:22px !important; color:var(--navy);}
 .usp h3{font-family:'Inter',sans-serif; font-weight:700; font-size:16px;}
 .usp p{color:var(--ink-soft); font-size:14px; margin-top:6px;}
 
@@ -638,12 +662,12 @@ section{padding:96px 0;}
   padding:18px 24px; background:var(--bg-soft); border-radius:100px; font-size:13.5px; font-weight:600; color:var(--ink-soft);
 }
 .benefits-strip span{display:flex; align-items:center; gap:8px;}
-.benefits-strip svg{width:16px; height:16px; color:var(--teal);}
+.benefits-strip svg{width:16px !important; height:16px !important; color:var(--teal);}
 @media(max-width:640px){.benefits-strip{border-radius:16px; justify-content:flex-start;}}
 .contact-info h2{font-size:32px;}
 .contact-info p{color:var(--ink-soft); margin-top:12px; font-size:15.5px;}
 .contact-line{display:flex; align-items:center; gap:12px; margin-top:18px;}
-.contact-line svg{width:18px; height:18px; color:var(--blue); flex-shrink:0;}
+.contact-line svg{width:18px !important; height:18px !important; color:var(--blue); flex-shrink:0;}
 .contact-line a{font-weight:600; text-decoration:none; font-size:15.5px;}
 .contact-line a:hover{color:var(--link);}
 .contact-actions{display:flex; gap:10px; margin-top:26px; flex-wrap:wrap;}
@@ -702,7 +726,7 @@ form.card-form{display:grid; gap:14px; background:var(--bg-soft); border:1px sol
 .rc-input:focus-visible + .rc-card{outline:2.5px solid var(--blue); outline-offset:2px;}
 .rc-icon{width:34px; height:34px; border-radius:10px; background:var(--bg-soft); display:flex; align-items:center; justify-content:center; margin-bottom:4px;}
 .rc-input:checked + .rc-card .rc-icon{background:#fff;}
-.rc-icon svg{width:18px; height:18px; color:var(--navy);}
+.rc-icon svg{width:18px !important; height:18px !important; color:var(--navy);}
 .rc-label{font-weight:700; font-size:14.5px; color:var(--ink);}
 .rc-desc{font-size:12.5px; color:var(--ink-soft);}
 

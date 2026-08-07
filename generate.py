@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "136"
+ASSET_VERSION = "137"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -899,17 +899,12 @@ def build_home():
           <li>{icon('check')}Professionele medewerkers</li>
           <li>{icon('check')}Actief in Brabant</li>
         </ul>
+        <div class="hero-audience-links">
+          <span class="hero-audience-label">Direct naar:</span>
+          <a href="zakelijke-schoonmaak.html">Voor bedrijven {icon('arrow')}</a>
+          <a href="schoonmaak-particulieren.html">Voor particulieren {icon('arrow')}</a>
+        </div>
       </div>
-    </div>
-  </section>
-
-  <section id="keuze" class="section-tight">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="eyebrow">Zakelijk of particulier?</span>
-        <h2>Waarvoor zoekt u schoonmaak?</h2>
-      </div>
-      {choice_cards_block(base)}
     </div>
   </section>
 
@@ -947,19 +942,6 @@ def build_home():
   <section style="background:var(--bg-soft);">
     <div class="wrap">
       <div class="sec-head reveal">
-        <span class="eyebrow">Reviews</span>
-        <h2>Wat klanten over BrabantSchoon zeggen.</h2>
-      </div>
-      <div class="elfsight-wrap reveal">
-        <script src="https://elfsightcdn.com/platform.js" async></script>
-        <div class="elfsight-app-7ea68963-3f6d-4b24-8a1b-e38a25bac6e2" data-elfsight-app-lazy></div>
-      </div>
-    </div>
-  </section>
-
-  <section style="background:var(--bg-soft);">
-    <div class="wrap">
-      <div class="sec-head reveal">
         <span class="eyebrow">Voor wie, en waar</span>
         <h2>Sectoren &amp; werkgebied.</h2>
       </div>
@@ -978,6 +960,19 @@ def build_home():
       <div style="max-width:760px; margin:0 auto;">
         <p class="prose reveal">Vanuit Helmond bedienen we organisaties in de Peelgemeenten, regio Eindhoven en andere delen van Brabant — van Deurne en Gemert-Bakel tot Asten, Someren, Geldrop-Mierlo en Laarbeek.</p>
         <p class="prose reveal" style="margin-top:14px;">Wij zijn inzetbaar voor kantoorreiniging van bedrijfspanden, VvE-schoonmaak van gemeenschappelijke ruimtes, en periodieke schoonmaak op een vast ritme dat bij uw organisatie past. Daarnaast bieden we glasbewassing en opleveringsschoonmaak aan, zodat u voor vrijwel elke schoonmaakvraag bij één vaste partner terechtkunt.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Reviews</span>
+        <h2>Wat klanten over BrabantSchoon zeggen.</h2>
+      </div>
+      <div class="elfsight-wrap reveal">
+        <script src="https://elfsightcdn.com/platform.js" async></script>
+        <div class="elfsight-app-7ea68963-3f6d-4b24-8a1b-e38a25bac6e2" data-elfsight-app-lazy></div>
       </div>
     </div>
   </section>
