@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "141"
+ASSET_VERSION = "142"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -867,8 +867,6 @@ def build_home():
     ]
     usp_html = "\n    ".join(f'<div class="usp"><div class="icon-circle">{icon(n)}</div><h3>{t}</h3><p>{d}</p></div>' for n, t, d in usp_items)
 
-    kern_tags = "\n      ".join(f'<span class="area-tag">{c}</span>' for c in WERKGEBIED_KERN + WERKGEBIED_OVERIG)
-
     body = f"""
   <section class="hero-full hero-full-home">
     <img src="images/hero.jpg" alt="Bedrijfsbusjes van BrabantSchoon bij zonsondergang voor een kantoorpand" class="hero-full-img" width="2000" height="1125" fetchpriority="high" decoding="async">
@@ -880,11 +878,8 @@ def build_home():
         <p class="hero-slogan-dark">Schoon werk. Elke dag opnieuw.</p>
         <p class="lead" style="color:rgba(255,255,255,0.92);">BrabantSchoon is uw schoonmaakpartner voor bedrijven, VvE's, organisaties en particulieren. Vanuit Helmond actief in Brabant, met een vast aanspreekpunt en heldere afspraken.</p>
         <div class="hero-audience-choice">
-          <a href="zakelijke-schoonmaak.html" class="btn-audience-lg">Voor bedrijven</a>
-          <a href="schoonmaak-particulieren.html" class="btn-audience-lg">Voor particulieren</a>
-        </div>
-        <div class="hero-actions hero-actions-secondary">
-          <a href="contact.html#offerteWizard" class="btn btn-ghost-light btn-sm">Offerte aanvragen</a>
+          <a href="zakelijke-schoonmaak.html" class="btn-audience-lg btn-audience-business">Voor bedrijven</a>
+          <a href="schoonmaak-particulieren.html" class="btn-audience-lg btn-audience-particulier">Voor particulieren</a>
         </div>
       </div>
     </div>
@@ -906,18 +901,6 @@ def build_home():
       </div>
       <div class="usp-grid reveal">
         {usp_html}
-      </div>
-    </div>
-  </section>
-
-  <section style="background:var(--bg-soft);">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="eyebrow">Werkgebied</span>
-        <h2>Actief in heel Brabant.</h2>
-      </div>
-      <div class="area-tags reveal">
-        {kern_tags}
       </div>
     </div>
   </section>

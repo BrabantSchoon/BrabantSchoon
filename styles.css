@@ -138,19 +138,23 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
   background:linear-gradient(0deg, rgba(10,22,64,0.94) 0%, rgba(10,22,64,0.68) 45%, rgba(10,22,64,0.32) 100%);
 }
 .hero-full-content{position:relative; z-index:1; padding:64px 0 56px; color:#fff;}
-/* Twee grote, gelijkwaardige doelgroepknoppen: dit is nu de hoofdkeuze in de
-   hero (Bedrijven vs. Particulieren), dus bewust hoog contrast (effen wit)
-   zodat ze duidelijk als eerste opvallen. Platte tekstknoppen, geen iconen. */
+/* Twee grote, gelijkwaardige doelgroepknoppen: dit is de hoofdkeuze in de
+   hero (Bedrijven vs. Particulieren). Elk in een eigen merkkleur zodat het
+   verschil in één oogopslag duidelijk is: navy voor zakelijk, groen voor
+   particulier. Platte tekstknoppen, geen iconen. */
 .hero-audience-choice{display:flex; gap:14px; margin-top:26px; flex-wrap:wrap;}
 .btn-audience-lg{
   display:inline-flex; align-items:center; justify-content:center; flex:1 1 auto; min-width:160px;
   padding:16px 26px; border-radius:100px; font-weight:700; font-size:15.5px; text-align:center;
-  color:var(--navy); text-decoration:none; background:#fff; border:none;
+  color:#fff; text-decoration:none; border:1.5px solid transparent;
   transition:background .15s ease, transform .15s ease, box-shadow .15s ease;
-  box-shadow:0 10px 24px -10px rgba(0,0,0,0.35);
+  box-shadow:0 10px 24px -10px rgba(0,0,0,0.4);
 }
-.btn-audience-lg:hover{background:#EEF2F6; transform:translateY(-2px);}
-.hero-actions-secondary{margin-top:16px;}
+.btn-audience-lg:hover{transform:translateY(-2px);}
+.btn-audience-business{background:var(--navy);}
+.btn-audience-business:hover{background:var(--navy-deep);}
+.btn-audience-particulier{background:var(--green);}
+.btn-audience-particulier:hover{background:var(--teal);}
 .hero-full-content h1{color:#fff; font-size:clamp(36px,6vw,64px); line-height:1.05; margin-top:14px;}
 @media(min-width:760px){.hero-full{min-height:74vh;} .hero-full-content{padding:72px 0 72px;}}
 @media(max-width:640px){.hero-full{min-height:480px;}}
