@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "124"
+ASSET_VERSION = "135"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -773,13 +773,14 @@ def contact_info_block(base="", show_heading=True, show_map=True):
     {map_html}
   </div>"""
 
-def page_shell(title, description, path, base, active, body, extra_schema="", preload_image=None):
+def page_shell(title, description, path, base, active, body, extra_schema="", preload_image=None, body_class=""):
+    body_class_attr = f' class="{body_class}"' if body_class else ""
     return f"""<!DOCTYPE html>
 <html lang="nl">
 <head>
 {render_head(title, description, path, base, extra_schema, preload_image)}
 </head>
-<body>
+<body{body_class_attr}>
 {render_header(base, active)}
 <main id="main-content">
 {body}
@@ -839,26 +840,25 @@ def build_home():
     kern_tags = "\n      ".join(f'<span class="area-tag">{c}</span>' for c in WERKGEBIED_KERN + WERKGEBIED_OVERIG)
 
     body = f"""
-  <section class="hero">
-    <div class="wrap hero-grid">
-      <div>
-        <span class="eyebrow">Professionele schoonmaak in Brabant</span>
+  <section class="hero-full hero-full-home">
+    <img src="images/hero.jpg" alt="Bedrijfsbusjes van BrabantSchoon bij zonsondergang voor een kantoorpand" class="hero-full-img" width="2000" height="1125" fetchpriority="high" decoding="async">
+    <div class="hero-full-overlay hero-full-overlay-home"></div>
+    <div class="wrap hero-full-content hero-full-content-home">
+      <div class="hero-text-panel">
+        <span class="eyebrow" style="color:#BFE0FF;">Professionele schoonmaak in Brabant</span>
         <h1>De schoonmaakpartner van Brabant</h1>
-        <p class="hero-slogan">Schoon werk. Elke dag opnieuw.</p>
-        <p class="lead">BrabantSchoon is uw schoonmaakpartner voor bedrijven, VvE's, organisaties en particulieren. Vanuit Helmond actief in Brabant, met een vast aanspreekpunt en heldere afspraken.</p>
+        <p class="hero-slogan-dark">Schoon werk. Elke dag opnieuw.</p>
+        <p class="lead" style="color:rgba(255,255,255,0.92);">BrabantSchoon is uw schoonmaakpartner voor bedrijven, VvE's, organisaties en particulieren. Vanuit Helmond actief in Brabant, met een vast aanspreekpunt en heldere afspraken.</p>
         <div class="hero-actions">
           <a href="contact.html#offerteWizard" class="btn btn-primary">Gratis offerte aanvragen</a>
-          <a href="#diensten" class="btn btn-outline">Bekijk onze diensten</a>
+          <a href="#diensten" class="btn btn-ghost-light">Bekijk onze diensten</a>
         </div>
-        <ul class="hero-usps">
+        <ul class="hero-checklist">
           <li>{icon('check')}Vast aanspreekpunt</li>
           <li>{icon('check')}Flexibele planning</li>
           <li>{icon('check')}Professionele medewerkers</li>
           <li>{icon('check')}Actief in Brabant</li>
         </ul>
-      </div>
-      <div class="illustration-panel hero-photo">
-        <img src="images/hero.jpg" alt="Team van BrabantSchoon bij een zakelijke opdrachtgever in Brabant" width="1077" height="916" fetchpriority="high" decoding="async">
       </div>
     </div>
   </section>
@@ -970,7 +970,7 @@ def build_home():
         "Schoonmaakbedrijf in Brabant | Kantoren &amp; VvE&#39;s | BrabantSchoon",
         f"BrabantSchoon is uw schoonmaakpartner voor kantoren, VvE's, organisaties en particulieren in Brabant. Vrijblijvende offerte binnen één werkdag.",
         "", base, "/", body, LOCALBUSINESS_SCHEMA + "\n" + faq_schema(FAQ_ITEMS[:5]),
-        preload_image="images/hero.jpg"
+        preload_image="images/hero.jpg", body_class="home-hero"
     ))
 
 def page_hero(eyebrow, title, lead, base, crumb_label, image=None, image_alt=""):

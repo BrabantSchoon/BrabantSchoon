@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="image" href="images/hero.jpg" fetchpriority="high">
-<link rel="stylesheet" href="css/styles.css?v=124">
+<link rel="stylesheet" href="css/styles.css?v=135">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
@@ -74,7 +74,7 @@
 }
 </script>
 </head>
-<body>
+<body class="home-hero">
 <a href="#main-content" class="skip-link">Ga direct naar inhoud</a>
 <input type="checkbox" id="menuCheckbox" class="menu-checkbox">
 <header class="site-header">
@@ -116,26 +116,25 @@
 </aside>
 <main id="main-content">
 
-  <section class="hero">
-    <div class="wrap hero-grid">
-      <div>
-        <span class="eyebrow">Professionele schoonmaak in Brabant</span>
+  <section class="hero-full hero-full-home">
+    <img src="images/hero.jpg" alt="Bedrijfsbusjes van BrabantSchoon bij zonsondergang voor een kantoorpand" class="hero-full-img" width="2000" height="1125" fetchpriority="high" decoding="async">
+    <div class="hero-full-overlay hero-full-overlay-home"></div>
+    <div class="wrap hero-full-content hero-full-content-home">
+      <div class="hero-text-panel">
+        <span class="eyebrow" style="color:#BFE0FF;">Professionele schoonmaak in Brabant</span>
         <h1>De schoonmaakpartner van Brabant</h1>
-        <p class="hero-slogan">Schoon werk. Elke dag opnieuw.</p>
-        <p class="lead">BrabantSchoon is uw schoonmaakpartner voor bedrijven, VvE's, organisaties en particulieren. Vanuit Helmond actief in Brabant, met een vast aanspreekpunt en heldere afspraken.</p>
+        <p class="hero-slogan-dark">Schoon werk. Elke dag opnieuw.</p>
+        <p class="lead" style="color:rgba(255,255,255,0.92);">BrabantSchoon is uw schoonmaakpartner voor bedrijven, VvE's, organisaties en particulieren. Vanuit Helmond actief in Brabant, met een vast aanspreekpunt en heldere afspraken.</p>
         <div class="hero-actions">
           <a href="contact.html#offerteWizard" class="btn btn-primary">Gratis offerte aanvragen</a>
-          <a href="#diensten" class="btn btn-outline">Bekijk onze diensten</a>
+          <a href="#diensten" class="btn btn-ghost-light">Bekijk onze diensten</a>
         </div>
-        <ul class="hero-usps">
+        <ul class="hero-checklist">
           <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Vast aanspreekpunt</li>
           <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Flexibele planning</li>
           <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Professionele medewerkers</li>
           <li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Actief in Brabant</li>
         </ul>
-      </div>
-      <div class="illustration-panel hero-photo">
-        <img src="images/hero.jpg" alt="Team van BrabantSchoon bij een zakelijke opdrachtgever in Brabant" width="1077" height="916" fetchpriority="high" decoding="async">
       </div>
     </div>
   </section>
@@ -455,6 +454,6 @@
   applyStoredConsent();
 })();
 </script>
-<script src="js/main.js?v=124" defer></script>
+<script src="js/main.js?v=135" defer></script>
 </body>
 </html>
