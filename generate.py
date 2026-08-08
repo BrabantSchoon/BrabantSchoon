@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "149"
+ASSET_VERSION = "150"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -1556,7 +1556,7 @@ def build_particulier_detail_pages():
     for page in PARTICULIER_PAGES:
         voor_wie_html = "\n        ".join(f"<li>{v}</li>" for v in page["voor_wie"])
         onderdelen_html = "\n        ".join(f"<li>{o}</li>" for o in page["onderdelen"])
-        pakketten_html = "\n      ".join(f'''<div class="pakket-card{' pakket-card-featured' if meest_gekozen else ''}">
+        pakketten_html = "\n      ".join(f'''<div class="pakket-card{' pakket-card-featured' if meest_gekozen else ''} reveal">
         {'<span class="pakket-badge">Meest gekozen</span>' if meest_gekozen else ''}
         <h3>{naam}</h3>
         <p>{desc}</p>
@@ -1610,7 +1610,7 @@ def build_particulier_detail_pages():
   <section class="section-tight">
     <div class="wrap">
       <div class="sec-head reveal"><h2>Waar kunt u uit kiezen?</h2><p class="prose" style="margin-top:8px;">Onderstaande richtingen zijn bedoeld als keuzehulp, geen vaste prijsproducten \u2014 de precieze invulling stemmen we samen met u af.</p></div>
-      <div class="pakket-grid reveal">
+      <div class="pakket-grid">
         {pakketten_html}
       </div>
     </div>
