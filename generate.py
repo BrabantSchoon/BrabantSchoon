@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "146"
+ASSET_VERSION = "147"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -1150,15 +1150,41 @@ def build_zakelijke_pagina():
 # =================================================================
 PARTICULIER_SUBDIENSTEN = [
     ("Verhuisschoonmaak", "Uw oude woning schoon opgeleverd, of uw nieuwe woning grondig schoongemaakt v\u00f3\u00f3r de verhuizing.",
-     "verhuisschoonmaak-brabantschoon.webp", "BrabantSchoon-medewerker verzorgt een verhuisschoonmaak in een lege woning met verhuisdozen"),
+     "verhuisschoonmaak-brabantschoon.webp", "BrabantSchoon-medewerker verzorgt een verhuisschoonmaak in een lege woning met verhuisdozen",
+     "verhuisschoonmaak"),
     ("Eenmalige grote schoonmaak", "Een grondige beurt voor uw hele woning, zonder dat daar direct een vaste overeenkomst voor nodig is.",
-     "eenmalige-grote-schoonmaak-brabantschoon.webp", "BrabantSchoon-medewerkster verzorgt een eenmalige grote schoonmaak in de woonkamer"),
+     "eenmalige-grote-schoonmaak-brabantschoon.webp", "BrabantSchoon-medewerkster verzorgt een eenmalige grote schoonmaak in de woonkamer",
+     "eenmalige-grote-schoonmaak"),
     ("Schoonmaak na verbouwing", "Verwijderen van bouwstof en normaal schoonmaakvuil na een renovatie of verbouwing.",
-     "schoonmaak-na-verbouwing-brabantschoon.webp", "BrabantSchoon-medewerkster verwijdert bouwstof na een verbouwing"),
+     "schoonmaak-na-verbouwing-brabantschoon.webp", "BrabantSchoon-medewerkster verwijdert bouwstof na een verbouwing",
+     "schoonmaak-na-verbouwing"),
     ("Periodieke schoonmaak", "Terugkerende professionele schoonmaak van uw woning, op een ritme dat u zelf bepaalt.",
-     "periodieke-schoonmaak-brabantschoon.webp", "BrabantSchoon-medewerkster verzorgt periodieke schoonmaak van het keukenblok"),
+     "periodieke-schoonmaak-brabantschoon.webp", "BrabantSchoon-medewerkster verzorgt periodieke schoonmaak van het keukenblok",
+     "periodieke-schoonmaak"),
     ("Bij verkoop, verhuur of oplevering", "Uw woning schoon voor bezichtigingen, verhuur of de sleuteloverdracht.",
-     "opleveringsschoonmaak-brabantschoon.webp", "BrabantSchoon-medewerkster inspecteert een woning bij oplevering"),
+     "opleveringsschoonmaak-brabantschoon.webp", "BrabantSchoon-medewerkster inspecteert een woning bij oplevering",
+     "verkoop-verhuur-oplevering"),
+]
+
+# Detailinformatie per particuliere dienst, getoond in een compacte sectie
+# onder de servicecards (zie build_particulieren_page). Elk item hoort bij
+# het gelijknamige slug-anchor hierboven in PARTICULIER_SUBDIENSTEN.
+PARTICULIER_DETAILS = [
+    ("verhuisschoonmaak",
+     "BrabantSchoon maakt uw oude woning schoon op voor de sleuteloverdracht, of maakt uw nieuwe woning grondig schoon v\u00f3\u00f3rdat u erin trekt.",
+     ["Keuken", "Sanitair", "Vloeren", "Oppervlakken en kozijnen", "Overige onderdelen in overleg"]),
+    ("eenmalige-grote-schoonmaak",
+     "Voor woningen die eenmalig grondig moeten worden aangepakt, zonder dat daar een periodiek schoonmaakcontract voor nodig is.",
+     ["Keuken", "Sanitair", "Deuren en kozijnen", "Plinten", "Vloeren"]),
+    ("schoonmaak-na-verbouwing",
+     "Gericht op het verwijderen van bouwstof en normaal schoonmaakvuil na een renovatie of verbouwing, zodat de woning weer schoon en gebruiksklaar is.",
+     ["Verwijderen van bouwstof", "Reinigen van vloeren en oppervlakken", "Normaal schoonmaakvuil na de werkzaamheden"]),
+    ("periodieke-schoonmaak",
+     "Terugkerende professionele schoonmaak van uw woning, op een frequentie en volgens afspraken die u samen met ons bepaalt.",
+     ["Vast ritme, bijvoorbeeld wekelijks of tweewekelijks", "Vaste afspraken over de werkzaamheden", "Dezelfde aandachtspunten iedere beurt"]),
+    ("verkoop-verhuur-oplevering",
+     "Een grondige schoonmaak zodat uw woning netjes gepresenteerd kan worden bij bezichtigingen, of schoon wordt overgedragen aan koper, huurder, verhuurder of een andere partij.",
+     ["Keuken en sanitair", "Vloeren en oppervlakken", "Kozijnen en deuren"]),
 ]
 
 PARTICULIER_FAQS = [
@@ -1173,10 +1199,25 @@ def build_particulieren_page():
     cards_html = "\n      ".join(
         f'''<div class="service-card">
       <div class="thumb"><img src="{base}images/diensten/{img}" alt="{alt}" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;"></div>
-      <div class="body"><h3>{t}</h3><p>{d}</p></div>
+      <div class="body"><h3>{t}</h3><p>{d}</p><a class="sc-link" href="#{slug}">Meer informatie {icon('arrow')}</a></div>
     </div>'''
-        for t, d, img, alt in PARTICULIER_SUBDIENSTEN
+        for t, d, img, alt, slug in PARTICULIER_SUBDIENSTEN
     )
+    detail_title = {slug: t for t, d, img, alt, slug in PARTICULIER_SUBDIENSTEN}
+    detail_blocks = []
+    for slug, intro, bullets in PARTICULIER_DETAILS:
+        bullets_html = "\n        ".join(f"<li>{b}</li>" for b in bullets)
+        detail_blocks.append(f'''<div class="dienst-detail" id="{slug}">
+      <h3>{detail_title[slug]}</h3>
+      <p class="prose">{intro}</p>
+      <ul class="prose" style="margin-top:10px;">
+        {bullets_html}
+      </ul>
+      <div class="hero-actions" style="margin-top:20px;">
+        <a href="{base}offerte.html?type=particulier#offerteWizard" class="btn btn-primary">Vrijblijvende offerte aanvragen</a>
+      </div>
+    </div>''')
+    details_html = "\n    ".join(detail_blocks)
     faq_html = faq_block(PARTICULIER_FAQS)
     related = [s for s in SERVICES if s["slug"] in ("glasbewassing", "opleveringsschoonmaak")]
     related_html = "\n    ".join(f"""<a href="diensten/{r['slug']}.html" class="service-card">
@@ -1197,6 +1238,13 @@ def build_particulieren_page():
     <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Onze diensten</span><h2>Waarvoor u ons kunt inschakelen.</h2></div>
       <div class="grid-3 reveal">{cards_html}</div>
+    </div>
+  </section>
+  <section class="section-tight" style="padding-top:0;">
+    <div class="wrap-narrow">
+      <div class="dienst-details reveal">
+        {details_html}
+      </div>
     </div>
   </section>
   <section class="section-tight" style="background:var(--bg-soft);">
