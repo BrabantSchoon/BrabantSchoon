@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "153"
+ASSET_VERSION = "154"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -1567,14 +1567,17 @@ def build_particulier_detail_pages():
         onderdelen_html = "\n        ".join(f"<li>{o}</li>" for o in page["onderdelen"])
         pakketten_html = "\n      ".join(f'''<div class="pakket-card{' pakket-card-featured' if meest_gekozen else ''} reveal">
         {'<span class="pakket-badge">Meest gekozen</span>' if meest_gekozen else ''}
-        <h3>{naam}</h3>
-        <p>{desc}</p>
+        <h3 class="pakket-title">{naam}</h3>
+        <p class="pakket-description">{desc}</p>
         <div class="pakket-details" id="pakket-details-{page['slug']}-{pid}" hidden>
+          <p class="pakket-details-label">Wat is inbegrepen?</p>
           <ul class="pakket-items">{''.join(f'<li>{item}</li>' for item in items)}</ul>
         </div>
         <div class="pakket-actions">
-          <button type="button" class="pakket-toggle" aria-expanded="false" aria-controls="pakket-details-{page['slug']}-{pid}">Meer info</button>
-          <a href="{base}offerte.html?type=particulier&amp;dienst={page['slug']}&amp;pakket={pid}#offerteWizard" class="btn btn-primary pakket-cta">Offerte voor dit pakket aanvragen</a>
+          <button type="button" class="pakket-toggle" aria-expanded="false" aria-controls="pakket-details-{page['slug']}-{pid}">
+            <span class="pakket-toggle-label">Bekijk wat inbegrepen is</span><span class="pakket-toggle-arrow" aria-hidden="true">\u2193</span>
+          </button>
+          <a href="{base}offerte.html?type=particulier&amp;dienst={page['slug']}&amp;pakket={pid}#offerteWizard" class="btn btn-primary pakket-cta">Offerte voor {naam} aanvragen</a>
         </div>
       </div>''' for pid, naam, desc, items, meest_gekozen in page["pakketten"])
         extra_html = "\n        ".join(f"<li>{o}</li>" for o in page["extra_opties"])
