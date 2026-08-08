@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "151"
+ASSET_VERSION = "152"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -1569,7 +1569,7 @@ def build_particulier_detail_pages():
         {'<span class="pakket-badge">Meest gekozen</span>' if meest_gekozen else ''}
         <h3>{naam}</h3>
         <p>{desc}</p>
-        <ul class="pakket-items">{''.join(f'<li>{icon("tick")}{item}</li>' for item in items)}</ul>
+        <ul class="pakket-items">{''.join(f'<li>{item}</li>' for item in items)}</ul>
         <a href="{base}offerte.html?type=particulier&amp;dienst={page['slug']}&amp;pakket={pid}#offerteWizard" class="btn btn-outline pakket-cta">Offerte voor dit pakket aanvragen</a>
       </div>''' for pid, naam, desc, items, meest_gekozen in page["pakketten"])
         extra_html = "\n        ".join(f"<li>{o}</li>" for o in page["extra_opties"])

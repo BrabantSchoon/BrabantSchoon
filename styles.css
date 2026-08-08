@@ -567,8 +567,11 @@ section{padding:96px 0;}
   font-size:11.5px; font-weight:700; padding:4px 12px; border-radius:100px; letter-spacing:0.01em;
 }
 .pakket-items{list-style:none; margin:14px 0 0; padding:0; flex-grow:1;}
-.pakket-items li{display:flex; align-items:flex-start; gap:8px; font-size:13.5px; color:var(--ink); padding:5px 0;}
-.pakket-items li svg{width:17px !important; height:17px !important; color:var(--green); flex-shrink:0; margin-top:2px; stroke-width:2.4;}
+.pakket-items li{position:relative; font-size:13.5px; color:var(--ink); padding:5px 0 5px 22px; line-height:1.4;}
+.pakket-items li::before{
+  content:"\2713"; position:absolute; left:0; top:5px; font-size:13px; line-height:1.4;
+  color:var(--green); font-weight:700;
+}
 .pakket-cta{margin-top:18px; text-align:center; width:100%;}
 
 /* ---------- Keuze-kaarten: zakelijk / particulier ---------- */
