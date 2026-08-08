@@ -33,6 +33,11 @@ h4{font-family:'Inter',sans-serif; font-weight:700; margin:0;}
 em{font-style:italic;}
 a{color:inherit;}
 img,svg{max-width:100%; display:block;}
+/* Basisformaat voor alle icoon-svg's: voorkomt dat een icoon "gigantisch"
+   wordt weergegeven (browser-default ~300x150px) wanneer een specifieke
+   contextuele selector ontbreekt. Meer specifieke regels (bijv. .usp
+   .icon-circle svg) overschrijven dit gewoon via hogere specificiteit. */
+svg.icon{width:24px; height:24px;}
 ul{margin:0; padding:0;}
 .wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
 .wrap-narrow{max-width:760px; margin:0 auto; padding:0 24px;}
@@ -606,21 +611,21 @@ section{padding:96px 0;}
 .usp h3{font-family:'Inter',sans-serif; font-weight:700; font-size:16px;}
 .usp p{color:var(--ink-soft); font-size:14px; margin-top:6px;}
 
-/* ---------- Diensten met foto ernaast (particulierenpagina) ---------- */
-.diensten-split{display:grid; grid-template-columns:1fr; gap:32px; align-items:center;}
-@media(min-width:860px){.diensten-split{grid-template-columns:1.05fr 0.95fr; gap:44px;}}
-.diensten-split-list{display:flex; flex-direction:column; gap:22px;}
-.diensten-split-row{display:flex; gap:16px; align-items:flex-start;}
-.diensten-split-row .icon-circle{
-  width:44px; height:44px; border-radius:50%; flex-shrink:0; margin:0;
-  background:var(--bg-soft); display:flex; align-items:center; justify-content:center;
+/* ---------- Diensten met foto per kaart (particulierenpagina) ---------- */
+.diensten-cards-grid{display:flex; flex-wrap:wrap; justify-content:center; gap:24px;}
+.diensten-card{
+  flex:1 1 260px; max-width:320px; display:flex; flex-direction:column;
+  background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg); overflow:hidden;
+  box-shadow:var(--shadow-sm); transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
-.diensten-split-row .icon-circle svg{width:20px !important; height:20px !important; color:var(--navy);}
-.diensten-split-row h3{font-family:'Inter',sans-serif; font-weight:700; font-size:16px;}
-.diensten-split-row p{color:var(--ink-soft); font-size:14px; margin-top:4px; line-height:1.5;}
-.diensten-split-media{border-radius:var(--radius-lg); overflow:hidden; aspect-ratio:3/2; box-shadow:var(--shadow-sm);}
-.diensten-split-media img{width:100%; height:100%; object-fit:cover; display:block;}
-@media(max-width:859px){.diensten-split-media{max-width:520px; margin:0 auto;}}
+.diensten-card:hover{transform:translateY(-4px); box-shadow:var(--shadow-md); border-color:var(--link);}
+.diensten-card-media{aspect-ratio:3/2; overflow:hidden; background:var(--bg-soft);}
+.diensten-card-media img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .35s ease;}
+.diensten-card:hover .diensten-card-media img{transform:scale(1.05);}
+.diensten-card-body{padding:20px 22px 24px; display:flex; flex-direction:column; flex-grow:1;}
+.diensten-card-body h3{font-family:'Inter',sans-serif; font-weight:700; font-size:16.5px; color:var(--ink);}
+.diensten-card-body p{color:var(--ink-soft); font-size:14px; margin-top:8px; line-height:1.5;}
+@media(max-width:560px){.diensten-card{flex:1 1 100%; max-width:420px;}}
 
 /* ---------- WERKGEBIED ---------- */
 .area-tags{display:flex; flex-wrap:wrap; gap:10px; justify-content:center;}

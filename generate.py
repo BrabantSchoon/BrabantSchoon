@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "143"
+ASSET_VERSION = "144"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -1149,11 +1149,16 @@ def build_zakelijke_pagina():
 # PARTICULIERE SCHOONMAAK
 # =================================================================
 PARTICULIER_SUBDIENSTEN = [
-    ("key", "Verhuisschoonmaak", "Uw oude woning schoon opgeleverd, of uw nieuwe woning grondig schoongemaakt v\u00f3\u00f3r de verhuizing."),
-    ("spark", "Eenmalige grote schoonmaak", "Een grondige beurt voor uw hele woning, zonder dat daar direct een vaste overeenkomst voor nodig is."),
-    ("check", "Schoonmaak na verbouwing", "Verwijderen van bouwstof en normaal schoonmaakvuil na een renovatie of verbouwing."),
-    ("clock", "Periodieke schoonmaak", "Terugkerende professionele schoonmaak van uw woning, op een ritme dat u zelf bepaalt."),
-    ("doc", "Bij verkoop, verhuur of oplevering", "Uw woning schoon voor bezichtigingen, verhuur of de sleuteloverdracht."),
+    ("Verhuisschoonmaak", "Uw oude woning schoon opgeleverd, of uw nieuwe woning grondig schoongemaakt v\u00f3\u00f3r de verhuizing.",
+     "verhuisschoonmaak-brabantschoon.webp", "BrabantSchoon-medewerker verzorgt een verhuisschoonmaak in een lege woning met verhuisdozen"),
+    ("Eenmalige grote schoonmaak", "Een grondige beurt voor uw hele woning, zonder dat daar direct een vaste overeenkomst voor nodig is.",
+     "eenmalige-grote-schoonmaak-brabantschoon.webp", "BrabantSchoon-medewerkster verzorgt een eenmalige grote schoonmaak in de woonkamer"),
+    ("Schoonmaak na verbouwing", "Verwijderen van bouwstof en normaal schoonmaakvuil na een renovatie of verbouwing.",
+     "schoonmaak-na-verbouwing-brabantschoon.webp", "BrabantSchoon-medewerkster verwijdert bouwstof na een verbouwing"),
+    ("Periodieke schoonmaak", "Terugkerende professionele schoonmaak van uw woning, op een ritme dat u zelf bepaalt.",
+     "periodieke-schoonmaak-brabantschoon.webp", "BrabantSchoon-medewerkster verzorgt periodieke schoonmaak van het keukenblok"),
+    ("Bij verkoop, verhuur of oplevering", "Uw woning schoon voor bezichtigingen, verhuur of de sleuteloverdracht.",
+     "opleveringsschoonmaak-brabantschoon.webp", "BrabantSchoon-medewerkster inspecteert een woning bij oplevering"),
 ]
 
 PARTICULIER_FAQS = [
@@ -1165,9 +1170,17 @@ PARTICULIER_FAQS = [
 
 def build_particulieren_page():
     base = ""
-    sub_html_split = "\n      ".join(
-        f'<div class="diensten-split-row"><div class="icon-circle">{icon(n)}</div><div><h3>{t}</h3><p>{d}</p></div></div>'
-        for n, t, d in PARTICULIER_SUBDIENSTEN
+    cards_html = "\n      ".join(
+        f'''<div class="diensten-card">
+        <div class="diensten-card-media">
+          <img src="{base}images/diensten/{img}" alt="{alt}" width="1200" height="800" loading="lazy" decoding="async">
+        </div>
+        <div class="diensten-card-body">
+          <h3>{t}</h3>
+          <p>{d}</p>
+        </div>
+      </div>'''
+        for t, d, img, alt in PARTICULIER_SUBDIENSTEN
     )
     faq_html = faq_block(PARTICULIER_FAQS)
     related = [s for s in SERVICES if s["slug"] in ("glasbewassing", "opleveringsschoonmaak")]
@@ -1188,13 +1201,8 @@ def build_particulieren_page():
   <section class="section-tight" style="padding-top:0;">
     <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Onze diensten</span><h2>Waarvoor u ons kunt inschakelen.</h2></div>
-      <div class="diensten-split reveal">
-        <div class="diensten-split-list">
-          {sub_html_split}
-        </div>
-        <div class="diensten-split-media">
-          <img src="{base}images/diensten/woning-schoonmaak-stofzuigen-brabantschoon.webp" alt="BrabantSchoon-medewerkster stofzuigt een moderne woonkamer" width="1200" height="800" loading="lazy" decoding="async">
-        </div>
+      <div class="diensten-cards-grid reveal">
+        {cards_html}
       </div>
     </div>
   </section>
