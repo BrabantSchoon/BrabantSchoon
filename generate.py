@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "157"
+ASSET_VERSION = "158"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -187,7 +187,7 @@ SERVICES = [
      "name": "Kantoorreiniging",
      "short": "Vaste of periodieke reiniging van uw kantoorpand, buiten werktijd.",
      "intro": "Een schone werkomgeving draagt bij aan hoe medewerkers en bezoekers uw bedrijf ervaren. We verzorgen de reiniging van uw kantoor op een vast, betrouwbaar ritme.",
-     "bullets": ["Bureaus, vloeren en sanitair", "Pantry's en vergaderruimtes", "Afvalverwerking", "Frequentie in overleg"],
+     "bullets": ["Werkplekken, bureaus en vloeren", "Sanitair en pantry/kantine", "Algemene ruimtes en gangen", "Afvalverwerking", "Optioneel: periodieke dieptereiniging", "Optioneel: glasbewassing"],
      "for": "Kantoren en praktijken in Brabant.", "faqs": [("Hoe vaak kan kantoorreiniging plaatsvinden?", "Dat bepaalt u zelf: van dagelijks tot wekelijks, afhankelijk van de grootte en het gebruik van uw kantoor."), ("Werkt u buiten kantoortijden?", "Ja, we plannen de reiniging doorgaans buiten werktijd, zodat uw bedrijfsvoering geen hinder ondervindt.")]},
     {"slug": "glasbewassing", "icon": "window", "tint": "tint-2",
      "name": "Glasbewassing",
@@ -544,7 +544,7 @@ def faq_block(items):
     return "\n      ".join(f'<details><summary>{q}<span class="chev">{icon("chevron")}</span></summary><div class="faq-a-wrap"><p class="faq-a">{a}</p></div></details>' for q, a in items)
 
 FAQ_ITEMS = [
-    ("Wat kost een schoonmaakdienst van BrabantSchoon?", "Dat hangt af van de ruimte, frequentie en het type dienst. Na een kort, vrijblijvend gesprek ontvangt u een offerte op maat \u2014 zonder verplichtingen."),
+    ("Wat kost een schoonmaakdienst van BrabantSchoon?", "De prijs is afhankelijk van onder andere de locatie, werkzaamheden en frequentie. Voor periodieke zakelijke schoonmaak plannen we waar nodig eerst een korte, vrijblijvende locatieopname \u2014 zo maken we een offerte die aansluit op de daadwerkelijke werkzaamheden."),
     ("In welke regio\u2019s is BrabantSchoon actief?", f"BrabantSchoon is actief in Brabant, vanuit onze thuisbasis in {CITY}. Rond {CITY} en de Peelgemeenten \u2014 Deurne, Asten, Someren, Gemert-Bakel en Laarbeek \u2014 zijn we het snelst ter plaatse; voor opdrachten elders in de provincie rijden we graag mee."),
     ("Werk ik steeds met dezelfde persoon of hetzelfde team?", "Ja, u krijgt een vast aanspreekpunt en een vast team dat uw locatie kent \u2014 zodat u niet steeds opnieuw hoeft uit te leggen hoe u het wilt."),
     ("Kan ik ook een eenmalige schoonmaakbeurt aanvragen?", "Ja, naast vaste afspraken verzorgen we ook maatwerk voor eenmalige beurten, bijvoorbeeld bij een oplevering of verhuizing."),
@@ -1026,11 +1026,11 @@ def build_home():
       </div>
       <div class="area-tags reveal">
         <a href="diensten/kantoorreiniging.html" class="area-tag primary" style="text-decoration:none; display:inline-block;">Kantoorreiniging</a>
+        <a href="diensten/periodieke-schoonmaak.html" class="area-tag primary" style="text-decoration:none; display:inline-block;">Periodieke bedrijfsschoonmaak</a>
         <a href="diensten/vve-schoonmaak.html" class="area-tag primary" style="text-decoration:none; display:inline-block;">VvE-schoonmaak</a>
-        <a href="verhuisschoonmaak.html" class="area-tag primary" style="text-decoration:none; display:inline-block;">Verhuisschoonmaak</a>
-        <a href="periodieke-schoonmaak-particulier.html" class="area-tag primary" style="text-decoration:none; display:inline-block;">Periodieke schoonmaak</a>
-        <a href="opleveringsschoonmaak-particulier.html" class="area-tag primary" style="text-decoration:none; display:inline-block;">Oplevering</a>
         <a href="diensten/glasbewassing.html" class="area-tag primary" style="text-decoration:none; display:inline-block;">Glasbewassing</a>
+        <a href="diensten/opleveringsschoonmaak.html" class="area-tag primary" style="text-decoration:none; display:inline-block;">Opleveringsschoonmaak</a>
+        <a href="schoonmaak-particulieren.html" class="area-tag" style="text-decoration:none; display:inline-block;">Particuliere schoonmaak</a>
       </div>
       <p class="prose reveal" style="text-align:center; margin-top:18px;"><a href="diensten.html" style="color:var(--link); font-weight:600;">Bekijk alle diensten &rarr;</a></p>
     </div>
@@ -1048,6 +1048,23 @@ def build_home():
     </div>
   </section>
 
+  <section>
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Werkwijze</span>
+        <h2>Zo werken wij.</h2>
+        <p class="prose" style="margin-top:8px;">Duidelijke afspraken, korte lijnen en schoonmaak die past bij uw locatie.</p>
+      </div>
+      <div class="steps steps-wide reveal">
+        <div class="step"><div class="stepnum">1</div><h3>Kennismaking</h3><p>We bespreken de locatie, werkzaamheden, frequentie en verwachtingen.</p></div>
+        <div class="step"><div class="stepnum">2</div><h3>Locatieopname</h3><p>Bij zakelijke en periodieke opdrachten bekijken we indien nodig de locatie zodat we een passende offerte kunnen maken.</p></div>
+        <div class="step"><div class="stepnum">3</div><h3>Duidelijke offerte</h3><p>U ontvangt een overzichtelijk voorstel met werkzaamheden, frequentie en afspraken.</p></div>
+        <div class="step"><div class="stepnum">4</div><h3>Vast schoonmaakplan</h3><p>Na akkoord leggen we de werkzaamheden en aandachtspunten duidelijk vast.</p></div>
+        <div class="step"><div class="stepnum">5</div><h3>Uitvoering &amp; controle</h3><p>We voeren de schoonmaak volgens afspraak uit en controleren periodiek de kwaliteit.</p></div>
+      </div>
+    </div>
+  </section>
+
   <section style="background:var(--bg-soft);">
     <div class="wrap">
       <div class="elfsight-wrap reveal">
@@ -1060,8 +1077,8 @@ def build_home():
   <section class="section-tight">
     <div class="wrap-narrow" style="text-align:center;">
       <span class="eyebrow">Werkgebied</span>
-      <h2 style="margin-top:8px;">Actief in heel Brabant.</h2>
-      <p class="prose reveal" style="margin-top:10px;">Vanuit {CITY} rijden we uit naar Zuidoost-Brabant en de Peelgemeenten als vast kerngebied \u2014 en voor grotere opdrachten verder de provincie in.</p>
+      <h2 style="margin-top:8px;">Sterk in Zuidoost-Brabant.</h2>
+      <p class="prose reveal" style="margin-top:10px;">Vanuit {CITY} rijden we uit naar Zuidoost-Brabant en de Peelgemeenten als vast kerngebied \u2014 en voor grotere zakelijke opdrachten ook verder de provincie in.</p>
       <div class="area-tags reveal" style="margin-top:16px;">
         <a href="schoonmaakbedrijf-helmond.html" class="area-tag" style="text-decoration:none; display:inline-block;">Helmond</a>
         <a href="schoonmaakbedrijf-eindhoven.html" class="area-tag" style="text-decoration:none; display:inline-block;">Eindhoven</a>
@@ -1195,6 +1212,7 @@ def build_service_pages():
             <a href="{base}offerte.html?type=zakelijk#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
           </div>
+          {'<p class="prose" style="margin-top:14px; font-size:13.5px;">Nog niet zeker wat u nodig heeft? <a href="' + base + 'contact.html" style="color:var(--link); font-weight:600;">Plan vrijblijvend een locatieopname</a> \u2014 we bekijken de werkzaamheden samen, zodat de offerte precies aansluit.</p>' if s['slug'] == 'periodieke-schoonmaak' else ''}
         </div>
         <div>
           <p class="prose"><strong style="color:var(--ink);">Geschikt voor:</strong> {s['for']}</p>
@@ -1275,6 +1293,7 @@ def build_zakelijke_pagina():
             <a href="{base}offerte.html?type=zakelijk#offerteWizard" class="btn btn-primary">Vraag vrijblijvend een offerte aan</a>
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
           </div>
+          <p class="prose" style="margin-top:14px; font-size:13.5px;">Nog niet zeker wat u nodig heeft? <a href="{base}contact.html" style="color:var(--link); font-weight:600;">Plan vrijblijvend een locatieopname</a> \u2014 we bekijken de werkzaamheden samen, zodat de offerte precies aansluit.</p>
         </div>
         <div>
           <div class="faq">{faq_html}</div>

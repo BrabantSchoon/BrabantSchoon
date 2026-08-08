@@ -147,19 +147,22 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
    hero (Bedrijven vs. Particulieren). Elk in een eigen merkkleur zodat het
    verschil in één oogopslag duidelijk is: navy voor zakelijk, groen voor
    particulier. Platte tekstknoppen, geen iconen. */
+/* Zakelijk is de primaire keuze (~80% van de doelgroep): stevige, gevulde
+   knop. Particulier blijft volwaardig aanwezig en duidelijk klikbaar, maar
+   als transparante outline-knop iets minder dominant. */
 .hero-audience-choice{display:flex; gap:14px; margin-top:26px; flex-wrap:wrap;}
 .btn-audience-lg{
   display:inline-flex; align-items:center; justify-content:center; flex:1 1 auto; min-width:160px;
   padding:16px 26px; border-radius:100px; font-weight:700; font-size:15.5px; text-align:center;
   color:#fff; text-decoration:none; border:1.5px solid transparent;
-  transition:background .15s ease, transform .15s ease, box-shadow .15s ease;
+  transition:background .15s ease, transform .15s ease, box-shadow .15s ease, border-color .15s ease;
   box-shadow:0 10px 24px -10px rgba(0,0,0,0.4);
 }
 .btn-audience-lg:hover{transform:translateY(-2px);}
 .btn-audience-business{background:var(--navy);}
 .btn-audience-business:hover{background:var(--navy-deep);}
-.btn-audience-particulier{background:var(--green);}
-.btn-audience-particulier:hover{background:var(--teal);}
+.btn-audience-particulier{background:transparent; border-color:rgba(255,255,255,0.7); box-shadow:none;}
+.btn-audience-particulier:hover{background:rgba(255,255,255,0.12); border-color:#fff;}
 .hero-full-content h1{color:#fff; font-size:clamp(36px,6vw,64px); line-height:1.05; margin-top:14px;}
 @media(min-width:760px){.hero-full{min-height:74vh;} .hero-full-content{padding:72px 0 72px;}}
 @media(max-width:640px){.hero-full{min-height:480px;}}
@@ -520,6 +523,9 @@ section{padding:96px 0;}
 /* ---------- WERKWIJZE ---------- */
 .steps{display:grid; grid-template-columns:1fr; gap:0;}
 @media(min-width:820px){.steps{grid-template-columns:repeat(3,1fr); gap:24px;}}
+.steps-wide{display:grid; grid-template-columns:1fr; gap:0;}
+@media(min-width:640px){.steps-wide{grid-template-columns:repeat(2,1fr); gap:22px;} .steps-wide .step{border-top:none; padding:0;}}
+@media(min-width:1000px){.steps-wide{grid-template-columns:repeat(5,1fr); gap:20px;}}
 .step{padding:26px 0; border-top:1px solid var(--line); position:relative;}
 @media(min-width:820px){.step{border-top:none; padding:0;}}
 .step .stepnum{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:32px; color:var(--link); line-height:1; display:flex; align-items:center; gap:10px;}
