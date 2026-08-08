@@ -76,13 +76,14 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "150"
+ASSET_VERSION = "151"
 
 # ---------------------------------------------------------------
 # ICONS
 # ---------------------------------------------------------------
 ICONS = {
     "check": '<path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/>',
+    "tick": '<path d="M5 13l4 4L19 7"/>',
     "list": '<path d="M4 12h16M4 6h16M4 18h10"/>',
     "spark": '<path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3"/>',
     "chat": '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
@@ -736,14 +737,14 @@ def particulier_pakket_cards():
             opt_id = f"pakket-{slug}-{pid}"
             badge = '<span class="rc-badge">Meest gekozen</span>' if pid == meest_gekozen_id else ""
             blocks.append(f'''<div class="rc-wrap rc-hidden" data-dienst-for="{slug}">
-      <input type="radio" name="pakket" id="{opt_id}" value="{naam}" class="rc-input" data-pakket-id="{pid}" disabled>
+      <input type="radio" name="pakket" id="{opt_id}" value="{naam}" class="rc-input" data-pakket-id="{pid}" required disabled>
       <label for="{opt_id}" class="rc-card">
         {badge}<span class="rc-label">{naam}</span>
         <span class="rc-desc">{desc}</span>
       </label>
     </div>''')
     blocks.append('''<div class="rc-wrap rc-hidden" data-dienst-for="all">
-      <input type="radio" name="pakket" id="pakket-weet-niet" value="Ik weet het nog niet, graag advies" class="rc-input" data-pakket-id="weet-niet" disabled>
+      <input type="radio" name="pakket" id="pakket-weet-niet" value="Ik weet het nog niet, graag advies" class="rc-input" data-pakket-id="weet-niet" required disabled>
       <label for="pakket-weet-niet" class="rc-card">
         <span class="rc-label">Ik weet het nog niet</span>
         <span class="rc-desc">Adviseer mij graag</span>
@@ -784,6 +785,14 @@ def contact_form():
 
     <div class="wizard-progress" aria-hidden="true">
       <div class="wizard-progress-bar"><div class="wizard-progress-fill" id="wizardFill"></div></div>
+    </div>
+
+    <div class="wizard-preselect" id="wizardPreselect" hidden>
+      <div class="wizard-preselect-info">
+        <span class="wizard-preselect-label">Uw keuze</span>
+        <strong id="wizardPreselectText"></strong>
+      </div>
+      <button type="button" class="wizard-preselect-change" id="wizardPreselectChange">Keuze wijzigen</button>
     </div>
 
     <div class="wizard-step" data-step="1">
@@ -1560,7 +1569,7 @@ def build_particulier_detail_pages():
         {'<span class="pakket-badge">Meest gekozen</span>' if meest_gekozen else ''}
         <h3>{naam}</h3>
         <p>{desc}</p>
-        <ul class="pakket-items">{''.join(f'<li>{icon("check")}{item}</li>' for item in items)}</ul>
+        <ul class="pakket-items">{''.join(f'<li>{icon("tick")}{item}</li>' for item in items)}</ul>
         <a href="{base}offerte.html?type=particulier&amp;dienst={page['slug']}&amp;pakket={pid}#offerteWizard" class="btn btn-outline pakket-cta">Offerte voor dit pakket aanvragen</a>
       </div>''' for pid, naam, desc, items, meest_gekozen in page["pakketten"])
         extra_html = "\n        ".join(f"<li>{o}</li>" for o in page["extra_opties"])
