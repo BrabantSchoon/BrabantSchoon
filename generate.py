@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "142"
+ASSET_VERSION = "143"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -373,7 +373,7 @@ def render_header(base, active):
     </nav>
     <div class="nav-actions">
       <a href="tel:{PHONE_TEL}" class="phone-link">{PHONE_DISPLAY}</a>
-      <a href="{base}contact.html#offerteWizard" class="btn btn-primary btn-sm">Offerte aanvragen</a>
+      <a href="{base}offerte.html#offerteWizard" class="btn btn-primary btn-sm">Offerte aanvragen</a>
       <label for="menuCheckbox" class="menu-toggle" aria-label="Menu openen">{icon('list')}</label>
     </div>
   </div>
@@ -391,7 +391,7 @@ def render_header(base, active):
     <a href="tel:{PHONE_TEL}" class="mobile-phone-link">{PHONE_DISPLAY}</a>
   </div>
   <div class="mobile-menu-cta-wrap">
-    <a href="{base}contact.html#offerteWizard" class="btn btn-primary mobile-cta">Offerte aanvragen</a>
+    <a href="{base}offerte.html#offerteWizard" class="btn btn-primary mobile-cta">Offerte aanvragen</a>
   </div>
 </aside>"""
 
@@ -414,7 +414,7 @@ def render_footer(base):
         <a href="{base}over-ons.html">Over ons</a>
         <a href="{base}werkgebied.html">Werkgebied</a>
         <a href="{base}contact.html">Contact</a>
-        <a href="{base}contact.html#offerteWizard">Offerte aanvragen</a>
+        <a href="{base}offerte.html#offerteWizard">Offerte aanvragen</a>
       </div>
 
       <div class="footer-col footer-form-col">
@@ -534,7 +534,7 @@ def cta_band(heading="Interesse in onze diensten?", sub="Vraag een vrijblijvende
     <h2>{heading}</h2>
     <p>{sub}</p>
     <div class="hero-actions">
-      <a href="{base}contact.html{type_qs}#offerteWizard" class="btn btn-primary">Vrijblijvende offerte</a>
+      <a href="{base}offerte.html{type_qs}#offerteWizard" class="btn btn-primary">Vrijblijvende offerte</a>
       <a href="tel:{PHONE_TEL}" class="btn btn-outline">Neem contact op</a>
     </div>
   </div>"""
@@ -574,8 +574,8 @@ def choice_cards_block(base=""):
         </div>
       </a>
       <a href="{base}schoonmaak-particulieren.html" class="choice-card">
-        <div class="choice-media choice-media-light">
-          {service_illustration('key')}
+        <div class="choice-media">
+          <img src="{base}images/diensten/particuliere-schoonmaak-brabantschoon.webp" alt="Particuliere schoonmaak door BrabantSchoon" width="1200" height="800" loading="lazy" decoding="async">
         </div>
         <div class="choice-body">
           <span class="choice-label">Voor particulieren</span>
@@ -797,8 +797,13 @@ def contact_info_block(base="", show_heading=True, show_map=True):
     maps_src = f"https://www.google.com/maps?q={CITY},+Noord-Brabant&output=embed"
     map_html = f"""<div class="contact-map" id="mapWrap" data-src="{maps_src}">
       <div class="map-placeholder">
-        <p>De kaart van Google Maps wordt pas geladen na uw klik, zodat er vooraf geen gegevens met Google worden gedeeld.</p>
-        <button type="button" class="btn btn-outline map-load-btn" data-target="mapWrap">Kaart laden</button>
+        <div class="map-placeholder-visual" aria-hidden="true">
+          <div class="map-pin">{icon('pin', cls='map-pin-icon')}<span>BrabantSchoon</span></div>
+        </div>
+        <div class="map-placeholder-info">
+          <p>Actief in Brabant, vanuit {CITY}. De interactieve kaart van Google Maps wordt pas geladen na uw klik, zodat er vooraf geen gegevens met Google worden gedeeld.</p>
+          <button type="button" class="btn btn-outline map-load-btn" data-target="mapWrap">Kaart laden</button>
+        </div>
       </div>
     </div>""" if show_map else ""
     return f"""<div class="contact-info">
@@ -828,7 +833,7 @@ def page_shell(title, description, path, base, active, body, extra_schema="", pr
 {render_footer(base)}
 <div class="mobile-cta-bar">
   <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
-  <a href="{base}contact.html#offerteWizard" class="btn btn-primary">Vrijblijvende offerte</a>
+  <a href="{base}offerte.html#offerteWizard" class="btn btn-primary">Vrijblijvende offerte</a>
 </div>
 
 <div class="cookie-banner" id="cookieBanner" role="dialog" aria-live="polite" aria-label="Cookiemelding" hidden>
@@ -862,7 +867,7 @@ def build_home():
     usp_items = [
         ("chat", "Vast aanspreekpunt", "U spreekt altijd met iemand die uw locatie en wensen kent \u2014 geen callcenter."),
         ("check", "Afspraak is afspraak", "Heldere planning die we nakomen, zonder verrassingen achteraf."),
-        ("clock", "Flexibiliteit", "Frequentie en tijdstip volledig afgestemd op uw organisatie."),
+        ("clock", "Flexibiliteit", "Frequentie en tijdstip volledig afgestemd op uw situatie."),
         ("spark", "Kwaliteitscontrole", "Resultaat en afspraken worden steekproefsgewijs nagelopen, niet alleen bij de eerste beurt."),
     ]
     usp_html = "\n    ".join(f'<div class="usp"><div class="icon-circle">{icon(n)}</div><h3>{t}</h3><p>{d}</p></div>' for n, t, d in usp_items)
@@ -928,7 +933,7 @@ def build_home():
           <h3>Benieuwd wat wij voor u kunnen betekenen?</h3>
           <p>Vraag vrijblijvend een offerte aan. We nemen doorgaans binnen \u00e9\u00e9n werkdag contact met u op om uw wensen te bespreken.</p>
           <div class="hero-actions">
-            <a href="{base}contact.html#offerteWizard" class="btn btn-primary">Offerte aanvragen</a>
+            <a href="{base}offerte.html#offerteWizard" class="btn btn-primary">Offerte aanvragen</a>
             <a href="{base}contact.html" class="btn btn-outline">Neem contact op</a>
           </div>
         </div>
@@ -1033,7 +1038,7 @@ def build_service_pages():
           <p class="prose">{s['intro']}</p>
           <ul class="prose" style="margin-top:16px;">{bullets_html}</ul>
           <div class="hero-actions" style="margin-top:24px;">
-            <a href="{base}contact.html?type=zakelijk#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
+            <a href="{base}offerte.html?type=zakelijk#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
           </div>
         </div>
@@ -1114,7 +1119,7 @@ def build_zakelijke_pagina():
         <div>
           <p class="prose"><strong style="color:var(--ink);">Geschikt voor:</strong> kantoren, bedrijfsverzamelgebouwen, VvE's, scholen, zorglocaties, winkels, praktijken en andere organisaties met een terugkerende of eenmalige schoonmaakvraag.</p>
           <div class="hero-actions" style="margin-top:24px;">
-            <a href="{base}contact.html?type=zakelijk#offerteWizard" class="btn btn-primary">Vraag vrijblijvend een offerte aan</a>
+            <a href="{base}offerte.html?type=zakelijk#offerteWizard" class="btn btn-primary">Vraag vrijblijvend een offerte aan</a>
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
           </div>
         </div>
@@ -1160,8 +1165,8 @@ PARTICULIER_FAQS = [
 
 def build_particulieren_page():
     base = ""
-    sub_html = "\n    ".join(
-        f'<div class="usp"><div class="icon-circle">{icon(n)}</div><h3>{t}</h3><p>{d}</p></div>'
+    sub_html_split = "\n      ".join(
+        f'<div class="diensten-split-row"><div class="icon-circle">{icon(n)}</div><div><h3>{t}</h3><p>{d}</p></div></div>'
         for n, t, d in PARTICULIER_SUBDIENSTEN
     )
     faq_html = faq_block(PARTICULIER_FAQS)
@@ -1183,8 +1188,13 @@ def build_particulieren_page():
   <section class="section-tight" style="padding-top:0;">
     <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Onze diensten</span><h2>Waarvoor u ons kunt inschakelen.</h2></div>
-      <div class="usp-grid reveal">
-        {sub_html}
+      <div class="diensten-split reveal">
+        <div class="diensten-split-list">
+          {sub_html_split}
+        </div>
+        <div class="diensten-split-media">
+          <img src="{base}images/diensten/woning-schoonmaak-stofzuigen-brabantschoon.webp" alt="BrabantSchoon-medewerkster stofzuigt een moderne woonkamer" width="1200" height="800" loading="lazy" decoding="async">
+        </div>
       </div>
     </div>
   </section>
@@ -1194,7 +1204,7 @@ def build_particulieren_page():
         <div>
           <p class="prose"><strong style="color:var(--ink);">Geschikt voor:</strong> particulieren met een verhuizing, een grote schoonmaakklus, een woning na verbouwing, of behoefte aan periodieke ondersteuning bij het schoonhouden van hun woning.</p>
           <div class="hero-actions" style="margin-top:24px;">
-            <a href="{base}contact.html?type=particulier#offerteWizard" class="btn btn-primary">Vraag vrijblijvend een offerte aan</a>
+            <a href="{base}offerte.html?type=particulier#offerteWizard" class="btn btn-primary">Vraag vrijblijvend een offerte aan</a>
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
           </div>
         </div>
@@ -1557,7 +1567,7 @@ def build_kerngebied_pages():
           <p class="prose" style="margin-top:14px;">{k['waarom']}</p>
           <p class="prose" style="margin-top:12px;"><strong style="color:var(--ink);">Voor wie:</strong> {k['klanten']}.</p>
           <div class="hero-actions" style="margin-top:24px;">
-            <a href="{base}contact.html?type=zakelijk#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
+            <a href="{base}offerte.html?type=zakelijk#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
           </div>
         </div>
@@ -1632,7 +1642,7 @@ def build_location_pages():
         <div>
           <p class="prose">Ons kerngebied is Helmond en de Peelgemeenten \u2014 vandaar rijden we uit. Voor {loc['name']} werken we vooral bij grotere of terugkerende opdrachten, zoals een vast kantoorcontract, VvE-schoonmaak of een omvangrijke opleveringsschoonmaak.</p>
           <div class="hero-actions" style="margin-top:26px;">
-            <a href="{base}contact.html?type=zakelijk#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
+            <a href="{base}offerte.html?type=zakelijk#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
           </div>
         </div>
@@ -1704,15 +1714,37 @@ def build_contact():
       </div>
       <div class="contact-grid reveal">
         {contact_info_block(base, show_heading=False)}
-        {contact_form()}
+        <div class="quick-cta-card">
+          <h3>Liever direct een offerte op maat?</h3>
+          <p>Beantwoord een paar korte vragen over uw situatie &mdash; wij sturen u een vrijblijvende offerte, voor bedrijven, VvE's, organisaties en particulieren.</p>
+          <div class="hero-actions">
+            <a href="{base}offerte.html" class="btn btn-primary">Offerte aanvragen</a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 """
     write("contact.html", page_shell(
         "Contact | BrabantSchoon Schoonmaakbedrijf Brabant",
-        "Neem contact op met BrabantSchoon of vraag direct een vrijblijvende offerte aan \u2014 voor bedrijven, VvE's, organisaties en particulieren.",
+        "Neem contact op met BrabantSchoon \u2014 telefonisch, per e-mail of via het contactformulier. Voor een offerte op maat verwijzen we u naar onze offertepagina.",
         "contact.html", base, "contact.html", body, LOCALBUSINESS_SCHEMA + "\n" + breadcrumb_schema("Contact", "contact.html")
+    ))
+
+def build_offerte():
+    base = ""
+    body = f"""
+  {page_hero("Offerte", "Vraag een offerte aan.", "Beantwoord een paar korte vragen over uw situatie \u2014 we sturen u een vrijblijvende, kosteloze offerte op maat.", base, "Offerte aanvragen")}
+  <section>
+    <div class="wrap-narrow">
+      {contact_form()}
+    </div>
+  </section>
+"""
+    write("offerte.html", page_shell(
+        "Offerte aanvragen | BrabantSchoon",
+        "Vraag vrijblijvend een offerte aan bij BrabantSchoon \u2014 voor bedrijven, VvE's, organisaties en particulieren. Beantwoord een paar korte vragen voor een offerte op maat.",
+        "offerte.html", base, "contact.html", body, LOCALBUSINESS_SCHEMA + "\n" + breadcrumb_schema("Offerte aanvragen", "offerte.html")
     ))
 
 # =================================================================
@@ -1791,7 +1823,7 @@ def build_seo_files():
     today = datetime.date.today().isoformat()
     urls = [
         ("", "1.0"), ("diensten.html", "0.9"), ("zakelijke-schoonmaak.html", "0.9"), ("schoonmaak-particulieren.html", "0.9"), ("werkgebied.html", "0.9"),
-        ("over-ons.html", "0.7"), ("contact.html", "0.8"),
+        ("over-ons.html", "0.7"), ("contact.html", "0.8"), ("offerte.html", "0.9"),
         ("privacy.html", "0.3"), ("voorwaarden.html", "0.3"), ("cookiebeleid.html", "0.3"),
     ]
     urls += [(f"diensten/{s['slug']}.html", "0.8") for s in SERVICES]
@@ -1816,6 +1848,7 @@ if __name__ == "__main__":
     build_kerngebied_pages()
     build_location_pages()
     build_contact()
+    build_offerte()
     build_thanks()
     build_legal()
     build_seo_files()
