@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "147"
+ASSET_VERSION = "148"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -1151,40 +1151,171 @@ def build_zakelijke_pagina():
 PARTICULIER_SUBDIENSTEN = [
     ("Verhuisschoonmaak", "Uw oude woning schoon opgeleverd, of uw nieuwe woning grondig schoongemaakt v\u00f3\u00f3r de verhuizing.",
      "verhuisschoonmaak-brabantschoon.webp", "BrabantSchoon-medewerker verzorgt een verhuisschoonmaak in een lege woning met verhuisdozen",
-     "verhuisschoonmaak"),
+     "verhuisschoonmaak.html"),
     ("Eenmalige grote schoonmaak", "Een grondige beurt voor uw hele woning, zonder dat daar direct een vaste overeenkomst voor nodig is.",
      "eenmalige-grote-schoonmaak-brabantschoon.webp", "BrabantSchoon-medewerkster verzorgt een eenmalige grote schoonmaak in de woonkamer",
-     "eenmalige-grote-schoonmaak"),
+     "eenmalige-grote-schoonmaak.html"),
     ("Schoonmaak na verbouwing", "Verwijderen van bouwstof en normaal schoonmaakvuil na een renovatie of verbouwing.",
      "schoonmaak-na-verbouwing-brabantschoon.webp", "BrabantSchoon-medewerkster verwijdert bouwstof na een verbouwing",
-     "schoonmaak-na-verbouwing"),
+     "schoonmaak-na-verbouwing.html"),
     ("Periodieke schoonmaak", "Terugkerende professionele schoonmaak van uw woning, op een ritme dat u zelf bepaalt.",
      "periodieke-schoonmaak-brabantschoon.webp", "BrabantSchoon-medewerkster verzorgt periodieke schoonmaak van het keukenblok",
-     "periodieke-schoonmaak"),
+     "periodieke-schoonmaak-particulier.html"),
     ("Bij verkoop, verhuur of oplevering", "Uw woning schoon voor bezichtigingen, verhuur of de sleuteloverdracht.",
      "opleveringsschoonmaak-brabantschoon.webp", "BrabantSchoon-medewerkster inspecteert een woning bij oplevering",
-     "verkoop-verhuur-oplevering"),
+     "opleveringsschoonmaak-particulier.html"),
 ]
 
-# Detailinformatie per particuliere dienst, getoond in een compacte sectie
-# onder de servicecards (zie build_particulieren_page). Elk item hoort bij
-# het gelijknamige slug-anchor hierboven in PARTICULIER_SUBDIENSTEN.
-PARTICULIER_DETAILS = [
-    ("verhuisschoonmaak",
-     "BrabantSchoon maakt uw oude woning schoon op voor de sleuteloverdracht, of maakt uw nieuwe woning grondig schoon v\u00f3\u00f3rdat u erin trekt.",
-     ["Keuken", "Sanitair", "Vloeren", "Oppervlakken en kozijnen", "Overige onderdelen in overleg"]),
-    ("eenmalige-grote-schoonmaak",
-     "Voor woningen die eenmalig grondig moeten worden aangepakt, zonder dat daar een periodiek schoonmaakcontract voor nodig is.",
-     ["Keuken", "Sanitair", "Deuren en kozijnen", "Plinten", "Vloeren"]),
-    ("schoonmaak-na-verbouwing",
-     "Gericht op het verwijderen van bouwstof en normaal schoonmaakvuil na een renovatie of verbouwing, zodat de woning weer schoon en gebruiksklaar is.",
-     ["Verwijderen van bouwstof", "Reinigen van vloeren en oppervlakken", "Normaal schoonmaakvuil na de werkzaamheden"]),
-    ("periodieke-schoonmaak",
-     "Terugkerende professionele schoonmaak van uw woning, op een frequentie en volgens afspraken die u samen met ons bepaalt.",
-     ["Vast ritme, bijvoorbeeld wekelijks of tweewekelijks", "Vaste afspraken over de werkzaamheden", "Dezelfde aandachtspunten iedere beurt"]),
-    ("verkoop-verhuur-oplevering",
-     "Een grondige schoonmaak zodat uw woning netjes gepresenteerd kan worden bij bezichtigingen, of schoon wordt overgedragen aan koper, huurder, verhuurder of een andere partij.",
-     ["Keuken en sanitair", "Vloeren en oppervlakken", "Kozijnen en deuren"]),
+# Generieke werkwijze-stappen, hergebruikt op alle 5 particuliere detailpagina's
+# (zie build_particulier_detail_pages).
+PARTICULIER_WERKWIJZE = [
+    ("1", "Aanvraag", "U vraagt vrijblijvend een offerte aan via het offerteformulier."),
+    ("2", "Wensen bespreken", "We bespreken uw situatie en wensen, telefonisch of tijdens een kort contactmoment."),
+    ("3", "Offerte", "U ontvangt een offerte op maat, afgestemd op uw woning en de gewenste werkzaamheden."),
+    ("4", "Afspraak", "Na akkoord plannen we een datum die u schikt."),
+    ("5", "Schoonmaak", "Ons team voert de afgesproken werkzaamheden zorgvuldig uit."),
+    ("6", "Oplevering/controle", "We controleren het resultaat samen met u, of leveren de woning schoon op."),
+]
+
+# Volledige content per particuliere detailpagina. Elk item bevat alle
+# onderdelen die build_particulier_detail_pages() nodig heeft om de pagina
+# op te bouwen: url/bestandsnaam, SEO-teksten, en de inhoudelijke secties.
+PARTICULIER_PAGES = [
+    {
+        "filename": "verhuisschoonmaak.html",
+        "title": "Verhuisschoonmaak",
+        "meta_title": "Verhuisschoonmaak | BrabantSchoon",
+        "meta_description": "Verhuisschoonmaak door BrabantSchoon: uw oude woning schoon opgeleverd of uw nieuwe woning grondig schoon v\u00f3\u00f3r de verhuizing. Vraag vrijblijvend een offerte aan.",
+        "lead": "Uw oude woning schoon opgeleverd, of uw nieuwe woning grondig schoongemaakt v\u00f3\u00f3r de verhuizing.",
+        "img": "verhuisschoonmaak-brabantschoon.webp",
+        "alt": "BrabantSchoon-medewerker verzorgt een verhuisschoonmaak in een lege woning met verhuisdozen",
+        "voor_wie": [
+            "U levert uw oude woning schoon op bij het einde van de huur",
+            "U wilt uw nieuwe woning grondig schoon v\u00f3\u00f3r de intrek",
+            "U verkoopt of koopt een woning en wilt deze netjes overdragen bij sleuteloverdracht",
+            "U huurt of verhuurt een woning rond de verhuisdatum",
+        ],
+        "onderdelen": ["Keuken", "Badkamer", "Toilet", "Woonkamer", "Slaapkamers", "Hal", "Trap", "Deuren", "Plinten", "Kozijnen", "Vloeren", "Oppervlakken", "Binnenzijde lege kasten, indien afgesproken"],
+        "pakketten": [
+            ("Opleverklaar", "Gericht op het netjes en schoon opleveren van een lege woning."),
+            ("Intrekklaar", "Voor een nieuwe woning die v\u00f3\u00f3r de verhuizing grondig schoon moet worden gemaakt."),
+            ("Compleet verhuizen", "Een uitgebreidere schoonmaak met aanvullende, vooraf afgesproken werkzaamheden."),
+        ],
+        "extra_opties": ["Oven", "Koelkast", "Keukenkasten (binnenzijde)", "Ramen (binnenzijde)", "Extra sanitair", "Extra aandacht voor de keuken"],
+        "prijs_factoren": ["Grootte van de woning", "Aantal ruimtes", "Mate van vervuiling", "Gekozen werkzaamheden", "Extra opties", "Bereikbaarheid van de woning"],
+        "note": None,
+        "faqs": [
+            ("Maakt u ook de oude \u00e9n de nieuwe woning schoon?", "Ja, we verzorgen verhuisschoonmaak voor zowel de woning die u verlaat als de woning waar u naartoe verhuist \u2014 dit spreken we vooraf met u af."),
+            ("Maakt u ook de binnenzijde van kasten schoon?", "Dit kan, mits dit vooraf is afgesproken. Standaard richten we ons op de hoofdruimtes en oppervlakken."),
+            ("Kan de schoonmaak snel na aanvraag plaatsvinden?", "We plannen de verhuisschoonmaak zo veel mogelijk rond uw verhuisdatum. Neem tijdig contact op zodat we hier rekening mee kunnen houden."),
+            ("Wat gebeurt er als de woning bij aankomst nog niet leeg is?", "Voor een grondige verhuisschoonmaak is een lege of grotendeels lege woning nodig. Overleg dit vooraf met ons zodat we de planning goed kunnen afstemmen."),
+        ],
+    },
+    {
+        "filename": "eenmalige-grote-schoonmaak.html",
+        "title": "Eenmalige grote schoonmaak",
+        "meta_title": "Eenmalige grote schoonmaak | BrabantSchoon",
+        "meta_description": "Eenmalige grote schoonmaak door BrabantSchoon: een grondige beurt voor uw hele woning, zonder vast contract. Vraag vrijblijvend een offerte aan.",
+        "lead": "Een grondige beurt voor uw hele woning, zonder dat daar direct een vaste overeenkomst voor nodig is.",
+        "img": "eenmalige-grote-schoonmaak-brabantschoon.webp",
+        "alt": "BrabantSchoon-medewerkster verzorgt een eenmalige grote schoonmaak in de woonkamer",
+        "voor_wie": [
+            "Uw woning heeft al langere tijd geen grondige beurt gehad",
+            "U wilt \u00e9\u00e9n keer flink laten schoonmaken, zonder vast contract",
+            "U bereidt een speciale gelegenheid of bezoek voor",
+            "U wilt een frisse start, bijvoorbeeld na een drukke periode",
+        ],
+        "onderdelen": ["Keuken", "Badkamer", "Toilet", "Woonkamer", "Slaapkamers", "Hal en trap", "Deuren", "Plinten", "Vloeren", "Oppervlakken", "Bereikbare kozijnen"],
+        "pakketten": [
+            ("Basis", "De belangrijkste ruimtes en oppervlakken van uw woning."),
+            ("Grondig", "Een uitgebreidere schoonmaak met meer detailwerk."),
+            ("Compleet", "Een zeer uitgebreide grote schoonmaak, aangevuld met extra opties naar keuze."),
+        ],
+        "extra_opties": ["Oven", "Koelkast", "Binnenzijde keukenkasten", "Ramen (binnenzijde)", "Extra sanitair", "Extra intensieve aanpak van \u00e9\u00e9n specifieke ruimte"],
+        "prijs_factoren": ["Grootte van de woning", "Aantal ruimtes", "Mate van vervuiling", "Gekozen werkzaamheden", "Extra opties", "Bereikbaarheid van de woning"],
+        "note": None,
+        "faqs": [
+            ("Is een eenmalige grote schoonmaak ook zonder vast contract mogelijk?", "Ja, dat is precies waar deze dienst voor bedoeld is \u2014 een grondige beurt zonder dat u een periodieke overeenkomst aangaat."),
+            ("Hoe lang duurt een eenmalige grote schoonmaak?", "Dat hangt af van de grootte van uw woning en de gekozen werkzaamheden. We bespreken dit vooraf met u."),
+            ("Kan ik zelf aangeven welke ruimtes extra aandacht nodig hebben?", "Ja, u geeft bij de aanvraag aan waar de nadruk op moet liggen, zodat de offerte en de uitvoering hierop worden afgestemd."),
+            ("Kan deze schoonmaak later ook periodiek worden?", "Ja, na een eenmalige grote schoonmaak is het mogelijk om over te stappen op periodieke schoonmaak \u2014 neem hiervoor gerust contact met ons op."),
+        ],
+    },
+    {
+        "filename": "schoonmaak-na-verbouwing.html",
+        "title": "Schoonmaak na verbouwing",
+        "meta_title": "Schoonmaak na verbouwing | BrabantSchoon",
+        "meta_description": "Schoonmaak na verbouwing door BrabantSchoon: bouwstof en normaal schoonmaakvuil verwijderd na renovatie of verbouwing. Vraag vrijblijvend een offerte aan.",
+        "lead": "Verwijderen van bouwstof en normaal schoonmaakvuil na een renovatie of verbouwing.",
+        "img": "schoonmaak-na-verbouwing-brabantschoon.webp",
+        "alt": "BrabantSchoon-medewerkster verwijdert bouwstof na een verbouwing",
+        "voor_wie": ["Na een renovatie of verbouwing", "Na het plaatsen van een nieuwe keuken", "Na het plaatsen van een nieuwe badkamer", "Na stucwerk- of schilderwerkzaamheden", "Na een complete woningverbouwing"],
+        "onderdelen": ["Bouwstof verwijderen", "Oppervlakken stofvrij maken", "Deuren", "Kozijnen", "Plinten", "Keuken", "Sanitair", "Vloeren", "Stofzuigen", "Dweilen", "Woning gebruiksklaar maken"],
+        "pakketten": [
+            ("Stofvrij", "Gericht op het verwijderen van bouwstof en een basisreiniging van de woning."),
+            ("Gebruiksklaar", "Een uitgebreidere schoonmaak van de woning en de belangrijkste ruimtes."),
+            ("Complete nazorg", "Een uitgebreide schoonmaak na een grotere renovatie of verbouwing, afgestemd op uw specifieke situatie."),
+        ],
+        "extra_opties": ["Ramen (binnenzijde)", "Keukenkasten", "Extra vloerreiniging", "Sanitair intensief", "Specifieke ruimtes extra aandacht"],
+        "prijs_factoren": ["Grootte van de woning", "Aantal ruimtes", "Mate van bouwstof en vervuiling", "Gekozen werkzaamheden", "Extra opties", "Bereikbaarheid van de woning"],
+        "note": "Specialistische verwijdering van verf, kit, cement, lijmresten of andere bouwmaterialen gebeurt alleen als dit vooraf is afgesproken en technisch mogelijk is.",
+        "faqs": [
+            ("Verwijdert u ook bouwafval of grofvuil?", "Nee, wij verzorgen het verwijderen van bouwstof en normaal schoonmaakvuil. Voor grofvuil, bouwafval of gevaarlijke stoffen verwijst u naar een gespecialiseerd bedrijf."),
+            ("Verwijdert u verf-, kit- of cementresten?", "Specialistische verwijdering van verf, kit, cement of lijmresten kan alleen als dit vooraf is afgesproken en technisch mogelijk is."),
+            ("Wanneer kan de schoonmaak na de verbouwing plaatsvinden?", "Zodra het bouwstof grotendeels is neergedaald en de ruimte toegankelijk is. We stemmen de planning graag met u af."),
+            ("Is deze dienst ook geschikt na een kleinere verbouwing?", "Ja, we stemmen de aanpak af op de omvang van de verbouwing, van een enkele ruimte tot de complete woning."),
+        ],
+    },
+    {
+        "filename": "periodieke-schoonmaak-particulier.html",
+        "title": "Periodieke schoonmaak",
+        "meta_title": "Periodieke schoonmaak voor particulieren | BrabantSchoon",
+        "meta_description": "Periodieke schoonmaak van BrabantSchoon voor particulieren: terugkerende professionele schoonmaak op een ritme dat u zelf bepaalt. Vraag vrijblijvend een offerte aan.",
+        "lead": "Terugkerende professionele schoonmaak van uw woning, op een ritme dat u zelf bepaalt.",
+        "img": "periodieke-schoonmaak-brabantschoon.webp",
+        "alt": "BrabantSchoon-medewerkster verzorgt periodieke schoonmaak van het keukenblok",
+        "voor_wie": ["Huishoudens die terugkerend ondersteuning willen bij het schoonhouden van hun woning", "Drukke gezinnen die structureel tijd willen besparen", "Wie liever een vast aanspreekpunt heeft dan wisselende hulp"],
+        "onderdelen": ["Woonkamer", "Keuken", "Badkamer", "Toilet", "Slaapkamers", "Hal en trap", "Stofzuigen", "Dweilen", "Oppervlakken", "Sanitair", "Afgesproken periodieke taken"],
+        "pakketten": [
+            ("Basis onderhoud", "Focus op de belangrijkste dagelijkse en wekelijkse schoonmaakonderdelen."),
+            ("Uitgebreid onderhoud", "Meer ruimtes en meer detailwerk per bezoek."),
+            ("Maatwerk", "Volledig samengesteld op basis van uw woning en wensen."),
+        ],
+        "extra_opties": ["Oven", "Koelkast", "Ramen (binnenzijde)", "Keukenkasten", "Extra badkamer", "Periodieke detailklus (bijvoorbeeld \u00e9\u00e9n keer per maand extra aandacht voor een ruimte)"],
+        "prijs_factoren": ["Grootte van de woning", "Aantal ruimtes", "Gekozen werkzaamheden", "Extra opties", "Bereikbaarheid van de woning", "Gewenste frequentie"],
+        "note": "Frequentie, aantal ruimtes en vaste aandachtspunten bepaalt u in overleg met ons \u2014 er ligt vooraf geen vaste frequentie of prijs vast.",
+        "faqs": [
+            ("Hoe vaak komt u schoonmaken?", "De frequentie bepaalt u zelf, in overleg met ons \u2014 bijvoorbeeld wekelijks, tweewekelijks of maandelijks."),
+            ("Kom ik steeds dezelfde medewerker tegen?", "We streven naar een vast aanspreekpunt en een vast team dat uw woning kent."),
+            ("Kan ik de afgesproken taken later aanpassen?", "Ja, in overleg passen we de werkzaamheden of frequentie aan als uw situatie verandert."),
+            ("Is een proefperiode mogelijk?", "Neem contact met ons op om de mogelijkheden te bespreken die bij uw situatie passen."),
+        ],
+    },
+    {
+        "filename": "opleveringsschoonmaak-particulier.html",
+        "title": "Schoonmaak bij verkoop, verhuur of oplevering",
+        "meta_title": "Schoonmaak bij verkoop, verhuur of oplevering | BrabantSchoon",
+        "meta_description": "Schoonmaak bij verkoop, verhuur of oplevering door BrabantSchoon: uw woning schoon voor bezichtigingen of de sleuteloverdracht. Vraag vrijblijvend een offerte aan.",
+        "lead": "Uw woning schoon voor bezichtigingen, verhuur of de sleuteloverdracht.",
+        "img": "opleveringsschoonmaak-brabantschoon.webp",
+        "alt": "BrabantSchoon-medewerkster inspecteert een woning bij oplevering",
+        "voor_wie": ["Woningverkoop en bezichtigingen", "Einde huurperiode", "Een nieuwe huurder die de woning betrekt", "Verhuurders die hun woning gereed willen maken", "Sleuteloverdracht bij oplevering"],
+        "onderdelen": ["Keuken", "Sanitair", "Vloeren", "Deuren", "Plinten", "Kozijnen", "Oppervlakken", "Lege kasten", "Laatste controle"],
+        "pakketten": [
+            ("Presentatieklaar", "Voor woningverkoop en bezichtigingen."),
+            ("Overdrachtsklaar", "Gericht op een nette overdracht aan koper, huurder of verhuurder."),
+            ("Volledige oplevering", "Een uitgebreidere schoonmaak van de complete woning, inclusief afgesproken extra onderdelen."),
+        ],
+        "extra_opties": ["Keukenapparatuur", "Binnenzijde kasten", "Ramen (binnenzijde)", "Extra sanitair", "Extra controle v\u00f3\u00f3r sleuteloverdracht"],
+        "prijs_factoren": ["Grootte van de woning", "Aantal ruimtes", "Mate van vervuiling", "Gekozen werkzaamheden", "Extra opties", "Bereikbaarheid van de woning"],
+        "note": None,
+        "faqs": [
+            ("Is deze dienst geschikt voor makelaars of alleen particulieren?", "Deze dienst is bedoeld voor particuliere situaties zoals verkoop, verhuur of oplevering van uw eigen woning."),
+            ("Voert u ook een laatste controle uit v\u00f3\u00f3r de sleuteloverdracht?", "Ja, desgewenst voeren we een laatste controle uit zodat de woning netjes wordt overgedragen."),
+            ("Kan de schoonmaak vlak v\u00f3\u00f3r de bezichtiging of overdracht plaatsvinden?", "We plannen de schoonmaak graag rond uw gewenste datum \u2014 neem tijdig contact op voor de beste planning."),
+            ("Maakt u ook de binnenzijde van kasten schoon?", "Dit kan als extra optie worden afgesproken."),
+        ],
+    },
 ]
 
 PARTICULIER_FAQS = [
@@ -1199,25 +1330,10 @@ def build_particulieren_page():
     cards_html = "\n      ".join(
         f'''<div class="service-card">
       <div class="thumb"><img src="{base}images/diensten/{img}" alt="{alt}" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;"></div>
-      <div class="body"><h3>{t}</h3><p>{d}</p><a class="sc-link" href="#{slug}">Meer informatie {icon('arrow')}</a></div>
+      <div class="body"><h3>{t}</h3><p>{d}</p><a class="sc-link" href="{base}{href}">Meer informatie {icon('arrow')}</a></div>
     </div>'''
-        for t, d, img, alt, slug in PARTICULIER_SUBDIENSTEN
+        for t, d, img, alt, href in PARTICULIER_SUBDIENSTEN
     )
-    detail_title = {slug: t for t, d, img, alt, slug in PARTICULIER_SUBDIENSTEN}
-    detail_blocks = []
-    for slug, intro, bullets in PARTICULIER_DETAILS:
-        bullets_html = "\n        ".join(f"<li>{b}</li>" for b in bullets)
-        detail_blocks.append(f'''<div class="dienst-detail" id="{slug}">
-      <h3>{detail_title[slug]}</h3>
-      <p class="prose">{intro}</p>
-      <ul class="prose" style="margin-top:10px;">
-        {bullets_html}
-      </ul>
-      <div class="hero-actions" style="margin-top:20px;">
-        <a href="{base}offerte.html?type=particulier#offerteWizard" class="btn btn-primary">Vrijblijvende offerte aanvragen</a>
-      </div>
-    </div>''')
-    details_html = "\n    ".join(detail_blocks)
     faq_html = faq_block(PARTICULIER_FAQS)
     related = [s for s in SERVICES if s["slug"] in ("glasbewassing", "opleveringsschoonmaak")]
     related_html = "\n    ".join(f"""<a href="diensten/{r['slug']}.html" class="service-card">
@@ -1238,13 +1354,6 @@ def build_particulieren_page():
     <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Onze diensten</span><h2>Waarvoor u ons kunt inschakelen.</h2></div>
       <div class="grid-3 reveal">{cards_html}</div>
-    </div>
-  </section>
-  <section class="section-tight" style="padding-top:0;">
-    <div class="wrap-narrow">
-      <div class="dienst-details reveal">
-        {details_html}
-      </div>
     </div>
   </section>
   <section class="section-tight" style="background:var(--bg-soft);">
@@ -1284,6 +1393,121 @@ def build_particulieren_page():
         body,
         service_schema(particulier_svc_schema) + "\n" + breadcrumb_schema("Schoonmaak voor particulieren", "schoonmaak-particulieren.html") + "\n" + faq_schema(PARTICULIER_FAQS)
     ))
+
+# =================================================================
+# PARTICULIERE DIENST-DETAILPAGINA'S (volwaardige pagina per dienst)
+# =================================================================
+def build_particulier_detail_pages():
+    base = ""
+    for page in PARTICULIER_PAGES:
+        voor_wie_html = "\n        ".join(f"<li>{v}</li>" for v in page["voor_wie"])
+        onderdelen_html = "\n        ".join(f"<li>{o}</li>" for o in page["onderdelen"])
+        pakketten_html = "\n      ".join(f'''<div class="pakket-card">
+        <h3>{naam}</h3>
+        <p>{desc}</p>
+      </div>''' for naam, desc in page["pakketten"])
+        extra_html = "\n        ".join(f"<li>{o}</li>" for o in page["extra_opties"])
+        prijs_html = "\n        ".join(f"<li>{p}</li>" for p in page["prijs_factoren"])
+        stappen_html = "\n      ".join(f'''<div class="step">
+        <div class="stepnum">{num}</div>
+        <h3>{naam}</h3>
+        <p>{desc}</p>
+      </div>''' for num, naam, desc in PARTICULIER_WERKWIJZE)
+        faq_html = faq_block(page["faqs"])
+        note_html = f'<p class="prose" style="margin-top:14px;"><em>{page["note"]}</em></p>' if page["note"] else ""
+        others = [p for p in PARTICULIER_SUBDIENSTEN if p[4] != page["filename"]][:3]
+        others_html = "\n    ".join(f"""<a href="{base}{href}" class="service-card">
+      <div class="thumb"><img src="{base}images/diensten/{img}" alt="{alt}" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;"></div>
+      <div class="body"><h3>{t}</h3><p>{d}</p></div>
+    </a>""" for t, d, img, alt, href in others)
+
+        hero = page_hero("Particuliere schoonmaak", page["title"], page["lead"], base, page["title"],
+                          image=f"images/diensten/{page['img']}", image_alt=page["alt"])
+        body = f"""
+  {hero}
+  <section class="section-tight" style="padding-bottom:0;">
+    <div class="wrap-narrow" style="text-align:center;">
+      <div class="hero-actions" style="justify-content:center;">
+        <a href="{base}offerte.html?type=particulier#offerteWizard" class="btn btn-primary">Vrijblijvende offerte aanvragen</a>
+        <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
+      </div>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="wrap-narrow">
+      <div class="sec-head reveal" style="text-align:left;"><h2>Voor wie is deze dienst?</h2></div>
+      <ul class="prose reveal" style="margin-top:10px;">
+        {voor_wie_html}
+      </ul>
+    </div>
+  </section>
+  <section class="section-tight" style="background:var(--bg-soft);">
+    <div class="wrap-narrow">
+      <div class="sec-head reveal" style="text-align:left;"><h2>Wat kan er worden schoongemaakt?</h2></div>
+      <ul class="prose reveal" style="margin-top:10px;">
+        {onderdelen_html}
+      </ul>
+      {note_html}
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="wrap">
+      <div class="sec-head reveal"><h2>Waar kunt u uit kiezen?</h2><p class="prose" style="margin-top:8px;">Onderstaande richtingen zijn bedoeld als keuzehulp, geen vaste prijsproducten \u2014 de precieze invulling stemmen we samen met u af.</p></div>
+      <div class="pakket-grid reveal">
+        {pakketten_html}
+      </div>
+    </div>
+  </section>
+  <section class="section-tight" style="background:var(--bg-soft);">
+    <div class="wrap-narrow">
+      <div class="sec-head reveal" style="text-align:left;"><h2>Extra opties</h2></div>
+      <ul class="prose reveal" style="margin-top:10px;">
+        {extra_html}
+      </ul>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="wrap">
+      <div class="sec-head reveal"><h2>Hoe werkt het?</h2></div>
+      <div class="steps reveal">
+        {stappen_html}
+      </div>
+    </div>
+  </section>
+  <section class="section-tight" style="background:var(--bg-soft);">
+    <div class="wrap-narrow">
+      <div class="sec-head reveal" style="text-align:left;"><h2>Waar hangt de prijs van af?</h2></div>
+      <ul class="prose reveal" style="margin-top:10px;">
+        {prijs_html}
+      </ul>
+      <p class="prose reveal" style="margin-top:14px;">We werken met een offerte op maat in plaats van vaste tarieven \u2014 zo betaalt u alleen voor wat voor uw woning nodig is.</p>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="wrap-narrow">
+      <div class="sec-head reveal" style="text-align:left;"><h2>Veelgestelde vragen</h2></div>
+      <div class="faq reveal" style="margin-top:10px;">{faq_html}</div>
+    </div>
+  </section>
+  <section style="background:var(--bg-soft);"><div class="wrap">{cta_band(f"Interesse in {page['title'].lower()}?", "Vraag vrijblijvend een offerte aan of neem direct contact op.", base, type_param="particulier")}</div></section>
+  <section>
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="eyebrow">Ook interessant</span><h2>Andere particuliere diensten</h2></div>
+      <div class="grid-3 reveal">{others_html}</div>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="wrap-narrow" style="text-align:center;">
+      <p class="prose">Bekijk het volledige overzicht van <a href="{base}schoonmaak-particulieren.html" style="color:var(--link); font-weight:600;">particuliere schoonmaak</a> \u2014 op zoek naar schoonmaak voor uw bedrijf? Bekijk onze <a href="{base}zakelijke-schoonmaak.html" style="color:var(--link); font-weight:600;">zakelijke schoonmaak</a>.</p>
+    </div>
+  </section>
+"""
+        svc_schema = {"name": page["title"], "short": page["lead"]}
+        write(page["filename"], page_shell(
+            page["meta_title"], page["meta_description"], page["filename"], base, "schoonmaak-particulieren.html",
+            body,
+            service_schema(svc_schema) + "\n" + breadcrumb_schema(page["title"], page["filename"]) + "\n" + faq_schema(page["faqs"])
+        ))
 
 # =================================================================
 # OVER ONS
@@ -1876,6 +2100,7 @@ def build_seo_files():
         ("privacy.html", "0.3"), ("voorwaarden.html", "0.3"), ("cookiebeleid.html", "0.3"),
     ]
     urls += [(f"diensten/{s['slug']}.html", "0.8") for s in SERVICES]
+    urls += [(p["filename"], "0.8") for p in PARTICULIER_PAGES]
     urls += [(f"schoonmaakbedrijf-{loc['slug']}.html", "0.8") for loc in LOCATIONS]
     urls += [(f"schoonmaakbedrijf-{k['slug']}.html", "0.85") for k in KERNGEBIED]
     entries = "\n  ".join(
@@ -1892,6 +2117,7 @@ if __name__ == "__main__":
     build_service_pages()
     build_zakelijke_pagina()
     build_particulieren_page()
+    build_particulier_detail_pages()
     build_over_ons()
     build_werkgebied()
     build_kerngebied_pages()

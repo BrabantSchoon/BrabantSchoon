@@ -552,13 +552,12 @@ section{padding:96px 0;}
 .service-card .sc-link:hover, .service-card .sc-link:focus-visible{color:var(--navy);}
 .service-card .sc-link:hover svg, .service-card .sc-link:focus-visible svg{transform:translateX(3px);}
 
-/* ---------- Particuliere dienst-detailsectie (schoonmaak-particulieren.html) ---------- */
-.dienst-details{display:flex; flex-direction:column;}
-.dienst-detail{scroll-margin-top:90px; padding:30px 0; border-top:1px solid var(--line);}
-.dienst-detail:first-child{padding-top:0; border-top:none;}
-.dienst-detail h3{font-family:'Inter',sans-serif; font-weight:800; font-size:19px; letter-spacing:-0.01em; color:var(--ink);}
-.dienst-detail p.prose{margin-top:10px;}
-.dienst-detail ul.prose li{margin-top:2px;}
+/* ---------- Pakketkeuze-blokken (particuliere detailpagina's) ---------- */
+.pakket-grid{display:grid; grid-template-columns:1fr; gap:18px;}
+@media(min-width:760px){.pakket-grid{grid-template-columns:repeat(3,1fr);}}
+.pakket-card{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:22px 22px 24px; box-shadow:var(--shadow-sm);}
+.pakket-card h3{font-family:'Inter',sans-serif; font-weight:800; font-size:16.5px; color:var(--ink);}
+.pakket-card p{color:var(--ink-soft); font-size:14px; margin-top:8px; line-height:1.55;}
 
 /* ---------- Keuze-kaarten: zakelijk / particulier ---------- */
 .choice-grid{display:grid; grid-template-columns:1fr; gap:26px;}
