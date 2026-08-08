@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "145"
+ASSET_VERSION = "146"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -1171,15 +1171,10 @@ PARTICULIER_FAQS = [
 def build_particulieren_page():
     base = ""
     cards_html = "\n      ".join(
-        f'''<div class="diensten-card">
-        <div class="diensten-card-media">
-          <img src="{base}images/diensten/{img}" alt="{alt}" width="1200" height="800" loading="lazy" decoding="async">
-        </div>
-        <div class="diensten-card-body">
-          <h3>{t}</h3>
-          <p>{d}</p>
-        </div>
-      </div>'''
+        f'''<div class="service-card">
+      <div class="thumb"><img src="{base}images/diensten/{img}" alt="{alt}" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;"></div>
+      <div class="body"><h3>{t}</h3><p>{d}</p></div>
+    </div>'''
         for t, d, img, alt in PARTICULIER_SUBDIENSTEN
     )
     faq_html = faq_block(PARTICULIER_FAQS)
@@ -1201,9 +1196,7 @@ def build_particulieren_page():
   <section class="section-tight" style="padding-top:0;">
     <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Onze diensten</span><h2>Waarvoor u ons kunt inschakelen.</h2></div>
-      <div class="diensten-cards-grid reveal">
-        {cards_html}
-      </div>
+      <div class="grid-3 reveal">{cards_html}</div>
     </div>
   </section>
   <section class="section-tight" style="background:var(--bg-soft);">
