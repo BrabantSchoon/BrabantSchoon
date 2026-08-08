@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="css/styles.css?v=152">
+<link rel="stylesheet" href="css/styles.css?v=153">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
@@ -176,22 +176,37 @@
         
         <h3>Basis onderhoud</h3>
         <p>Voor regelmatig onderhoud van de belangrijkste ruimtes.</p>
-        <ul class="pakket-items"><li>Woonkamer</li><li>Keuken</li><li>Toilet</li><li>Badkamer</li><li>Stofzuigen</li><li>Dweilen</li><li>Vrije oppervlakken</li></ul>
-        <a href="offerte.html?type=particulier&amp;dienst=periodiek&amp;pakket=basis-onderhoud#offerteWizard" class="btn btn-outline pakket-cta">Offerte voor dit pakket aanvragen</a>
+        <div class="pakket-details" id="pakket-details-periodiek-basis-onderhoud" hidden>
+          <ul class="pakket-items"><li>Woonkamer</li><li>Keuken</li><li>Toilet</li><li>Badkamer</li><li>Stofzuigen</li><li>Dweilen</li><li>Vrije oppervlakken</li></ul>
+        </div>
+        <div class="pakket-actions">
+          <button type="button" class="pakket-toggle" aria-expanded="false" aria-controls="pakket-details-periodiek-basis-onderhoud">Meer info</button>
+          <a href="offerte.html?type=particulier&amp;dienst=periodiek&amp;pakket=basis-onderhoud#offerteWizard" class="btn btn-primary pakket-cta">Offerte voor dit pakket aanvragen</a>
+        </div>
       </div>
       <div class="pakket-card reveal">
         
         <h3>Uitgebreid onderhoud</h3>
         <p>Basis, plus meer aandacht voor detail.</p>
-        <ul class="pakket-items"><li>Alles van Basis onderhoud</li><li>Slaapkamers</li><li>Deuren en klinken</li><li>Plinten</li><li>Vensterbanken</li><li>Extra sanitair</li><li>Afgesproken detailtaken</li></ul>
-        <a href="offerte.html?type=particulier&amp;dienst=periodiek&amp;pakket=uitgebreid-onderhoud#offerteWizard" class="btn btn-outline pakket-cta">Offerte voor dit pakket aanvragen</a>
+        <div class="pakket-details" id="pakket-details-periodiek-uitgebreid-onderhoud" hidden>
+          <ul class="pakket-items"><li>Alles van Basis onderhoud</li><li>Slaapkamers</li><li>Deuren en klinken</li><li>Plinten</li><li>Vensterbanken</li><li>Extra sanitair</li><li>Afgesproken detailtaken</li></ul>
+        </div>
+        <div class="pakket-actions">
+          <button type="button" class="pakket-toggle" aria-expanded="false" aria-controls="pakket-details-periodiek-uitgebreid-onderhoud">Meer info</button>
+          <a href="offerte.html?type=particulier&amp;dienst=periodiek&amp;pakket=uitgebreid-onderhoud#offerteWizard" class="btn btn-primary pakket-cta">Offerte voor dit pakket aanvragen</a>
+        </div>
       </div>
       <div class="pakket-card reveal">
         
         <h3>Maatwerk</h3>
         <p>Voor wie zelf wil bepalen welke werkzaamheden periodiek worden uitgevoerd.</p>
-        <ul class="pakket-items"><li>Volledig samen te stellen schoonmaakprogramma</li><li>Zelf te bepalen aandachtspunten</li><li>Af te stemmen op uw woning en wensen</li></ul>
-        <a href="offerte.html?type=particulier&amp;dienst=periodiek&amp;pakket=maatwerk#offerteWizard" class="btn btn-outline pakket-cta">Offerte voor dit pakket aanvragen</a>
+        <div class="pakket-details" id="pakket-details-periodiek-maatwerk" hidden>
+          <ul class="pakket-items"><li>Volledig samen te stellen schoonmaakprogramma</li><li>Zelf te bepalen aandachtspunten</li><li>Af te stemmen op uw woning en wensen</li></ul>
+        </div>
+        <div class="pakket-actions">
+          <button type="button" class="pakket-toggle" aria-expanded="false" aria-controls="pakket-details-periodiek-maatwerk">Meer info</button>
+          <a href="offerte.html?type=particulier&amp;dienst=periodiek&amp;pakket=maatwerk#offerteWizard" class="btn btn-primary pakket-cta">Offerte voor dit pakket aanvragen</a>
+        </div>
       </div>
       </div>
     </div>
@@ -432,6 +447,6 @@
   applyStoredConsent();
 })();
 </script>
-<script src="js/main.js?v=152" defer></script>
+<script src="js/main.js?v=153" defer></script>
 </body>
 </html>
