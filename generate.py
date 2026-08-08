@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "155"
+ASSET_VERSION = "156"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -1018,11 +1018,21 @@ def build_home():
     </div>
   </section>
 
-  <section class="section-tight">
-    <div class="wrap-narrow" style="text-align:center;">
-      <span class="eyebrow">Over BrabantSchoon</span>
-      <h2 style="margin-top:8px;">Uw schoonmaakpartner in Brabant.</h2>
-      <p class="prose reveal" style="margin-top:14px;">BrabantSchoon verzorgt professionele schoonmaak voor bedrijven, VvE's, organisaties en particulieren in Brabant. Vanuit Helmond werken we met een vast aanspreekpunt, heldere afspraken en oog voor detail \u2014 of het nu gaat om een kantoor, een gemeenschappelijke ruimte of uw eigen woning.</p>
+  <section>
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Diensten</span>
+        <h2>Waarvoor u ons kunt inschakelen.</h2>
+      </div>
+      <div class="area-tags reveal">
+        <a href="diensten/kantoorreiniging.html" class="area-tag primary" style="text-decoration:none; display:inline-block;">Kantoorreiniging</a>
+        <a href="diensten/vve-schoonmaak.html" class="area-tag primary" style="text-decoration:none; display:inline-block;">VvE-schoonmaak</a>
+        <a href="verhuisschoonmaak.html" class="area-tag primary" style="text-decoration:none; display:inline-block;">Verhuisschoonmaak</a>
+        <a href="periodieke-schoonmaak-particulier.html" class="area-tag primary" style="text-decoration:none; display:inline-block;">Periodieke schoonmaak</a>
+        <a href="opleveringsschoonmaak-particulier.html" class="area-tag primary" style="text-decoration:none; display:inline-block;">Oplevering</a>
+        <a href="diensten/glasbewassing.html" class="area-tag primary" style="text-decoration:none; display:inline-block;">Glasbewassing</a>
+      </div>
+      <p class="prose reveal" style="text-align:center; margin-top:18px;"><a href="diensten.html" style="color:var(--link); font-weight:600;">Bekijk alle diensten &rarr;</a></p>
     </div>
   </section>
 
@@ -1043,6 +1053,22 @@ def build_home():
       <div class="elfsight-wrap reveal">
         <script src="https://elfsightcdn.com/platform.js" async></script>
         <div class="elfsight-app-7ea68963-3f6d-4b24-8a1b-e38a25bac6e2" data-elfsight-app-lazy></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="wrap-narrow" style="text-align:center;">
+      <span class="eyebrow">Werkgebied</span>
+      <h2 style="margin-top:8px;">Actief in heel Brabant.</h2>
+      <p class="prose reveal" style="margin-top:10px;">Vanuit {CITY} rijden we uit naar Zuidoost-Brabant en de Peelgemeenten als vast kerngebied \u2014 en voor grotere opdrachten verder de provincie in.</p>
+      <div class="area-tags reveal" style="margin-top:16px;">
+        <a href="schoonmaakbedrijf-helmond.html" class="area-tag" style="text-decoration:none; display:inline-block;">Helmond</a>
+        <a href="schoonmaakbedrijf-eindhoven.html" class="area-tag" style="text-decoration:none; display:inline-block;">Eindhoven</a>
+        <a href="schoonmaakbedrijf-deurne.html" class="area-tag" style="text-decoration:none; display:inline-block;">Deurne</a>
+        <a href="schoonmaakbedrijf-asten.html" class="area-tag" style="text-decoration:none; display:inline-block;">Asten</a>
+        <a href="schoonmaakbedrijf-someren.html" class="area-tag" style="text-decoration:none; display:inline-block;">Someren</a>
+        <a href="werkgebied.html" class="area-tag" style="text-decoration:none; display:inline-block; color:var(--link); font-weight:600;">Volledig werkgebied &rarr;</a>
       </div>
     </div>
   </section>
@@ -1245,8 +1271,7 @@ def build_zakelijke_pagina():
     <div class="wrap">
       <div class="two-col reveal">
         <div>
-          <p class="prose"><strong style="color:var(--ink);">Geschikt voor:</strong> kantoren, bedrijfsverzamelgebouwen, VvE's, scholen, zorglocaties, winkels, praktijken en andere organisaties met een terugkerende of eenmalige schoonmaakvraag.</p>
-          <div class="hero-actions" style="margin-top:24px;">
+          <div class="hero-actions">
             <a href="{base}offerte.html?type=zakelijk#offerteWizard" class="btn btn-primary">Vraag vrijblijvend een offerte aan</a>
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
           </div>
@@ -1295,14 +1320,11 @@ PARTICULIER_SUBDIENSTEN = [
 ]
 
 # Generieke werkwijze-stappen, hergebruikt op alle 5 particuliere detailpagina's
-# (zie build_particulier_detail_pages).
+# (zie build_particulier_detail_pages). Compact gehouden op 3 stappen.
 PARTICULIER_WERKWIJZE = [
-    ("1", "Aanvraag", "U vraagt vrijblijvend een offerte aan via het offerteformulier."),
-    ("2", "Wensen bespreken", "We bespreken uw situatie en wensen, telefonisch of tijdens een kort contactmoment."),
-    ("3", "Offerte", "U ontvangt een offerte op maat, afgestemd op uw woning en de gewenste werkzaamheden."),
-    ("4", "Afspraak", "Na akkoord plannen we een datum die u schikt."),
-    ("5", "Schoonmaak", "Ons team voert de afgesproken werkzaamheden zorgvuldig uit."),
-    ("6", "Oplevering/controle", "We controleren het resultaat samen met u, of leveren de woning schoon op."),
+    ("1", "Offerte aanvragen", "Vertel kort wat u nodig heeft \u2014 we denken graag mee als u er nog niet uit bent."),
+    ("2", "Afspraak", "We stemmen de werkzaamheden en een passende planning met u af."),
+    ("3", "Schoon", "Ons team voert de afgesproken schoonmaak zorgvuldig uit."),
 ]
 
 # Volledige content per particuliere detailpagina. Elk item bevat alle
@@ -1564,7 +1586,19 @@ def build_particulier_detail_pages():
     base = ""
     for page in PARTICULIER_PAGES:
         voor_wie_html = "\n        ".join(f"<li>{v}</li>" for v in page["voor_wie"])
-        onderdelen_html = "\n        ".join(f"<li>{o}</li>" for o in page["onderdelen"])
+        onderdelen_visible = page["onderdelen"][:6]
+        onderdelen_rest = page["onderdelen"][6:]
+        onderdelen_html = "\n        ".join(f"<li>{o}</li>" for o in onderdelen_visible)
+        onderdelen_extra_html = ""
+        if onderdelen_rest:
+            rest_items = "\n          ".join(f"<li>{o}</li>" for o in onderdelen_rest)
+            onderdelen_extra_html = f'''<details class="onderdelen-more">
+        <summary>Bekijk alle werkzaamheden <span class="chev">{icon("chevron")}</span></summary>
+        <ul class="prose" style="margin-top:10px;">
+          {rest_items}
+        </ul>
+      </details>'''
+        prijs_zin = ", ".join(page["prijs_factoren"][:-1]) + " en " + page["prijs_factoren"][-1]
         pakketten_html = "\n      ".join(f'''<div class="pakket-card{' pakket-card-featured' if meest_gekozen else ''} reveal">
         {'<span class="pakket-badge">Meest gekozen</span>' if meest_gekozen else ''}
         <h3 class="pakket-title">{naam}</h3>
@@ -1580,8 +1614,7 @@ def build_particulier_detail_pages():
           <a href="{base}offerte.html?type=particulier&amp;dienst={page['slug']}&amp;pakket={pid}#offerteWizard" class="btn btn-primary pakket-cta">Offerte voor {naam} aanvragen</a>
         </div>
       </div>''' for pid, naam, desc, items, meest_gekozen in page["pakketten"])
-        extra_html = "\n        ".join(f"<li>{o}</li>" for o in page["extra_opties"])
-        prijs_html = "\n        ".join(f"<li>{p}</li>" for p in page["prijs_factoren"])
+        extra_zin = "Extra werkzaamheden nodig? Tijdens uw offerteaanvraag kunt u eenvoudig aanvullende wensen aangeven, bijvoorbeeld " + ", ".join(page["extra_opties"][:3]).lower() + ", en meer."
         stappen_html = "\n      ".join(f'''<div class="step">
         <div class="stepnum">{num}</div>
         <h3>{naam}</h3>
@@ -1621,40 +1654,25 @@ def build_particulier_detail_pages():
       <ul class="prose reveal" style="margin-top:10px;">
         {onderdelen_html}
       </ul>
+      {onderdelen_extra_html}
       {note_html}
     </div>
   </section>
   <section class="section-tight">
     <div class="wrap">
-      <div class="sec-head reveal"><h2>Waar kunt u uit kiezen?</h2><p class="prose" style="margin-top:8px;">Onderstaande richtingen zijn bedoeld als keuzehulp, geen vaste prijsproducten \u2014 de precieze invulling stemmen we samen met u af.</p></div>
+      <div class="sec-head reveal"><h2>Waar kunt u uit kiezen?</h2><p class="prose" style="margin-top:8px;">Onderstaande richtingen zijn bedoeld als keuzehulp, geen vaste prijsproducten \u2014 we werken met een offerte op maat. De prijs hangt onder meer af van {prijs_zin.lower()}.</p></div>
       <div class="pakket-grid">
         {pakketten_html}
       </div>
+      <p class="prose reveal" style="margin-top:20px;">{extra_zin}</p>
     </div>
   </section>
   <section class="section-tight" style="background:var(--bg-soft);">
-    <div class="wrap-narrow">
-      <div class="sec-head reveal" style="text-align:left;"><h2>Extra opties</h2></div>
-      <ul class="prose reveal" style="margin-top:10px;">
-        {extra_html}
-      </ul>
-    </div>
-  </section>
-  <section class="section-tight">
     <div class="wrap">
       <div class="sec-head reveal"><h2>Hoe werkt het?</h2></div>
       <div class="steps reveal">
         {stappen_html}
       </div>
-    </div>
-  </section>
-  <section class="section-tight" style="background:var(--bg-soft);">
-    <div class="wrap-narrow">
-      <div class="sec-head reveal" style="text-align:left;"><h2>Waar hangt de prijs van af?</h2></div>
-      <ul class="prose reveal" style="margin-top:10px;">
-        {prijs_html}
-      </ul>
-      <p class="prose reveal" style="margin-top:14px;">We werken met een offerte op maat in plaats van vaste tarieven \u2014 zo betaalt u alleen voor wat voor uw woning nodig is.</p>
     </div>
   </section>
   <section class="section-tight">
@@ -1712,12 +1730,6 @@ def build_over_ons():
       <div class="usp-grid reveal">
         {about_html}
       </div>
-    </div>
-  </section>
-  <section class="section-tight">
-    <div class="wrap-narrow">
-      <div class="sec-head reveal" style="text-align:left;"><span class="eyebrow">Waarom BrabantSchoon</span><h2>Ontstaan uit een simpel uitgangspunt.</h2></div>
-      <p class="prose reveal" style="margin-top:14px;">BrabantSchoon is opgericht vanuit de overtuiging dat schoonmaak persoonlijker en transparanter kan: één vast aanspreekpunt in plaats van een callcenter, een team dat uw pand leert kennen in plaats van wisselende invalkrachten, en heldere afspraken zonder kleine lettertjes. Die uitgangspunten vormen nog steeds de basis van hoe we werken.</p>
     </div>
   </section>
   <section style="background:var(--bg-soft);"><div class="wrap">{cta_band(base=base)}</div></section>
@@ -2033,20 +2045,14 @@ def build_kerngebied_pages():
   </section>
   <section class="section-tight">
     <div class="wrap">
-      <div class="sec-head reveal"><span class="eyebrow">Uitgelicht</span><h2>Onze diensten in {k['name']} nader toegelicht</h2></div>
-      <div style="max-width:760px; margin:0 auto;">{local_uitgelicht(k)}</div>
-    </div>
-  </section>
-  <section class="section-tight" style="background:var(--bg-soft);">
-    <div class="wrap">
-      <div class="sec-head reveal"><span class="eyebrow">Werkwijze</span><h2>Zo werken wij in {k['name']}</h2></div>
-      <div style="max-width:760px; margin:0 auto;">{seo_trust_paragraphs()}</div>
-    </div>
-  </section>
-  <section class="section-tight">
-    <div class="wrap">
-      <div class="sec-head reveal"><span class="eyebrow">Voor wie</span><h2>Inzetbaar voor deze organisaties in {k['name']}</h2></div>
-      <div style="max-width:760px; margin:0 auto;">{local_doelgroep(k)}</div>
+      <div class="sec-head reveal"><span class="eyebrow">{k['name']}</span><h2>Onze diensten en werkwijze in {k['name']}</h2></div>
+      <div style="max-width:760px; margin:0 auto;">
+        {local_uitgelicht(k)}
+        <h3 style="font-family:'Inter',sans-serif; font-size:17px; margin-top:22px;">Zo werken wij</h3>
+        <div style="margin-top:10px;">{seo_trust_paragraphs()}</div>
+        <h3 style="font-family:'Inter',sans-serif; font-size:17px; margin-top:22px;">Voor wie</h3>
+        <div style="margin-top:10px;">{local_doelgroep(k)}</div>
+      </div>
     </div>
   </section>
   <section class="section-tight" style="background:var(--bg-soft);">
@@ -2106,25 +2112,19 @@ def build_location_pages():
       <div class="grid-3 reveal">{service_mentions}</div>
     </div>
   </section>
-  <section>
+  <section class="section-tight">
     <div class="wrap">
-      <div class="sec-head reveal"><span class="eyebrow">Uitgelicht</span><h2>Onze diensten in {loc['name']} nader toegelicht</h2></div>
-      <div style="max-width:760px; margin:0 auto;">{local_uitgelicht(loc)}</div>
+      <div class="sec-head reveal"><span class="eyebrow">{loc['name']}</span><h2>Onze diensten en werkwijze in {loc['name']}</h2></div>
+      <div style="max-width:760px; margin:0 auto;">
+        {local_uitgelicht(loc)}
+        <h3 style="font-family:'Inter',sans-serif; font-size:17px; margin-top:22px;">Zo werken wij</h3>
+        <div style="margin-top:10px;">{seo_trust_paragraphs()}</div>
+        <h3 style="font-family:'Inter',sans-serif; font-size:17px; margin-top:22px;">Voor wie</h3>
+        <div style="margin-top:10px;">{local_doelgroep(loc)}</div>
+      </div>
     </div>
   </section>
-  <section style="background:var(--bg-soft);">
-    <div class="wrap">
-      <div class="sec-head reveal"><span class="eyebrow">Werkwijze</span><h2>Zo werken wij in {loc['name']}</h2></div>
-      <div style="max-width:760px; margin:0 auto;">{seo_trust_paragraphs()}</div>
-    </div>
-  </section>
-  <section>
-    <div class="wrap">
-      <div class="sec-head reveal"><span class="eyebrow">Voor wie</span><h2>Inzetbaar voor deze organisaties in {loc['name']}</h2></div>
-      <div style="max-width:760px; margin:0 auto;">{local_doelgroep(loc)}</div>
-    </div>
-  </section>
-  <section style="background:var(--bg-soft);">
+  <section class="section-tight" style="background:var(--bg-soft);">
     <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Veelgestelde vraag</span><h2>Over {loc['name']}</h2></div>
       <div class="faq reveal">{faq_block([(loc['faq_q'], loc['faq_a'])])}</div>
