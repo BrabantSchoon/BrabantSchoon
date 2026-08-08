@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "148"
+ASSET_VERSION = "149"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -605,30 +605,53 @@ WIZARD_KLANTTYPE = [
 # "vve", "particulier"). De wizard rendert alle opties EENMAAL in de HTML (met
 # data-customer-types), en JavaScript toont/verbergt per klanttype — zo blijft de
 # lijst 1 onderhoudbare bron in plaats van 3 losse, uit de pas lopende lijsten.
+# Het 5e veld (slug) is alleen gevuld bij particuliere diensten: hiermee filtert
+# de wizard automatisch de bijbehorende pakketten en extra werkzaamheden
+# (zie PARTICULIER_WIZARD_PAKKETTEN / PARTICULIER_WIZARD_EXTRAS hieronder).
 MASTER_DIENSTEN = [
-    ("Kantoorreiniging", "office", "Kantoor, praktijk of bedrijfspand", ["bedrijf"]),
-    ("Periodieke bedrijfsschoonmaak", "clock", "Vast ritme, wekelijks of maandelijks", ["bedrijf"]),
-    ("Winkel- of showroomreiniging", "shop", "Winkel of showroom", ["bedrijf"]),
-    ("Praktijk- of zorglocatiereiniging", "practice", "Zorg- of behandelpraktijk", ["bedrijf"]),
-    ("Industri\u00eble schoonmaak", "building", "Bedrijfshal of productieruimte", ["bedrijf"]),
-    ("Evenementenreiniging", "check", "Voor of na een evenement", ["bedrijf"]),
-    ("VvE-schoonmaak", "building", "Trappenhuis of gemeenschappelijke ruimte", ["vve"]),
-    ("Trappenhuisreiniging", "stairs", "Gemeenschappelijk trappenhuis", ["vve"]),
-    ("Schoonmaak van gemeenschappelijke ruimtes", "building", "Entree, gangen en bergingen", ["vve"]),
-    ("Periodieke schoonmaak", "clock", "Vast ritme, wekelijks of maandelijks", ["vve"]),
-    ("Schoonmaak van scholen of instellingen", "school", "Onderwijs- of instellingslocatie", ["vve"]),
-    ("Zorglocaties", "practice", "Zorginstelling of behandellocatie", ["vve"]),
-    ("Glasbewassing", "window", "Ramen en kozijnen binnen en buiten", ["bedrijf", "vve"]),
-    ("Gevelreiniging", "facade", "Buitengevel of buitenmuur", ["bedrijf", "vve"]),
-    ("Opleveringsschoonmaak", "key", "Verhuizing, oplevering of verbouwing", ["bedrijf", "vve"]),
-    ("Specialistische reiniging", "spark", "Tapijt, vloer of maatwerk", ["bedrijf", "vve"]),
-    ("Periodieke huishoudelijke schoonmaak", "clock", "Vaste, terugkerende schoonmaak van uw woning", ["particulier"]),
-    ("Eenmalige grote schoonmaak", "spark", "Grondige beurt zonder vast contract", ["particulier"]),
-    ("Verhuisschoonmaak", "key", "Woning schoon voor of na de verhuizing", ["particulier"]),
-    ("Schoonmaak na verbouwing", "check", "Bouwstof en normaal schoonmaakvuil verwijderen", ["particulier"]),
-    ("Opleveringsschoonmaak bij verkoop of verhuur", "doc", "Woning schoon voor bezichtiging of oplevering", ["particulier"]),
-    ("Ramen wassen / glasbewassing", "window", "Ramen en kozijnen van uw woning", ["particulier"]),
-    ("Anders / eigen omschrijving", "chat", "Vertel ons uw situatie", ["bedrijf", "vve", "particulier"]),
+    ("Kantoorreiniging", "office", "Kantoor, praktijk of bedrijfspand", ["bedrijf"], ""),
+    ("Periodieke bedrijfsschoonmaak", "clock", "Vast ritme, wekelijks of maandelijks", ["bedrijf"], ""),
+    ("Winkel- of showroomreiniging", "shop", "Winkel of showroom", ["bedrijf"], ""),
+    ("Praktijk- of zorglocatiereiniging", "practice", "Zorg- of behandelpraktijk", ["bedrijf"], ""),
+    ("Industri\u00eble schoonmaak", "building", "Bedrijfshal of productieruimte", ["bedrijf"], ""),
+    ("Evenementenreiniging", "check", "Voor of na een evenement", ["bedrijf"], ""),
+    ("VvE-schoonmaak", "building", "Trappenhuis of gemeenschappelijke ruimte", ["vve"], ""),
+    ("Trappenhuisreiniging", "stairs", "Gemeenschappelijk trappenhuis", ["vve"], ""),
+    ("Schoonmaak van gemeenschappelijke ruimtes", "building", "Entree, gangen en bergingen", ["vve"], ""),
+    ("Periodieke schoonmaak", "clock", "Vast ritme, wekelijks of maandelijks", ["vve"], ""),
+    ("Schoonmaak van scholen of instellingen", "school", "Onderwijs- of instellingslocatie", ["vve"], ""),
+    ("Zorglocaties", "practice", "Zorginstelling of behandellocatie", ["vve"], ""),
+    ("Glasbewassing", "window", "Ramen en kozijnen binnen en buiten", ["bedrijf", "vve"], ""),
+    ("Gevelreiniging", "facade", "Buitengevel of buitenmuur", ["bedrijf", "vve"], ""),
+    ("Opleveringsschoonmaak", "key", "Verhuizing, oplevering of verbouwing", ["bedrijf", "vve"], ""),
+    ("Specialistische reiniging", "spark", "Tapijt, vloer of maatwerk", ["bedrijf", "vve"], ""),
+    ("Verhuisschoonmaak", "key", "Woning schoon voor of na de verhuizing", ["particulier"], "verhuisschoonmaak"),
+    ("Eenmalige grote schoonmaak", "spark", "Grondige beurt zonder vast contract", ["particulier"], "grote-schoonmaak"),
+    ("Schoonmaak na verbouwing", "check", "Bouwstof en normaal schoonmaakvuil verwijderen", ["particulier"], "na-verbouwing"),
+    ("Periodieke schoonmaak", "clock", "Vaste, terugkerende schoonmaak van uw woning", ["particulier"], "periodiek"),
+    ("Bij verkoop, verhuur of oplevering", "doc", "Woning schoon voor bezichtiging of oplevering", ["particulier"], "oplevering"),
+    ("Ik weet het nog niet / graag advies", "chat", "We denken graag met u mee", ["particulier"], "weet-niet"),
+    ("Anders / eigen omschrijving", "chat", "Vertel ons uw situatie", ["bedrijf", "vve"], ""),
+]
+
+PARTICULIER_FREQUENTIE = [
+    ("Wekelijks", "Elke week hetzelfde ritme"),
+    ("Om de week", "Elke twee weken"),
+    ("Iedere 4 weken", "Eens per maand"),
+    ("Andere frequentie", "In overleg te bepalen"),
+    ("Weet ik nog niet / graag advies", "We denken graag met u mee"),
+]
+
+PARTICULIER_VERVUILING = [
+    ("Normaal", "Reguliere staat van onderhoud"),
+    ("Redelijk vervuild", "Wat meer aandacht nodig"),
+    ("Sterk vervuild", "Grondige aanpak nodig"),
+    ("Weet ik niet / graag beoordelen", "We kijken graag met u mee"),
+]
+
+PARTICULIER_BEWOOND = [
+    ("Bewoond", "De woning wordt nog gebruikt"),
+    ("Leeg", "De woning staat leeg"),
 ]
 
 WIZARD_OPPERVLAKTE = [
@@ -654,22 +677,29 @@ WIZARD_STEP_LABELS = {
     "bedrijf": {
         "oppervlakte_q": "Hoe groot is de locatie ongeveer?",
         "oppervlakte_sub": "Een schatting is voldoende.",
+        "toelichting_q": "Nog iets toe te lichten?",
     },
     "vve": {
         "oppervlakte_q": "Hoe groot is het gebouw of de gemeenschappelijke ruimte ongeveer?",
         "oppervlakte_sub": "Een schatting is voldoende.",
+        "toelichting_q": "Nog iets toe te lichten?",
     },
     "particulier": {
         "oppervlakte_q": "Hoe groot is de woning ongeveer?",
         "oppervlakte_sub": "Een schatting is voldoende.",
+        "toelichting_q": "Is er iets dat we vooraf moeten weten?",
     },
 }
 
 def radio_cards(name, options, columns=3):
     cards = []
+    seen_ids = {}
     for opt in options:
         types = None
-        if len(opt) == 4:
+        slug = None
+        if len(opt) == 5:
+            label, icon_name, desc, types, slug = opt
+        elif len(opt) == 4:
             label, icon_name, desc, types = opt
         elif len(opt) == 3:
             label, icon_name, desc = opt
@@ -677,9 +707,15 @@ def radio_cards(name, options, columns=3):
             label, desc = opt
             icon_name = None
         icon_html = f'<div class="rc-icon">{icon(icon_name)}</div>' if icon_name else ""
-        opt_id = f"{name}-{re.sub(r'[^a-z0-9]+', '-', label.lower())}"
+        base_id = f"{name}-{re.sub(r'[^a-z0-9]+', '-', label.lower())}"
+        # Sommige labels komen dubbel voor binnen 1 groep (bijv. "Periodieke
+        # schoonmaak" voor zowel vve als particulier) — een oplopende teller
+        # voorkomt dan een dubbele HTML-id.
+        seen_ids[base_id] = seen_ids.get(base_id, 0) + 1
+        opt_id = base_id if seen_ids[base_id] == 1 else f"{base_id}-{seen_ids[base_id]}"
         type_attr = f' data-customer-types="{" ".join(types)}"' if types else ""
-        wrapper_open = f'<div class="rc-wrap"{type_attr}>' if types else ""
+        slug_attr = f' data-dienst-slug="{slug}"' if slug else ""
+        wrapper_open = f'<div class="rc-wrap"{type_attr}{slug_attr}>' if types else ""
         wrapper_close = "</div>" if types else ""
         cards.append(f"""{wrapper_open}<input type="radio" name="{name}" id="{opt_id}" value="{label}" class="rc-input" required>
       <label for="{opt_id}" class="rc-card">
@@ -689,31 +725,65 @@ def radio_cards(name, options, columns=3):
       </label>{wrapper_close}""")
     return f'<div class="radio-cards cols-{columns}">' + "\n      ".join(cards) + "</div>"
 
+def particulier_pakket_cards():
+    """Pakket-radiokaarten voor alle particuliere diensten in \u00e9\u00e9n keer gerenderd
+    (data-dienst-for filtert per dienst via JS), plus een altijd zichtbare
+    'weet ik niet'-optie."""
+    blocks = []
+    for slug, pakketten in PARTICULIER_WIZARD_PAKKETTEN.items():
+        meest_gekozen_id = PARTICULIER_WIZARD_MEEST_GEKOZEN.get(slug)
+        for pid, naam, desc in pakketten:
+            opt_id = f"pakket-{slug}-{pid}"
+            badge = '<span class="rc-badge">Meest gekozen</span>' if pid == meest_gekozen_id else ""
+            blocks.append(f'''<div class="rc-wrap rc-hidden" data-dienst-for="{slug}">
+      <input type="radio" name="pakket" id="{opt_id}" value="{naam}" class="rc-input" data-pakket-id="{pid}" disabled>
+      <label for="{opt_id}" class="rc-card">
+        {badge}<span class="rc-label">{naam}</span>
+        <span class="rc-desc">{desc}</span>
+      </label>
+    </div>''')
+    blocks.append('''<div class="rc-wrap rc-hidden" data-dienst-for="all">
+      <input type="radio" name="pakket" id="pakket-weet-niet" value="Ik weet het nog niet, graag advies" class="rc-input" data-pakket-id="weet-niet" disabled>
+      <label for="pakket-weet-niet" class="rc-card">
+        <span class="rc-label">Ik weet het nog niet</span>
+        <span class="rc-desc">Adviseer mij graag</span>
+      </label>
+    </div>''')
+    return '<div class="radio-cards cols-3">' + "\n      ".join(blocks) + "</div>"
+
+def particulier_extra_checkboxes():
+    """Checkbox-kaarten met extra werkzaamheden per particuliere dienst
+    (data-dienst-for filtert per dienst via JS)."""
+    blocks = []
+    for slug, opties in PARTICULIER_WIZARD_EXTRAS.items():
+        for opt in opties:
+            blocks.append(f'<label class="cb-card cb-hidden" data-dienst-for="{slug}"><input type="checkbox" class="extra-checkbox" value="{opt}"><span>{opt}</span></label>')
+    return "\n      ".join(blocks)
+
 def contact_form():
     klanttype_cards = radio_cards("klanttype", WIZARD_KLANTTYPE, columns=3)
     dienst_cards = radio_cards("dienst", MASTER_DIENSTEN, columns=3)
+    pakket_cards = particulier_pakket_cards()
+    extra_checkboxes = particulier_extra_checkboxes()
     opp_cards = radio_cards("oppervlakte", WIZARD_OPPERVLAKTE, columns=2)
     freq_cards = radio_cards("frequentie", WIZARD_FREQUENTIE, columns=2)
+    freq_particulier_cards = radio_cards("frequentie_particulier", PARTICULIER_FREQUENTIE, columns=2)
+    vervuiling_cards = radio_cards("vervuilingsgraad", PARTICULIER_VERVUILING, columns=2)
+    bewoond_cards = radio_cards("bewoond_leeg", PARTICULIER_BEWOOND, columns=2)
     L = WIZARD_STEP_LABELS
     return f"""<noscript><p class="prose" style="background:#FFF7E6; border:1px solid #F0D9A0; border-radius:12px; padding:16px 20px; margin-bottom:16px;">Dit formulier werkt het best met JavaScript ingeschakeld. Lukt dat niet? Bel of mail ons gerust rechtstreeks: <a href="tel:{PHONE_TEL}" style="color:var(--link); font-weight:600;">{PHONE_DISPLAY}</a> of <a href="mailto:{EMAIL}" style="color:var(--link); font-weight:600;">{EMAIL}</a>.</p></noscript>
   <form name="offerte" method="POST" action="https://api.web3forms.com/submit" class="wizard-form" id="offerteWizard" novalidate>
     <p id="wizardLive" class="sr-only" role="status" aria-live="polite"></p>
+    <p id="wizardStepLabel" class="wizard-step-label"></p>
     <input type="hidden" name="access_key" value="abc98c0d-af16-42b0-ae5c-3337f35e5299">
     <input type="hidden" name="subject" value="Nieuwe offerteaanvraag via de website" id="wizardSubject">
     <input type="hidden" name="redirect" value="{SITE_URL}/thanks.html">
+    <input type="hidden" name="pakket_naam" id="pakketNaamField" value="">
+    <input type="hidden" name="extra_opties" id="extraOptiesField" value="">
     <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
 
     <div class="wizard-progress" aria-hidden="true">
       <div class="wizard-progress-bar"><div class="wizard-progress-fill" id="wizardFill"></div></div>
-      <div class="wizard-progress-steps" id="wizardStepLabels">
-        <span class="wp-step active" data-step-label="1">1<em>Klanttype</em></span>
-        <span class="wp-step" data-step-label="2">2<em>Dienst</em></span>
-        <span class="wp-step" data-step-label="3">3<em>Omvang</em></span>
-        <span class="wp-step" data-step-label="4">4<em>Frequentie</em></span>
-        <span class="wp-step" data-step-label="5">5<em>Toelichting</em></span>
-        <span class="wp-step" data-step-label="6">6<em>Gegevens</em></span>
-        <span class="wp-step" data-step-label="7">7<em>Controle</em></span>
-      </div>
     </div>
 
     <div class="wizard-step" data-step="1">
@@ -728,26 +798,76 @@ def contact_form():
       {dienst_cards}
     </div>
 
-    <div class="wizard-step" data-step="3" hidden>
+    <div class="wizard-step" data-step="3" hidden data-applies-to="particulier">
+      <h3 class="wizard-q">Welke uitvoering past bij u?</h3>
+      <p class="wizard-sub">Kies het pakket dat het beste aansluit \u2014 op de dienstpagina leest u precies wat elk pakket inhoudt.</p>
+      {pakket_cards}
+    </div>
+
+    <div class="wizard-step" data-step="4" hidden data-applies-to="particulier">
+      <h3 class="wizard-q">Extra werkzaamheden</h3>
+      <p class="wizard-sub">Optioneel \u2014 kies alles wat van toepassing is.</p>
+      <div class="checkbox-cards" id="extraCheckboxes">
+        {extra_checkboxes}
+        <label class="cb-card" data-dienst-for="all"><input type="checkbox" id="extraAndersCheck"><span>Anders, namelijk\u2026</span></label>
+      </div>
+      <div id="extraAndersWrap" style="margin-top:14px;" hidden>
+        <label for="extra_anders">Omschrijving</label>
+        <input id="extra_anders" name="extra_anders" type="text" placeholder="Vertel kort wat u bedoelt" disabled>
+      </div>
+    </div>
+
+    <div class="wizard-step" data-step="5" hidden data-applies-to="particulier">
+      <h3 class="wizard-q">Informatie over uw woning</h3>
+      <p class="wizard-sub">Dit helpt ons een goede inschatting te maken. Alle velden zijn optioneel.</p>
+      <div class="row2">
+        <div><label for="typewoning">Type woning</label><input id="typewoning" name="typewoning" type="text" placeholder="Bijv. eengezinswoning, appartement"></div>
+        <div><label for="woonoppervlakte_m2">Woonoppervlakte (m\u00b2)</label><input id="woonoppervlakte_m2" name="woonoppervlakte_m2" type="number" min="1" placeholder="Bijv. 90"></div>
+      </div>
+      <div class="row2" style="margin-top:14px;">
+        <div><label for="slaapkamers">Aantal slaapkamers</label><input id="slaapkamers" name="slaapkamers" type="number" min="0" placeholder="Bijv. 3"></div>
+        <div><label for="badkamers">Aantal badkamers</label><input id="badkamers" name="badkamers" type="number" min="0" placeholder="Bijv. 1"></div>
+      </div>
+      <div class="row2" style="margin-top:14px;">
+        <div><label for="toiletten">Aantal toiletten</label><input id="toiletten" name="toiletten" type="number" min="0" placeholder="Bijv. 1"></div>
+      </div>
+      <div style="margin-top:22px;">
+        <label style="display:block; margin-bottom:10px;">Is de woning bewoond of leeg?</label>
+        {bewoond_cards}
+      </div>
+      <div style="margin-top:22px;">
+        <label style="display:block; margin-bottom:10px;">Hoe zou u de huidige staat omschrijven?</label>
+        {vervuiling_cards}
+      </div>
+    </div>
+
+    <div class="wizard-step" data-step="6" hidden data-applies-to="particulier" data-requires-dienst="periodiek">
+      <h3 class="wizard-q">Hoe vaak wilt u schoonmaak?</h3>
+      <p class="wizard-sub">U kunt dit later altijd nog aanpassen.</p>
+      {freq_particulier_cards}
+    </div>
+
+    <div class="wizard-step" data-step="7" hidden data-applies-to="bedrijf vve">
       <h3 class="wizard-q" id="oppervlakteQ"
           data-q-bedrijf="{L['bedrijf']['oppervlakte_q']}"
-          data-q-vve="{L['vve']['oppervlakte_q']}"
-          data-q-particulier="{L['particulier']['oppervlakte_q']}">{L['bedrijf']['oppervlakte_q']}</h3>
+          data-q-vve="{L['vve']['oppervlakte_q']}">{L['bedrijf']['oppervlakte_q']}</h3>
       <p class="wizard-sub" id="oppervlakteSub"
           data-q-bedrijf="{L['bedrijf']['oppervlakte_sub']}"
-          data-q-vve="{L['vve']['oppervlakte_sub']}"
-          data-q-particulier="{L['particulier']['oppervlakte_sub']}">{L['bedrijf']['oppervlakte_sub']}</p>
+          data-q-vve="{L['vve']['oppervlakte_sub']}">{L['bedrijf']['oppervlakte_sub']}</p>
       {opp_cards}
     </div>
 
-    <div class="wizard-step" data-step="4" hidden>
+    <div class="wizard-step" data-step="8" hidden data-applies-to="bedrijf vve">
       <h3 class="wizard-q">Hoe vaak wilt u schoonmaak?</h3>
       <p class="wizard-sub">U kunt dit later altijd nog aanpassen.</p>
       {freq_cards}
     </div>
 
-    <div class="wizard-step" data-step="5" hidden>
-      <h3 class="wizard-q">Nog iets toe te lichten?</h3>
+    <div class="wizard-step" data-step="9" hidden>
+      <h3 class="wizard-q" id="toelichtingQ"
+          data-q-bedrijf="{L['bedrijf']['toelichting_q']}"
+          data-q-vve="{L['vve']['toelichting_q']}"
+          data-q-particulier="{L['particulier']['toelichting_q']}">{L['bedrijf']['toelichting_q']}</h3>
       <p class="wizard-sub">Alle velden hieronder zijn optioneel.</p>
       <div>
         <label for="startdatum">Gewenste datum/periode <span style="font-weight:400;">(optioneel)</span></label>
@@ -758,18 +878,17 @@ def contact_form():
         <input id="aantal_locaties" name="aantal_locaties" type="text" placeholder="Bijv. 1, of 3 vestigingen" disabled>
       </div>
       <div style="margin-top:14px;">
-        <label for="bericht">Omschrijf uw opdracht <span style="font-weight:400;">(optioneel)</span></label>
-        <textarea id="bericht" name="bericht" rows="4" placeholder="Vertel kort wat er schoongemaakt moet worden, hoe groot de locatie is en of er bijzonderheden zijn."></textarea>
+        <label for="bericht">Omschrijving <span style="font-weight:400;">(optioneel)</span></label>
+        <textarea id="bericht" name="bericht" rows="4" placeholder="Vertel kort wat er schoongemaakt moet worden en of er bijzonderheden zijn."></textarea>
       </div>
     </div>
 
-    <div class="wizard-step" data-step="6" hidden>
+    <div class="wizard-step" data-step="10" hidden>
       <h3 class="wizard-q">Uw gegevens</h3>
       <p class="wizard-sub">Zodat we contact met u kunnen opnemen.</p>
       <div class="row2">
         <div><label for="naam">Naam</label><input id="naam" name="naam" type="text" required placeholder="Voor- en achternaam"></div>
         <div id="fieldBedrijfsnaam"><label for="bedrijfsnaam">Bedrijfsnaam of VvE <span style="font-weight:400;">(optioneel)</span></label><input id="bedrijfsnaam" name="bedrijfsnaam" type="text" placeholder="Naam van uw bedrijf of VvE"></div>
-        <div id="fieldTypeWoning" hidden><label for="typewoning">Type woning <span style="font-weight:400;">(optioneel)</span></label><input id="typewoning" name="typewoning" type="text" placeholder="Bijv. eengezinswoning, appartement" disabled></div>
       </div>
       <div class="row2">
         <div><label for="email">E-mailadres</label><input id="email" name="email" type="email" required placeholder="jij@voorbeeld.nl"></div>
@@ -778,7 +897,7 @@ def contact_form():
       <div><label for="plaats">Plaats / postcode</label><input id="plaats" name="plaats" type="text" required placeholder="Bijv. Helmond of 5701 AB"></div>
     </div>
 
-    <div class="wizard-step" data-step="7" hidden>
+    <div class="wizard-step" data-step="11" hidden>
       <h3 class="wizard-q">Controleer uw aanvraag</h3>
       <p class="wizard-sub">Klopt alles? Dan kunt u de aanvraag verzenden. Wilt u iets aanpassen, gebruik dan "Terug".</p>
       <dl class="wizard-summary" id="wizardSummary" aria-live="polite"></dl>
@@ -1183,6 +1302,7 @@ PARTICULIER_WERKWIJZE = [
 PARTICULIER_PAGES = [
     {
         "filename": "verhuisschoonmaak.html",
+        "slug": "verhuisschoonmaak",
         "title": "Verhuisschoonmaak",
         "meta_title": "Verhuisschoonmaak | BrabantSchoon",
         "meta_description": "Verhuisschoonmaak door BrabantSchoon: uw oude woning schoon opgeleverd of uw nieuwe woning grondig schoon v\u00f3\u00f3r de verhuizing. Vraag vrijblijvend een offerte aan.",
@@ -1197,11 +1317,14 @@ PARTICULIER_PAGES = [
         ],
         "onderdelen": ["Keuken", "Badkamer", "Toilet", "Woonkamer", "Slaapkamers", "Hal", "Trap", "Deuren", "Plinten", "Kozijnen", "Vloeren", "Oppervlakken", "Binnenzijde lege kasten, indien afgesproken"],
         "pakketten": [
-            ("Opleverklaar", "Gericht op het netjes en schoon opleveren van een lege woning."),
-            ("Intrekklaar", "Voor een nieuwe woning die v\u00f3\u00f3r de verhuizing grondig schoon moet worden gemaakt."),
-            ("Compleet verhuizen", "Een uitgebreidere schoonmaak met aanvullende, vooraf afgesproken werkzaamheden."),
+            ("opleverklaar", "Opleverklaar", "Voor de woning die u verlaat.",
+             ["Stofzuigen", "Dweilen", "Keuken", "Sanitair", "Deuren en klinken", "Plinten", "Vensterbanken", "Vrije oppervlakken", "Buitenzijde keukenkasten"], False),
+            ("intrekklaar", "Intrekklaar", "Voor een nieuwe woning v\u00f3\u00f3r u erin trekt.",
+             ["Keuken grondiger gereinigd", "Sanitair", "Vloeren", "Oppervlakken", "Deuren", "Plinten", "Kozijnen", "Binnenzijde lege kasten", "Ramen binnenzijde"], False),
+            ("complete-verhuisschoonmaak", "Complete verhuisschoonmaak", "De meest uitgebreide verhuisschoonmaak.",
+             ["Alle onderdelen van Intrekklaar", "Uitgebreid detailwerk", "Aanvullende afgesproken onderdelen", "Extra aandacht voor keuken en sanitair"], False),
         ],
-        "extra_opties": ["Oven", "Koelkast", "Keukenkasten (binnenzijde)", "Ramen (binnenzijde)", "Extra sanitair", "Extra aandacht voor de keuken"],
+        "extra_opties": ["Oven", "Koelkast", "Vriezer", "Afzuigkap", "Ramen binnenzijde", "Balkon", "Berging/schuur", "Intensieve keukenreiniging", "Intensieve sanitairreiniging"],
         "prijs_factoren": ["Grootte van de woning", "Aantal ruimtes", "Mate van vervuiling", "Gekozen werkzaamheden", "Extra opties", "Bereikbaarheid van de woning"],
         "note": None,
         "faqs": [
@@ -1213,6 +1336,7 @@ PARTICULIER_PAGES = [
     },
     {
         "filename": "eenmalige-grote-schoonmaak.html",
+        "slug": "grote-schoonmaak",
         "title": "Eenmalige grote schoonmaak",
         "meta_title": "Eenmalige grote schoonmaak | BrabantSchoon",
         "meta_description": "Eenmalige grote schoonmaak door BrabantSchoon: een grondige beurt voor uw hele woning, zonder vast contract. Vraag vrijblijvend een offerte aan.",
@@ -1227,13 +1351,16 @@ PARTICULIER_PAGES = [
         ],
         "onderdelen": ["Keuken", "Badkamer", "Toilet", "Woonkamer", "Slaapkamers", "Hal en trap", "Deuren", "Plinten", "Vloeren", "Oppervlakken", "Bereikbare kozijnen"],
         "pakketten": [
-            ("Basis", "De belangrijkste ruimtes en oppervlakken van uw woning."),
-            ("Grondig", "Een uitgebreidere schoonmaak met meer detailwerk."),
-            ("Compleet", "Een zeer uitgebreide grote schoonmaak, aangevuld met extra opties naar keuze."),
+            ("basis", "Basis", "Een goede eenmalige schoonmaakbeurt van de belangrijkste onderdelen.",
+             ["Stofzuigen", "Dweilen", "Vrije oppervlakken afnemen", "Vensterbanken", "Keukenwerkblad", "Spoelbak", "Buitenzijde keukenapparatuur", "Toilet", "Badkamer", "Spiegels", "Oppervlakkig stof verwijderen"], False),
+            ("grondig", "Grondig", "Meer detailwerk en een uitgebreidere reiniging.",
+             ["Alles van Basis", "Buitenzijde keukenkasten", "Deuren en deurklinken", "Plinten", "Kozijnen binnenzijde", "Radiatoren buitenzijde", "Uitgebreider sanitair", "Tegelwanden badkamer", "Extra aandacht voor hoeken en randen"], True),
+            ("compleet", "Compleet", "De meest uitgebreide uitvoering.",
+             ["Alles van Grondig", "Binnenzijde lege keukenkasten", "Binnenzijde andere lege kasten, indien afgesproken", "Ramen binnenzijde", "Uitgebreider detailwerk", "Aanvullende werkzaamheden volgens afspraak"], False),
         ],
-        "extra_opties": ["Oven", "Koelkast", "Binnenzijde keukenkasten", "Ramen (binnenzijde)", "Extra sanitair", "Extra intensieve aanpak van \u00e9\u00e9n specifieke ruimte"],
+        "extra_opties": ["Oven binnenzijde", "Koelkast binnenzijde", "Vriezer binnenzijde", "Afzuigkap intensief", "Extra kalkreiniging badkamer", "Balkon", "Berging", "Extra ramen", "Specifieke ruimte extra grondig"],
         "prijs_factoren": ["Grootte van de woning", "Aantal ruimtes", "Mate van vervuiling", "Gekozen werkzaamheden", "Extra opties", "Bereikbaarheid van de woning"],
-        "note": None,
+        "note": "De exacte werkzaamheden blijven afhankelijk van de woning, de vervuilingsgraad en de gemaakte afspraken.",
         "faqs": [
             ("Is een eenmalige grote schoonmaak ook zonder vast contract mogelijk?", "Ja, dat is precies waar deze dienst voor bedoeld is \u2014 een grondige beurt zonder dat u een periodieke overeenkomst aangaat."),
             ("Hoe lang duurt een eenmalige grote schoonmaak?", "Dat hangt af van de grootte van uw woning en de gekozen werkzaamheden. We bespreken dit vooraf met u."),
@@ -1243,6 +1370,7 @@ PARTICULIER_PAGES = [
     },
     {
         "filename": "schoonmaak-na-verbouwing.html",
+        "slug": "na-verbouwing",
         "title": "Schoonmaak na verbouwing",
         "meta_title": "Schoonmaak na verbouwing | BrabantSchoon",
         "meta_description": "Schoonmaak na verbouwing door BrabantSchoon: bouwstof en normaal schoonmaakvuil verwijderd na renovatie of verbouwing. Vraag vrijblijvend een offerte aan.",
@@ -1252,13 +1380,16 @@ PARTICULIER_PAGES = [
         "voor_wie": ["Na een renovatie of verbouwing", "Na het plaatsen van een nieuwe keuken", "Na het plaatsen van een nieuwe badkamer", "Na stucwerk- of schilderwerkzaamheden", "Na een complete woningverbouwing"],
         "onderdelen": ["Bouwstof verwijderen", "Oppervlakken stofvrij maken", "Deuren", "Kozijnen", "Plinten", "Keuken", "Sanitair", "Vloeren", "Stofzuigen", "Dweilen", "Woning gebruiksklaar maken"],
         "pakketten": [
-            ("Stofvrij", "Gericht op het verwijderen van bouwstof en een basisreiniging van de woning."),
-            ("Gebruiksklaar", "Een uitgebreidere schoonmaak van de woning en de belangrijkste ruimtes."),
-            ("Complete nazorg", "Een uitgebreide schoonmaak na een grotere renovatie of verbouwing, afgestemd op uw specifieke situatie."),
+            ("stofvrij", "Stofvrij", "Gericht op het verwijderen van bouwstof en normaal los vuil.",
+             ["Stofzuigen", "Bouwstof verwijderen van bereikbare oppervlakken", "Vensterbanken", "Deuren", "Plinten", "Vloeren", "Oppervlakken"], False),
+            ("gebruiksklaar", "Gebruiksklaar", "Alles van Stofvrij, plus een uitgebreidere schoonmaak.",
+             ["Alles van Stofvrij", "Keuken", "Sanitair", "Kozijnen", "Deuren", "Vloeren", "Oppervlakken", "Uitgebreider stofvrij maken"], False),
+            ("complete-nazorg", "Complete nazorg", "De meest uitgebreide optie na een grotere verbouwing of renovatie.",
+             ["Volledige gebruiksklare schoonmaak", "Extra detailwerk", "Meerdere ruimtes", "Aanvullende werkzaamheden volgens afspraak"], False),
         ],
-        "extra_opties": ["Ramen (binnenzijde)", "Keukenkasten", "Extra vloerreiniging", "Sanitair intensief", "Specifieke ruimtes extra aandacht"],
+        "extra_opties": ["Ramen binnenzijde", "Keukenkasten", "Intensieve sanitairreiniging", "Extra vloerreiniging", "Extra stofronde", "Specifieke ruimte extra grondig"],
         "prijs_factoren": ["Grootte van de woning", "Aantal ruimtes", "Mate van bouwstof en vervuiling", "Gekozen werkzaamheden", "Extra opties", "Bereikbaarheid van de woning"],
-        "note": "Specialistische verwijdering van verf, kit, cement, lijmresten of andere bouwmaterialen gebeurt alleen als dit vooraf is afgesproken en technisch mogelijk is.",
+        "note": "Hardnekkige bouwresten zoals verf-, kit-, lijm- of cementresten worden vooraf beoordeeld en alleen uitgevoerd wanneer dit technisch mogelijk en afgesproken is.",
         "faqs": [
             ("Verwijdert u ook bouwafval of grofvuil?", "Nee, wij verzorgen het verwijderen van bouwstof en normaal schoonmaakvuil. Voor grofvuil, bouwafval of gevaarlijke stoffen verwijst u naar een gespecialiseerd bedrijf."),
             ("Verwijdert u verf-, kit- of cementresten?", "Specialistische verwijdering van verf, kit, cement of lijmresten kan alleen als dit vooraf is afgesproken en technisch mogelijk is."),
@@ -1268,6 +1399,7 @@ PARTICULIER_PAGES = [
     },
     {
         "filename": "periodieke-schoonmaak-particulier.html",
+        "slug": "periodiek",
         "title": "Periodieke schoonmaak",
         "meta_title": "Periodieke schoonmaak voor particulieren | BrabantSchoon",
         "meta_description": "Periodieke schoonmaak van BrabantSchoon voor particulieren: terugkerende professionele schoonmaak op een ritme dat u zelf bepaalt. Vraag vrijblijvend een offerte aan.",
@@ -1277,15 +1409,18 @@ PARTICULIER_PAGES = [
         "voor_wie": ["Huishoudens die terugkerend ondersteuning willen bij het schoonhouden van hun woning", "Drukke gezinnen die structureel tijd willen besparen", "Wie liever een vast aanspreekpunt heeft dan wisselende hulp"],
         "onderdelen": ["Woonkamer", "Keuken", "Badkamer", "Toilet", "Slaapkamers", "Hal en trap", "Stofzuigen", "Dweilen", "Oppervlakken", "Sanitair", "Afgesproken periodieke taken"],
         "pakketten": [
-            ("Basis onderhoud", "Focus op de belangrijkste dagelijkse en wekelijkse schoonmaakonderdelen."),
-            ("Uitgebreid onderhoud", "Meer ruimtes en meer detailwerk per bezoek."),
-            ("Maatwerk", "Volledig samengesteld op basis van uw woning en wensen."),
+            ("basis-onderhoud", "Basis onderhoud", "Voor regelmatig onderhoud van de belangrijkste ruimtes.",
+             ["Woonkamer", "Keuken", "Toilet", "Badkamer", "Stofzuigen", "Dweilen", "Vrije oppervlakken"], False),
+            ("uitgebreid-onderhoud", "Uitgebreid onderhoud", "Basis, plus meer aandacht voor detail.",
+             ["Alles van Basis onderhoud", "Slaapkamers", "Deuren en klinken", "Plinten", "Vensterbanken", "Extra sanitair", "Afgesproken detailtaken"], False),
+            ("maatwerk", "Maatwerk", "Voor wie zelf wil bepalen welke werkzaamheden periodiek worden uitgevoerd.",
+             ["Volledig samen te stellen schoonmaakprogramma", "Zelf te bepalen aandachtspunten", "Af te stemmen op uw woning en wensen"], False),
         ],
-        "extra_opties": ["Oven", "Koelkast", "Ramen (binnenzijde)", "Keukenkasten", "Extra badkamer", "Periodieke detailklus (bijvoorbeeld \u00e9\u00e9n keer per maand extra aandacht voor een ruimte)"],
+        "extra_opties": ["Oven periodiek", "Koelkast periodiek", "Ramen binnenzijde", "Keukenkasten", "Extra badkamer", "Extra verdieping", "Wisselende detailklus"],
         "prijs_factoren": ["Grootte van de woning", "Aantal ruimtes", "Gekozen werkzaamheden", "Extra opties", "Bereikbaarheid van de woning", "Gewenste frequentie"],
-        "note": "Frequentie, aantal ruimtes en vaste aandachtspunten bepaalt u in overleg met ons \u2014 er ligt vooraf geen vaste frequentie of prijs vast.",
+        "note": "Sommige extra werkzaamheden kunnen periodiek worden ingepland (bijvoorbeeld eens per maand) in plaats van bij iedere schoonmaakbeurt \u2014 dit stemmen we samen met u af.",
         "faqs": [
-            ("Hoe vaak komt u schoonmaken?", "De frequentie bepaalt u zelf, in overleg met ons \u2014 bijvoorbeeld wekelijks, tweewekelijks of maandelijks."),
+            ("Hoe vaak komt u schoonmaken?", "De frequentie bepaalt u zelf, in overleg met ons \u2014 bijvoorbeeld wekelijks, om de week of iedere vier weken."),
             ("Kom ik steeds dezelfde medewerker tegen?", "We streven naar een vast aanspreekpunt en een vast team dat uw woning kent."),
             ("Kan ik de afgesproken taken later aanpassen?", "Ja, in overleg passen we de werkzaamheden of frequentie aan als uw situatie verandert."),
             ("Is een proefperiode mogelijk?", "Neem contact met ons op om de mogelijkheden te bespreken die bij uw situatie passen."),
@@ -1293,6 +1428,7 @@ PARTICULIER_PAGES = [
     },
     {
         "filename": "opleveringsschoonmaak-particulier.html",
+        "slug": "oplevering",
         "title": "Schoonmaak bij verkoop, verhuur of oplevering",
         "meta_title": "Schoonmaak bij verkoop, verhuur of oplevering | BrabantSchoon",
         "meta_description": "Schoonmaak bij verkoop, verhuur of oplevering door BrabantSchoon: uw woning schoon voor bezichtigingen of de sleuteloverdracht. Vraag vrijblijvend een offerte aan.",
@@ -1302,11 +1438,14 @@ PARTICULIER_PAGES = [
         "voor_wie": ["Woningverkoop en bezichtigingen", "Einde huurperiode", "Een nieuwe huurder die de woning betrekt", "Verhuurders die hun woning gereed willen maken", "Sleuteloverdracht bij oplevering"],
         "onderdelen": ["Keuken", "Sanitair", "Vloeren", "Deuren", "Plinten", "Kozijnen", "Oppervlakken", "Lege kasten", "Laatste controle"],
         "pakketten": [
-            ("Presentatieklaar", "Voor woningverkoop en bezichtigingen."),
-            ("Overdrachtsklaar", "Gericht op een nette overdracht aan koper, huurder of verhuurder."),
-            ("Volledige oplevering", "Een uitgebreidere schoonmaak van de complete woning, inclusief afgesproken extra onderdelen."),
+            ("presentatieklaar", "Presentatieklaar", "Voor woningverkoop en bezichtigingen.",
+             ["Nette algemene indruk", "Vloeren", "Oppervlakken", "Keuken", "Sanitair", "Spiegels", "Zichtbare details"], False),
+            ("overdrachtsklaar", "Overdrachtsklaar", "Gericht op een nette overdracht aan koper, huurder of verhuurder.",
+             ["Keuken", "Sanitair", "Vloeren", "Deuren", "Plinten", "Kozijnen", "Lege kasten, indien afgesproken", "Algemene eindcontrole"], False),
+            ("volledige-oplevering", "Volledige oplevering", "De meest uitgebreide schoonmaak voor een lege woning v\u00f3\u00f3r overdracht.",
+             ["Alle relevante ruimtes", "Keuken", "Sanitair", "Vloeren", "Kasten", "Ramen binnenzijde", "Detailwerk", "Laatste schoonmaakcontrole"], False),
         ],
-        "extra_opties": ["Keukenapparatuur", "Binnenzijde kasten", "Ramen (binnenzijde)", "Extra sanitair", "Extra controle v\u00f3\u00f3r sleuteloverdracht"],
+        "extra_opties": ["Oven", "Koelkast", "Vriezer", "Binnenzijde kasten", "Ramen binnenzijde", "Balkon", "Berging", "Extra sanitair", "Extra controle v\u00f3\u00f3r sleuteloverdracht"],
         "prijs_factoren": ["Grootte van de woning", "Aantal ruimtes", "Mate van vervuiling", "Gekozen werkzaamheden", "Extra opties", "Bereikbaarheid van de woning"],
         "note": None,
         "faqs": [
@@ -1317,6 +1456,21 @@ PARTICULIER_PAGES = [
         ],
     },
 ]
+
+# Pakketten per particuliere dienst-slug, hergebruikt van PARTICULIER_PAGES
+# (1 bron voor detailpagina's \u00e9n offertewizard, zodat ze nooit uit de pas
+# lopen). Elk pakket: (id, naam, korte beschrijving voor in de wizard).
+PARTICULIER_WIZARD_PAKKETTEN = {
+    page["slug"]: [(pid, naam, desc) for pid, naam, desc, items, meest_gekozen in page["pakketten"]]
+    for page in PARTICULIER_PAGES
+}
+PARTICULIER_WIZARD_MEEST_GEKOZEN = {
+    page["slug"]: next((pid for pid, naam, desc, items, mg in page["pakketten"] if mg), None)
+    for page in PARTICULIER_PAGES
+}
+# Extra werkzaamheden per particuliere dienst-slug, eveneens hergebruikt van
+# PARTICULIER_PAGES (dezelfde lijst als op de detailpagina's).
+PARTICULIER_WIZARD_EXTRAS = {page["slug"]: page["extra_opties"] for page in PARTICULIER_PAGES}
 
 PARTICULIER_FAQS = [
     ("Werkt u ook voor particulieren, niet alleen voor bedrijven?", "Ja, naast bedrijven, VvE's en organisaties zijn we ook inzetbaar voor particuliere woningen \u2014 van een eenmalige grote schoonmaak tot periodiek onderhoud."),
@@ -1402,10 +1556,13 @@ def build_particulier_detail_pages():
     for page in PARTICULIER_PAGES:
         voor_wie_html = "\n        ".join(f"<li>{v}</li>" for v in page["voor_wie"])
         onderdelen_html = "\n        ".join(f"<li>{o}</li>" for o in page["onderdelen"])
-        pakketten_html = "\n      ".join(f'''<div class="pakket-card">
+        pakketten_html = "\n      ".join(f'''<div class="pakket-card{' pakket-card-featured' if meest_gekozen else ''}">
+        {'<span class="pakket-badge">Meest gekozen</span>' if meest_gekozen else ''}
         <h3>{naam}</h3>
         <p>{desc}</p>
-      </div>''' for naam, desc in page["pakketten"])
+        <ul class="pakket-items">{''.join(f'<li>{icon("check")}{item}</li>' for item in items)}</ul>
+        <a href="{base}offerte.html?type=particulier&amp;dienst={page['slug']}&amp;pakket={pid}#offerteWizard" class="btn btn-outline pakket-cta">Offerte voor dit pakket aanvragen</a>
+      </div>''' for pid, naam, desc, items, meest_gekozen in page["pakketten"])
         extra_html = "\n        ".join(f"<li>{o}</li>" for o in page["extra_opties"])
         prijs_html = "\n        ".join(f"<li>{p}</li>" for p in page["prijs_factoren"])
         stappen_html = "\n      ".join(f'''<div class="step">

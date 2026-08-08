@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="css/styles.css?v=148">
+<link rel="stylesheet" href="css/styles.css?v=149">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
@@ -130,22 +130,16 @@
       <noscript><p class="prose" style="background:#FFF7E6; border:1px solid #F0D9A0; border-radius:12px; padding:16px 20px; margin-bottom:16px;">Dit formulier werkt het best met JavaScript ingeschakeld. Lukt dat niet? Bel of mail ons gerust rechtstreeks: <a href="tel:+31492313050" style="color:var(--link); font-weight:600;">0492 - 31 30 50</a> of <a href="mailto:info@brabantschoon.nl" style="color:var(--link); font-weight:600;">info@brabantschoon.nl</a>.</p></noscript>
   <form name="offerte" method="POST" action="https://api.web3forms.com/submit" class="wizard-form" id="offerteWizard" novalidate>
     <p id="wizardLive" class="sr-only" role="status" aria-live="polite"></p>
+    <p id="wizardStepLabel" class="wizard-step-label"></p>
     <input type="hidden" name="access_key" value="abc98c0d-af16-42b0-ae5c-3337f35e5299">
     <input type="hidden" name="subject" value="Nieuwe offerteaanvraag via de website" id="wizardSubject">
     <input type="hidden" name="redirect" value="https://www.brabantschoon.nl/thanks.html">
+    <input type="hidden" name="pakket_naam" id="pakketNaamField" value="">
+    <input type="hidden" name="extra_opties" id="extraOptiesField" value="">
     <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
 
     <div class="wizard-progress" aria-hidden="true">
       <div class="wizard-progress-bar"><div class="wizard-progress-fill" id="wizardFill"></div></div>
-      <div class="wizard-progress-steps" id="wizardStepLabels">
-        <span class="wp-step active" data-step-label="1">1<em>Klanttype</em></span>
-        <span class="wp-step" data-step-label="2">2<em>Dienst</em></span>
-        <span class="wp-step" data-step-label="3">3<em>Omvang</em></span>
-        <span class="wp-step" data-step-label="4">4<em>Frequentie</em></span>
-        <span class="wp-step" data-step-label="5">5<em>Toelichting</em></span>
-        <span class="wp-step" data-step-label="6">6<em>Gegevens</em></span>
-        <span class="wp-step" data-step-label="7">7<em>Controle</em></span>
-      </div>
     </div>
 
     <div class="wizard-step" data-step="1">
@@ -270,43 +264,43 @@
         <span class="rc-label">Specialistische reiniging</span>
         <span class="rc-desc">Tapijt, vloer of maatwerk</span>
       </label></div>
-      <div class="rc-wrap" data-customer-types="particulier"><input type="radio" name="dienst" id="dienst-periodieke-huishoudelijke-schoonmaak" value="Periodieke huishoudelijke schoonmaak" class="rc-input" required>
-      <label for="dienst-periodieke-huishoudelijke-schoonmaak" class="rc-card">
-        <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
-        <span class="rc-label">Periodieke huishoudelijke schoonmaak</span>
-        <span class="rc-desc">Vaste, terugkerende schoonmaak van uw woning</span>
-      </label></div>
-      <div class="rc-wrap" data-customer-types="particulier"><input type="radio" name="dienst" id="dienst-eenmalige-grote-schoonmaak" value="Eenmalige grote schoonmaak" class="rc-input" required>
-      <label for="dienst-eenmalige-grote-schoonmaak" class="rc-card">
-        <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg></div>
-        <span class="rc-label">Eenmalige grote schoonmaak</span>
-        <span class="rc-desc">Grondige beurt zonder vast contract</span>
-      </label></div>
-      <div class="rc-wrap" data-customer-types="particulier"><input type="radio" name="dienst" id="dienst-verhuisschoonmaak" value="Verhuisschoonmaak" class="rc-input" required>
+      <div class="rc-wrap" data-customer-types="particulier" data-dienst-slug="verhuisschoonmaak"><input type="radio" name="dienst" id="dienst-verhuisschoonmaak" value="Verhuisschoonmaak" class="rc-input" required>
       <label for="dienst-verhuisschoonmaak" class="rc-card">
         <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
         <span class="rc-label">Verhuisschoonmaak</span>
         <span class="rc-desc">Woning schoon voor of na de verhuizing</span>
       </label></div>
-      <div class="rc-wrap" data-customer-types="particulier"><input type="radio" name="dienst" id="dienst-schoonmaak-na-verbouwing" value="Schoonmaak na verbouwing" class="rc-input" required>
+      <div class="rc-wrap" data-customer-types="particulier" data-dienst-slug="grote-schoonmaak"><input type="radio" name="dienst" id="dienst-eenmalige-grote-schoonmaak" value="Eenmalige grote schoonmaak" class="rc-input" required>
+      <label for="dienst-eenmalige-grote-schoonmaak" class="rc-card">
+        <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <span class="rc-label">Eenmalige grote schoonmaak</span>
+        <span class="rc-desc">Grondige beurt zonder vast contract</span>
+      </label></div>
+      <div class="rc-wrap" data-customer-types="particulier" data-dienst-slug="na-verbouwing"><input type="radio" name="dienst" id="dienst-schoonmaak-na-verbouwing" value="Schoonmaak na verbouwing" class="rc-input" required>
       <label for="dienst-schoonmaak-na-verbouwing" class="rc-card">
         <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
         <span class="rc-label">Schoonmaak na verbouwing</span>
         <span class="rc-desc">Bouwstof en normaal schoonmaakvuil verwijderen</span>
       </label></div>
-      <div class="rc-wrap" data-customer-types="particulier"><input type="radio" name="dienst" id="dienst-opleveringsschoonmaak-bij-verkoop-of-verhuur" value="Opleveringsschoonmaak bij verkoop of verhuur" class="rc-input" required>
-      <label for="dienst-opleveringsschoonmaak-bij-verkoop-of-verhuur" class="rc-card">
+      <div class="rc-wrap" data-customer-types="particulier" data-dienst-slug="periodiek"><input type="radio" name="dienst" id="dienst-periodieke-schoonmaak-2" value="Periodieke schoonmaak" class="rc-input" required>
+      <label for="dienst-periodieke-schoonmaak-2" class="rc-card">
+        <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+        <span class="rc-label">Periodieke schoonmaak</span>
+        <span class="rc-desc">Vaste, terugkerende schoonmaak van uw woning</span>
+      </label></div>
+      <div class="rc-wrap" data-customer-types="particulier" data-dienst-slug="oplevering"><input type="radio" name="dienst" id="dienst-bij-verkoop-verhuur-of-oplevering" value="Bij verkoop, verhuur of oplevering" class="rc-input" required>
+      <label for="dienst-bij-verkoop-verhuur-of-oplevering" class="rc-card">
         <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg></div>
-        <span class="rc-label">Opleveringsschoonmaak bij verkoop of verhuur</span>
+        <span class="rc-label">Bij verkoop, verhuur of oplevering</span>
         <span class="rc-desc">Woning schoon voor bezichtiging of oplevering</span>
       </label></div>
-      <div class="rc-wrap" data-customer-types="particulier"><input type="radio" name="dienst" id="dienst-ramen-wassen-glasbewassing" value="Ramen wassen / glasbewassing" class="rc-input" required>
-      <label for="dienst-ramen-wassen-glasbewassing" class="rc-card">
-        <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M12 4v16M4 12h16"/></svg></div>
-        <span class="rc-label">Ramen wassen / glasbewassing</span>
-        <span class="rc-desc">Ramen en kozijnen van uw woning</span>
+      <div class="rc-wrap" data-customer-types="particulier" data-dienst-slug="weet-niet"><input type="radio" name="dienst" id="dienst-ik-weet-het-nog-niet-graag-advies" value="Ik weet het nog niet / graag advies" class="rc-input" required>
+      <label for="dienst-ik-weet-het-nog-niet-graag-advies" class="rc-card">
+        <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <span class="rc-label">Ik weet het nog niet / graag advies</span>
+        <span class="rc-desc">We denken graag met u mee</span>
       </label></div>
-      <div class="rc-wrap" data-customer-types="bedrijf vve particulier"><input type="radio" name="dienst" id="dienst-anders-eigen-omschrijving" value="Anders / eigen omschrijving" class="rc-input" required>
+      <div class="rc-wrap" data-customer-types="bedrijf vve"><input type="radio" name="dienst" id="dienst-anders-eigen-omschrijving" value="Anders / eigen omschrijving" class="rc-input" required>
       <label for="dienst-anders-eigen-omschrijving" class="rc-card">
         <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
         <span class="rc-label">Anders / eigen omschrijving</span>
@@ -314,15 +308,275 @@
       </label></div></div>
     </div>
 
-    <div class="wizard-step" data-step="3" hidden>
+    <div class="wizard-step" data-step="3" hidden data-applies-to="particulier">
+      <h3 class="wizard-q">Welke uitvoering past bij u?</h3>
+      <p class="wizard-sub">Kies het pakket dat het beste aansluit — op de dienstpagina leest u precies wat elk pakket inhoudt.</p>
+      <div class="radio-cards cols-3"><div class="rc-wrap rc-hidden" data-dienst-for="verhuisschoonmaak">
+      <input type="radio" name="pakket" id="pakket-verhuisschoonmaak-opleverklaar" value="Opleverklaar" class="rc-input" data-pakket-id="opleverklaar" disabled>
+      <label for="pakket-verhuisschoonmaak-opleverklaar" class="rc-card">
+        <span class="rc-label">Opleverklaar</span>
+        <span class="rc-desc">Voor de woning die u verlaat.</span>
+      </label>
+    </div>
+      <div class="rc-wrap rc-hidden" data-dienst-for="verhuisschoonmaak">
+      <input type="radio" name="pakket" id="pakket-verhuisschoonmaak-intrekklaar" value="Intrekklaar" class="rc-input" data-pakket-id="intrekklaar" disabled>
+      <label for="pakket-verhuisschoonmaak-intrekklaar" class="rc-card">
+        <span class="rc-label">Intrekklaar</span>
+        <span class="rc-desc">Voor een nieuwe woning vóór u erin trekt.</span>
+      </label>
+    </div>
+      <div class="rc-wrap rc-hidden" data-dienst-for="verhuisschoonmaak">
+      <input type="radio" name="pakket" id="pakket-verhuisschoonmaak-complete-verhuisschoonmaak" value="Complete verhuisschoonmaak" class="rc-input" data-pakket-id="complete-verhuisschoonmaak" disabled>
+      <label for="pakket-verhuisschoonmaak-complete-verhuisschoonmaak" class="rc-card">
+        <span class="rc-label">Complete verhuisschoonmaak</span>
+        <span class="rc-desc">De meest uitgebreide verhuisschoonmaak.</span>
+      </label>
+    </div>
+      <div class="rc-wrap rc-hidden" data-dienst-for="grote-schoonmaak">
+      <input type="radio" name="pakket" id="pakket-grote-schoonmaak-basis" value="Basis" class="rc-input" data-pakket-id="basis" disabled>
+      <label for="pakket-grote-schoonmaak-basis" class="rc-card">
+        <span class="rc-label">Basis</span>
+        <span class="rc-desc">Een goede eenmalige schoonmaakbeurt van de belangrijkste onderdelen.</span>
+      </label>
+    </div>
+      <div class="rc-wrap rc-hidden" data-dienst-for="grote-schoonmaak">
+      <input type="radio" name="pakket" id="pakket-grote-schoonmaak-grondig" value="Grondig" class="rc-input" data-pakket-id="grondig" disabled>
+      <label for="pakket-grote-schoonmaak-grondig" class="rc-card">
+        <span class="rc-badge">Meest gekozen</span><span class="rc-label">Grondig</span>
+        <span class="rc-desc">Meer detailwerk en een uitgebreidere reiniging.</span>
+      </label>
+    </div>
+      <div class="rc-wrap rc-hidden" data-dienst-for="grote-schoonmaak">
+      <input type="radio" name="pakket" id="pakket-grote-schoonmaak-compleet" value="Compleet" class="rc-input" data-pakket-id="compleet" disabled>
+      <label for="pakket-grote-schoonmaak-compleet" class="rc-card">
+        <span class="rc-label">Compleet</span>
+        <span class="rc-desc">De meest uitgebreide uitvoering.</span>
+      </label>
+    </div>
+      <div class="rc-wrap rc-hidden" data-dienst-for="na-verbouwing">
+      <input type="radio" name="pakket" id="pakket-na-verbouwing-stofvrij" value="Stofvrij" class="rc-input" data-pakket-id="stofvrij" disabled>
+      <label for="pakket-na-verbouwing-stofvrij" class="rc-card">
+        <span class="rc-label">Stofvrij</span>
+        <span class="rc-desc">Gericht op het verwijderen van bouwstof en normaal los vuil.</span>
+      </label>
+    </div>
+      <div class="rc-wrap rc-hidden" data-dienst-for="na-verbouwing">
+      <input type="radio" name="pakket" id="pakket-na-verbouwing-gebruiksklaar" value="Gebruiksklaar" class="rc-input" data-pakket-id="gebruiksklaar" disabled>
+      <label for="pakket-na-verbouwing-gebruiksklaar" class="rc-card">
+        <span class="rc-label">Gebruiksklaar</span>
+        <span class="rc-desc">Alles van Stofvrij, plus een uitgebreidere schoonmaak.</span>
+      </label>
+    </div>
+      <div class="rc-wrap rc-hidden" data-dienst-for="na-verbouwing">
+      <input type="radio" name="pakket" id="pakket-na-verbouwing-complete-nazorg" value="Complete nazorg" class="rc-input" data-pakket-id="complete-nazorg" disabled>
+      <label for="pakket-na-verbouwing-complete-nazorg" class="rc-card">
+        <span class="rc-label">Complete nazorg</span>
+        <span class="rc-desc">De meest uitgebreide optie na een grotere verbouwing of renovatie.</span>
+      </label>
+    </div>
+      <div class="rc-wrap rc-hidden" data-dienst-for="periodiek">
+      <input type="radio" name="pakket" id="pakket-periodiek-basis-onderhoud" value="Basis onderhoud" class="rc-input" data-pakket-id="basis-onderhoud" disabled>
+      <label for="pakket-periodiek-basis-onderhoud" class="rc-card">
+        <span class="rc-label">Basis onderhoud</span>
+        <span class="rc-desc">Voor regelmatig onderhoud van de belangrijkste ruimtes.</span>
+      </label>
+    </div>
+      <div class="rc-wrap rc-hidden" data-dienst-for="periodiek">
+      <input type="radio" name="pakket" id="pakket-periodiek-uitgebreid-onderhoud" value="Uitgebreid onderhoud" class="rc-input" data-pakket-id="uitgebreid-onderhoud" disabled>
+      <label for="pakket-periodiek-uitgebreid-onderhoud" class="rc-card">
+        <span class="rc-label">Uitgebreid onderhoud</span>
+        <span class="rc-desc">Basis, plus meer aandacht voor detail.</span>
+      </label>
+    </div>
+      <div class="rc-wrap rc-hidden" data-dienst-for="periodiek">
+      <input type="radio" name="pakket" id="pakket-periodiek-maatwerk" value="Maatwerk" class="rc-input" data-pakket-id="maatwerk" disabled>
+      <label for="pakket-periodiek-maatwerk" class="rc-card">
+        <span class="rc-label">Maatwerk</span>
+        <span class="rc-desc">Voor wie zelf wil bepalen welke werkzaamheden periodiek worden uitgevoerd.</span>
+      </label>
+    </div>
+      <div class="rc-wrap rc-hidden" data-dienst-for="oplevering">
+      <input type="radio" name="pakket" id="pakket-oplevering-presentatieklaar" value="Presentatieklaar" class="rc-input" data-pakket-id="presentatieklaar" disabled>
+      <label for="pakket-oplevering-presentatieklaar" class="rc-card">
+        <span class="rc-label">Presentatieklaar</span>
+        <span class="rc-desc">Voor woningverkoop en bezichtigingen.</span>
+      </label>
+    </div>
+      <div class="rc-wrap rc-hidden" data-dienst-for="oplevering">
+      <input type="radio" name="pakket" id="pakket-oplevering-overdrachtsklaar" value="Overdrachtsklaar" class="rc-input" data-pakket-id="overdrachtsklaar" disabled>
+      <label for="pakket-oplevering-overdrachtsklaar" class="rc-card">
+        <span class="rc-label">Overdrachtsklaar</span>
+        <span class="rc-desc">Gericht op een nette overdracht aan koper, huurder of verhuurder.</span>
+      </label>
+    </div>
+      <div class="rc-wrap rc-hidden" data-dienst-for="oplevering">
+      <input type="radio" name="pakket" id="pakket-oplevering-volledige-oplevering" value="Volledige oplevering" class="rc-input" data-pakket-id="volledige-oplevering" disabled>
+      <label for="pakket-oplevering-volledige-oplevering" class="rc-card">
+        <span class="rc-label">Volledige oplevering</span>
+        <span class="rc-desc">De meest uitgebreide schoonmaak voor een lege woning vóór overdracht.</span>
+      </label>
+    </div>
+      <div class="rc-wrap rc-hidden" data-dienst-for="all">
+      <input type="radio" name="pakket" id="pakket-weet-niet" value="Ik weet het nog niet, graag advies" class="rc-input" data-pakket-id="weet-niet" disabled>
+      <label for="pakket-weet-niet" class="rc-card">
+        <span class="rc-label">Ik weet het nog niet</span>
+        <span class="rc-desc">Adviseer mij graag</span>
+      </label>
+    </div></div>
+    </div>
+
+    <div class="wizard-step" data-step="4" hidden data-applies-to="particulier">
+      <h3 class="wizard-q">Extra werkzaamheden</h3>
+      <p class="wizard-sub">Optioneel — kies alles wat van toepassing is.</p>
+      <div class="checkbox-cards" id="extraCheckboxes">
+        <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak"><input type="checkbox" class="extra-checkbox" value="Oven"><span>Oven</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak"><input type="checkbox" class="extra-checkbox" value="Koelkast"><span>Koelkast</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak"><input type="checkbox" class="extra-checkbox" value="Vriezer"><span>Vriezer</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak"><input type="checkbox" class="extra-checkbox" value="Afzuigkap"><span>Afzuigkap</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak"><input type="checkbox" class="extra-checkbox" value="Ramen binnenzijde"><span>Ramen binnenzijde</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak"><input type="checkbox" class="extra-checkbox" value="Balkon"><span>Balkon</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak"><input type="checkbox" class="extra-checkbox" value="Berging/schuur"><span>Berging/schuur</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak"><input type="checkbox" class="extra-checkbox" value="Intensieve keukenreiniging"><span>Intensieve keukenreiniging</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak"><input type="checkbox" class="extra-checkbox" value="Intensieve sanitairreiniging"><span>Intensieve sanitairreiniging</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak"><input type="checkbox" class="extra-checkbox" value="Oven binnenzijde"><span>Oven binnenzijde</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak"><input type="checkbox" class="extra-checkbox" value="Koelkast binnenzijde"><span>Koelkast binnenzijde</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak"><input type="checkbox" class="extra-checkbox" value="Vriezer binnenzijde"><span>Vriezer binnenzijde</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak"><input type="checkbox" class="extra-checkbox" value="Afzuigkap intensief"><span>Afzuigkap intensief</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak"><input type="checkbox" class="extra-checkbox" value="Extra kalkreiniging badkamer"><span>Extra kalkreiniging badkamer</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak"><input type="checkbox" class="extra-checkbox" value="Balkon"><span>Balkon</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak"><input type="checkbox" class="extra-checkbox" value="Berging"><span>Berging</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak"><input type="checkbox" class="extra-checkbox" value="Extra ramen"><span>Extra ramen</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak"><input type="checkbox" class="extra-checkbox" value="Specifieke ruimte extra grondig"><span>Specifieke ruimte extra grondig</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="na-verbouwing"><input type="checkbox" class="extra-checkbox" value="Ramen binnenzijde"><span>Ramen binnenzijde</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="na-verbouwing"><input type="checkbox" class="extra-checkbox" value="Keukenkasten"><span>Keukenkasten</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="na-verbouwing"><input type="checkbox" class="extra-checkbox" value="Intensieve sanitairreiniging"><span>Intensieve sanitairreiniging</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="na-verbouwing"><input type="checkbox" class="extra-checkbox" value="Extra vloerreiniging"><span>Extra vloerreiniging</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="na-verbouwing"><input type="checkbox" class="extra-checkbox" value="Extra stofronde"><span>Extra stofronde</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="na-verbouwing"><input type="checkbox" class="extra-checkbox" value="Specifieke ruimte extra grondig"><span>Specifieke ruimte extra grondig</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Oven periodiek"><span>Oven periodiek</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Koelkast periodiek"><span>Koelkast periodiek</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Ramen binnenzijde"><span>Ramen binnenzijde</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Keukenkasten"><span>Keukenkasten</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Extra badkamer"><span>Extra badkamer</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Extra verdieping"><span>Extra verdieping</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Wisselende detailklus"><span>Wisselende detailklus</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="oplevering"><input type="checkbox" class="extra-checkbox" value="Oven"><span>Oven</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="oplevering"><input type="checkbox" class="extra-checkbox" value="Koelkast"><span>Koelkast</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="oplevering"><input type="checkbox" class="extra-checkbox" value="Vriezer"><span>Vriezer</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="oplevering"><input type="checkbox" class="extra-checkbox" value="Binnenzijde kasten"><span>Binnenzijde kasten</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="oplevering"><input type="checkbox" class="extra-checkbox" value="Ramen binnenzijde"><span>Ramen binnenzijde</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="oplevering"><input type="checkbox" class="extra-checkbox" value="Balkon"><span>Balkon</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="oplevering"><input type="checkbox" class="extra-checkbox" value="Berging"><span>Berging</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="oplevering"><input type="checkbox" class="extra-checkbox" value="Extra sanitair"><span>Extra sanitair</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="oplevering"><input type="checkbox" class="extra-checkbox" value="Extra controle vóór sleuteloverdracht"><span>Extra controle vóór sleuteloverdracht</span></label>
+        <label class="cb-card" data-dienst-for="all"><input type="checkbox" id="extraAndersCheck"><span>Anders, namelijk…</span></label>
+      </div>
+      <div id="extraAndersWrap" style="margin-top:14px;" hidden>
+        <label for="extra_anders">Omschrijving</label>
+        <input id="extra_anders" name="extra_anders" type="text" placeholder="Vertel kort wat u bedoelt" disabled>
+      </div>
+    </div>
+
+    <div class="wizard-step" data-step="5" hidden data-applies-to="particulier">
+      <h3 class="wizard-q">Informatie over uw woning</h3>
+      <p class="wizard-sub">Dit helpt ons een goede inschatting te maken. Alle velden zijn optioneel.</p>
+      <div class="row2">
+        <div><label for="typewoning">Type woning</label><input id="typewoning" name="typewoning" type="text" placeholder="Bijv. eengezinswoning, appartement"></div>
+        <div><label for="woonoppervlakte_m2">Woonoppervlakte (m²)</label><input id="woonoppervlakte_m2" name="woonoppervlakte_m2" type="number" min="1" placeholder="Bijv. 90"></div>
+      </div>
+      <div class="row2" style="margin-top:14px;">
+        <div><label for="slaapkamers">Aantal slaapkamers</label><input id="slaapkamers" name="slaapkamers" type="number" min="0" placeholder="Bijv. 3"></div>
+        <div><label for="badkamers">Aantal badkamers</label><input id="badkamers" name="badkamers" type="number" min="0" placeholder="Bijv. 1"></div>
+      </div>
+      <div class="row2" style="margin-top:14px;">
+        <div><label for="toiletten">Aantal toiletten</label><input id="toiletten" name="toiletten" type="number" min="0" placeholder="Bijv. 1"></div>
+      </div>
+      <div style="margin-top:22px;">
+        <label style="display:block; margin-bottom:10px;">Is de woning bewoond of leeg?</label>
+        <div class="radio-cards cols-2"><input type="radio" name="bewoond_leeg" id="bewoond_leeg-bewoond" value="Bewoond" class="rc-input" required>
+      <label for="bewoond_leeg-bewoond" class="rc-card">
+        
+        <span class="rc-label">Bewoond</span>
+        <span class="rc-desc">De woning wordt nog gebruikt</span>
+      </label>
+      <input type="radio" name="bewoond_leeg" id="bewoond_leeg-leeg" value="Leeg" class="rc-input" required>
+      <label for="bewoond_leeg-leeg" class="rc-card">
+        
+        <span class="rc-label">Leeg</span>
+        <span class="rc-desc">De woning staat leeg</span>
+      </label></div>
+      </div>
+      <div style="margin-top:22px;">
+        <label style="display:block; margin-bottom:10px;">Hoe zou u de huidige staat omschrijven?</label>
+        <div class="radio-cards cols-2"><input type="radio" name="vervuilingsgraad" id="vervuilingsgraad-normaal" value="Normaal" class="rc-input" required>
+      <label for="vervuilingsgraad-normaal" class="rc-card">
+        
+        <span class="rc-label">Normaal</span>
+        <span class="rc-desc">Reguliere staat van onderhoud</span>
+      </label>
+      <input type="radio" name="vervuilingsgraad" id="vervuilingsgraad-redelijk-vervuild" value="Redelijk vervuild" class="rc-input" required>
+      <label for="vervuilingsgraad-redelijk-vervuild" class="rc-card">
+        
+        <span class="rc-label">Redelijk vervuild</span>
+        <span class="rc-desc">Wat meer aandacht nodig</span>
+      </label>
+      <input type="radio" name="vervuilingsgraad" id="vervuilingsgraad-sterk-vervuild" value="Sterk vervuild" class="rc-input" required>
+      <label for="vervuilingsgraad-sterk-vervuild" class="rc-card">
+        
+        <span class="rc-label">Sterk vervuild</span>
+        <span class="rc-desc">Grondige aanpak nodig</span>
+      </label>
+      <input type="radio" name="vervuilingsgraad" id="vervuilingsgraad-weet-ik-niet-graag-beoordelen" value="Weet ik niet / graag beoordelen" class="rc-input" required>
+      <label for="vervuilingsgraad-weet-ik-niet-graag-beoordelen" class="rc-card">
+        
+        <span class="rc-label">Weet ik niet / graag beoordelen</span>
+        <span class="rc-desc">We kijken graag met u mee</span>
+      </label></div>
+      </div>
+    </div>
+
+    <div class="wizard-step" data-step="6" hidden data-applies-to="particulier" data-requires-dienst="periodiek">
+      <h3 class="wizard-q">Hoe vaak wilt u schoonmaak?</h3>
+      <p class="wizard-sub">U kunt dit later altijd nog aanpassen.</p>
+      <div class="radio-cards cols-2"><input type="radio" name="frequentie_particulier" id="frequentie_particulier-wekelijks" value="Wekelijks" class="rc-input" required>
+      <label for="frequentie_particulier-wekelijks" class="rc-card">
+        
+        <span class="rc-label">Wekelijks</span>
+        <span class="rc-desc">Elke week hetzelfde ritme</span>
+      </label>
+      <input type="radio" name="frequentie_particulier" id="frequentie_particulier-om-de-week" value="Om de week" class="rc-input" required>
+      <label for="frequentie_particulier-om-de-week" class="rc-card">
+        
+        <span class="rc-label">Om de week</span>
+        <span class="rc-desc">Elke twee weken</span>
+      </label>
+      <input type="radio" name="frequentie_particulier" id="frequentie_particulier-iedere-4-weken" value="Iedere 4 weken" class="rc-input" required>
+      <label for="frequentie_particulier-iedere-4-weken" class="rc-card">
+        
+        <span class="rc-label">Iedere 4 weken</span>
+        <span class="rc-desc">Eens per maand</span>
+      </label>
+      <input type="radio" name="frequentie_particulier" id="frequentie_particulier-andere-frequentie" value="Andere frequentie" class="rc-input" required>
+      <label for="frequentie_particulier-andere-frequentie" class="rc-card">
+        
+        <span class="rc-label">Andere frequentie</span>
+        <span class="rc-desc">In overleg te bepalen</span>
+      </label>
+      <input type="radio" name="frequentie_particulier" id="frequentie_particulier-weet-ik-nog-niet-graag-advies" value="Weet ik nog niet / graag advies" class="rc-input" required>
+      <label for="frequentie_particulier-weet-ik-nog-niet-graag-advies" class="rc-card">
+        
+        <span class="rc-label">Weet ik nog niet / graag advies</span>
+        <span class="rc-desc">We denken graag met u mee</span>
+      </label></div>
+    </div>
+
+    <div class="wizard-step" data-step="7" hidden data-applies-to="bedrijf vve">
       <h3 class="wizard-q" id="oppervlakteQ"
           data-q-bedrijf="Hoe groot is de locatie ongeveer?"
-          data-q-vve="Hoe groot is het gebouw of de gemeenschappelijke ruimte ongeveer?"
-          data-q-particulier="Hoe groot is de woning ongeveer?">Hoe groot is de locatie ongeveer?</h3>
+          data-q-vve="Hoe groot is het gebouw of de gemeenschappelijke ruimte ongeveer?">Hoe groot is de locatie ongeveer?</h3>
       <p class="wizard-sub" id="oppervlakteSub"
           data-q-bedrijf="Een schatting is voldoende."
-          data-q-vve="Een schatting is voldoende."
-          data-q-particulier="Een schatting is voldoende.">Een schatting is voldoende.</p>
+          data-q-vve="Een schatting is voldoende.">Een schatting is voldoende.</p>
       <div class="radio-cards cols-2"><input type="radio" name="oppervlakte" id="oppervlakte-klein" value="Klein" class="rc-input" required>
       <label for="oppervlakte-klein" class="rc-card">
         
@@ -355,7 +609,7 @@
       </label></div>
     </div>
 
-    <div class="wizard-step" data-step="4" hidden>
+    <div class="wizard-step" data-step="8" hidden data-applies-to="bedrijf vve">
       <h3 class="wizard-q">Hoe vaak wilt u schoonmaak?</h3>
       <p class="wizard-sub">U kunt dit later altijd nog aanpassen.</p>
       <div class="radio-cards cols-2"><input type="radio" name="frequentie" id="frequentie-eenmalig" value="Eenmalig" class="rc-input" required>
@@ -390,8 +644,11 @@
       </label></div>
     </div>
 
-    <div class="wizard-step" data-step="5" hidden>
-      <h3 class="wizard-q">Nog iets toe te lichten?</h3>
+    <div class="wizard-step" data-step="9" hidden>
+      <h3 class="wizard-q" id="toelichtingQ"
+          data-q-bedrijf="Nog iets toe te lichten?"
+          data-q-vve="Nog iets toe te lichten?"
+          data-q-particulier="Is er iets dat we vooraf moeten weten?">Nog iets toe te lichten?</h3>
       <p class="wizard-sub">Alle velden hieronder zijn optioneel.</p>
       <div>
         <label for="startdatum">Gewenste datum/periode <span style="font-weight:400;">(optioneel)</span></label>
@@ -402,18 +659,17 @@
         <input id="aantal_locaties" name="aantal_locaties" type="text" placeholder="Bijv. 1, of 3 vestigingen" disabled>
       </div>
       <div style="margin-top:14px;">
-        <label for="bericht">Omschrijf uw opdracht <span style="font-weight:400;">(optioneel)</span></label>
-        <textarea id="bericht" name="bericht" rows="4" placeholder="Vertel kort wat er schoongemaakt moet worden, hoe groot de locatie is en of er bijzonderheden zijn."></textarea>
+        <label for="bericht">Omschrijving <span style="font-weight:400;">(optioneel)</span></label>
+        <textarea id="bericht" name="bericht" rows="4" placeholder="Vertel kort wat er schoongemaakt moet worden en of er bijzonderheden zijn."></textarea>
       </div>
     </div>
 
-    <div class="wizard-step" data-step="6" hidden>
+    <div class="wizard-step" data-step="10" hidden>
       <h3 class="wizard-q">Uw gegevens</h3>
       <p class="wizard-sub">Zodat we contact met u kunnen opnemen.</p>
       <div class="row2">
         <div><label for="naam">Naam</label><input id="naam" name="naam" type="text" required placeholder="Voor- en achternaam"></div>
         <div id="fieldBedrijfsnaam"><label for="bedrijfsnaam">Bedrijfsnaam of VvE <span style="font-weight:400;">(optioneel)</span></label><input id="bedrijfsnaam" name="bedrijfsnaam" type="text" placeholder="Naam van uw bedrijf of VvE"></div>
-        <div id="fieldTypeWoning" hidden><label for="typewoning">Type woning <span style="font-weight:400;">(optioneel)</span></label><input id="typewoning" name="typewoning" type="text" placeholder="Bijv. eengezinswoning, appartement" disabled></div>
       </div>
       <div class="row2">
         <div><label for="email">E-mailadres</label><input id="email" name="email" type="email" required placeholder="jij@voorbeeld.nl"></div>
@@ -422,7 +678,7 @@
       <div><label for="plaats">Plaats / postcode</label><input id="plaats" name="plaats" type="text" required placeholder="Bijv. Helmond of 5701 AB"></div>
     </div>
 
-    <div class="wizard-step" data-step="7" hidden>
+    <div class="wizard-step" data-step="11" hidden>
       <h3 class="wizard-q">Controleer uw aanvraag</h3>
       <p class="wizard-sub">Klopt alles? Dan kunt u de aanvraag verzenden. Wilt u iets aanpassen, gebruik dan "Terug".</p>
       <dl class="wizard-summary" id="wizardSummary" aria-live="polite"></dl>
@@ -569,6 +825,6 @@
   applyStoredConsent();
 })();
 </script>
-<script src="js/main.js?v=148" defer></script>
+<script src="js/main.js?v=149" defer></script>
 </body>
 </html>
