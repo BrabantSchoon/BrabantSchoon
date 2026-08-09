@@ -504,12 +504,15 @@ if (document.readyState === 'loading') {
     if (statusEl) statusEl.textContent = 'Aanvraag wordt verzonden\u2026';
   });
 
-  // Vaste onderbalk (Bel direct / Vrijblijvende offerte) verbergen zolang de wizard zelf in beeld is
+  // Vaste onderbalk (Bel direct / Vrijblijvende offerte) verbergen zolang de wizard zelf in
+  // beeld is, en de WhatsApp-knop tegelijk hoger zetten zodat deze nooit over de vaste
+  // Volgende/Terug-balk van de wizard heen komt te staan (zie .wizard-nav-active in styles.css).
   const ctaBar = document.querySelector('.mobile-cta-bar');
-  if (ctaBar && 'IntersectionObserver' in window) {
+  if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        ctaBar.style.display = entry.isIntersecting ? 'none' : '';
+        if (ctaBar) ctaBar.style.display = entry.isIntersecting ? 'none' : '';
+        document.body.classList.toggle('wizard-nav-active', entry.isIntersecting);
       });
     }, { threshold: 0.15 });
     io.observe(form);
