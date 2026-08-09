@@ -76,7 +76,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "158"
+ASSET_VERSION = "160"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -1077,8 +1077,8 @@ def build_home():
   <section class="section-tight">
     <div class="wrap-narrow" style="text-align:center;">
       <span class="eyebrow">Werkgebied</span>
-      <h2 style="margin-top:8px;">Sterk in Zuidoost-Brabant.</h2>
-      <p class="prose reveal" style="margin-top:10px;">Vanuit {CITY} rijden we uit naar Zuidoost-Brabant en de Peelgemeenten als vast kerngebied \u2014 en voor grotere zakelijke opdrachten ook verder de provincie in.</p>
+      <h2 style="margin-top:8px;">Actief in heel Noord-Brabant.</h2>
+      <p class="prose reveal" style="margin-top:10px;">Vanuit {CITY} verzorgen we schoonmaak voor bedrijven en particulieren in heel Noord-Brabant \u2014 vraag gerust naar de mogelijkheden voor uw locatie.</p>
       <div class="area-tags reveal" style="margin-top:16px;">
         <a href="schoonmaakbedrijf-helmond.html" class="area-tag" style="text-decoration:none; display:inline-block;">Helmond</a>
         <a href="schoonmaakbedrijf-eindhoven.html" class="area-tag" style="text-decoration:none; display:inline-block;">Eindhoven</a>
@@ -1780,69 +1780,86 @@ WERKGEBIED_TEKST = {
 LOCATIONS = [
     {
         "slug": "tilburg", "name": "Tilburg",
-        "intro": "Tilburg ligt buiten ons kerngebied in de Peel, maar we rijden geregeld uit naar de stad voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak. Vooral voor grotere of terugkerende opdrachten is een vaste planning vanuit Helmond goed te combineren.",
-        "faq_q": "Rijdt u ook naar Tilburg voor kleinere klussen?",
-        "kaart_tekst": "Voor grotere en terugkerende opdrachten is BrabantSchoon in Tilburg inzetbaar voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak.",
-        "uitgelicht": ('Tilburg is een grote studentenstad met een textielverleden en, dankzij de ligging aan de A58 en A65, een belangrijke logistieke sector met veel distributiecentra. Voor kantoren en bedrijfsverzamelgebouwen in de stad zijn we inzetbaar voor kantoorreiniging en VvE-schoonmaak.', 'Voor grotere of terugkerende opdrachten — zoals een vast kantoorcontract of een omvangrijke opleveringsschoonmaak — is een vaste planning vanuit Helmond goed te combineren met de rest van onze route.'),
-        "faq_a": "Voor kleine, eenmalige klussen in Tilburg is de reistijd vanuit Helmond niet altijd rendabel. Voor grotere of terugkerende opdrachten, zoals wekelijkse kantoorreiniging, bespreken we graag de mogelijkheden.",
+        "intro": "BrabantSchoon is actief in heel Noord-Brabant, dus ook in Tilburg. We rijden geregeld naar de stad voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak. Vraag gerust naar de mogelijkheden voor uw locatie.",
+        "faq_q": "Werkt u ook in Tilburg voor kleinere klussen?",
+        "kaart_tekst": "BrabantSchoon is in Tilburg inzetbaar voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak.",
+        "uitgelicht": ('Tilburg is een grote studentenstad met een textielverleden en, dankzij de ligging aan de A58 en A65, een belangrijke logistieke sector met veel distributiecentra. Voor kantoren en bedrijfsverzamelgebouwen in de stad zijn we inzetbaar voor kantoorreiniging en VvE-schoonmaak.', 'Of het nu gaat om een vast kantoorcontract, een opleveringsschoonmaak of een eenmalige beurt: vraag gerust naar de mogelijkheden voor uw locatie in Tilburg.'),
+        "faq_a": "Ja, BrabantSchoon is actief in heel Noord-Brabant. Vraag gerust een vrijblijvende offerte aan, dan bespreken we de mogelijkheden voor uw situatie.",
     },
     {
         "slug": "breda", "name": "Breda",
-        "intro": "Breda ligt verder van ons kerngebied in de Peel, maar voor substantiële opdrachten — zoals een vast kantoorcontract, VvE-schoonmaak of een grote opleveringsschoonmaak — rijden we ook hiernaartoe.",
+        "intro": "BrabantSchoon is actief in heel Noord-Brabant, dus ook in Breda. Voor kantoren, VvE's en opleveringsschoonmaak rijden we ook hiernaartoe. Vraag gerust naar de mogelijkheden voor uw locatie.",
         "faq_q": "Is een eenmalige beurt in Breda mogelijk?",
-        "kaart_tekst": "In Breda richten we ons op substantiële, structurele schoonmaakopdrachten voor kantoren en VvE's.",
-        "uitgelicht": ('Breda combineert een historisch centrum met een groeiende sector aan kantoren en bedrijfsverzamelgebouwen, mede dankzij onderwijsinstellingen als Breda University of Applied Sciences. Voor substantiële opdrachten — een vast kantoorcontract, VvE-schoonmaak of een grote opleveringsschoonmaak — rijden we ook hiernaartoe.', 'Voor kleinere, eenmalige klussen in Breda is de reistijd vanuit Helmond niet altijd rendabel; voor grotere of terugkerende opdrachten wel. Neem gerust contact op om de mogelijkheden voor uw specifieke situatie te bespreken.'),
-        "faq_a": "Dat hangt af van de omvang van de klus. Neem contact op met de details van uw situatie, dan bespreken we of het rendabel is in te plannen.",
+        "kaart_tekst": "In Breda is BrabantSchoon inzetbaar voor kantoren en VvE's, van eenmalige tot structurele schoonmaakopdrachten.",
+        "uitgelicht": ('Breda combineert een historisch centrum met een groeiende sector aan kantoren en bedrijfsverzamelgebouwen, mede dankzij onderwijsinstellingen als Breda University of Applied Sciences. Voor een vast kantoorcontract, VvE-schoonmaak of een opleveringsschoonmaak zijn we hier inzetbaar.', 'Neem gerust contact op om de mogelijkheden voor uw specifieke situatie in Breda te bespreken.'),
+        "faq_a": "Ja, BrabantSchoon is actief in heel Noord-Brabant. Neem contact op met de details van uw situatie, dan bespreken we de mogelijkheden.",
     },
     {
         "slug": "den-bosch", "name": "Den Bosch",
-        "intro": "'s-Hertogenbosch ligt op een goed bereikbare afstand vanuit Helmond. Voor kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak zijn we hier inzetbaar.",
+        "intro": "'s-Hertogenbosch ligt op een goed bereikbare afstand vanuit Helmond, en BrabantSchoon is hier actief voor kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak.",
         "faq_q": "Werkt u ook voor VvE's in Den Bosch?",
-        "kaart_tekst": "Voor kantoren, VvE's en bedrijfsverzamelgebouwen in 's-Hertogenbosch zijn we inzetbaar voor periodieke en facilitaire schoonmaak.",
-        "uitgelicht": ("'s-Hertogenbosch is als provinciehoofdstad van Noord-Brabant een stad met veel kantoren van overheid, onderwijs en dienstverlening, onder meer rond het moderne Paleiskwartier bij het station. Voor kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak zijn we hier inzetbaar.", 'De goede bereikbaarheid vanuit Helmond maakt het mogelijk om ook structurele, terugkerende opdrachten in Den Bosch in te plannen, naast eenmalige klussen zoals een opleveringsschoonmaak.'),
+        "kaart_tekst": "Voor kantoren, VvE's en bedrijfsverzamelgebouwen in 's-Hertogenbosch is BrabantSchoon inzetbaar voor periodieke en facilitaire schoonmaak.",
+        "uitgelicht": ("'s-Hertogenbosch is als provinciehoofdstad van Noord-Brabant een stad met veel kantoren van overheid, onderwijs en dienstverlening, onder meer rond het moderne Paleiskwartier bij het station. Voor kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak zijn we hier inzetbaar.", 'De goede bereikbaarheid vanuit Helmond maakt het mogelijk om zowel structurele, terugkerende opdrachten als eenmalige klussen zoals een opleveringsschoonmaak in Den Bosch in te plannen.'),
         "faq_a": "Ja, we zijn inzetbaar voor schoonmaak van trappenhuizen en gemeenschappelijke ruimtes voor VvE's in en rond 's-Hertogenbosch, in overleg met het bestuur.",
     },
     {
         "slug": "waalwijk", "name": "Waalwijk",
-        "intro": "Waalwijk ligt tussen Tilburg en 's-Hertogenbosch in. Voor bedrijven en VvE's in Waalwijk zijn we inzetbaar op aanvraag, vooral bij grotere of vaste opdrachten.",
+        "intro": "Waalwijk ligt tussen Tilburg en 's-Hertogenbosch in. BrabantSchoon is actief in heel Noord-Brabant, dus ook hier zijn we voor bedrijven en VvE's inzetbaar.",
         "faq_q": "Kunt u een vast schoonmaakcontract voor Waalwijk laten verzorgen?",
-        "kaart_tekst": "In Waalwijk zijn we inzetbaar voor vaste schoonmaakcontracten en grotere eenmalige opdrachten voor bedrijven en VvE's.",
-        "uitgelicht": ("Waalwijk staat historisch bekend om de schoen- en lederindustrie — zichtbaar in het Schoenenkwartier — en heeft dankzij de ligging aan de A59 een flinke logistieke sector met distributiecentra. Voor bedrijven en VvE's hier zijn we inzetbaar op aanvraag, vooral bij grotere of vaste opdrachten.", 'Voor een vast, terugkerend contract is Waalwijk goed inpasbaar in onze planning; voor kleinere eenmalige klussen bespreken we per situatie of dit rendabel te combineren is met andere ritten in de regio.'),
+        "kaart_tekst": "In Waalwijk is BrabantSchoon inzetbaar voor vaste schoonmaakcontracten en eenmalige opdrachten voor bedrijven en VvE's.",
+        "uitgelicht": ("Waalwijk staat historisch bekend om de schoen- en lederindustrie — zichtbaar in het Schoenenkwartier — en heeft dankzij de ligging aan de A59 een flinke logistieke sector met distributiecentra. Voor bedrijven en VvE's hier zijn we inzetbaar, van periodiek onderhoud tot een eenmalige beurt.", 'Voor een vast, terugkerend contract is Waalwijk goed inpasbaar in onze planning; vraag gerust naar de mogelijkheden voor uw specifieke situatie.'),
         "faq_a": "Ja, voor een vast, terugkerend contract is Waalwijk goed inpasbaar in onze planning. Neem contact op om de mogelijkheden te bespreken.",
     },
 ]
 
 def build_werkgebied():
     base = ""
-    all_cities = WERKGEBIED_KERN + WERKGEBIED_OVERIG
-    city_slug_map = {"Helmond":"helmond","Deurne":"deurne","Asten":"asten","Someren":"someren",
-                      "Gemert-Bakel":"gemert-bakel","Laarbeek":"laarbeek","Eindhoven":"eindhoven",
-                      "Geldrop-Mierlo":"geldrop-mierlo","Nuenen":"nuenen","Mierlo":"geldrop-mierlo"}
-    city_cards = "\n        ".join(
-        f'<a href="{base}schoonmaakbedrijf-{city_slug_map[c]}.html" class="wg-card" style="text-decoration:none; color:inherit;">'
-        f'<div class="wg-icon">{icon("pin")}</div><h3>{c}</h3><p>{WERKGEBIED_TEKST[c]}</p>'
-        f'<span class="wg-btn">Bekijk {c} {icon("arrow")}</span></a>'
-        for c in all_cities
-    )
-    location_cards = "\n        ".join(
-        f'<a href="{base}schoonmaakbedrijf-{loc["slug"]}.html" class="wg-card" style="text-decoration:none; color:inherit;">'
-        f'<div class="wg-icon">{icon("pin")}</div><h3>{loc["name"]}</h3><p>{loc["intro"][:100]}&hellip;</p>'
-        f'<span class="wg-btn">Bekijk werkgebied {icon("arrow")}</span></a>'
-        for loc in LOCATIONS if loc["slug"] != "eindhoven"
-    )
+    local_slug = {
+        "Helmond": "helmond", "Eindhoven": "eindhoven", "Deurne": "deurne", "Asten": "asten",
+        "Someren": "someren", "Gemert-Bakel": "gemert-bakel", "Geldrop-Mierlo": "geldrop-mierlo",
+        "Nuenen": "nuenen", "Laarbeek": "laarbeek",
+        "\u2019s-Hertogenbosch": "den-bosch", "Tilburg": "tilburg", "Waalwijk": "waalwijk", "Breda": "breda",
+    }
+    # Voorbeeldindeling van Noord-Brabant in 4 regio's. Plaatsen met een
+    # bestaande lokale SEO-pagina zijn klikbaar; overige plaatsen staan als
+    # gewone tekst (nadrukkelijk een selectie, geen volledige lijst — zie
+    # de "Onder andere actief in" framing hieronder).
+    REGIOS = [
+        ("Zuidoost-Brabant", ["Helmond", "Eindhoven", "Deurne", "Asten", "Someren", "Gemert-Bakel",
+                               "Geldrop-Mierlo", "Nuenen", "Laarbeek", "Veldhoven", "Best"]),
+        ("Noordoost-Brabant", ["\u2019s-Hertogenbosch", "Oss", "Veghel", "Uden", "Boxtel", "Vught"]),
+        ("Midden-Brabant", ["Tilburg", "Waalwijk", "Oisterwijk", "Goirle"]),
+        ("West-Brabant", ["Breda", "Oosterhout", "Etten-Leur", "Roosendaal", "Bergen op Zoom"]),
+    ]
+
+    def place_html(p):
+        if p in local_slug:
+            return f'<a href="{base}schoonmaakbedrijf-{local_slug[p]}.html" style="color:var(--link); font-weight:600; text-decoration:none;">{p}</a>'
+        return f'<span>{p}</span>'
+
+    regio_cards = "\n        ".join(f'''<div class="pakket-card">
+        <h3 class="pakket-title">{naam}</h3>
+        <p class="pakket-description" style="margin-top:2px;">{" \u00b7 ".join(place_html(p) for p in plaatsen)}</p>
+      </div>''' for naam, plaatsen in REGIOS)
+
     body = f"""
-  {page_hero("Werkgebied", "Actief in Brabant.", f"Vanuit {CITY} zijn we actief in Brabant, met Zuidoost-Brabant en de Peelgemeenten als vertrouwd kerngebied.", base, "Werkgebied", image="images/werkgebied-kerngebied.jpg", image_alt="Medewerker van BrabantSchoon bij de bedrijfswagen op locatie")}
+  {page_hero("Werkgebied", "Actief in heel Noord-Brabant.", f"Vanuit {CITY} verzorgen we schoonmaak voor bedrijven en particulieren in heel Noord-Brabant. Van eenmalige opdrachten tot periodieke schoonmaak: vraag gerust naar de mogelijkheden voor uw locatie.", base, "Werkgebied", image="images/werkgebied-kerngebied.jpg", image_alt="Medewerker van BrabantSchoon bij de bedrijfswagen op locatie")}
   <section class="section-tight">
     <div class="wrap">
-      <div class="sec-head reveal"><span class="eyebrow">Kerngebied</span><h2>Onze vaste regio.</h2></div>
-      <div class="grid-4 reveal">{city_cards}</div>
+      <div class="sec-head reveal"><span class="eyebrow">Onder andere actief in</span><h2>Een selectie van plaatsen waar wij actief zijn.</h2></div>
+      <div class="regio-grid reveal">
+        {regio_cards}
+      </div>
     </div>
   </section>
-""" + f"""
   <section class="section-tight" style="background:var(--bg-soft);">
-    <div class="wrap">
-      <div class="sec-head reveal"><span class="eyebrow">Verder in Brabant</span><h2>Ook actief hier, voor grotere opdrachten.</h2></div>
-      <div class="grid-3 reveal">{location_cards}</div>
+    <div class="wrap-narrow" style="text-align:center;">
+      <span class="eyebrow">Staat uw plaats er niet tussen?</span>
+      <h2 style="margin-top:8px;">Ook dan denken we graag mee.</h2>
+      <p class="prose reveal" style="margin-top:10px;">Ook dan kunt u gewoon een offerte aanvragen. Wij bekijken graag wat er mogelijk is op uw locatie.</p>
+      <div class="hero-actions" style="justify-content:center; margin-top:20px;">
+        <a href="{base}offerte.html#offerteWizard" class="btn btn-primary">Offerte aanvragen</a>
+      </div>
     </div>
   </section>
   <section>
@@ -1852,8 +1869,8 @@ def build_werkgebied():
   </section>
 """
     write("werkgebied.html", page_shell(
-        "Werkgebied | Actief in Brabant | BrabantSchoon",
-        f"BrabantSchoon is uw schoonmaakpartner voor Brabant, vanuit Helmond actief in Zuidoost-Brabant en de Peelgemeenten als kerngebied.",
+        "Werkgebied | Actief in heel Noord-Brabant | BrabantSchoon",
+        f"BrabantSchoon is uw schoonmaakpartner in heel Noord-Brabant, vanuit Helmond \u2014 voor bedrijven, VvE's, organisaties en particulieren.",
         "werkgebied.html", base, "werkgebied.html", body, breadcrumb_schema("Werkgebied", "werkgebied.html")
     ))
 
@@ -2112,7 +2129,7 @@ def build_location_pages():
     <div class="wrap">
       <div class="two-col reveal">
         <div>
-          <p class="prose">Ons kerngebied is Helmond en de Peelgemeenten \u2014 vandaar rijden we uit. Voor {loc['name']} werken we vooral bij grotere of terugkerende opdrachten, zoals een vast kantoorcontract, VvE-schoonmaak of een omvangrijke opleveringsschoonmaak.</p>
+          <p class="prose">BrabantSchoon is actief in heel Noord-Brabant, vanuit onze thuisbasis in Helmond. Voor {loc['name']} zijn we inzetbaar voor onder meer een vast kantoorcontract, VvE-schoonmaak of een opleveringsschoonmaak \u2014 vraag gerust naar de mogelijkheden voor uw locatie.</p>
           <div class="hero-actions" style="margin-top:26px;">
             <a href="{base}offerte.html?type=zakelijk#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>

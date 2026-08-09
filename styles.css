@@ -560,6 +560,11 @@ section{padding:96px 0;}
 
 /* ---------- Pakketkeuze-blokken (particuliere detailpagina's) ---------- */
 .pakket-grid{display:grid; grid-template-columns:1fr; gap:20px; align-items:start;}
+/* Regio-overzicht op werkgebied.html: 2x2 op grotere schermen (bewust geen
+   3-koloms grid, dat zou bij 4 regio's een ongelijke 3+1-verdeling geven). */
+.regio-grid{display:grid; grid-template-columns:1fr; gap:18px; align-items:start;}
+@media(min-width:700px){.regio-grid{grid-template-columns:repeat(2,1fr);}}
+.regio-grid .pakket-card p a:hover{color:var(--navy);}
 @media(min-width:640px){.pakket-grid{grid-template-columns:repeat(2,1fr);}}
 @media(min-width:960px){.pakket-grid{grid-template-columns:repeat(3,1fr);}}
 .pakket-card{
@@ -840,26 +845,22 @@ form.card-form{display:grid; gap:14px; background:var(--bg-soft); border:1px sol
 @media(max-width:899px){
   .wizard-nav{
     position:fixed; left:0; right:0; bottom:0; margin-top:0; z-index:60;
-    border-radius:0; padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+    border-radius:0; padding:8px 12px calc(8px + env(safe-area-inset-bottom));
     box-shadow:0 -6px 16px -4px rgba(0,43,92,0.14);
+    flex-direction:row; align-items:center; gap:10px;
   }
+  .wizard-nav .wizard-back{flex:0 0 auto; width:auto; margin-left:0;}
+  .wizard-nav .wizard-next, .wizard-nav .wizard-submit{flex:1; width:auto; margin-left:0;}
   /* Ruimte zodat het laatste veld/de laatste optie van elke stap nooit achter
-     de vaste onderbalk verdwijnt. Groter op smalle schermen, waar de balk
-     door de gestapelde knoppen hoger is (zie flex-direction:column-reverse
-     hieronder). */
-  .wizard-step{padding-bottom:96px;}
+     de vaste onderbalk verdwijnt. De balk staat op elke mobiele breedte in
+     één rij (Terug/Volgende naast elkaar), dus is even hoog overal. */
+  .wizard-step{padding-bottom:92px;}
 }
-@media(max-width:599px){
-  .wizard-step{padding-bottom:150px;}
-}
-
 @media(max-width:599px){
   .wizard-form{padding:20px 16px; border-radius:16px;}
   .wizard-q{font-size:17px;}
   .radio-cards{gap:10px;}
   .rc-card{padding:14px;}
-  .wizard-nav{flex-direction:column-reverse; gap:10px;}
-  .wizard-nav .wizard-back, .wizard-nav .wizard-next, .wizard-nav .wizard-submit{width:100%; margin-left:0;}
 }
 .row2{display:grid; grid-template-columns:1fr; gap:14px;}
 @media(min-width:560px){.row2{grid-template-columns:1fr 1fr;}}
@@ -932,7 +933,7 @@ footer.site-footer{background:var(--bg-navy); color:var(--ink-on-navy); padding:
   /* Zolang de offertewizard in beeld is, staat de vaste Volgende/Terug-balk
      onderaan het scherm — de WhatsApp-knop schuift dan omhoog zodat de twee
      elkaar nooit overlappen (zie de IntersectionObserver in main.js). */
-  body.wizard-nav-active .whatsapp-float{bottom:170px;}
+  body.wizard-nav-active .whatsapp-float{bottom:128px;}
 }
 
 /* ---------- misc ---------- */
