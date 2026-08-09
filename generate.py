@@ -2188,7 +2188,6 @@ def build_contact():
   {page_hero("Contact", "Neem contact op.", "We reageren doorgaans binnen \u00e9\u00e9n werkdag \u2014 voor bedrijven, VvE's, organisaties en particulieren.", base, "Contact")}
   <section>
     <div class="wrap">
-      {reviews_widget_block()}
       <div class="benefits-strip reveal">
         <span>{icon('check')}Vrijblijvende offerte</span>
         <span>{icon('clock')}Reactie doorgaans binnen \u00e9\u00e9n werkdag</span>
