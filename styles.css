@@ -846,29 +846,31 @@ form.card-form{display:grid; gap:14px; background:var(--bg-soft); border:1px sol
 .wizard-nav .wizard-next, .wizard-nav .wizard-submit{margin-left:auto;}
 
 @media(max-width:899px){
+  /* Geen fixed/sticky meer op mobiel: de navigatie staat weer gewoon in de
+     normale documentflow en scrolt mee met de pagina. Volgende (of de
+     verzendknop) wordt een normale, volledig-breedte knop direct onder de
+     laatste stapoptie; Terug staat daaronder als subtiele link. DOM-volgorde
+     blijft ongewijzigd (back, next, submit) — column-reverse zorgt dat
+     Volgende/Verzenden visueel bovenaan komt en Terug eronder, puur via CSS. */
   .wizard-nav{
-    position:fixed !important; left:0; right:0; bottom:0; margin-top:0; z-index:60;
-    border-radius:0; padding:8px 12px calc(8px + env(safe-area-inset-bottom));
-    box-shadow:0 -6px 16px -4px rgba(0,43,92,0.14);
-    flex-direction:row !important; align-items:center; gap:10px;
+    position:static; left:auto; right:auto; bottom:auto; margin-top:24px; padding:0;
+    border-top:none; background:transparent; z-index:auto; box-shadow:none;
+    display:flex; flex-direction:column-reverse; align-items:stretch; gap:12px;
   }
-  .wizard-nav .wizard-back{width:auto !important; flex:0 0 35%; margin-left:0;}
-  .wizard-nav .wizard-next, .wizard-nav .wizard-submit{width:auto !important; flex:1; margin-left:0;}
-  /* Ruimte zodat het laatste veld/de laatste optie van elke stap nooit achter
-     de vaste onderbalk verdwijnt. De balk staat op elke mobiele breedte in
-     één rij (Terug/Volgende naast elkaar), dus is even hoog overal. */
-  .wizard-step{padding-bottom:92px;}
+  .wizard-nav .wizard-next, .wizard-nav .wizard-submit{width:100%; flex:none; margin-left:0;}
+  .wizard-nav .wizard-back{
+    width:auto; flex:none; margin-left:0; align-self:center;
+    background:none; border:none; box-shadow:none; color:var(--link); font-weight:600;
+    font-size:13.5px; padding:6px 10px;
+  }
+  .wizard-nav .wizard-back::before{content:"\2190 "; }
+  .wizard-nav .wizard-back:hover, .wizard-nav .wizard-back:focus-visible{color:var(--navy);}
 }
 @media(max-width:599px){
   .wizard-form{padding:20px 16px; border-radius:16px;}
   .wizard-q{font-size:17px;}
   .radio-cards{gap:10px;}
   .rc-card{padding:14px;}
-  /* Nogmaals expliciet herbevestigd op de smalste breedtes: hier gaat het
-     vaakst mis met een verdwaalde column/column-reverse-regel elders. */
-  .wizard-nav{flex-direction:row !important;}
-  .wizard-nav .wizard-back{width:auto !important;}
-  .wizard-nav .wizard-next, .wizard-nav .wizard-submit{width:auto !important;}
 }
 .row2{display:grid; grid-template-columns:1fr; gap:14px;}
 @media(min-width:560px){.row2{grid-template-columns:1fr 1fr;}}
