@@ -1,6 +1,21 @@
 {
   "redirects": [
     {
+      "source": "/diensten/vve-schoonmaak",
+      "destination": "/diensten/vve-schoonmaak.html",
+      "permanent": true
+    },
+    {
+      "source": "/voorwaarden",
+      "destination": "/voorwaarden.html",
+      "permanent": true
+    },
+    {
+      "source": "/over-ons",
+      "destination": "/over-ons.html",
+      "permanent": true
+    },
+    {
       "source": "/index.html",
       "destination": "/",
       "permanent": true

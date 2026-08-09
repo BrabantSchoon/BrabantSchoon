@@ -210,9 +210,13 @@ SERVICES = [
     {"slug": "vve-schoonmaak", "icon": "building", "tint": "tint-5",
      "name": "VvE-schoonmaak",
      "short": "Onderhoud van trappenhuizen en gemeenschappelijke ruimtes.",
-     "intro": "Gemeenschappelijke ruimtes verdienen structureel onderhoud. We stemmen een vast schema af met VvE-besturen en beheerders.",
-     "bullets": ["Trappenhuizen en entrees", "Liften en gangen", "Direct contact met het bestuur"],
-     "for": "VvE-besturen en beheerders.", "faqs": [("Hoe wordt de frequentie van VvE-schoonmaak bepaald?", "In overleg met het bestuur stellen we een schema op dat past bij het gebruik van de gemeenschappelijke ruimtes."), ("Kan de VvE één vast aanspreekpunt krijgen?", "Ja, u krijgt een vast contact voor afstemming en eventuele bijzonderheden.")]},
+     "intro": "Gemeenschappelijke ruimtes verdienen structureel onderhoud. Van trappenhuis en entree tot gangen, vloeren, glazen deuren en veelgebruikte contactpunten zoals deurklinken en lichtschakelaars \u2014 we werken met een vaste schoonmaakplanning op een frequentie die past bij uw gebouw, van wekelijks tot periodiek. Heeft het complex een lift? Ook die nemen we desgewenst mee in de ronde. We stemmen een vast schema af met VvE-besturen en beheerders, en resultaat en afspraken worden steekproefsgewijs gecontroleerd zodat de afgesproken kwaliteit ook op langere termijn geborgd blijft. Elke VvE is anders, dus werkzaamheden en frequentie zijn altijd maatwerk.",
+     "bullets": ["Trappenhuizen en entrees", "Liften en gangen, indien van toepassing", "Vloeren, glas en deuren", "Veelgebruikte contactpunten", "Vaste schoonmaakplanning", "Direct contact met het bestuur"],
+     "for": "VvE-besturen en beheerders.",
+     "seo_title": "VvE-schoonmaak Brabant | Trappenhuis &amp; ruimtes | BrabantSchoon",
+     "seo_meta": "VvE-schoonmaak in Brabant: trappenhuis, entree en gemeenschappelijke ruimtes structureel schoon. Vanuit Helmond actief voor VvE's in heel Brabant.",
+     "extra_link_html": '<p class="prose" style="margin-top:16px;">Op zoek naar VvE-schoonmaak in Helmond zelf? Bekijk onze <a href="{base}schoonmaakbedrijf-helmond.html" style="color:var(--link); font-weight:600;">schoonmaakdiensten in Helmond</a>.</p>',
+     "faqs": [("Hoe wordt de frequentie van VvE-schoonmaak bepaald?", "In overleg met het bestuur stellen we een schema op dat past bij het gebruik van de gemeenschappelijke ruimtes."), ("Kan de VvE één vast aanspreekpunt krijgen?", "Ja, u krijgt een vast contact voor afstemming en eventuele bijzonderheden."), ("Wordt ook de lift meegenomen in de schoonmaak?", "Als het gebouw een lift heeft, kan die op verzoek worden meegenomen in de vaste ronde."), ("Werkt BrabantSchoon ook voor VvE's buiten Helmond?", "Ja, we verzorgen VvE-schoonmaak voor besturen en beheerders in heel Brabant, vanuit onze thuisbasis in Helmond.")]},
     {"slug": "periodieke-schoonmaak", "icon": "clock", "tint": "tint-6",
      "name": "Periodieke schoonmaak",
      "short": "Een vaste schoonmaakbeurt op een vast ritme.",
@@ -224,7 +228,10 @@ SERVICES = [
      "short": "Maatwerk voor vloeren, tapijt en bijzondere oppervlakken.",
      "intro": "Sommige oppervlakken vragen specifieke kennis. Van tapijtreiniging tot vloerbehandeling: we pakken werk aan dat verder gaat dan regulier onderhoud.",
      "bullets": ["Tapijt- en stofferingreiniging", "Vloerbehandeling", "Op aanvraag"],
-     "for": "Bedrijven met specifieke reinigingsvragen.", "faqs": [("Welke oppervlakken kunt u specialistisch laten reinigen?", "Onder andere tapijt, stoffering en diverse vloertypen, afhankelijk van de vraag."), ("Is specialistische reiniging ook eenmalig mogelijk?", "Ja, dit is vaak maatwerk en prima als eenmalige beurt aan te vragen.")]},
+     "for": "Bedrijven met specifieke reinigingsvragen.",
+     "seo_title": "Tapijtreiniging &amp; specialistische reiniging | BrabantSchoon",
+     "seo_meta": "Tapijtreiniging en specialistische reiniging van vloeren en bijzondere oppervlakken door BrabantSchoon, vanuit Helmond actief in Brabant.",
+     "faqs": [("Welke oppervlakken kunt u specialistisch laten reinigen?", "Onder andere tapijt, stoffering en diverse vloertypen, afhankelijk van de vraag."), ("Is specialistische reiniging ook eenmalig mogelijk?", "Ja, dit is vaak maatwerk en prima als eenmalige beurt aan te vragen.")]},
 ]
 
 WERKGEBIED_KERN = ["Helmond", "Deurne", "Asten", "Someren", "Gemert-Bakel", "Laarbeek"]
@@ -1213,6 +1220,7 @@ def build_service_pages():
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
           </div>
           {'<p class="prose" style="margin-top:14px; font-size:13.5px;">Nog niet zeker wat u nodig heeft? <a href="' + base + 'contact.html" style="color:var(--link); font-weight:600;">Plan vrijblijvend een locatieopname</a> \u2014 we bekijken de werkzaamheden samen, zodat de offerte precies aansluit.</p>' if s['slug'] == 'periodieke-schoonmaak' else ''}
+          {s.get('extra_link_html', '').format(base=base)}
         </div>
         <div>
           <p class="prose"><strong style="color:var(--ink);">Geschikt voor:</strong> {s['for']}</p>
@@ -1236,9 +1244,10 @@ def build_service_pages():
 """
         SERVICE_LABEL_OVERRIDES = {"VvE-schoonmaak": "VvE-schoonmaak"}
         service_label = SERVICE_LABEL_OVERRIDES.get(s['name'], s['name'][0].lower() + s['name'][1:])
+        title = s.get('seo_title', f"{s['name']} | BrabantSchoon")
+        meta = s.get('seo_meta', f"{s['short']} BrabantSchoon verzorgt {service_label} voor bedrijven, VvE's en organisaties in Brabant.")
         write(f"diensten/{s['slug']}.html", page_shell(
-            f"{s['name']} | BrabantSchoon",
-            f"{s['short']} BrabantSchoon verzorgt {service_label} voor bedrijven, VvE's en organisaties in Brabant.",
+            title, meta,
             f"diensten/{s['slug']}.html", base, "diensten.html",
             body, service_schema(s) + "\n" + breadcrumb_schema(s['name'], f"diensten/{s['slug']}.html") + "\n" + faq_schema(s["faqs"])
         ))
@@ -1404,7 +1413,7 @@ PARTICULIER_PAGES = [
             ("basis", "Basis", "Een goede eenmalige schoonmaakbeurt van de belangrijkste onderdelen.",
              ["Stofzuigen", "Dweilen", "Vrije oppervlakken afnemen", "Vensterbanken", "Keukenwerkblad", "Spoelbak", "Buitenzijde keukenapparatuur", "Toilet", "Badkamer", "Spiegels", "Oppervlakkig stof verwijderen"], False),
             ("grondig", "Grondig", "Meer detailwerk en een uitgebreidere reiniging.",
-             ["Alles van Basis", "Buitenzijde keukenkasten", "Deuren en deurklinken", "Plinten", "Kozijnen binnenzijde", "Radiatoren buitenzijde", "Uitgebreider sanitair", "Tegelwanden badkamer", "Extra aandacht voor hoeken en randen"], True),
+             ["Alles van Basis", "Buitenzijde keukenkasten", "Deuren en deurklinken", "Plinten", "Kozijnen binnenzijde", "Radiatoren buitenzijde", "Uitgebreider sanitair", "Tegelwanden badkamer", "Extra aandacht voor hoeken en randen"], False),
             ("compleet", "Compleet", "De meest uitgebreide uitvoering.",
              ["Alles van Grondig", "Binnenzijde lege keukenkasten", "Binnenzijde andere lege kasten, indien afgesproken", "Ramen binnenzijde", "Uitgebreider detailwerk", "Aanvullende werkzaamheden volgens afspraak"], False),
         ],
@@ -1652,19 +1661,12 @@ def build_particulier_detail_pages():
         body = f"""
   {hero}
   <section class="section-tight" style="padding-bottom:0;">
-    <div class="wrap-narrow" style="text-align:center;">
-      <div class="hero-actions" style="justify-content:center;">
-        <a href="{base}offerte.html?type=particulier#offerteWizard" class="btn btn-primary">Vrijblijvende offerte aanvragen</a>
-        <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
+    <div class="wrap">
+      <div class="sec-head reveal"><h2>Waar kunt u uit kiezen?</h2><p class="prose" style="margin-top:8px;">Onderstaande richtingen zijn bedoeld als keuzehulp, geen vaste prijsproducten \u2014 we werken met een offerte op maat. De prijs hangt onder meer af van {prijs_zin.lower()}.</p></div>
+      <div class="pakket-grid">
+        {pakketten_html}
       </div>
-    </div>
-  </section>
-  <section class="section-tight">
-    <div class="wrap-narrow">
-      <div class="sec-head reveal" style="text-align:left;"><h2>Voor wie is deze dienst?</h2></div>
-      <ul class="prose reveal" style="margin-top:10px;">
-        {voor_wie_html}
-      </ul>
+      <p class="prose reveal" style="margin-top:20px;">{extra_zin}</p>
     </div>
   </section>
   <section class="section-tight" style="background:var(--bg-soft);">
@@ -1678,12 +1680,15 @@ def build_particulier_detail_pages():
     </div>
   </section>
   <section class="section-tight">
-    <div class="wrap">
-      <div class="sec-head reveal"><h2>Waar kunt u uit kiezen?</h2><p class="prose" style="margin-top:8px;">Onderstaande richtingen zijn bedoeld als keuzehulp, geen vaste prijsproducten \u2014 we werken met een offerte op maat. De prijs hangt onder meer af van {prijs_zin.lower()}.</p></div>
-      <div class="pakket-grid">
-        {pakketten_html}
+    <div class="wrap-narrow">
+      <div class="sec-head reveal" style="text-align:left;"><h2>Voor wie is deze dienst?</h2></div>
+      <ul class="prose reveal" style="margin-top:10px;">
+        {voor_wie_html}
+      </ul>
+      <div class="hero-actions" style="margin-top:22px;">
+        <a href="{base}offerte.html?type=particulier&amp;dienst={page['slug']}#offerteWizard" class="btn btn-primary">Vrijblijvende offerte aanvragen</a>
+        <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
       </div>
-      <p class="prose reveal" style="margin-top:20px;">{extra_zin}</p>
     </div>
   </section>
   <section class="section-tight" style="background:var(--bg-soft);">
@@ -1914,7 +1919,7 @@ KERNGEBIED = [
         "waarom": "Doordat we in Helmond zelf gevestigd zijn, is de reistijd naar elke locatie kort. Dat betekent snel kunnen schakelen bij een spoedklus, en een team dat zich snel inwerkt in uw pand.",
         "klanten": "kantoren, bedrijfsverzamelgebouwen, VvE's, winkels, praktijken en andere zakelijke organisaties",
         "kaart_tekst": "BrabantSchoon is vanuit Helmond inzetbaar voor periodieke en eenmalige schoonmaak, voor kantoren, VvE's en winkels in de hele regio.",
-        "uitgelicht": ('Als vestigingsplaats is Helmond ons voornaamste werkgebied: van kantoren op en rond de Automotive Campus tot bedrijfsverzamelgebouwen in Suytkade en het centrum. Kantoorreiniging en VvE-schoonmaak vormen hier de kern van onze dienstverlening, aangevuld met opleveringsschoonmaak bij verhuizingen of nieuwbouw.', 'Door de korte afstand tot ons kantoor kunnen we in Helmond ook kleinere of onregelmatige klussen inplannen die verder weg minder snel rendabel zijn — denk aan een eenmalige beurt of een spoedklus tussen de vaste planning door.'),
+        "uitgelicht": ('Als vestigingsplaats is Helmond ons voornaamste werkgebied: van kantoren op en rond de Automotive Campus tot bedrijfsverzamelgebouwen in Suytkade en het centrum. Kantoorreiniging en VvE-schoonmaak vormen hier de kern van onze dienstverlening, aangevuld met opleveringsschoonmaak bij verhuizingen of nieuwbouw.', 'Ook glasbewassing en specialistische reiniging \u2014 bijvoorbeeld van tapijt en vloeren \u2014 vragen we regelmatig aan in Helmond, vaak in combinatie met periodieke schoonmaak op een vast ritme. Door de korte afstand tot ons kantoor kunnen we hier ook kleinere of onregelmatige klussen inplannen die verder weg minder snel rendabel zijn — denk aan een eenmalige beurt of een spoedklus tussen de vaste planning door.'),
         "doelgroep_lokaal": "In Helmond zijn we inzetbaar voor uiteenlopende organisaties: kantoren, bedrijfsverzamelgebouwen, VvE's, winkels en praktijken. Omdat dit onze thuisbasis is, bespreken we hier snel de mogelijkheden voor een kennismaking op locatie.",
         "faqs": [
             ("Werkt u ook 's avonds of in het weekend in Helmond?", "Ja, voor veel kantoren en winkels plannen we de schoonmaak juist buiten openingstijden, zodat het uw bedrijfsvoering niet verstoort."),
