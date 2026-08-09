@@ -147,19 +147,22 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
    hero (Bedrijven vs. Particulieren). Elk in een eigen merkkleur zodat het
    verschil in één oogopslag duidelijk is: navy voor zakelijk, groen voor
    particulier. Platte tekstknoppen, geen iconen. */
+/* Zakelijk is de primaire keuze (~80% van de doelgroep): stevige, gevulde
+   knop. Particulier blijft volwaardig aanwezig en duidelijk klikbaar, maar
+   als transparante outline-knop iets minder dominant. */
 .hero-audience-choice{display:flex; gap:14px; margin-top:26px; flex-wrap:wrap;}
 .btn-audience-lg{
   display:inline-flex; align-items:center; justify-content:center; flex:1 1 auto; min-width:160px;
   padding:16px 26px; border-radius:100px; font-weight:700; font-size:15.5px; text-align:center;
   color:#fff; text-decoration:none; border:1.5px solid transparent;
-  transition:background .15s ease, transform .15s ease, box-shadow .15s ease;
+  transition:background .15s ease, transform .15s ease, box-shadow .15s ease, border-color .15s ease;
   box-shadow:0 10px 24px -10px rgba(0,0,0,0.4);
 }
 .btn-audience-lg:hover{transform:translateY(-2px);}
 .btn-audience-business{background:var(--navy);}
 .btn-audience-business:hover{background:var(--navy-deep);}
-.btn-audience-particulier{background:var(--green);}
-.btn-audience-particulier:hover{background:var(--teal);}
+.btn-audience-particulier{background:transparent; border-color:rgba(255,255,255,0.7); box-shadow:none;}
+.btn-audience-particulier:hover{background:rgba(255,255,255,0.12); border-color:#fff;}
 .hero-full-content h1{color:#fff; font-size:clamp(36px,6vw,64px); line-height:1.05; margin-top:14px;}
 @media(min-width:760px){.hero-full{min-height:74vh;} .hero-full-content{padding:72px 0 72px;}}
 @media(max-width:640px){.hero-full{min-height:480px;}}
@@ -519,7 +522,10 @@ section{padding:96px 0;}
 
 /* ---------- WERKWIJZE ---------- */
 .steps{display:grid; grid-template-columns:1fr; gap:0;}
-@media(min-width:820px){.steps{grid-template-columns:repeat(4,1fr); gap:24px;}}
+@media(min-width:820px){.steps{grid-template-columns:repeat(3,1fr); gap:24px;}}
+.steps-wide{display:grid; grid-template-columns:1fr; gap:0;}
+@media(min-width:640px){.steps-wide{grid-template-columns:repeat(2,1fr); gap:22px;} .steps-wide .step{border-top:none; padding:0;}}
+@media(min-width:1000px){.steps-wide{grid-template-columns:repeat(5,1fr); gap:20px;}}
 .step{padding:26px 0; border-top:1px solid var(--line); position:relative;}
 @media(min-width:820px){.step{border-top:none; padding:0;}}
 .step .stepnum{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:32px; color:var(--link); line-height:1; display:flex; align-items:center; gap:10px;}
@@ -554,6 +560,11 @@ section{padding:96px 0;}
 
 /* ---------- Pakketkeuze-blokken (particuliere detailpagina's) ---------- */
 .pakket-grid{display:grid; grid-template-columns:1fr; gap:20px; align-items:start;}
+/* Regio-overzicht op werkgebied.html: 2x2 op grotere schermen (bewust geen
+   3-koloms grid, dat zou bij 4 regio's een ongelijke 3+1-verdeling geven). */
+.regio-grid{display:grid; grid-template-columns:1fr; gap:18px; align-items:start;}
+@media(min-width:700px){.regio-grid{grid-template-columns:repeat(2,1fr);}}
+.regio-grid .pakket-card p a:hover{color:var(--navy);}
 @media(min-width:640px){.pakket-grid{grid-template-columns:repeat(2,1fr);}}
 @media(min-width:960px){.pakket-grid{grid-template-columns:repeat(3,1fr);}}
 .pakket-card{
@@ -584,7 +595,22 @@ section{padding:96px 0;}
 }
 .pakket-toggle:hover, .pakket-toggle:focus-visible{background:#E9EEF5;}
 .pakket-toggle-arrow{font-size:12px; line-height:1;}
-.pakket-cta{text-align:center; width:100%;}
+.pakket-cta{
+  text-align:center; width:100%; min-width:0; max-width:100%;
+  white-space:normal; word-break:normal; overflow-wrap:break-word;
+}
+
+/* ---------- "Bekijk alle werkzaamheden" uitklapper (particuliere detailpagina's) ---------- */
+.onderdelen-more{margin-top:12px;}
+.onderdelen-more summary{
+  display:inline-flex; align-items:center; gap:6px; cursor:pointer; list-style:none;
+  color:var(--link); font-size:13.5px; font-weight:600;
+}
+.onderdelen-more summary::-webkit-details-marker{display:none;}
+.onderdelen-more summary:hover, .onderdelen-more summary:focus-visible{color:var(--navy);}
+.onderdelen-more summary .chev{display:flex; transition:transform .2s ease; flex-shrink:0;}
+.onderdelen-more summary .chev svg{width:15px; height:15px;}
+.onderdelen-more[open] summary .chev{transform:rotate(180deg);}
 
 /* ---------- Keuze-kaarten: zakelijk / particulier ---------- */
 .choice-grid{display:grid; grid-template-columns:1fr; gap:26px;}
@@ -820,16 +846,29 @@ form.card-form{display:grid; gap:14px; background:var(--bg-soft); border:1px sol
 .wizard-nav .wizard-next, .wizard-nav .wizard-submit{margin-left:auto;}
 
 @media(max-width:899px){
-  .wizard-nav{bottom:64px;}
+  .wizard-nav{
+    position:fixed !important; left:0; right:0; bottom:0; margin-top:0; z-index:60;
+    border-radius:0; padding:8px 12px calc(8px + env(safe-area-inset-bottom));
+    box-shadow:0 -6px 16px -4px rgba(0,43,92,0.14);
+    flex-direction:row !important; align-items:center; gap:10px;
+  }
+  .wizard-nav .wizard-back{width:auto !important; flex:0 0 35%; margin-left:0;}
+  .wizard-nav .wizard-next, .wizard-nav .wizard-submit{width:auto !important; flex:1; margin-left:0;}
+  /* Ruimte zodat het laatste veld/de laatste optie van elke stap nooit achter
+     de vaste onderbalk verdwijnt. De balk staat op elke mobiele breedte in
+     één rij (Terug/Volgende naast elkaar), dus is even hoog overal. */
+  .wizard-step{padding-bottom:92px;}
 }
-
 @media(max-width:599px){
   .wizard-form{padding:20px 16px; border-radius:16px;}
   .wizard-q{font-size:17px;}
   .radio-cards{gap:10px;}
   .rc-card{padding:14px;}
-  .wizard-nav{flex-direction:column-reverse; gap:10px;}
-  .wizard-nav .wizard-back, .wizard-nav .wizard-next, .wizard-nav .wizard-submit{width:100%; margin-left:0;}
+  /* Nogmaals expliciet herbevestigd op de smalste breedtes: hier gaat het
+     vaakst mis met een verdwaalde column/column-reverse-regel elders. */
+  .wizard-nav{flex-direction:row !important;}
+  .wizard-nav .wizard-back{width:auto !important;}
+  .wizard-nav .wizard-next, .wizard-nav .wizard-submit{width:auto !important;}
 }
 .row2{display:grid; grid-template-columns:1fr; gap:14px;}
 @media(min-width:560px){.row2{grid-template-columns:1fr 1fr;}}
@@ -896,9 +935,13 @@ footer.site-footer{background:var(--bg-navy); color:var(--ink-on-navy); padding:
 .whatsapp-tooltip::after{content:''; position:absolute; left:100%; top:50%; transform:translateY(-50%); border:6px solid transparent; border-left-color:var(--navy);}
 .whatsapp-float:hover .whatsapp-tooltip{opacity:1; transform:translateY(-50%) translateX(0);}
 @media(max-width:899px){
-  .whatsapp-float{right:16px; bottom:92px; width:52px; height:52px;}
+  .whatsapp-float{right:16px; bottom:92px; width:52px; height:52px; transition:bottom .2s ease;}
   .whatsapp-float svg{width:25px; height:25px;}
   .whatsapp-tooltip{display:none;}
+  /* Zolang de offertewizard in beeld is, staat de vaste Volgende/Terug-balk
+     onderaan het scherm — de WhatsApp-knop schuift dan omhoog zodat de twee
+     elkaar nooit overlappen (zie de IntersectionObserver in main.js). */
+  body.wizard-nav-active .whatsapp-float{bottom:128px;}
 }
 
 /* ---------- misc ---------- */
