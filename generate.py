@@ -77,7 +77,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "165"
+ASSET_VERSION = "167"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -768,24 +768,49 @@ def particulier_pakket_cards():
     </div>''')
     return '<div class="radio-cards cols-3">' + "\n      ".join(blocks) + "</div>"
 
-def particulier_extra_checkboxes():
-    """Checkbox-kaarten met extra werkzaamheden per particuliere dienst
-    (data-dienst-for filtert per dienst via JS). De 4 betaalde extra's
-    (PARTICULIER_EXTRA_PRIJZEN) krijgen data-price/data-extra-id zodat de
-    prijscalculator ze herkent; overige opties blijven onprijsde wensen."""
+def particulier_extra_checkboxes_overig():
+    """Gewone (onprijsde) checkbox-extra's voor particuliere diensten die
+    BUITEN het nieuwe aantalselector-systeem vallen: periodieke schoonmaak,
+    oplevering en 'weet ik nog niet' \u2014 deze opdracht voegt aantalselectors
+    alleen toe aan de 3 pakket-diensten (grote schoonmaak, verhuisschoonmaak,
+    na verbouwing)."""
     blocks = []
     for slug, opties in PARTICULIER_WIZARD_EXTRAS.items():
+        if slug in PARTICULIER_INBEGREPEN:
+            continue
         for opt in opties:
-            prijs_info = PARTICULIER_EXTRA_PRIJS_MAP.get(opt)
-            prijs_attrs = f' data-extra-id="{prijs_info[0]}" data-price="{prijs_info[1]}"' if prijs_info else ""
-            blocks.append(f'<label class="cb-card cb-hidden" data-dienst-for="{slug}"{prijs_attrs}><input type="checkbox" class="extra-checkbox" value="{opt}"><span>{opt}{f" (+\u20ac{prijs_info[1]})" if prijs_info else ""}</span></label>')
+            blocks.append(f'<label class="cb-card cb-hidden" data-dienst-for="{slug}"><input type="checkbox" class="extra-checkbox" value="{opt}"><span>{opt}</span></label>')
+    return "\n      ".join(blocks)
+
+def particulier_extra_counters():
+    """Aantalselector-kaarten ([\u2212] N [+]) voor de telbare, geprijsde extra
+    opties (EXTRA_OPTIES_CONFIG), voor elk van de 3 pakket-diensten. Elke
+    kaart draagt data-extra-id/data-price/data-eenheid/data-max zodat de
+    JS-calculator ze herkent; welk aantal standaard "inbegrepen" is, bepaalt
+    de JS live op basis van het gekozen pakket (PARTICULIER_INBEGREPEN)."""
+    blocks = []
+    for slug in PARTICULIER_INBEGREPEN.keys():
+        for eid, label, prijs, eenheid, maxi in EXTRA_OPTIES_CONFIG:
+            blocks.append(f'''<div class="counter-card cb-hidden" data-dienst-for="{slug}" data-extra-id="{eid}" data-price="{prijs}" data-eenheid="{eenheid}" data-max="{maxi}">
+      <div class="counter-info">
+        <span class="counter-label">{label}</span>
+        <span class="counter-included-note" hidden></span>
+        <span class="counter-price-note">+ \u20ac{prijs} per extra {eenheid}</span>
+      </div>
+      <div class="counter-controls">
+        <button type="button" class="counter-btn counter-minus" aria-label="Minder {label}">\u2212</button>
+        <input type="text" inputmode="numeric" class="counter-value" name="extra_aantal_{slug}_{eid}" value="0" readonly aria-label="Aantal {label.lower()}">
+        <button type="button" class="counter-btn counter-plus" aria-label="Meer {label}">+</button>
+      </div>
+    </div>''')
     return "\n      ".join(blocks)
 
 def contact_form():
     klanttype_cards = radio_cards("klanttype", WIZARD_KLANTTYPE, columns=3)
     dienst_cards = radio_cards("dienst", MASTER_DIENSTEN, columns=3)
     pakket_cards = particulier_pakket_cards()
-    extra_checkboxes = particulier_extra_checkboxes()
+    extra_counters = particulier_extra_counters()
+    extra_checkboxes_overig = particulier_extra_checkboxes_overig()
     opp_cards = radio_cards("oppervlakte", WIZARD_OPPERVLAKTE, columns=2)
     freq_cards = radio_cards("frequentie", WIZARD_FREQUENTIE, columns=2)
     freq_particulier_cards = radio_cards("frequentie_particulier", PARTICULIER_FREQUENTIE, columns=2)
@@ -798,7 +823,8 @@ def contact_form():
     prijs_data_json = json.dumps({
         "eenmalig": PARTICULIER_PRIJZEN,
         "periodiek": PERIODIEK_PRIJZEN,
-        "extras": {eid: {"label": label, "prijs": prijs} for eid, label, prijs in PARTICULIER_EXTRA_PRIJZEN},
+        "extras": {eid: {"label": label, "prijs": prijs, "eenheid": eenheid} for eid, label, prijs, eenheid, maxi in EXTRA_OPTIES_CONFIG},
+        "inbegrepen": PARTICULIER_INBEGREPEN,
         "staffelLabels": STAFFEL_LABELS,
         "toeslagPercentage": VERVUILING_TOESLAG_PERCENTAGE,
     }, ensure_ascii=False)
@@ -849,9 +875,15 @@ def contact_form():
     <div class="wizard-step" data-step="4" hidden data-applies-to="particulier">
       <h3 class="wizard-q">Extra werkzaamheden</h3>
       <p class="wizard-sub">Optioneel \u2014 kies alles wat van toepassing is. Prijzen zijn incl. btw en tellen mee in uw prijsindicatie.</p>
-      <div class="checkbox-cards" id="extraCheckboxes">
-        {extra_checkboxes}
-        <label class="cb-card" data-dienst-for="all"><input type="checkbox" id="extraAndersCheck"><span>Anders, namelijk\u2026</span></label>
+      <div class="wizard-subsection" data-requires-dienst="periodiek" style="margin-bottom:14px;">
+        <p class="prose" style="font-size:13px; background:var(--bg-soft); border-radius:10px; padding:10px 14px; margin:0;">Deze extra prijs geldt voor de schoonmaakbeurt waarvoor u nu een offerte aanvraagt \u2014 niet automatisch voor elke toekomstige beurt. Wilt u een extra werkzaamheid vaker laten uitvoeren, geef dat dan aan bij "Omschrijving" verderop, dan bespreken we dit graag met u.</p>
+      </div>
+      <div class="counter-cards" id="extraCounters">
+        {extra_counters}
+      </div>
+      <div class="checkbox-cards" id="extraCheckboxes" style="margin-top:12px;">
+        {extra_checkboxes_overig}
+        <label class="cb-card" data-dienst-for="all"><input type="checkbox" id="extraAndersCheck"><span>Anders, namelijk\u2026 <em style="font-weight:400;">(prijs op maat)</em></span></label>
       </div>
       <div id="extraAndersWrap" style="margin-top:14px;" hidden>
         <label for="extra_anders">Omschrijving</label>
@@ -1422,9 +1454,9 @@ PARTICULIER_PAGES = [
             ("uitgebreid", "Uitgebreid", "Grondig schoon voor de verhuizing.",
              ["Alles van Basis", "Deuren en klinken", "Plinten", "Keukenfronten", "Tegelwanden badkamer", "Radiatoren buitenzijde", "Kozijnen binnenzijde", "Binnenzijde lege keukenkasten", "Binnenzijde overige lege vaste kasten", "Uitgebreidere kalk- en vetreiniging"], False),
             ("opleverklaar", "Opleverklaar", "Klaar voor de overdracht.",
-             ["Alles van Uitgebreid", "Ramen binnenzijde", "Bovenkanten van bereikbare kasten/deuren", "Bereikbare plekken achter/onder apparatuur waar praktisch mogelijk", "Extra detailreiniging keuken en sanitair", "Volledige eindcontrole van de uitgevoerde schoonmaak"], False),
+             ["Alles van Uitgebreid", "Ramen binnenzijde", "Uitgebreide detailreiniging", "Volledige eindcontrole", "Bereikbare plekken achter/onder apparatuur waar praktisch mogelijk", "1x Oven binnenzijde", "1x Koelkast binnenzijde", "1x Vriezer binnenzijde", "1x Magnetron binnenzijde", "1x Afzuigkap intensief", "Extra kalkreiniging (1 badkamer)"], False),
         ],
-        "extra_opties": ["Oven binnenzijde", "Koelkast binnenzijde", "Vriezer binnenzijde", "Magnetron binnenzijde", "Afzuigkap", "Balkon", "Berging/schuur", "Intensieve keukenreiniging", "Intensieve sanitairreiniging"],
+        "extra_opties": [],
         "prijs_factoren": ["Grootte van de woning", "Aantal ruimtes", "Mate van vervuiling", "Gekozen werkzaamheden", "Extra opties", "Bereikbaarheid van de woning"],
         "note": None,
         "faqs": [
@@ -1456,9 +1488,9 @@ PARTICULIER_PAGES = [
             ("uitgebreid", "Uitgebreid", "Een uitgebreide grote schoonmaak met extra aandacht voor details.",
              ["Alles van Basis", "Deuren en deurklinken", "Plinten", "Keukenfronten grondig reinigen/ontvetten", "Tegelwanden badkamer", "Radiatoren buitenzijde", "Kozijnen binnenzijde", "Hoeken en randen", "Extra aandacht voor kalk- en vetresten"], False),
             ("compleet", "Compleet", "Van boven tot onder uitgebreid aangepakt.",
-             ["Alles van Uitgebreid", "Ramen binnenzijde", "Binnenzijde lege keukenkasten", "Binnenzijde overige lege vaste kasten", "Bovenkanten van bereikbare kasten/deuren", "Bereikbare plekken achter/onder meubels waar praktisch mogelijk", "Uitgebreide detailronde door de woning"], False),
+             ["Alles van Uitgebreid", "Ramen binnenzijde", "Binnenzijde lege keukenkasten", "Binnenzijde overige lege vaste kasten", "Bovenkanten van bereikbare kasten/deuren", "Bereikbare plekken achter/onder meubels waar praktisch mogelijk", "Uitgebreide detailronde door de woning", "1x Oven binnenzijde", "1x Koelkast binnenzijde", "1x Vriezer binnenzijde", "1x Magnetron binnenzijde", "1x Afzuigkap intensief", "Extra kalkreiniging (1 badkamer)"], False),
         ],
-        "extra_opties": ["Oven binnenzijde", "Koelkast binnenzijde", "Vriezer binnenzijde", "Magnetron binnenzijde", "Afzuigkap intensief", "Extra kalkreiniging badkamer", "Balkon", "Berging", "Specifieke ruimte extra grondig"],
+        "extra_opties": [],
         "prijs_factoren": ["Grootte van de woning", "Aantal ruimtes", "Mate van vervuiling", "Gekozen werkzaamheden", "Extra opties", "Bereikbaarheid van de woning"],
         "note": "De exacte werkzaamheden blijven afhankelijk van de woning, de vervuilingsgraad en de gemaakte afspraken.",
         "faqs": [
@@ -1487,7 +1519,7 @@ PARTICULIER_PAGES = [
             ("instapklaar", "Instapklaar", "Grondig gereinigd en klaar om weer te gebruiken.",
              ["Alles van Uitgebreid", "Ramen binnenzijde", "Binnenzijde lege keukenkasten", "Binnenzijde overige lege vaste kasten", "Bovenkanten van bereikbare deuren/kasten", "Uitgebreide detailreiniging", "Volledige eindronde"], False),
         ],
-        "extra_opties": ["Oven binnenzijde", "Koelkast binnenzijde", "Vriezer binnenzijde", "Magnetron binnenzijde", "Ramen binnenzijde", "Keukenkasten", "Intensieve sanitairreiniging", "Extra vloerreiniging", "Extra stofronde"],
+        "extra_opties": [],
         "prijs_factoren": ["Grootte van de woning", "Aantal ruimtes", "Mate van bouwstof en vervuiling", "Gekozen werkzaamheden", "Extra opties", "Bereikbaarheid van de woning"],
         "note": "Hardnekkige bouwresten zoals verf-, kit-, lijm- of cementresten worden vooraf beoordeeld en zijn niet standaard in de pakketten inbegrepen \u2014 verwijdering hiervan gebeurt alleen wanneer dit vooraf expliciet is afgesproken en technisch mogelijk is.",
         "faqs": [
@@ -1509,7 +1541,7 @@ PARTICULIER_PAGES = [
         "voor_wie": ["Huishoudens die terugkerend ondersteuning willen bij het schoonhouden van hun woning", "Drukke gezinnen die structureel tijd willen besparen", "Wie liever een vast aanspreekpunt heeft dan wisselende hulp"],
         "onderdelen": ["Stofzuigen", "Dweilen", "Bereikbare oppervlakken afstoffen", "Keukenwerkblad", "Spoelbak", "Keukenoppervlakken", "Sanitair", "Spiegels", "Vensterbanken", "Afvalbakken legen, indien gewenst"],
         "pakketten": [],
-        "extra_opties": ["Oven binnenzijde (periodiek)", "Koelkast binnenzijde (periodiek)", "Binnenzijde kasten", "Ramen binnenzijde", "Intensieve kalkreiniging", "Intensieve vetreiniging", "Specialistisch detailwerk"],
+        "extra_opties": [],
         "prijs_factoren": ["Grootte van de woning", "Aantal ruimtes", "Gekozen werkzaamheden", "Extra opties", "Bereikbaarheid van de woning", "Gewenste frequentie"],
         "note": "Sommige extra werkzaamheden kunnen periodiek worden ingepland (bijvoorbeeld eens per maand) in plaats van bij iedere schoonmaakbeurt \u2014 dit stemmen we samen met u af.",
         "faqs": [
@@ -1569,33 +1601,34 @@ PARTICULIER_PRIJZEN = {
     "grote-schoonmaak": {
         "vanaf": False,
         "prijzen": {
-            "tm60":    {"basis": 155, "uitgebreid": 235, "compleet": 310},
-            "61-90":   {"basis": 205, "uitgebreid": 285, "compleet": 385},
-            "91-120":  {"basis": 260, "uitgebreid": 360, "compleet": 490},
-            "121-150": {"basis": 310, "uitgebreid": 440, "compleet": 595},
+            "tm60":    {"basis": 200, "uitgebreid": 275, "compleet": 375},
+            "61-90":   {"basis": 250, "uitgebreid": 350, "compleet": 475},
+            "91-120":  {"basis": 300, "uitgebreid": 425, "compleet": 575},
+            "121-150": {"basis": 350, "uitgebreid": 500, "compleet": 700},
         },
     },
     "verhuisschoonmaak": {
         "vanaf": False,
         "prijzen": {
-            "tm60":    {"basis": 175, "uitgebreid": 255, "opleverklaar": 330},
-            "61-90":   {"basis": 225, "uitgebreid": 315, "opleverklaar": 415},
-            "91-120":  {"basis": 280, "uitgebreid": 395, "opleverklaar": 525},
-            "121-150": {"basis": 340, "uitgebreid": 475, "opleverklaar": 640},
+            "tm60":    {"basis": 225, "uitgebreid": 300, "opleverklaar": 400},
+            "61-90":   {"basis": 275, "uitgebreid": 375, "opleverklaar": 500},
+            "91-120":  {"basis": 325, "uitgebreid": 450, "opleverklaar": 625},
+            "121-150": {"basis": 400, "uitgebreid": 550, "opleverklaar": 750},
         },
     },
     "na-verbouwing": {
-        "vanaf": True,
+        "vanaf": False,
         "prijzen": {
-            "tm60":    {"basis": 185, "uitgebreid": 275, "instapklaar": 350},
-            "61-90":   {"basis": 240, "uitgebreid": 345, "instapklaar": 445},
-            "91-120":  {"basis": 300, "uitgebreid": 430, "instapklaar": 560},
-            "121-150": {"basis": 365, "uitgebreid": 520, "instapklaar": 680},
+            "tm60":    {"basis": 250, "uitgebreid": 325, "instapklaar": 450},
+            "61-90":   {"basis": 300, "uitgebreid": 400, "instapklaar": 550},
+            "91-120":  {"basis": 375, "uitgebreid": 500, "instapklaar": 675},
+            "121-150": {"basis": 450, "uitgebreid": 600, "instapklaar": 825},
         },
     },
 }
 
-# Periodieke schoonmaak: prijs per beurt, staffel x frequentie (geen pakketten)
+# Periodieke schoonmaak: prijs per beurt, staffel x frequentie (geen pakketten).
+# Deze opdracht verandert deze staffels bewust NIET.
 PERIODIEK_PRIJZEN = {
     "tm60":    {"wekelijks": 90,  "2weken": 100, "4weken": 115},
     "61-90":   {"wekelijks": 110, "2weken": 125, "4weken": 145},
@@ -1603,16 +1636,43 @@ PERIODIEK_PRIJZEN = {
     "121-150": {"wekelijks": 160, "2weken": 185, "4weken": 215},
 }
 
-# Betaalde extra opties (id, label \u2014 exacte checkbox-tekst, prijs incl. btw).
-# Alleen deze 4 zijn geprijsd; overige extra_opties per dienst blijven
-# onprijsde wensen die tijdens de aanvraag worden meegenomen.
-PARTICULIER_EXTRA_PRIJZEN = [
-    ("oven", "Oven binnenzijde", 35),
-    ("koelkast", "Koelkast binnenzijde", 25),
-    ("vriezer", "Vriezer binnenzijde", 20),
-    ("magnetron", "Magnetron binnenzijde", 15),
+# Centrale configuratie voor telbare, geprijsde extra opties \u2014 1 bron voor
+# de aantalselectors in de wizard, de prijsberekening en de "inbegrepen"
+# hoeveelheden per pakket. (id, label, prijs incl. btw, eenheid, max aantal)
+EXTRA_OPTIES_CONFIG = [
+    ("oven", "Oven binnenzijde", 35, "stuk", 5),
+    ("koelkast", "Koelkast binnenzijde", 25, "stuk", 5),
+    ("vriezer", "Vriezer binnenzijde", 20, "stuk", 5),
+    ("magnetron", "Magnetron binnenzijde", 15, "stuk", 5),
+    ("afzuigkap", "Afzuigkap intensief", 25, "stuk", 5),
+    ("kalkbadkamer", "Extra kalkreiniging badkamer", 30, "badkamer", 5),
+    ("balkon", "Balkon", 30, "stuk", 5),
+    ("berging", "Berging", 25, "stuk", 5),
+    ("ruimte_extra", "Specifieke ruimte extra grondig", 35, "ruimte", 5),
 ]
-PARTICULIER_EXTRA_PRIJS_MAP = {label: (eid, prijs) for eid, label, prijs in PARTICULIER_EXTRA_PRIJZEN}
+EXTRA_OPTIES_MAP = {eid: (label, prijs, eenheid, maxi) for eid, label, prijs, eenheid, maxi in EXTRA_OPTIES_CONFIG}
+
+# Welke extra opties standaard bij welk pakket zijn inbegrepen (aantal), per
+# dienst-slug. Balkon/berging/specifieke ruimte staan hier bewust nooit in:
+# die blijven altijd losse betaalde opties, ook bij Compleet/Opleverklaar
+# (de omvang hiervan kan te sterk verschillen om standaard toe te voegen).
+PARTICULIER_INBEGREPEN = {
+    "grote-schoonmaak": {
+        "compleet": {"oven": 1, "koelkast": 1, "vriezer": 1, "magnetron": 1, "afzuigkap": 1, "kalkbadkamer": 1},
+    },
+    "verhuisschoonmaak": {
+        "opleverklaar": {"oven": 1, "koelkast": 1, "vriezer": 1, "magnetron": 1, "afzuigkap": 1, "kalkbadkamer": 1},
+    },
+    "na-verbouwing": {
+        # Instapklaar bevat bewust GEEN standaard apparatuur \u2014 bij schoonmaak
+        # na verbouwing ligt de nadruk op bouwstof en de woning zelf.
+    },
+    "periodiek": {
+        # Periodieke schoonmaak heeft geen pakketten en dus ook geen
+        # standaard-inbegrepen aantallen \u2014 elke gekozen extra bij een
+        # periodieke beurt wordt volledig los in rekening gebracht.
+    },
+}
 
 VERVUILING_TOESLAG_PERCENTAGE = 20  # bij "Sterk vervuild", over de pakketprijs (niet over extra's)
 
@@ -1820,7 +1880,8 @@ def build_particulier_detail_pages():
         {pakketten_html}
       </div>'''
 
-        extra_zin = "Extra werkzaamheden nodig? Tijdens uw offerteaanvraag kunt u eenvoudig aanvullende wensen aangeven, bijvoorbeeld " + ", ".join(page["extra_opties"][:3]).lower() + ", en meer."
+        _extra_bron = [label for eid, label, prijs, eenheid, maxi in EXTRA_OPTIES_CONFIG] if page["slug"] in PARTICULIER_INBEGREPEN else page["extra_opties"]
+        extra_zin = "Extra werkzaamheden nodig? Tijdens uw offerteaanvraag kunt u eenvoudig aanvullende wensen en aantallen aangeven, bijvoorbeeld " + ", ".join(_extra_bron[:3]).lower() + ", en meer."
         stappen_html = "\n      ".join(f'''<div class="step">
         <div class="stepnum">{num}</div>
         <h3>{naam}</h3>
