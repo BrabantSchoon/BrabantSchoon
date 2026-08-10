@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="css/styles.css?v=163">
+<link rel="stylesheet" href="css/styles.css?v=165">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
@@ -128,6 +128,7 @@
   <section>
     <div class="wrap-narrow">
       <noscript><p class="prose" style="background:#FFF7E6; border:1px solid #F0D9A0; border-radius:12px; padding:16px 20px; margin-bottom:16px;">Dit formulier werkt het best met JavaScript ingeschakeld. Lukt dat niet? Bel of mail ons gerust rechtstreeks: <a href="tel:+31492313050" style="color:var(--link); font-weight:600;">0492 - 31 30 50</a> of <a href="mailto:info@brabantschoon.nl" style="color:var(--link); font-weight:600;">info@brabantschoon.nl</a>.</p></noscript>
+  <script type="application/json" id="prijsData">{"eenmalig": {"grote-schoonmaak": {"vanaf": false, "prijzen": {"tm60": {"basis": 155, "uitgebreid": 235, "compleet": 310}, "61-90": {"basis": 205, "uitgebreid": 285, "compleet": 385}, "91-120": {"basis": 260, "uitgebreid": 360, "compleet": 490}, "121-150": {"basis": 310, "uitgebreid": 440, "compleet": 595}}}, "verhuisschoonmaak": {"vanaf": false, "prijzen": {"tm60": {"basis": 175, "uitgebreid": 255, "opleverklaar": 330}, "61-90": {"basis": 225, "uitgebreid": 315, "opleverklaar": 415}, "91-120": {"basis": 280, "uitgebreid": 395, "opleverklaar": 525}, "121-150": {"basis": 340, "uitgebreid": 475, "opleverklaar": 640}}}, "na-verbouwing": {"vanaf": true, "prijzen": {"tm60": {"basis": 185, "uitgebreid": 275, "instapklaar": 350}, "61-90": {"basis": 240, "uitgebreid": 345, "instapklaar": 445}, "91-120": {"basis": 300, "uitgebreid": 430, "instapklaar": 560}, "121-150": {"basis": 365, "uitgebreid": 520, "instapklaar": 680}}}}, "periodiek": {"tm60": {"wekelijks": 90, "2weken": 100, "4weken": 115}, "61-90": {"wekelijks": 110, "2weken": 125, "4weken": 145}, "91-120": {"wekelijks": 135, "2weken": 155, "4weken": 180}, "121-150": {"wekelijks": 160, "2weken": 185, "4weken": 215}}, "extras": {"oven": {"label": "Oven binnenzijde", "prijs": 35}, "koelkast": {"label": "Koelkast binnenzijde", "prijs": 25}, "vriezer": {"label": "Vriezer binnenzijde", "prijs": 20}, "magnetron": {"label": "Magnetron binnenzijde", "prijs": 15}}, "staffelLabels": {"tm60": "t/m 60 m²", "61-90": "61–90 m²", "91-120": "91–120 m²", "121-150": "121–150 m²", "boven150": "Boven 150 m²"}, "toeslagPercentage": 20}</script>
   <form name="offerte" method="POST" action="https://api.web3forms.com/submit" class="wizard-form" id="offerteWizard" novalidate>
     <p id="wizardLive" class="sr-only" role="status" aria-live="polite"></p>
     <p id="wizardStepLabel" class="wizard-step-label"></p>
@@ -136,6 +137,7 @@
     <input type="hidden" name="redirect" value="https://www.brabantschoon.nl/thanks.html">
     <input type="hidden" name="pakket_naam" id="pakketNaamField" value="">
     <input type="hidden" name="extra_opties" id="extraOptiesField" value="">
+    <input type="hidden" name="prijsindicatie" id="prijsIndicatieField" value="">
     <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
 
     <div class="wizard-progress" aria-hidden="true">
@@ -316,91 +318,70 @@
       </label></div></div>
     </div>
 
-    <div class="wizard-step" data-step="3" hidden data-applies-to="particulier">
+    <div class="wizard-step" data-step="3" hidden data-applies-to="particulier" data-excludes-dienst="periodiek">
       <h3 class="wizard-q">Welke uitvoering past bij u?</h3>
       <p class="wizard-sub">Kies het pakket dat het beste aansluit — op de dienstpagina leest u precies wat elk pakket inhoudt.</p>
       <div class="radio-cards cols-3"><div class="rc-wrap rc-hidden" data-dienst-for="verhuisschoonmaak">
+      <input type="radio" name="pakket" id="pakket-verhuisschoonmaak-basis" value="Basis" class="rc-input" data-pakket-id="basis" required disabled>
+      <label for="pakket-verhuisschoonmaak-basis" class="rc-card">
+        <span class="rc-label">Basis</span>
+        <span class="rc-desc">De woning netjes schoon achterlaten.</span>
+      </label>
+    </div>
+      <div class="rc-wrap rc-hidden" data-dienst-for="verhuisschoonmaak">
+      <input type="radio" name="pakket" id="pakket-verhuisschoonmaak-uitgebreid" value="Uitgebreid" class="rc-input" data-pakket-id="uitgebreid" required disabled>
+      <label for="pakket-verhuisschoonmaak-uitgebreid" class="rc-card">
+        <span class="rc-label">Uitgebreid</span>
+        <span class="rc-desc">Grondig schoon voor de verhuizing.</span>
+      </label>
+    </div>
+      <div class="rc-wrap rc-hidden" data-dienst-for="verhuisschoonmaak">
       <input type="radio" name="pakket" id="pakket-verhuisschoonmaak-opleverklaar" value="Opleverklaar" class="rc-input" data-pakket-id="opleverklaar" required disabled>
       <label for="pakket-verhuisschoonmaak-opleverklaar" class="rc-card">
         <span class="rc-label">Opleverklaar</span>
-        <span class="rc-desc">Voor de woning die u verlaat.</span>
-      </label>
-    </div>
-      <div class="rc-wrap rc-hidden" data-dienst-for="verhuisschoonmaak">
-      <input type="radio" name="pakket" id="pakket-verhuisschoonmaak-intrekklaar" value="Intrekklaar" class="rc-input" data-pakket-id="intrekklaar" required disabled>
-      <label for="pakket-verhuisschoonmaak-intrekklaar" class="rc-card">
-        <span class="rc-label">Intrekklaar</span>
-        <span class="rc-desc">Voor een nieuwe woning vóór u erin trekt.</span>
-      </label>
-    </div>
-      <div class="rc-wrap rc-hidden" data-dienst-for="verhuisschoonmaak">
-      <input type="radio" name="pakket" id="pakket-verhuisschoonmaak-complete-verhuisschoonmaak" value="Complete verhuisschoonmaak" class="rc-input" data-pakket-id="complete-verhuisschoonmaak" required disabled>
-      <label for="pakket-verhuisschoonmaak-complete-verhuisschoonmaak" class="rc-card">
-        <span class="rc-label">Complete verhuisschoonmaak</span>
-        <span class="rc-desc">De meest uitgebreide verhuisschoonmaak.</span>
+        <span class="rc-desc">Klaar voor de overdracht.</span>
       </label>
     </div>
       <div class="rc-wrap rc-hidden" data-dienst-for="grote-schoonmaak">
       <input type="radio" name="pakket" id="pakket-grote-schoonmaak-basis" value="Basis" class="rc-input" data-pakket-id="basis" required disabled>
       <label for="pakket-grote-schoonmaak-basis" class="rc-card">
         <span class="rc-label">Basis</span>
-        <span class="rc-desc">Een goede eenmalige schoonmaakbeurt van de belangrijkste onderdelen.</span>
+        <span class="rc-desc">Een frisse, professionele schoonmaakbeurt.</span>
       </label>
     </div>
       <div class="rc-wrap rc-hidden" data-dienst-for="grote-schoonmaak">
-      <input type="radio" name="pakket" id="pakket-grote-schoonmaak-grondig" value="Grondig" class="rc-input" data-pakket-id="grondig" required disabled>
-      <label for="pakket-grote-schoonmaak-grondig" class="rc-card">
-        <span class="rc-label">Grondig</span>
-        <span class="rc-desc">Meer detailwerk en een uitgebreidere reiniging.</span>
+      <input type="radio" name="pakket" id="pakket-grote-schoonmaak-uitgebreid" value="Uitgebreid" class="rc-input" data-pakket-id="uitgebreid" required disabled>
+      <label for="pakket-grote-schoonmaak-uitgebreid" class="rc-card">
+        <span class="rc-label">Uitgebreid</span>
+        <span class="rc-desc">Een uitgebreide grote schoonmaak met extra aandacht voor details.</span>
       </label>
     </div>
       <div class="rc-wrap rc-hidden" data-dienst-for="grote-schoonmaak">
       <input type="radio" name="pakket" id="pakket-grote-schoonmaak-compleet" value="Compleet" class="rc-input" data-pakket-id="compleet" required disabled>
       <label for="pakket-grote-schoonmaak-compleet" class="rc-card">
         <span class="rc-label">Compleet</span>
-        <span class="rc-desc">De meest uitgebreide uitvoering.</span>
+        <span class="rc-desc">Van boven tot onder uitgebreid aangepakt.</span>
       </label>
     </div>
       <div class="rc-wrap rc-hidden" data-dienst-for="na-verbouwing">
-      <input type="radio" name="pakket" id="pakket-na-verbouwing-stofvrij" value="Stofvrij" class="rc-input" data-pakket-id="stofvrij" required disabled>
-      <label for="pakket-na-verbouwing-stofvrij" class="rc-card">
-        <span class="rc-label">Stofvrij</span>
-        <span class="rc-desc">Gericht op het verwijderen van bouwstof en normaal los vuil.</span>
+      <input type="radio" name="pakket" id="pakket-na-verbouwing-basis" value="Basis" class="rc-input" data-pakket-id="basis" required disabled>
+      <label for="pakket-na-verbouwing-basis" class="rc-card">
+        <span class="rc-label">Basis</span>
+        <span class="rc-desc">De belangrijkste ruimtes weer bouwstofvrij.</span>
       </label>
     </div>
       <div class="rc-wrap rc-hidden" data-dienst-for="na-verbouwing">
-      <input type="radio" name="pakket" id="pakket-na-verbouwing-gebruiksklaar" value="Gebruiksklaar" class="rc-input" data-pakket-id="gebruiksklaar" required disabled>
-      <label for="pakket-na-verbouwing-gebruiksklaar" class="rc-card">
-        <span class="rc-label">Gebruiksklaar</span>
-        <span class="rc-desc">Alles van Stofvrij, plus een uitgebreidere schoonmaak.</span>
+      <input type="radio" name="pakket" id="pakket-na-verbouwing-uitgebreid" value="Uitgebreid" class="rc-input" data-pakket-id="uitgebreid" required disabled>
+      <label for="pakket-na-verbouwing-uitgebreid" class="rc-card">
+        <span class="rc-label">Uitgebreid</span>
+        <span class="rc-desc">Van bouwstofvrij naar grondig schoon.</span>
       </label>
     </div>
       <div class="rc-wrap rc-hidden" data-dienst-for="na-verbouwing">
-      <input type="radio" name="pakket" id="pakket-na-verbouwing-complete-nazorg" value="Complete nazorg" class="rc-input" data-pakket-id="complete-nazorg" required disabled>
-      <label for="pakket-na-verbouwing-complete-nazorg" class="rc-card">
-        <span class="rc-label">Complete nazorg</span>
-        <span class="rc-desc">De meest uitgebreide optie na een grotere verbouwing of renovatie.</span>
-      </label>
-    </div>
-      <div class="rc-wrap rc-hidden" data-dienst-for="periodiek">
-      <input type="radio" name="pakket" id="pakket-periodiek-basis-onderhoud" value="Basis onderhoud" class="rc-input" data-pakket-id="basis-onderhoud" required disabled>
-      <label for="pakket-periodiek-basis-onderhoud" class="rc-card">
-        <span class="rc-label">Basis onderhoud</span>
-        <span class="rc-desc">Voor regelmatig onderhoud van de belangrijkste ruimtes.</span>
-      </label>
-    </div>
-      <div class="rc-wrap rc-hidden" data-dienst-for="periodiek">
-      <input type="radio" name="pakket" id="pakket-periodiek-uitgebreid-onderhoud" value="Uitgebreid onderhoud" class="rc-input" data-pakket-id="uitgebreid-onderhoud" required disabled>
-      <label for="pakket-periodiek-uitgebreid-onderhoud" class="rc-card">
-        <span class="rc-label">Uitgebreid onderhoud</span>
-        <span class="rc-desc">Basis, plus meer aandacht voor detail.</span>
-      </label>
-    </div>
-      <div class="rc-wrap rc-hidden" data-dienst-for="periodiek">
-      <input type="radio" name="pakket" id="pakket-periodiek-maatwerk" value="Maatwerk" class="rc-input" data-pakket-id="maatwerk" required disabled>
-      <label for="pakket-periodiek-maatwerk" class="rc-card">
-        <span class="rc-label">Maatwerk</span>
-        <span class="rc-desc">Voor wie zelf wil bepalen welke werkzaamheden periodiek worden uitgevoerd.</span>
+      <input type="radio" name="pakket" id="pakket-na-verbouwing-instapklaar" value="Instapklaar" class="rc-input" data-pakket-id="instapklaar" required disabled>
+      <label for="pakket-na-verbouwing-instapklaar" class="rc-card">
+        <span class="rc-label">Instapklaar</span>
+        <span class="rc-desc">Grondig gereinigd en klaar om weer te gebruiken.</span>
       </label>
     </div>
       <div class="rc-wrap rc-hidden" data-dienst-for="oplevering">
@@ -435,39 +416,42 @@
 
     <div class="wizard-step" data-step="4" hidden data-applies-to="particulier">
       <h3 class="wizard-q">Extra werkzaamheden</h3>
-      <p class="wizard-sub">Optioneel — kies alles wat van toepassing is.</p>
+      <p class="wizard-sub">Optioneel — kies alles wat van toepassing is. Prijzen zijn incl. btw en tellen mee in uw prijsindicatie.</p>
       <div class="checkbox-cards" id="extraCheckboxes">
-        <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak"><input type="checkbox" class="extra-checkbox" value="Oven"><span>Oven</span></label>
-      <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak"><input type="checkbox" class="extra-checkbox" value="Koelkast"><span>Koelkast</span></label>
-      <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak"><input type="checkbox" class="extra-checkbox" value="Vriezer"><span>Vriezer</span></label>
+        <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak" data-extra-id="oven" data-price="35"><input type="checkbox" class="extra-checkbox" value="Oven binnenzijde"><span>Oven binnenzijde (+€35)</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak" data-extra-id="koelkast" data-price="25"><input type="checkbox" class="extra-checkbox" value="Koelkast binnenzijde"><span>Koelkast binnenzijde (+€25)</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak" data-extra-id="vriezer" data-price="20"><input type="checkbox" class="extra-checkbox" value="Vriezer binnenzijde"><span>Vriezer binnenzijde (+€20)</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak" data-extra-id="magnetron" data-price="15"><input type="checkbox" class="extra-checkbox" value="Magnetron binnenzijde"><span>Magnetron binnenzijde (+€15)</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak"><input type="checkbox" class="extra-checkbox" value="Afzuigkap"><span>Afzuigkap</span></label>
-      <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak"><input type="checkbox" class="extra-checkbox" value="Ramen binnenzijde"><span>Ramen binnenzijde</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak"><input type="checkbox" class="extra-checkbox" value="Balkon"><span>Balkon</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak"><input type="checkbox" class="extra-checkbox" value="Berging/schuur"><span>Berging/schuur</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak"><input type="checkbox" class="extra-checkbox" value="Intensieve keukenreiniging"><span>Intensieve keukenreiniging</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="verhuisschoonmaak"><input type="checkbox" class="extra-checkbox" value="Intensieve sanitairreiniging"><span>Intensieve sanitairreiniging</span></label>
-      <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak"><input type="checkbox" class="extra-checkbox" value="Oven binnenzijde"><span>Oven binnenzijde</span></label>
-      <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak"><input type="checkbox" class="extra-checkbox" value="Koelkast binnenzijde"><span>Koelkast binnenzijde</span></label>
-      <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak"><input type="checkbox" class="extra-checkbox" value="Vriezer binnenzijde"><span>Vriezer binnenzijde</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak" data-extra-id="oven" data-price="35"><input type="checkbox" class="extra-checkbox" value="Oven binnenzijde"><span>Oven binnenzijde (+€35)</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak" data-extra-id="koelkast" data-price="25"><input type="checkbox" class="extra-checkbox" value="Koelkast binnenzijde"><span>Koelkast binnenzijde (+€25)</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak" data-extra-id="vriezer" data-price="20"><input type="checkbox" class="extra-checkbox" value="Vriezer binnenzijde"><span>Vriezer binnenzijde (+€20)</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak" data-extra-id="magnetron" data-price="15"><input type="checkbox" class="extra-checkbox" value="Magnetron binnenzijde"><span>Magnetron binnenzijde (+€15)</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak"><input type="checkbox" class="extra-checkbox" value="Afzuigkap intensief"><span>Afzuigkap intensief</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak"><input type="checkbox" class="extra-checkbox" value="Extra kalkreiniging badkamer"><span>Extra kalkreiniging badkamer</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak"><input type="checkbox" class="extra-checkbox" value="Balkon"><span>Balkon</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak"><input type="checkbox" class="extra-checkbox" value="Berging"><span>Berging</span></label>
-      <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak"><input type="checkbox" class="extra-checkbox" value="Extra ramen"><span>Extra ramen</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="grote-schoonmaak"><input type="checkbox" class="extra-checkbox" value="Specifieke ruimte extra grondig"><span>Specifieke ruimte extra grondig</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="na-verbouwing" data-extra-id="oven" data-price="35"><input type="checkbox" class="extra-checkbox" value="Oven binnenzijde"><span>Oven binnenzijde (+€35)</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="na-verbouwing" data-extra-id="koelkast" data-price="25"><input type="checkbox" class="extra-checkbox" value="Koelkast binnenzijde"><span>Koelkast binnenzijde (+€25)</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="na-verbouwing" data-extra-id="vriezer" data-price="20"><input type="checkbox" class="extra-checkbox" value="Vriezer binnenzijde"><span>Vriezer binnenzijde (+€20)</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="na-verbouwing" data-extra-id="magnetron" data-price="15"><input type="checkbox" class="extra-checkbox" value="Magnetron binnenzijde"><span>Magnetron binnenzijde (+€15)</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="na-verbouwing"><input type="checkbox" class="extra-checkbox" value="Ramen binnenzijde"><span>Ramen binnenzijde</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="na-verbouwing"><input type="checkbox" class="extra-checkbox" value="Keukenkasten"><span>Keukenkasten</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="na-verbouwing"><input type="checkbox" class="extra-checkbox" value="Intensieve sanitairreiniging"><span>Intensieve sanitairreiniging</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="na-verbouwing"><input type="checkbox" class="extra-checkbox" value="Extra vloerreiniging"><span>Extra vloerreiniging</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="na-verbouwing"><input type="checkbox" class="extra-checkbox" value="Extra stofronde"><span>Extra stofronde</span></label>
-      <label class="cb-card cb-hidden" data-dienst-for="na-verbouwing"><input type="checkbox" class="extra-checkbox" value="Specifieke ruimte extra grondig"><span>Specifieke ruimte extra grondig</span></label>
-      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Oven periodiek"><span>Oven periodiek</span></label>
-      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Koelkast periodiek"><span>Koelkast periodiek</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Oven binnenzijde (periodiek)"><span>Oven binnenzijde (periodiek)</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Koelkast binnenzijde (periodiek)"><span>Koelkast binnenzijde (periodiek)</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Binnenzijde kasten"><span>Binnenzijde kasten</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Ramen binnenzijde"><span>Ramen binnenzijde</span></label>
-      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Keukenkasten"><span>Keukenkasten</span></label>
-      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Extra badkamer"><span>Extra badkamer</span></label>
-      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Extra verdieping"><span>Extra verdieping</span></label>
-      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Wisselende detailklus"><span>Wisselende detailklus</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Intensieve kalkreiniging"><span>Intensieve kalkreiniging</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Intensieve vetreiniging"><span>Intensieve vetreiniging</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="periodiek"><input type="checkbox" class="extra-checkbox" value="Specialistisch detailwerk"><span>Specialistisch detailwerk</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="oplevering"><input type="checkbox" class="extra-checkbox" value="Oven"><span>Oven</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="oplevering"><input type="checkbox" class="extra-checkbox" value="Koelkast"><span>Koelkast</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="oplevering"><input type="checkbox" class="extra-checkbox" value="Vriezer"><span>Vriezer</span></label>
@@ -487,60 +471,148 @@
 
     <div class="wizard-step" data-step="5" hidden data-applies-to="particulier">
       <h3 class="wizard-q">Informatie over uw woning</h3>
-      <p class="wizard-sub">Dit helpt ons een goede inschatting te maken. Alle velden zijn optioneel.</p>
+      <p class="wizard-sub">Dit helpt ons een goede inschatting te maken — en bepaalt bij eenmalige diensten uw prijsindicatie hieronder.</p>
       <div class="row2">
         <div><label for="typewoning">Type woning</label><input id="typewoning" name="typewoning" type="text" placeholder="Bijv. eengezinswoning, appartement"></div>
-        <div><label for="woonoppervlakte_m2">Woonoppervlakte (m²)</label><input id="woonoppervlakte_m2" name="woonoppervlakte_m2" type="number" min="1" placeholder="Bijv. 90"></div>
-      </div>
-      <div class="row2" style="margin-top:14px;">
         <div><label for="slaapkamers">Aantal slaapkamers</label><input id="slaapkamers" name="slaapkamers" type="number" min="0" placeholder="Bijv. 3"></div>
-        <div><label for="badkamers">Aantal badkamers</label><input id="badkamers" name="badkamers" type="number" min="0" placeholder="Bijv. 1"></div>
       </div>
       <div class="row2" style="margin-top:14px;">
+        <div><label for="badkamers">Aantal badkamers</label><input id="badkamers" name="badkamers" type="number" min="0" placeholder="Bijv. 1"></div>
         <div><label for="toiletten">Aantal toiletten</label><input id="toiletten" name="toiletten" type="number" min="0" placeholder="Bijv. 1"></div>
       </div>
       <div style="margin-top:22px;">
-        <label style="display:block; margin-bottom:10px;">Is de woning bewoond of leeg?</label>
-        <div class="radio-cards cols-2"><input type="radio" name="bewoond_leeg" id="bewoond_leeg-bewoond" value="Bewoond" class="rc-input" required>
-      <label for="bewoond_leeg-bewoond" class="rc-card">
+        <label style="display:block; margin-bottom:10px;">Woonoppervlakte</label>
+        <div class="radio-cards cols-2"><input type="radio" name="woonoppervlakte_staffel" id="woonoppervlakte_staffel-t-m-60-m-" value="t/m 60 m²" class="rc-input" required>
+      <label for="woonoppervlakte_staffel-t-m-60-m-" class="rc-card">
         
-        <span class="rc-label">Bewoond</span>
-        <span class="rc-desc">De woning wordt nog gebruikt</span>
+        <span class="rc-label">t/m 60 m²</span>
+        <span class="rc-desc"></span>
       </label>
-      <input type="radio" name="bewoond_leeg" id="bewoond_leeg-leeg" value="Leeg" class="rc-input" required>
-      <label for="bewoond_leeg-leeg" class="rc-card">
+      <input type="radio" name="woonoppervlakte_staffel" id="woonoppervlakte_staffel-61-90-m-" value="61–90 m²" class="rc-input" required>
+      <label for="woonoppervlakte_staffel-61-90-m-" class="rc-card">
         
-        <span class="rc-label">Leeg</span>
-        <span class="rc-desc">De woning staat leeg</span>
+        <span class="rc-label">61–90 m²</span>
+        <span class="rc-desc"></span>
+      </label>
+      <input type="radio" name="woonoppervlakte_staffel" id="woonoppervlakte_staffel-91-120-m-" value="91–120 m²" class="rc-input" required>
+      <label for="woonoppervlakte_staffel-91-120-m-" class="rc-card">
+        
+        <span class="rc-label">91–120 m²</span>
+        <span class="rc-desc"></span>
+      </label>
+      <input type="radio" name="woonoppervlakte_staffel" id="woonoppervlakte_staffel-121-150-m-" value="121–150 m²" class="rc-input" required>
+      <label for="woonoppervlakte_staffel-121-150-m-" class="rc-card">
+        
+        <span class="rc-label">121–150 m²</span>
+        <span class="rc-desc"></span>
+      </label>
+      <input type="radio" name="woonoppervlakte_staffel" id="woonoppervlakte_staffel-boven-150-m-" value="Boven 150 m²" class="rc-input" required>
+      <label for="woonoppervlakte_staffel-boven-150-m-" class="rc-card">
+        
+        <span class="rc-label">Boven 150 m²</span>
+        <span class="rc-desc"></span>
       </label></div>
       </div>
-      <div style="margin-top:22px;">
-        <label style="display:block; margin-bottom:10px;">Hoe zou u de huidige staat omschrijven?</label>
-        <div class="radio-cards cols-2"><input type="radio" name="vervuilingsgraad" id="vervuilingsgraad-normaal" value="Normaal" class="rc-input" required>
-      <label for="vervuilingsgraad-normaal" class="rc-card">
+      <div class="wizard-subsection" data-requires-dienst="verhuisschoonmaak" style="margin-top:22px;">
+        <label style="display:block; margin-bottom:10px;">Is de woning tijdens de schoonmaak leeg?</label>
+        <div class="radio-cards cols-2"><input type="radio" name="bewoond_leeg" id="bewoond_leeg-ja-volledig-leeg" value="Ja, volledig leeg" class="rc-input" required>
+      <label for="bewoond_leeg-ja-volledig-leeg" class="rc-card">
         
-        <span class="rc-label">Normaal</span>
-        <span class="rc-desc">Reguliere staat van onderhoud</span>
+        <span class="rc-label">Ja, volledig leeg</span>
+        <span class="rc-desc">De woning staat helemaal leeg</span>
       </label>
-      <input type="radio" name="vervuilingsgraad" id="vervuilingsgraad-redelijk-vervuild" value="Redelijk vervuild" class="rc-input" required>
-      <label for="vervuilingsgraad-redelijk-vervuild" class="rc-card">
+      <input type="radio" name="bewoond_leeg" id="bewoond_leeg-grotendeels-leeg" value="Grotendeels leeg" class="rc-input" required>
+      <label for="bewoond_leeg-grotendeels-leeg" class="rc-card">
         
-        <span class="rc-label">Redelijk vervuild</span>
-        <span class="rc-desc">Wat meer aandacht nodig</span>
+        <span class="rc-label">Grotendeels leeg</span>
+        <span class="rc-desc">Op enkele spullen na leeg</span>
+      </label>
+      <input type="radio" name="bewoond_leeg" id="bewoond_leeg-nee-nog-ingericht" value="Nee, nog ingericht" class="rc-input" required>
+      <label for="bewoond_leeg-nee-nog-ingericht" class="rc-card">
+        
+        <span class="rc-label">Nee, nog ingericht</span>
+        <span class="rc-desc">De woning wordt nog gebruikt/bewoond</span>
+      </label></div>
+        <p class="prose" id="ingerichtNote" style="margin-top:10px; font-size:13px; background:var(--bg-soft); border-radius:10px; padding:10px 14px;" hidden>Een ingerichte woning kan extra werkzaamheden vereisen. De definitieve prijs wordt na beoordeling bevestigd.</p>
+      </div>
+      <div class="wizard-subsection" data-excludes-dienst="periodiek" style="margin-top:22px;">
+        <label style="display:block; margin-bottom:10px;">Hoe zou u de huidige staat omschrijven?</label>
+        <div class="radio-cards cols-2"><input type="radio" name="vervuilingsgraad" id="vervuilingsgraad-normaal-vervuild" value="Normaal vervuild" class="rc-input" required>
+      <label for="vervuilingsgraad-normaal-vervuild" class="rc-card">
+        
+        <span class="rc-label">Normaal vervuild</span>
+        <span class="rc-desc">Reguliere staat van onderhoud</span>
       </label>
       <input type="radio" name="vervuilingsgraad" id="vervuilingsgraad-sterk-vervuild" value="Sterk vervuild" class="rc-input" required>
       <label for="vervuilingsgraad-sterk-vervuild" class="rc-card">
         
         <span class="rc-label">Sterk vervuild</span>
-        <span class="rc-desc">Grondige aanpak nodig</span>
+        <span class="rc-desc">+20% op de pakketprijs</span>
       </label>
-      <input type="radio" name="vervuilingsgraad" id="vervuilingsgraad-weet-ik-niet-graag-beoordelen" value="Weet ik niet / graag beoordelen" class="rc-input" required>
-      <label for="vervuilingsgraad-weet-ik-niet-graag-beoordelen" class="rc-card">
+      <input type="radio" name="vervuilingsgraad" id="vervuilingsgraad-zeer-sterk-vervuild-bijzondere-situatie" value="Zeer sterk vervuild / bijzondere situatie" class="rc-input" required>
+      <label for="vervuilingsgraad-zeer-sterk-vervuild-bijzondere-situatie" class="rc-card">
         
-        <span class="rc-label">Weet ik niet / graag beoordelen</span>
-        <span class="rc-desc">We kijken graag met u mee</span>
+        <span class="rc-label">Zeer sterk vervuild / bijzondere situatie</span>
+        <span class="rc-desc">Prijs op maat, na beoordeling</span>
       </label></div>
       </div>
+      <div class="wizard-subsection" data-requires-dienst="na-verbouwing" style="margin-top:22px;">
+        <label style="display:block; margin-bottom:10px;">Wat is er verbouwd?</label>
+        <div class="radio-cards cols-3"><input type="radio" name="verbouwing_type" id="verbouwing_type-keuken" value="Keuken" class="rc-input" required>
+      <label for="verbouwing_type-keuken" class="rc-card">
+        
+        <span class="rc-label">Keuken</span>
+        <span class="rc-desc"></span>
+      </label>
+      <input type="radio" name="verbouwing_type" id="verbouwing_type-badkamer" value="Badkamer" class="rc-input" required>
+      <label for="verbouwing_type-badkamer" class="rc-card">
+        
+        <span class="rc-label">Badkamer</span>
+        <span class="rc-desc"></span>
+      </label>
+      <input type="radio" name="verbouwing_type" id="verbouwing_type-e-n-kamer" value="Eén kamer" class="rc-input" required>
+      <label for="verbouwing_type-e-n-kamer" class="rc-card">
+        
+        <span class="rc-label">Eén kamer</span>
+        <span class="rc-desc"></span>
+      </label>
+      <input type="radio" name="verbouwing_type" id="verbouwing_type-meerdere-kamers" value="Meerdere kamers" class="rc-input" required>
+      <label for="verbouwing_type-meerdere-kamers" class="rc-card">
+        
+        <span class="rc-label">Meerdere kamers</span>
+        <span class="rc-desc"></span>
+      </label>
+      <input type="radio" name="verbouwing_type" id="verbouwing_type-gehele-woning" value="Gehele woning" class="rc-input" required>
+      <label for="verbouwing_type-gehele-woning" class="rc-card">
+        
+        <span class="rc-label">Gehele woning</span>
+        <span class="rc-desc"></span>
+      </label>
+      <input type="radio" name="verbouwing_type" id="verbouwing_type-anders" value="Anders" class="rc-input" required>
+      <label for="verbouwing_type-anders" class="rc-card">
+        
+        <span class="rc-label">Anders</span>
+        <span class="rc-desc"></span>
+      </label></div>
+      </div>
+      <div class="wizard-subsection" data-requires-dienst="na-verbouwing" style="margin-top:22px;">
+        <label style="display:block; margin-bottom:10px;">Zijn er hardnekkige bouwresten aanwezig?</label>
+        <p class="prose" style="margin-top:-4px; margin-bottom:10px; font-size:13px;">Bijvoorbeeld verfspatten, kitresten, lijmresten, cement/cementsluier of vergelijkbare hardnekkige bouwresten.</p>
+        <div class="radio-cards cols-2"><input type="radio" name="bouwresten" id="bouwresten-nee-geen-hardnekkige-bouwresten" value="Nee, geen hardnekkige bouwresten" class="rc-input" required>
+      <label for="bouwresten-nee-geen-hardnekkige-bouwresten" class="rc-card">
+        
+        <span class="rc-label">Nee, geen hardnekkige bouwresten</span>
+        <span class="rc-desc">Normale hoeveelheid bouwstof</span>
+      </label>
+      <input type="radio" name="bouwresten" id="bouwresten-ja-er-zijn-hardnekkige-bouwresten" value="Ja, er zijn hardnekkige bouwresten" class="rc-input" required>
+      <label for="bouwresten-ja-er-zijn-hardnekkige-bouwresten" class="rc-card">
+        
+        <span class="rc-label">Ja, er zijn hardnekkige bouwresten</span>
+        <span class="rc-desc">Bijv. verf-, kit-, lijm- of cementresten — prijs op maat</span>
+      </label></div>
+        <p class="prose" id="bouwrestenNote" style="margin-top:10px; font-size:13px; background:var(--bg-soft); border-radius:10px; padding:10px 14px;" hidden>Verwijdering van hardnekkige verf-, kit-, lijm-, cement- en vergelijkbare bouwresten is niet standaard in het pakket inbegrepen. We beoordelen dit soort situaties eerst, voordat we een definitieve prijs kunnen geven.</p>
+      </div>
+      <div id="prijsBlok5"></div>
     </div>
 
     <div class="wizard-step" data-step="6" hidden data-applies-to="particulier" data-requires-dienst="periodiek">
@@ -552,10 +624,10 @@
         <span class="rc-label">Wekelijks</span>
         <span class="rc-desc">Elke week hetzelfde ritme</span>
       </label>
-      <input type="radio" name="frequentie_particulier" id="frequentie_particulier-om-de-week" value="Om de week" class="rc-input" required>
-      <label for="frequentie_particulier-om-de-week" class="rc-card">
+      <input type="radio" name="frequentie_particulier" id="frequentie_particulier-iedere-2-weken" value="Iedere 2 weken" class="rc-input" required>
+      <label for="frequentie_particulier-iedere-2-weken" class="rc-card">
         
-        <span class="rc-label">Om de week</span>
+        <span class="rc-label">Iedere 2 weken</span>
         <span class="rc-desc">Elke twee weken</span>
       </label>
       <input type="radio" name="frequentie_particulier" id="frequentie_particulier-iedere-4-weken" value="Iedere 4 weken" class="rc-input" required>
@@ -563,19 +635,8 @@
         
         <span class="rc-label">Iedere 4 weken</span>
         <span class="rc-desc">Eens per maand</span>
-      </label>
-      <input type="radio" name="frequentie_particulier" id="frequentie_particulier-andere-frequentie" value="Andere frequentie" class="rc-input" required>
-      <label for="frequentie_particulier-andere-frequentie" class="rc-card">
-        
-        <span class="rc-label">Andere frequentie</span>
-        <span class="rc-desc">In overleg te bepalen</span>
-      </label>
-      <input type="radio" name="frequentie_particulier" id="frequentie_particulier-weet-ik-nog-niet-graag-advies" value="Weet ik nog niet / graag advies" class="rc-input" required>
-      <label for="frequentie_particulier-weet-ik-nog-niet-graag-advies" class="rc-card">
-        
-        <span class="rc-label">Weet ik nog niet / graag advies</span>
-        <span class="rc-desc">We denken graag met u mee</span>
       </label></div>
+      <div id="prijsBlok6" style="margin-top:22px;"></div>
     </div>
 
     <div class="wizard-step" data-step="7" hidden data-applies-to="bedrijf vve">
@@ -690,6 +751,7 @@
       <h3 class="wizard-q">Controleer uw aanvraag</h3>
       <p class="wizard-sub">Klopt alles? Dan kunt u de aanvraag verzenden. Wilt u iets aanpassen, gebruik dan "Terug".</p>
       <dl class="wizard-summary" id="wizardSummary" aria-live="polite"></dl>
+      <div id="prijsBlok11" style="margin-top:16px;"></div>
     </div>
 
     <div class="wizard-nav">
@@ -833,6 +895,6 @@
   applyStoredConsent();
 })();
 </script>
-<script src="js/main.js?v=163" defer></script>
+<script src="js/main.js?v=165" defer></script>
 </body>
 </html>
