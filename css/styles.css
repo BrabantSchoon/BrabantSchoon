@@ -143,6 +143,17 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
   background:linear-gradient(0deg, rgba(10,22,64,0.94) 0%, rgba(10,22,64,0.68) 45%, rgba(10,22,64,0.32) 100%);
 }
 .hero-full-content{position:relative; z-index:1; padding:64px 0 56px; color:#fff;}
+/* Compacte hero-variant voor dienst-detailpagina's: de bezoeker heeft al op
+   een specifieke dienst geklikt en hoeft niet eerst een bijna-volledig-scherm
+   foto+titel te zien voordat de inhoud begint. Alleen gebruikt op
+   dienst-detailpagina's — de homepage-hero blijft ongewijzigd. */
+.hero-full.hero-full-compact{min-height:280px;}
+.hero-full-compact .hero-full-content{padding:30px 0 26px;}
+.hero-full-compact .lead{font-size:15px;}
+@media(max-width:640px){
+  .hero-full.hero-full-compact{min-height:200px;}
+  .hero-full-compact .hero-full-content{padding:18px 0 16px;}
+}
 /* Twee grote, gelijkwaardige doelgroepknoppen: dit is de hoofdkeuze in de
    hero (Bedrijven vs. Particulieren). Elk in een eigen merkkleur zodat het
    verschil in één oogopslag duidelijk is: navy voor zakelijk, groen voor
@@ -539,6 +550,7 @@ section{padding:96px 0;}
   box-shadow:var(--shadow-sm); transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
 .service-card:hover{transform:translateY(-4px); box-shadow:var(--shadow-md); border-color:var(--link);}
+.service-card:focus-visible{outline:2.5px solid var(--blue); outline-offset:3px; transform:translateY(-4px); box-shadow:var(--shadow-md); border-color:var(--link);}
 .service-card .thumb{aspect-ratio:3/1.7; display:flex; align-items:center; justify-content:center; overflow:hidden;}
 .service-card .thumb svg{width:40%; height:40%;}
 .service-card .thumb img{transition:transform .35s ease, filter .35s ease; filter:brightness(1.07);}
@@ -573,6 +585,12 @@ section{padding:96px 0;}
 }
 .pakket-title{font-family:'Inter',sans-serif; font-weight:800; font-size:17px; color:var(--ink);}
 .pakket-description{color:var(--ink-soft); font-size:14px; margin-top:8px; line-height:1.55;}
+.pakket-price{font-size:20px; font-weight:800; color:var(--navy); margin-top:12px;}
+.pakket-price-unit{font-size:12.5px; font-weight:600; color:var(--ink-soft);}
+.pakket-prijstabel{width:100%; border-collapse:collapse; font-size:13px; margin-top:2px;}
+.pakket-prijstabel td{padding:6px 0; border-bottom:1px solid var(--line); color:var(--ink);}
+.pakket-prijstabel td:last-child{text-align:right; font-weight:700;}
+.pakket-prijstabel tr:last-child td{border-bottom:none;}
 .pakket-card-featured{border:1.5px solid var(--green); box-shadow:0 12px 26px -18px rgba(0,122,51,0.35);}
 .pakket-badge{
   position:absolute; top:-11px; right:20px; background:var(--green); color:#fff;
@@ -599,6 +617,16 @@ section{padding:96px 0;}
   text-align:center; width:100%; min-width:0; max-width:100%;
   white-space:normal; word-break:normal; overflow-wrap:break-word;
 }
+
+/* ---------- Prijstabel (particuliere detailpagina's) ---------- */
+.prijstabel-wrap{margin-top:22px; overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--line); border-radius:var(--radius-sm);}
+.prijstabel{width:100%; border-collapse:collapse; min-width:480px; font-size:13.5px;}
+.prijstabel th, .prijstabel td{padding:11px 14px; text-align:left; white-space:nowrap;}
+.prijstabel thead th{background:var(--bg-soft); font-weight:700; color:var(--ink); border-bottom:1.5px solid var(--line);}
+.prijstabel tbody td:first-child{font-weight:600; color:var(--ink-soft); white-space:normal;}
+.prijstabel tbody tr{border-bottom:1px solid var(--line);}
+.prijstabel tbody tr:last-child{border-bottom:none;}
+.prijstabel tbody td{color:var(--ink);}
 
 /* ---------- "Bekijk alle werkzaamheden" uitklapper (particuliere detailpagina's) ---------- */
 .onderdelen-more{margin-top:12px;}
@@ -763,6 +791,8 @@ form.card-form{display:grid; gap:14px; background:var(--bg-soft); border:1px sol
 .wizard-preselect-info{display:flex; flex-direction:column; gap:1px;}
 .wizard-preselect-label{font-size:11px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.04em;}
 .wizard-preselect-info strong{font-size:14.5px; color:var(--ink); font-weight:700;}
+.wizard-preselect-extra{font-size:13px; color:var(--navy); font-weight:700; margin-top:2px;}
+.wizard-preselect-extra:empty{display:none;}
 .wizard-preselect-change{
   background:none; border:none; padding:0; color:var(--link); font-size:13px; font-weight:600;
   text-decoration:underline; cursor:pointer; flex-shrink:0;
@@ -778,6 +808,19 @@ form.card-form{display:grid; gap:14px; background:var(--bg-soft); border:1px sol
 .wizard-summary .summary-row:last-child{border-bottom:none;}
 .wizard-summary .summary-row:nth-child(even){background:var(--bg-soft);}
 .wizard-summary dt{font-weight:600; color:var(--ink-soft);}
+
+/* ---------- Live prijsindicatie (offertewizard, particulier) ---------- */
+.prijs-blok{
+  margin-top:22px; background:var(--bg-soft); border:1.5px solid var(--line); border-radius:14px;
+  padding:18px 20px 16px;
+}
+.prijs-op-maat-label{font-size:11.5px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.04em;}
+.prijs-regel{display:flex; justify-content:space-between; gap:12px; font-size:14px; color:var(--ink); padding:7px 0; border-bottom:1px solid var(--line);}
+.prijs-inbegrepen{color:var(--green); font-weight:700; font-size:13px;}
+.prijs-totaal{display:flex; justify-content:space-between; gap:12px; font-size:15.5px; font-weight:800; color:var(--navy); padding:11px 0 2px;}
+.prijs-op-maat{font-size:19px; font-weight:800; color:var(--navy); margin-top:6px;}
+.prijs-disclaimer{font-size:12px; color:var(--ink-soft); line-height:1.5; margin-top:12px;}
+
 .wizard-summary dd{margin:0; color:var(--ink); word-break:break-word;}
 .map-placeholder{position:relative; aspect-ratio:16/11; min-height:220px; border-radius:16px; overflow:hidden; background:linear-gradient(135deg,#EAF3FF 0%,#F3F8FD 45%,#EFFBF3 100%);}
 .map-placeholder::before{
@@ -832,6 +875,34 @@ form.card-form{display:grid; gap:14px; background:var(--bg-soft); border:1px sol
 .cb-card input{width:19px; height:19px; accent-color:var(--navy); flex-shrink:0; margin:0;}
 .cb-card:has(input:checked), .cb-card.cb-checked{border-color:var(--navy); background:var(--bg-soft);}
 .cb-card.cb-hidden{display:none;}
+
+/* ---------- Aantalselector-kaarten ([\u2212] N [+]) voor telbare extra opties ---------- */
+.counter-cards{display:flex; flex-direction:column; gap:10px;}
+@media(min-width:700px){.counter-cards{display:grid; grid-template-columns:repeat(2,1fr); gap:10px 14px;}}
+.counter-card{
+  display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 16px;
+  border:1.5px solid var(--line); border-radius:12px; transition:border-color .15s ease, background .15s ease;
+}
+.counter-card.cb-hidden{display:none;}
+.counter-info{display:flex; flex-direction:column; gap:2px; min-width:0;}
+.counter-label{font-size:14px; font-weight:600; color:var(--ink);}
+.counter-included-note{font-size:12.5px; font-weight:600; color:var(--green);}
+.counter-price-note{font-size:12.5px; color:var(--ink-soft);}
+.counter-controls{display:flex; align-items:center; gap:0; flex-shrink:0; border:1.5px solid var(--line); border-radius:100px; overflow:hidden;}
+.counter-btn{
+  width:36px; height:36px; display:flex; align-items:center; justify-content:center; border:none; background:var(--bg-soft);
+  font-size:18px; font-weight:700; color:var(--navy); cursor:pointer; line-height:1; touch-action:manipulation;
+}
+.counter-btn:hover, .counter-btn:focus-visible{background:#E9EEF5;}
+.counter-btn:active{background:#DCE4EE;}
+.counter-value{
+  width:34px; text-align:center; border:none; background:#fff; font-size:14.5px; font-weight:700; color:var(--ink);
+  padding:0; -moz-appearance:textfield;
+}
+@media(max-width:599px){
+  .counter-card{padding:12px 14px; gap:8px;}
+  .counter-label{font-size:13.5px;}
+}
 
 /* ---------- Stap-label (vervangt vaste stappenrij, past zich aan het dynamische aantal stappen aan) ---------- */
 .wizard-step-label{font-size:12.5px; font-weight:700; color:var(--link); text-transform:uppercase; letter-spacing:0.04em; margin:0 0 6px;}

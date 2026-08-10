@@ -77,7 +77,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "167"
+ASSET_VERSION = "169"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -850,6 +850,7 @@ def contact_form():
       <div class="wizard-preselect-info">
         <span class="wizard-preselect-label">Uw keuze</span>
         <strong id="wizardPreselectText"></strong>
+        <span id="wizardPreselectExtra" class="wizard-preselect-extra"></span>
       </div>
       <button type="button" class="wizard-preselect-change" id="wizardPreselectChange">Keuze wijzigen</button>
     </div>
@@ -873,25 +874,6 @@ def contact_form():
     </div>
 
     <div class="wizard-step" data-step="4" hidden data-applies-to="particulier">
-      <h3 class="wizard-q">Extra werkzaamheden</h3>
-      <p class="wizard-sub">Optioneel \u2014 kies alles wat van toepassing is. Prijzen zijn incl. btw en tellen mee in uw prijsindicatie.</p>
-      <div class="wizard-subsection" data-requires-dienst="periodiek" style="margin-bottom:14px;">
-        <p class="prose" style="font-size:13px; background:var(--bg-soft); border-radius:10px; padding:10px 14px; margin:0;">Deze extra prijs geldt voor de schoonmaakbeurt waarvoor u nu een offerte aanvraagt \u2014 niet automatisch voor elke toekomstige beurt. Wilt u een extra werkzaamheid vaker laten uitvoeren, geef dat dan aan bij "Omschrijving" verderop, dan bespreken we dit graag met u.</p>
-      </div>
-      <div class="counter-cards" id="extraCounters">
-        {extra_counters}
-      </div>
-      <div class="checkbox-cards" id="extraCheckboxes" style="margin-top:12px;">
-        {extra_checkboxes_overig}
-        <label class="cb-card" data-dienst-for="all"><input type="checkbox" id="extraAndersCheck"><span>Anders, namelijk\u2026 <em style="font-weight:400;">(prijs op maat)</em></span></label>
-      </div>
-      <div id="extraAndersWrap" style="margin-top:14px;" hidden>
-        <label for="extra_anders">Omschrijving</label>
-        <input id="extra_anders" name="extra_anders" type="text" placeholder="Vertel kort wat u bedoelt" disabled>
-      </div>
-    </div>
-
-    <div class="wizard-step" data-step="5" hidden data-applies-to="particulier">
       <h3 class="wizard-q">Informatie over uw woning</h3>
       <p class="wizard-sub">Dit helpt ons een goede inschatting te maken \u2014 en bepaalt bij eenmalige diensten uw prijsindicatie hieronder.</p>
       <div class="row2">
@@ -925,14 +907,34 @@ def contact_form():
         {bouwresten_cards}
         <p class="prose" id="bouwrestenNote" style="margin-top:10px; font-size:13px; background:var(--bg-soft); border-radius:10px; padding:10px 14px;" hidden>Verwijdering van hardnekkige verf-, kit-, lijm-, cement- en vergelijkbare bouwresten is niet standaard in het pakket inbegrepen. We beoordelen dit soort situaties eerst, voordat we een definitieve prijs kunnen geven.</p>
       </div>
-      <div id="prijsBlok5"></div>
+      <div id="prijsBlokWoning"></div>
+    </div>
+
+    <div class="wizard-step" data-step="5" hidden data-applies-to="particulier">
+      <h3 class="wizard-q">Extra werkzaamheden</h3>
+      <p class="wizard-sub">Optioneel \u2014 kies alles wat van toepassing is. Prijzen zijn incl. btw en tellen mee in uw prijsindicatie.</p>
+      <div class="wizard-subsection" data-requires-dienst="periodiek" style="margin-bottom:14px;">
+        <p class="prose" style="font-size:13px; background:var(--bg-soft); border-radius:10px; padding:10px 14px; margin:0;">Deze extra prijs geldt voor de schoonmaakbeurt waarvoor u nu een offerte aanvraagt \u2014 niet automatisch voor elke toekomstige beurt. Wilt u een extra werkzaamheid vaker laten uitvoeren, geef dat dan aan bij "Omschrijving" verderop, dan bespreken we dit graag met u.</p>
+      </div>
+      <div class="counter-cards" id="extraCounters">
+        {extra_counters}
+      </div>
+      <div class="checkbox-cards" id="extraCheckboxes" style="margin-top:12px;">
+        {extra_checkboxes_overig}
+        <label class="cb-card" data-dienst-for="all"><input type="checkbox" id="extraAndersCheck"><span>Anders, namelijk\u2026 <em style="font-weight:400;">(prijs op maat)</em></span></label>
+      </div>
+      <div id="extraAndersWrap" style="margin-top:14px;" hidden>
+        <label for="extra_anders">Omschrijving</label>
+        <input id="extra_anders" name="extra_anders" type="text" placeholder="Vertel kort wat u bedoelt" disabled>
+      </div>
+      <div id="prijsBlokExtra" style="margin-top:18px;"></div>
     </div>
 
     <div class="wizard-step" data-step="6" hidden data-applies-to="particulier" data-requires-dienst="periodiek">
       <h3 class="wizard-q">Hoe vaak wilt u schoonmaak?</h3>
       <p class="wizard-sub">U kunt dit later altijd nog aanpassen.</p>
       {freq_particulier_cards}
-      <div id="prijsBlok6" style="margin-top:22px;"></div>
+      <div id="prijsBlokFrequentie" style="margin-top:22px;"></div>
     </div>
 
     <div class="wizard-step" data-step="7" hidden data-applies-to="bedrijf vve">
@@ -989,7 +991,7 @@ def contact_form():
       <h3 class="wizard-q">Controleer uw aanvraag</h3>
       <p class="wizard-sub">Klopt alles? Dan kunt u de aanvraag verzenden. Wilt u iets aanpassen, gebruik dan "Terug".</p>
       <dl class="wizard-summary" id="wizardSummary" aria-live="polite"></dl>
-      <div id="prijsBlok11" style="margin-top:16px;"></div>
+      <div id="prijsBlokControle" style="margin-top:16px;"></div>
     </div>
 
     <div class="wizard-nav">
@@ -1217,9 +1219,10 @@ def build_home():
         preload_image="images/hero.jpg", body_class="home-hero"
     ))
 
-def page_hero(eyebrow, title, lead, base, crumb_label, image=None, image_alt=""):
+def page_hero(eyebrow, title, lead, base, crumb_label, image=None, image_alt="", compact=False):
     if image:
-        return f"""<section class="hero-full hero-full-inner">
+        compact_class = " hero-full-compact" if compact else ""
+        return f"""<section class="hero-full hero-full-inner{compact_class}">
     <img src="{image}" alt="{image_alt}" class="hero-full-img" width="1200" height="800" decoding="async">
     <div class="hero-full-overlay"></div>
     <div class="wrap hero-full-content">
@@ -1279,7 +1282,7 @@ def build_service_pages():
         photo = SERVICE_PHOTOS.get(s["slug"])
         hero = page_hero("Dienst", s['name'], s['short'], base, s['name'],
                           image=f"../images/{photo}" if photo else None,
-                          image_alt=f"{s['name']} door BrabantSchoon")
+                          image_alt=f"{s['name']} door BrabantSchoon", compact=True)
         body = f"""
   {hero}
   <section class="section-tight">
@@ -1701,10 +1704,10 @@ PARTICULIER_FAQS = [
 def build_particulieren_page():
     base = ""
     cards_html = "\n      ".join(
-        f'''<div class="service-card">
+        f'''<a href="{base}{href}" class="service-card">
       <div class="thumb"><img src="{base}images/diensten/{img}" alt="{alt}" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;"></div>
-      <div class="body"><h3>{t}</h3><p>{d}</p><a class="sc-link" href="{base}{href}">Meer informatie {icon('arrow')}</a></div>
-    </div>'''
+      <div class="body"><h3>{t}</h3><p>{d}</p><span class="sc-link">Meer informatie {icon('arrow')}</span></div>
+    </a>'''
         for t, d, img, alt, href in PARTICULIER_SUBDIENSTEN
     )
     faq_html = faq_block(PARTICULIER_FAQS)
@@ -1836,11 +1839,21 @@ def build_particulier_detail_pages():
         <a href="{base}offerte.html?type=particulier&amp;dienst={page['slug']}#offerteWizard" class="btn btn-primary">Bereken uw prijsindicatie</a>
       </div>'''
         elif page["slug"] in PARTICULIER_PRIJZEN:
+            prijsdata = PARTICULIER_PRIJZEN[page["slug"]]
+            vanaf_prefix = "vanaf " if prijsdata["vanaf"] else ""
             pakketten_html = "\n      ".join(f'''<div class="pakket-card reveal">
         <h3 class="pakket-title">{naam}</h3>
         <p class="pakket-description">{desc}</p>
+        <p class="pakket-price">{vanaf_prefix}\u20ac{prijsdata["prijzen"]["tm60"][pid]} <span class="pakket-price-unit">incl. btw</span></p>
         <div class="pakket-details" id="pakket-details-{page['slug']}-{pid}" hidden>
-          <p class="pakket-details-label">Wat is inbegrepen?</p>
+          <p class="pakket-details-label">Prijs op basis van woonoppervlakte</p>
+          <table class="pakket-prijstabel">
+            <tbody>
+              {"".join(f'<tr><td>{STAFFEL_LABELS[st]}</td><td>{("vanaf " if prijsdata["vanaf"] else "")}\u20ac{prijsdata["prijzen"][st][pid]}</td></tr>' for st in ("tm60","61-90","91-120","121-150"))}
+              <tr><td>{STAFFEL_LABELS["boven150"]}</td><td>Prijs op maat</td></tr>
+            </tbody>
+          </table>
+          <p class="pakket-details-label" style="margin-top:16px;">Wat is inbegrepen?</p>
           <ul class="pakket-items">{''.join(f'<li>{item}</li>' for item in items)}</ul>
         </div>
         <div class="pakket-actions">
@@ -1850,13 +1863,10 @@ def build_particulier_detail_pages():
           <a href="{base}offerte.html?type=particulier&amp;dienst={page['slug']}&amp;pakket={pid}#offerteWizard" class="btn btn-primary pakket-cta">Offerte voor {naam} aanvragen</a>
         </div>
       </div>''' for pid, naam, desc, items, meest_gekozen in page["pakketten"])
-            pakket_ids = [pid for pid, naam, desc, items, mg in page["pakketten"]]
-            pakket_namen = [naam for pid, naam, desc, items, mg in page["pakketten"]]
-            keuze_sectie = f'''<div class="sec-head reveal"><h2>Waar kunt u uit kiezen?</h2><p class="prose" style="margin-top:8px;">Drie pakketten, duidelijk van elkaar te onderscheiden qua omvang. Onderstaande prijsindicaties zijn incl. btw \u2014 de definitieve prijs ontvangt u na beoordeling van uw aanvraag.</p></div>
+            keuze_sectie = f'''<div class="sec-head reveal"><h2>Kies de schoonmaak die bij uw woning past</h2><p class="prose" style="margin-top:8px;">Vergelijk de pakketten en zie direct wat inbegrepen is \u2014 prijzen zijn incl. btw, de definitieve prijs ontvangt u na beoordeling van uw aanvraag.</p></div>
       <div class="pakket-grid">
         {pakketten_html}
-      </div>
-      {prijstabel_eenmalig_html(page["slug"], pakket_ids, pakket_namen)}'''
+      </div>'''
         else:
             # "Bij verkoop, verhuur of oplevering" valt buiten deze prijsopdracht
             # (niet genoemd in de brief) \u2014 pakketten blijven bestaan als
@@ -1896,7 +1906,7 @@ def build_particulier_detail_pages():
     </a>""" for t, d, img, alt, href in others)
 
         hero = page_hero("Particuliere schoonmaak", page["title"], page["lead"], base, page["title"],
-                          image=f"images/diensten/{page['img']}", image_alt=page["alt"])
+                          image=f"images/diensten/{page['img']}", image_alt=page["alt"], compact=True)
         body = f"""
   {hero}
   <section class="section-tight" style="padding-bottom:0;">

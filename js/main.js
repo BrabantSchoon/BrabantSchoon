@@ -1,13 +1,14 @@
 // Mobiel menu werkt volledig via CSS (checkbox-methode), geen JS nodig.
 
 // Pakketkaarten (particuliere detailpagina's): "Bekijk wat inbegrepen is"
-// klapt alleen de onderdelenlijst van die kaart open/dicht — geen nieuwe
-// pagina, geen popup. Binnen dezelfde .pakket-grid staat maar 1 kaart
-// tegelijk open. Puur een hidden-toggle, geen IntersectionObserver erbij
-// betrokken — de inhoud is dus altijd betrouwbaar beschikbaar.
-// Zelfstandige initialisatiefunctie, veilig aangeroepen na DOMContentLoaded
-// en in een try/catch: een eventuele fout elders in dit bestand mag nooit
-// verhinderen dat de pakketknoppen werken.
+// klapt alleen de onderdelenlijst van díe kaart open/dicht — geen nieuwe
+// pagina, geen popup. Kaarten werken onafhankelijk van elkaar: Basis,
+// Uitgebreid en Compleet mogen tegelijk open staan, zodat een bezoeker ze
+// naast elkaar kan vergelijken. Puur een hidden-toggle, geen
+// IntersectionObserver erbij betrokken — de inhoud is dus altijd
+// betrouwbaar beschikbaar. Zelfstandige initialisatiefunctie, veilig
+// aangeroepen na DOMContentLoaded en in een try/catch: een eventuele fout
+// elders in dit bestand mag nooit verhinderen dat de pakketknoppen werken.
 function setPakketToggleState(btn, expanded) {
   btn.setAttribute('aria-expanded', String(expanded));
   const label = btn.querySelector('.pakket-toggle-label');
@@ -21,15 +22,6 @@ function initPakketCards() {
       const target = document.getElementById(btn.getAttribute('aria-controls'));
       if (!target) return;
       const expanded = btn.getAttribute('aria-expanded') === 'true';
-      const grid = btn.closest('.pakket-grid');
-      if (grid && !expanded) {
-        grid.querySelectorAll('.pakket-toggle[aria-expanded="true"]').forEach(other => {
-          if (other === btn) return;
-          setPakketToggleState(other, false);
-          const otherTarget = document.getElementById(other.getAttribute('aria-controls'));
-          if (otherTarget) otherTarget.hidden = true;
-        });
-      }
       setPakketToggleState(btn, !expanded);
       target.hidden = expanded;
     });
@@ -88,6 +80,8 @@ if (document.readyState === 'loading') {
     if (types && !types.split(' ').includes(currentKlanttype())) return false;
     const requiresDienst = stepEl.getAttribute('data-requires-dienst');
     if (requiresDienst && currentDienstSlug() !== requiresDienst) return false;
+    const excludesDienst = stepEl.getAttribute('data-excludes-dienst');
+    if (excludesDienst && excludesDienst.split(' ').includes(currentDienstSlug())) return false;
     return true;
   }
   function applicableSteps() {
@@ -101,7 +95,8 @@ if (document.readyState === 'loading') {
     // daarop afstemmen — nooit alleen vertrouwen op het change-event van de
     // vorige stap (dat kan gemist zijn bij terugnavigeren, voorinvullen via
     // URL-parameters, of een programmatische wijziging).
-    if (stepNum === 3 || stepNum === 4) applyDienst(currentDienstSlug());
+    if (stepNum === 3 || stepNum === 4 || stepNum === 5) applyDienst(currentDienstSlug());
+    if (stepNum === 4 || stepNum === 5 || stepNum === 6 || stepNum === 11) updatePrijsIndicatie();
     const appl = applicableSteps();
     const idx = appl.indexOf(stepNum);
     const pos = idx === -1 ? 1 : idx + 1;
@@ -179,11 +174,278 @@ if (document.readyState === 'loading') {
   // Particuliere stap-3/4-elementen (pakket + extra werkzaamheden), gefilterd op dienst-slug
   const pakketWraps = Array.from(form.querySelectorAll('.wizard-step[data-step="3"] .rc-wrap'));
   const extraCheckboxLabels = Array.from(form.querySelectorAll('#extraCheckboxes .cb-card[data-dienst-for]'));
+  const counterCards = Array.from(form.querySelectorAll('.counter-card[data-dienst-for]'));
   const extraAndersCheck = document.getElementById('extraAndersCheck');
   const extraAndersWrap = document.getElementById('extraAndersWrap');
   const extraAndersInput = document.getElementById('extra_anders');
   const extraOptiesField = document.getElementById('extraOptiesField');
   const pakketNaamField = document.getElementById('pakketNaamField');
+  // Subsecties bínnen een stap die per dienst getoond/verborgen moeten worden
+  // (bijv. vervuilingsgraad niet bij periodiek, "Is de woning leeg" alléén bij
+  // verhuisschoonmaak, "Wat is er verbouwd" alléén bij na-verbouwing) — een
+  // lichtere variant van data-excludes-dienst/data-requires-dienst voor
+  // stukken die geen eigen stap zijn.
+  const subsections = Array.from(form.querySelectorAll('.wizard-subsection[data-excludes-dienst], .wizard-subsection[data-requires-dienst]'));
+  function applySubsections(slug) {
+    subsections.forEach(sub => {
+      const excludes = (sub.getAttribute('data-excludes-dienst') || '').split(' ').filter(Boolean);
+      const requires = (sub.getAttribute('data-requires-dienst') || '').split(' ').filter(Boolean);
+      let hide = false;
+      if (excludes.length && excludes.includes(slug)) hide = true;
+      if (requires.length && !requires.includes(slug)) hide = true;
+      sub.hidden = hide;
+      sub.querySelectorAll('input').forEach(inp => { if (hide) clearAndDisable(inp); else enableField(inp); });
+    });
+  }
+  // === Aantalselectors voor telbare extra opties ([\u2212] N [+]) ===
+  function currentPakketId() {
+    const checked = form.querySelector('input[name="pakket"]:checked:not(:disabled)');
+    return checked ? checked.getAttribute('data-pakket-id') : null;
+  }
+  function inbegrepenAantal(slug, pakketId, extraId) {
+    if (!prijsData || !prijsData.inbegrepen) return 0;
+    const perDienst = prijsData.inbegrepen[slug];
+    if (!perDienst) return 0;
+    const perPakket = perDienst[pakketId];
+    if (!perPakket) return 0;
+    return perPakket[extraId] || 0;
+  }
+  // Werkt de "X inbegrepen in [pakket]"-notitie en het standaardaantal van
+  // één teller bij, op basis van de nu geldende dienst + pakket. Als de
+  // klant het aantal nog niet zelf heeft aangepast (waarde staat nog op het
+  // vorige inbegrepen-aantal), wordt de nieuwe inbegrepen hoeveelheid
+  // overgenomen; heeft de klant zelf al een hoger aantal gekozen, dan blijft
+  // dat behouden (zie briefpunt 8: "behoud gekozen aantallen waar logisch").
+  function updateCounterCard(card) {
+    const slug = card.getAttribute('data-dienst-for');
+    const eid = card.getAttribute('data-extra-id');
+    const valueInput = card.querySelector('.counter-value');
+    const noteEl = card.querySelector('.counter-included-note');
+    const currentSlug = currentDienstSlug();
+    const pakketId = currentSlug === slug ? currentPakketId() : null;
+    const inbegrepen = (currentSlug === slug && pakketId) ? inbegrepenAantal(slug, pakketId, eid) : 0;
+    const prevIncluded = parseInt(card.dataset.prevIncluded || '0', 10);
+    const huidigeWaarde = parseInt(valueInput.value, 10) || 0;
+    if (huidigeWaarde === prevIncluded) {
+      valueInput.value = String(inbegrepen);
+    }
+    card.dataset.prevIncluded = String(inbegrepen);
+    if (inbegrepen > 0) {
+      const pakketRadio = form.querySelector('input[name="pakket"]:checked:not(:disabled)');
+      const pakketNaam = pakketRadio ? pakketRadio.value : '';
+      noteEl.textContent = '\u2713 ' + inbegrepen + ' inbegrepen in ' + pakketNaam;
+      noteEl.hidden = false;
+    } else {
+      noteEl.hidden = true;
+    }
+  }
+  function updateAllCounters() {
+    counterCards.forEach(updateCounterCard);
+  }
+  counterCards.forEach(card => {
+    const valueInput = card.querySelector('.counter-value');
+    const maxAantal = parseInt(card.getAttribute('data-max'), 10) || 5;
+    const minus = card.querySelector('.counter-minus');
+    const plus = card.querySelector('.counter-plus');
+    function setValue(v) {
+      const minimum = parseInt(card.dataset.prevIncluded || '0', 10);
+      const clamped = Math.max(minimum, Math.min(maxAantal, v));
+      valueInput.value = String(clamped);
+      syncExtraOptiesField();
+      updatePrijsIndicatie();
+    }
+    minus.addEventListener('click', () => setValue((parseInt(valueInput.value, 10) || 0) - 1));
+    plus.addEventListener('click', () => setValue((parseInt(valueInput.value, 10) || 0) + 1));
+  });
+
+
+  const prijsDataEl = document.getElementById('prijsData');
+  let prijsData = null;
+  try { prijsData = prijsDataEl ? JSON.parse(prijsDataEl.textContent) : null; } catch (e) { prijsData = null; }
+  const prijsIndicatieField = document.getElementById('prijsIndicatieField');
+  const FREQ_ID_MAP = { 'Wekelijks': 'wekelijks', 'Iedere 2 weken': '2weken', 'Iedere 4 weken': '4weken' };
+  const ingerichtNote = document.getElementById('ingerichtNote');
+  const bouwrestenNote = document.getElementById('bouwrestenNote');
+
+  function getRadioValue(name) {
+    const checked = form.querySelector(`input[name="${name}"]:checked:not(:disabled)`);
+    return checked ? checked.value : '';
+  }
+  function staffelIdFromLabel(label) {
+    if (!prijsData || !label) return null;
+    return Object.keys(prijsData.staffelLabels).find(k => prijsData.staffelLabels[k] === label) || null;
+  }
+
+  // Berekent de huidige prijsindicatie op basis van alle op dit moment
+  // ingevulde/aangevinkte gegevens. Geeft null terug als er nog te weinig
+  // bekend is om iets te tonen (bijv. dienst of pakket nog niet gekozen),
+  // of een resultaat-object met ofwel {opMaat:true, reden} ofwel
+  // {opMaat:false, regels:[[label,bedrag],...], totaal, vanaf, perBeurt}.
+  // Telbare extra opties (aantalselectors): per kaart wordt het gekozen
+  // aantal vergeleken met het aantal dat al inbegrepen is in het huidige
+  // pakket (bij periodiek altijd 0, want geen pakketten). Alleen het aantal
+  // BOVEN het inbegrepen aantal wordt in rekening gebracht
+  // (extraAantal = max(0, gekozen - inbegrepen)) — zo kan nooit dubbel
+  // gerekend worden. Gedeeld door zowel de eenmalige diensten als periodiek.
+  function berekenExtrasVoorDienst(slug, pakketId) {
+    const regels = [];
+    let totaal = 0;
+    counterCards.forEach(card => {
+      if (card.getAttribute('data-dienst-for') !== slug) return;
+      const eid = card.getAttribute('data-extra-id');
+      const prijs = parseInt(card.getAttribute('data-price'), 10) || 0;
+      const info = prijsData.extras[eid];
+      const label = info ? info.label : eid;
+      const eenheid = info ? info.eenheid : 'stuk';
+      const gekozen = parseInt(card.querySelector('.counter-value').value, 10) || 0;
+      const inbegrepen = inbegrepenAantal(slug, pakketId, eid);
+      if (gekozen <= 0) return;
+      const inbegrepenGetoond = Math.min(gekozen, inbegrepen);
+      if (inbegrepenGetoond > 0) {
+        regels.push([inbegrepenGetoond + ' ' + label, 'Inbegrepen']);
+      }
+      const extraAantal = Math.max(0, gekozen - inbegrepen);
+      if (extraAantal > 0) {
+        const naam = (extraAantal > 1 ? extraAantal + ' extra ' + label : 'Extra ' + label) + ' (\u20ac' + prijs + ' per ' + eenheid + ')';
+        regels.push([naam, extraAantal * prijs]);
+        totaal += extraAantal * prijs;
+      }
+    });
+    return { regels, totaal };
+  }
+
+  function berekenPrijs() {
+    if (!prijsData) return null;
+    const slug = currentDienstSlug();
+    const staffelLabel = getRadioValue('woonoppervlakte_staffel');
+    const staffelId = staffelIdFromLabel(staffelLabel);
+
+    if (slug === 'periodiek') {
+      const freqLabel = getRadioValue('frequentie_particulier');
+      const freqId = FREQ_ID_MAP[freqLabel];
+      if (!staffelId || !freqId) return null;
+      if (staffelId === 'boven150') return { opMaat: true, reden: 'een woning boven de 150 m\u00b2' };
+      const bedrag = prijsData.periodiek[staffelId] && prijsData.periodiek[staffelId][freqId];
+      if (bedrag == null) return null;
+      if (extraAndersCheck && extraAndersCheck.checked) {
+        return { opMaat: true, reden: 'een aangepaste extra wens ("Anders, namelijk\u2026")' };
+      }
+      const { regels: extraRegelsPeriodiek, totaal: extraTotaalPeriodiek } = berekenExtrasVoorDienst('periodiek', null);
+      const regelsPeriodiek = [['Prijs per beurt', bedrag]];
+      extraRegelsPeriodiek.forEach(r => regelsPeriodiek.push(r));
+      return { opMaat: false, regels: regelsPeriodiek, totaal: bedrag + extraTotaalPeriodiek, perBeurt: true, vanaf: false };
+    }
+
+    const dienstPrijzen = prijsData.eenmalig[slug];
+    if (!dienstPrijzen) return null; // oplevering / weet-niet: geen calculator voor deze dienst
+    const pakketRadio = form.querySelector('input[name="pakket"]:checked:not(:disabled)');
+    const pakketId = pakketRadio ? pakketRadio.getAttribute('data-pakket-id') : null;
+    if (!pakketId || pakketId === 'weet-niet' || !staffelId) return null;
+    if (staffelId === 'boven150') return { opMaat: true, reden: 'een woning boven de 150 m\u00b2' };
+
+    const vervuiling = getRadioValue('vervuilingsgraad') || 'Normaal vervuild';
+    if (vervuiling.indexOf('Zeer sterk') === 0) return { opMaat: true, reden: 'een zeer sterk vervuilde of bijzondere situatie' };
+    // Na verbouwing: hardnekkige bouwresten (verf/kit/lijm/cement e.d.) zijn
+    // niet standaard inbegrepen en vereisen altijd eerst een beoordeling,
+    // ongeacht welk pakket of welke vervuilingsgraad verder gekozen is.
+    if (slug === 'na-verbouwing' && getRadioValue('bouwresten') === 'Ja, er zijn hardnekkige bouwresten') {
+      return {
+        opMaat: true,
+        reden: 'hardnekkige bouwresten, zoals verf-, kit-, lijm- of cementresten',
+        extra: 'Verwijdering van dit soort hardnekkige bouwresten is niet standaard in het pakket inbegrepen. We beoordelen dit soort situaties eerst persoonlijk, voordat we een definitieve prijs kunnen geven.'
+      };
+    }
+    // "Anders, namelijk..." is een vrije, niet-geprijsde wens \u2014 daarvoor
+    // stellen we altijd een prijs op maat op, we verzinnen geen bedrag.
+    if (extraAndersCheck && extraAndersCheck.checked) {
+      return { opMaat: true, reden: 'een aangepaste extra wens ("Anders, namelijk\u2026")' };
+    }
+
+    const staffelPrijzen = dienstPrijzen.prijzen[staffelId];
+    const basisBedrag = staffelPrijzen ? staffelPrijzen[pakketId] : null;
+    if (basisBedrag == null) return null;
+
+    let toeslag = 0;
+    if (vervuiling === 'Sterk vervuild') toeslag = Math.round(basisBedrag * prijsData.toeslagPercentage / 100);
+
+    // Telbare extra opties: per aantalselector-kaart wordt het gekozen
+    // aantal vergeleken met het aantal dat al inbegrepen is in het huidige
+    // pakket. Alleen het aantal BOVEN het inbegrepen aantal wordt in
+    // rekening gebracht (extraAantal = max(0, gekozen - inbegrepen)) —
+    // zo kan nooit dubbel gerekend worden.
+    const extra = berekenExtrasVoorDienst(slug, pakketId);
+    const regels = [['Pakket', basisBedrag]];
+    if (toeslag > 0) regels.push(['Sterke vervuiling (+' + prijsData.toeslagPercentage + '%)', toeslag]);
+    extra.regels.forEach(r => regels.push(r));
+    return { opMaat: false, regels, totaal: basisBedrag + toeslag + extra.totaal, vanaf: !!dienstPrijzen.vanaf, perBeurt: false };
+  }
+
+  function escapeHtmlLocal(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function renderPrijsBlok(containerId) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    const resultaat = berekenPrijs();
+    if (!resultaat) {
+      el.innerHTML = '';
+      // Belangrijk: nooit een verouderde prijsindicatie laten staan wanneer er
+      // (nu even) onvoldoende gegevens zijn, bijvoorbeeld na het wisselen naar
+      // een dienst zonder calculator (oplevering) of "weet ik niet".
+      if (prijsIndicatieField) prijsIndicatieField.value = '';
+      return;
+    }
+    if (resultaat.opMaat) {
+      const extraZin = resultaat.extra ? ' ' + escapeHtmlLocal(resultaat.extra) : '';
+      el.innerHTML = '<div class="prijs-blok"><p class="prijs-op-maat-label">Prijsindicatie</p>'
+        + '<p class="prijs-op-maat">Prijs op maat</p>'
+        + '<p class="prijs-disclaimer">Bij ' + escapeHtmlLocal(resultaat.reden) + ' kunnen we geen automatische indicatie tonen. We beoordelen uw situatie persoonlijk en nemen contact met u op voor een passende offerte.' + extraZin + '</p></div>';
+      if (prijsIndicatieField) prijsIndicatieField.value = 'Prijs op maat';
+      return;
+    }
+    const rowsHtml = resultaat.regels.map(function (r) {
+      const waarde = r[1] === 'Inbegrepen' ? '<span class="prijs-inbegrepen">Inbegrepen</span>' : '\u20ac' + r[1];
+      return '<div class="prijs-regel"><span>' + escapeHtmlLocal(r[0]) + '</span><span>' + waarde + '</span></div>';
+    }).join('');
+    const vanafPrefix = resultaat.vanaf ? 'vanaf ' : '';
+    const totaalLabel = resultaat.perBeurt ? 'Geschatte prijs per beurt' : 'Geschatte totaalprijs';
+    el.innerHTML = '<div class="prijs-blok">'
+      + '<p class="prijs-op-maat-label">Prijsindicatie</p>'
+      + rowsHtml
+      + '<div class="prijs-totaal"><span>' + totaalLabel + '</span><span>' + vanafPrefix + '\u20ac' + resultaat.totaal + ' incl. btw</span></div>'
+      + '<p class="prijs-disclaimer">Deze prijs is een indicatie op basis van de door u ingevulde gegevens. Na beoordeling van uw aanvraag ontvangt u de definitieve prijs. Wanneer de situatie afwijkt van de ingevulde gegevens, nemen wij eerst contact met u op.</p></div>';
+    if (prijsIndicatieField) prijsIndicatieField.value = (vanafPrefix ? 'Vanaf ' : '') + '\u20ac' + resultaat.totaal + (resultaat.perBeurt ? ' per beurt' : '') + ' incl. btw';
+  }
+
+  function updatePrijsIndicatie() {
+    renderPrijsBlok('prijsBlokWoning');
+    renderPrijsBlok('prijsBlokExtra');
+    renderPrijsBlok('prijsBlokFrequentie');
+    renderPrijsBlok('prijsBlokControle');
+    updatePreselectExtra();
+  }
+
+  // Houdt de "Uw keuze"-balk bovenaan de wizard actueel: zodra een
+  // woonoppervlakte (en eventueel prijs) bekend is, verschijnt die er
+  // meteen bij \u2014 zichtbaar gedurende de hele rest van de wizard.
+  const preselectExtra = document.getElementById('wizardPreselectExtra');
+  function updatePreselectExtra() {
+    if (!preselectExtra || !preselectBox || preselectBox.hidden) return;
+    const staffelLabel = getRadioValue('woonoppervlakte_staffel');
+    const resultaat = berekenPrijs();
+    const delen = [];
+    if (staffelLabel) delen.push(staffelLabel);
+    if (resultaat && !resultaat.opMaat) {
+      const vanafPrefix = resultaat.vanaf ? 'vanaf ' : '';
+      delen.push('Prijsindicatie: ' + vanafPrefix + '\u20ac' + resultaat.totaal + (resultaat.perBeurt ? ' per beurt' : '') + ' incl. btw');
+    } else if (resultaat && resultaat.opMaat) {
+      delen.push('Prijsindicatie: prijs op maat');
+    }
+    preselectExtra.textContent = delen.join(' \u2014 ');
+  }
 
   function applyDynamicLabel(el, type) {
     if (!el) return;
@@ -233,16 +495,26 @@ if (document.readyState === 'loading') {
       // zodat er nooit particuliere data meestuurt bij een zakelijke aanvraag.
       pakketWraps.forEach(w => clearAndDisable(w.querySelector('input[type="radio"]')));
       extraCheckboxLabels.forEach(l => { const cb = l.querySelector('input'); if (cb) { cb.checked = false; l.classList.remove('cb-checked'); } });
+      counterCards.forEach(card => {
+        card.querySelector('.counter-value').value = '0';
+        card.dataset.prevIncluded = '0';
+        const note = card.querySelector('.counter-included-note');
+        if (note) note.hidden = true;
+      });
       if (extraAndersCheck) extraAndersCheck.checked = false;
       if (extraAndersWrap) extraAndersWrap.hidden = true;
       clearAndDisable(extraAndersInput);
       syncExtraOptiesField();
       if (pakketNaamField) pakketNaamField.value = '';
-      ['typewoning', 'woonoppervlakte_m2', 'slaapkamers', 'badkamers', 'toiletten'].forEach(n => {
+      ['typewoning', 'slaapkamers', 'badkamers', 'toiletten'].forEach(n => {
         const f = form.querySelector(`[name="${n}"]`);
         if (f) f.value = '';
       });
-      form.querySelectorAll('input[name="bewoond_leeg"], input[name="vervuilingsgraad"], input[name="frequentie_particulier"]').forEach(r => { r.checked = false; });
+      form.querySelectorAll('input[name="bewoond_leeg"], input[name="vervuilingsgraad"], input[name="frequentie_particulier"], input[name="woonoppervlakte_staffel"], input[name="verbouwing_type"], input[name="bouwresten"]').forEach(r => { r.checked = false; });
+      applySubsections('');
+      if (ingerichtNote) ingerichtNote.hidden = true;
+      if (bouwrestenNote) bouwrestenNote.hidden = true;
+      updatePrijsIndicatie();
     }
 
     if (subjectInput) {
@@ -269,8 +541,27 @@ if (document.readyState === 'loading') {
         if (cb) { cb.checked = false; label.classList.remove('cb-checked'); }
       }
     });
+    counterCards.forEach(card => {
+      const forSlug = card.getAttribute('data-dienst-for');
+      const relevant = !!slug && forSlug === slug;
+      card.classList.toggle('cb-hidden', !relevant);
+      if (!relevant) {
+        card.querySelector('.counter-value').value = '0';
+        card.dataset.prevIncluded = '0';
+        const note = card.querySelector('.counter-included-note');
+        if (note) note.hidden = true;
+      }
+    });
+    updateAllCounters();
+    applySubsections(slug || '');
+    // De radio's in deze subsecties zijn net (mogelijk) gewist — bijbehorende
+    // toelichtingen horen dan ook altijd weer verborgen te zijn, ongeacht hun
+    // vorige zichtbaarheidsstatus.
+    if (ingerichtNote) ingerichtNote.hidden = true;
+    if (bouwrestenNote) bouwrestenNote.hidden = true;
     syncExtraOptiesField();
     syncPakketNaamField();
+    updatePrijsIndicatie();
   }
 
   function syncPakketNaamField() {
@@ -285,6 +576,20 @@ if (document.readyState === 'loading') {
       .map(l => l.querySelector('input'))
       .filter(cb => cb && cb.checked)
       .map(cb => cb.value);
+    // Aantalselectors: alleen de zichtbare (huidige dienst) kaarten met een
+    // gekozen aantal > 0 meesturen, met vermelding van het aantal.
+    counterCards.forEach(card => {
+      if (card.classList.contains('cb-hidden')) return;
+      const aantal = parseInt(card.querySelector('.counter-value').value, 10) || 0;
+      if (aantal <= 0) return;
+      const eid = card.getAttribute('data-extra-id');
+      const info = prijsData && prijsData.extras ? prijsData.extras[eid] : null;
+      const label = info ? info.label : eid;
+      values.push(aantal + 'x ' + label);
+    });
+    if (extraAndersCheck && extraAndersCheck.checked && extraAndersInput && extraAndersInput.value.trim()) {
+      values.push('Anders: ' + extraAndersInput.value.trim());
+    }
     extraOptiesField.value = values.join(', ');
   }
 
@@ -314,7 +619,7 @@ if (document.readyState === 'loading') {
   });
 
   form.querySelectorAll('input[name="pakket"]').forEach(radio => {
-    radio.addEventListener('change', syncPakketNaamField);
+    radio.addEventListener('change', () => { syncPakketNaamField(); updateAllCounters(); updatePrijsIndicatie(); });
   });
 
   extraCheckboxLabels.forEach(label => {
@@ -323,6 +628,7 @@ if (document.readyState === 'loading') {
     cb.addEventListener('change', () => {
       label.classList.toggle('cb-checked', cb.checked);
       syncExtraOptiesField();
+      updatePrijsIndicatie();
     });
   });
   if (extraAndersCheck) {
@@ -330,8 +636,33 @@ if (document.readyState === 'loading') {
       const checked = extraAndersCheck.checked;
       if (extraAndersWrap) extraAndersWrap.hidden = !checked;
       if (checked) enableField(extraAndersInput); else clearAndDisable(extraAndersInput);
+      updatePrijsIndicatie();
     });
   }
+
+  // Prijsafhankelijke velden: woonoppervlakte, vervuilingsgraad, frequentie
+  // (periodiek), bouwresten (na-verbouwing) — bij elke wijziging direct de
+  // prijsindicatie herberekenen.
+  form.querySelectorAll('input[name="woonoppervlakte_staffel"], input[name="vervuilingsgraad"], input[name="frequentie_particulier"], input[name="bouwresten"]').forEach(radio => {
+    radio.addEventListener('change', updatePrijsIndicatie);
+  });
+  // "Is de woning tijdens de schoonmaak leeg?" (alleen verhuisschoonmaak) —
+  // bij "Nee, nog ingericht" een korte, niet-prijsverhogende toelichting
+  // tonen (zie brief-punt F): de calculator verhoogt de prijs hier NIET
+  // automatisch op basis van.
+  form.querySelectorAll('input[name="bewoond_leeg"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      if (ingerichtNote) ingerichtNote.hidden = radio.value !== 'Nee, nog ingericht' || !radio.checked;
+    });
+  });
+  // "Zijn er hardnekkige bouwresten aanwezig?" (alleen na-verbouwing) — bij
+  // "Ja" een toelichting tonen dat verwijdering niet standaard is inbegrepen
+  // en dat de prijsindicatie daarom op maat wordt (zie berekenPrijs()).
+  form.querySelectorAll('input[name="bouwresten"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      if (bouwrestenNote) bouwrestenNote.hidden = radio.value !== 'Ja, er zijn hardnekkige bouwresten' || !radio.checked;
+    });
+  });
 
   // Eventueel al aangevinkt klanttype/dienst (bijv. na terug-navigeren in de
   // browser) direct toepassen, niet pas wachten op een nieuwe 'change'.
@@ -402,19 +733,28 @@ if (document.readyState === 'loading') {
       }
     }
 
-    // Alleen bij een VOLLEDIG geldige combinatie (type + dienst + pakket)
-    // springen we door naar de eerstvolgende relevante vraag en tonen we de
-    // compacte "Uw keuze"-samenvatting. Bij een onvolledige of ongeldige
-    // combinatie doorloopt de bezoeker gewoon de normale wizard vanaf stap 1
-    // (route A) — de eventueel wel geldige eerdere keuzes (bijv. alleen het
-    // klanttype) blijven dan gewoon aangevinkt staan.
-    if (typeOk && dienstOk && pakketOk) {
-      if (preselectBox && preselectText) {
-        preselectText.textContent = dienstLabel + ' \u2014 ' + pakketLabel;
+    // Hoe verder we automatisch mogen doorspringen hangt af van hoeveel er
+    // al geldig bekend is: alleen type (sla de doelgroepvraag over), type +
+    // dienst (sla ook de dienstvraag over — bijv. voor periodiek, dat geen
+    // pakket heeft), of type + dienst + pakket (sla ook de pakketvraag
+    // over). We zoeken steeds de eerstvolgende stap die ná dat laatst
+    // geldige "anker" nog daadwerkelijk van toepassing is — dankzij
+    // applicableSteps() automatisch correct, ook wanneer een tussenliggende
+    // stap (zoals Pakket bij periodiek) niet van toepassing is.
+    // Bij een onvolledige/ongeldige combinatie (bijv. dienst-slug bestaat
+    // niet) doorloopt de bezoeker gewoon de normale wizard vanaf stap 1
+    // (route A) — een eventueel wel geldig deel blijft dan gewoon aangevinkt.
+    if (typeOk) {
+      const appl = applicableSteps();
+      let anker = 1;
+      if (dienstOk) anker = 2;
+      if (pakketOk) anker = 3;
+      const idx = appl.indexOf(anker);
+      startStep = (idx > -1 && idx < appl.length - 1) ? appl[idx + 1] : (appl[0] || 1);
+      if (dienstOk && preselectBox && preselectText) {
+        preselectText.textContent = pakketOk ? (dienstLabel + ' \u2014 ' + pakketLabel) : dienstLabel;
         preselectBox.hidden = false;
       }
-      const appl = applicableSteps();
-      startStep = appl.indexOf(3) > -1 && appl.indexOf(3) < appl.length - 1 ? appl[appl.indexOf(3) + 1] : (appl[0] || 1);
     }
   } catch (e) { /* URLSearchParams niet beschikbaar: gewoon geen voorselectie */ }
 
@@ -458,13 +798,16 @@ if (document.readyState === 'loading') {
         ['Extra werkzaamheden', getFieldValue('extra_opties')],
         ['Anders, namelijk', getFieldValue('extra_anders')],
         ['Type woning', getFieldValue('typewoning')],
-        ['Woonoppervlakte', getFieldValue('woonoppervlakte_m2') ? getFieldValue('woonoppervlakte_m2') + ' m\u00b2' : ''],
+        ['Woonoppervlakte', getFieldValue('woonoppervlakte_staffel')],
         ['Slaapkamers', getFieldValue('slaapkamers')],
         ['Badkamers', getFieldValue('badkamers')],
         ['Toiletten', getFieldValue('toiletten')],
-        ['Bewoond of leeg', getFieldValue('bewoond_leeg')],
+        ['Woning tijdens schoonmaak', getFieldValue('bewoond_leeg')],
         ['Staat van de woning', getFieldValue('vervuilingsgraad')],
-        ['Gewenste frequentie', getFieldValue('frequentie_particulier')]
+        ['Wat is er verbouwd', getFieldValue('verbouwing_type')],
+        ['Hardnekkige bouwresten', getFieldValue('bouwresten')],
+        ['Gewenste frequentie', getFieldValue('frequentie_particulier')],
+        ['Prijsindicatie', getFieldValue('prijsindicatie')]
       );
     } else {
       rows.push(
