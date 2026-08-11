@@ -553,7 +553,7 @@ def faq_block(items):
 
 FAQ_ITEMS = [
     ("Wat kost een schoonmaakdienst van BrabantSchoon?", "De prijs is afhankelijk van onder andere de locatie, werkzaamheden en frequentie. Voor periodieke zakelijke schoonmaak plannen we waar nodig eerst een korte, vrijblijvende locatieopname \u2014 zo maken we een offerte die aansluit op de daadwerkelijke werkzaamheden."),
-    ("In welke regio\u2019s is BrabantSchoon actief?", f"BrabantSchoon is actief in Brabant, vanuit onze thuisbasis in {CITY}. Rond {CITY} en de Peelgemeenten \u2014 Deurne, Asten, Someren, Gemert-Bakel en Laarbeek \u2014 zijn we het snelst ter plaatse; voor opdrachten elders in de provincie rijden we graag mee."),
+    ("In welke regio\u2019s is BrabantSchoon actief?", f"BrabantSchoon is actief in heel Noord-Brabant, vanuit onze thuisbasis in {CITY}. Rond {CITY} en de Peelgemeenten \u2014 Deurne, Asten, Someren, Gemert-Bakel en Laarbeek \u2014 zijn we het snelst ter plaatse; voor opdrachten elders in de provincie rijden we graag mee."),
     ("Werk ik steeds met dezelfde persoon of hetzelfde team?", "Ja, u krijgt een vast aanspreekpunt en een vast team dat uw locatie kent \u2014 zodat u niet steeds opnieuw hoeft uit te leggen hoe u het wilt."),
     ("Kan ik ook een eenmalige schoonmaakbeurt aanvragen?", "Ja, naast vaste afspraken verzorgen we ook maatwerk voor eenmalige beurten, bijvoorbeeld bij een oplevering of verhuizing."),
     ("Hoe snel kunt u starten?", "Dat verschilt per situatie, maar we plannen doorgaans snel een kennismaking in. Bij spoed zijn we ook buiten kantooruren bereikbaar via telefoon of WhatsApp."),
@@ -1155,7 +1155,6 @@ def build_home():
       <div class="hero-text-panel">
         <span class="eyebrow" style="color:#BFE0FF;">Professionele schoonmaak in Brabant</span>
         <h1>De schoonmaakpartner van Brabant</h1>
-        <p class="hero-slogan-dark">Schoon werk. Elke dag opnieuw.</p>
         <p class="lead" style="color:rgba(255,255,255,0.92);">Voor bedrijven en particulieren. Professioneel, betrouwbaar en met een vast aanspreekpunt.</p>
         <div class="hero-audience-choice">
           <a href="zakelijke-schoonmaak.html" class="btn-audience-lg btn-audience-business">Voor bedrijven <span aria-hidden="true">&rarr;</span></a>
@@ -1200,14 +1199,11 @@ def build_home():
       <div class="sec-head reveal">
         <span class="eyebrow">Werkwijze</span>
         <h2>Zo werken wij.</h2>
-        <p class="prose" style="margin-top:8px;">Duidelijke afspraken, korte lijnen en schoonmaak die past bij uw locatie.</p>
       </div>
-      <div class="steps steps-wide reveal">
-        <div class="step"><div class="stepnum">1</div><h3>Kennismaking</h3><p>We bespreken de locatie, werkzaamheden, frequentie en verwachtingen.</p></div>
-        <div class="step"><div class="stepnum">2</div><h3>Locatieopname</h3><p>Bij zakelijke en periodieke opdrachten bekijken we indien nodig de locatie zodat we een passende offerte kunnen maken.</p></div>
-        <div class="step"><div class="stepnum">3</div><h3>Duidelijke offerte</h3><p>U ontvangt een overzichtelijk voorstel met werkzaamheden, frequentie en afspraken.</p></div>
-        <div class="step"><div class="stepnum">4</div><h3>Vast schoonmaakplan</h3><p>Na akkoord leggen we de werkzaamheden en aandachtspunten duidelijk vast.</p></div>
-        <div class="step"><div class="stepnum">5</div><h3>Uitvoering &amp; controle</h3><p>We voeren de schoonmaak volgens afspraak uit en controleren periodiek de kwaliteit.</p></div>
+      <div class="steps reveal">
+        <div class="step"><div class="stepnum">1</div><h3>Vertel wat u nodig heeft</h3><p>Kies uw dienst of vraag direct een offerte aan.</p></div>
+        <div class="step"><div class="stepnum">2</div><h3>Ontvang een duidelijke offerte</h3><p>U weet vooraf waar u aan toe bent.</p></div>
+        <div class="step"><div class="stepnum">3</div><h3>Wij regelen de schoonmaak</h3><p>Duidelijke afspraken en professionele uitvoering.</p></div>
       </div>
     </div>
   </section>
@@ -1786,7 +1782,7 @@ PARTICULIER_WIZARD_EXTRAS = {page["slug"]: page["extra_opties"] for page in PART
 
 PARTICULIER_FAQS = [
     ("Werkt u ook voor particulieren, niet alleen voor bedrijven?", "Ja, naast bedrijven, VvE's en organisaties zijn we ook inzetbaar voor particuliere woningen \u2014 van een eenmalige grote schoonmaak tot periodiek onderhoud."),
-    ("Wat kost particuliere schoonmaak?", "Dat hangt af van de woning, de werkzaamheden en de frequentie. We werken met een offerte op maat in plaats van vaste tarieven \u2014 vraag vrijblijvend een offerte aan."),
+    ("Wat kost particuliere schoonmaak?", "Voor verschillende diensten tonen we vooraf een duidelijke prijsindicatie, met pakketten en staffelprijzen per woonoppervlakte. De definitieve prijs is afhankelijk van uw situatie en gekozen opties \u2014 vraag vrijblijvend een offerte aan."),
     ("Werkt u ook buiten Helmond voor particulieren?", "Particuliere schoonmaak bieden we vanuit Helmond en in omliggende plaatsen. Voor grotere opdrachten zijn ook werkzaamheden elders in Brabant bespreekbaar."),
     ("Verwijdert u ook bouwafval of gevaarlijke stoffen na een verbouwing?", "Nee, wij verzorgen het verwijderen van bouwstof en normaal schoonmaakvuil na een verbouwing. Voor grofvuil, bouwafval of gevaarlijke stoffen verwijst u naar een gespecialiseerd bedrijf."),
 ]
@@ -2118,7 +2114,7 @@ def build_over_ons():
   {page_hero("Over ons", "Persoonlijk en professioneel.", f"Een schoonmaakpartner uit {CITY}, met korte lijnen en heldere afspraken.", base, "Over ons", image="images/over-ons.jpg", image_alt="Medewerker van BrabantSchoon bij de bedrijfswagen")}
   <section class="section-tight">
     <div class="wrap-narrow">
-      <p class="prose">BrabantSchoon is de schoonmaakpartner voor kantoren, bedrijfsverzamelgebouwen, VvE's en scholen in {CITY} en de Peelgemeenten &mdash; en we rijden verder voor de juiste opdracht. Geen callcenter: direct contact met wie uw locatie kent, en afspraken die we nakomen.</p>
+      <p class="prose">BrabantSchoon is de schoonmaakpartner voor kantoren, bedrijfsverzamelgebouwen, VvE's en scholen in heel Noord-Brabant, vanuit onze thuisbasis in {CITY}. In {CITY} en de Peelgemeenten zijn we het snelst ter plaatse. Geen callcenter: direct contact met wie uw locatie kent, en afspraken die we nakomen.</p>
       <div class="hero-actions" style="margin-top:24px;">
         <a href="{base}diensten.html" class="btn btn-outline">Onze diensten</a>
         <a href="{base}werkgebied.html" class="btn btn-outline">Ons werkgebied</a>
@@ -2632,13 +2628,49 @@ def build_legal():
     privacy = f"""
   {page_hero("Juridisch", "Privacyverklaring.", "Hoe BrabantSchoon omgaat met uw persoonsgegevens.", base, "Privacyverklaring")}
   <section><div class="wrap-narrow prose reveal">
-    <p><em>Dit is een voorbeeldtekst. Laat deze controleren door een jurist voordat u ze publiceert.</em></p>
+    <p>BrabantSchoon (KvK {KVK}), gevestigd in {CITY}, is verantwoordelijk voor de verwerking van persoonsgegevens zoals beschreven in deze privacyverklaring. Wij gaan zorgvuldig met uw gegevens om en vragen nooit meer gegevens dan nodig is om uw aanvraag goed te kunnen behandelen.</p>
+
     <h2>Welke gegevens verzamelen wij</h2>
-    <p>Via het offerteformulier verzamelen we naam, telefoonnummer, e-mailadres, plaats, het type aanvraag (bedrijf, VvE/organisatie of particulier) en uw bericht, uitsluitend om contact met u op te nemen.</p>
-    <h2>Gebruik van gegevens</h2>
-    <p>Wij gebruiken uw gegevens uitsluitend om uw aanvraag te behandelen en, indien u klant wordt, de dienstverlening uit te voeren.</p>
+    <p>Wanneer u een offerte aanvraagt via onze website, verwerken wij de volgende soorten gegevens:</p>
+    <ul>
+      <li><strong>Contactgegevens</strong>: naam, e-mailadres, telefoonnummer en, indien u die invult, plaats- of adresgegevens.</li>
+      <li><strong>Aanvraaggegevens</strong>, afhankelijk van de gekozen dienst: of u een particuliere, zakelijke of VvE-aanvraag doet, de gekozen dienst en eventueel pakket, en relevante situatie-informatie zoals woonoppervlakte, type woning, aantal kamers of sanitair, vervuilingsgraad, gewenste extra werkzaamheden, en gegevens over bijvoorbeeld een verhuizing, verbouwing, oplevering of glasbewassing wanneer die dienst van toepassing is.</li>
+      <li><strong>Overige informatie</strong> die u zelf toevoegt, zoals een opmerking of toelichting bij uw aanvraag.</li>
+      <li><strong>Gebruiksgegevens</strong> van de website, uitsluitend met uw toestemming via Google Analytics (zie ons <a href="{base}cookiebeleid.html" style="color:var(--link); font-weight:600;">cookiebeleid</a>).</li>
+    </ul>
+    <p>We vragen alleen de gegevens die nodig zijn om een passende offerte te kunnen opstellen \u2014 welke gegevens dat precies zijn, hangt af van de dienst waarvoor u een aanvraag doet.</p>
+
+    <h2>Waarom verwerken wij deze gegevens</h2>
+    <p>Wij gebruiken uw gegevens om:</p>
+    <ul>
+      <li>contact met u op te nemen en een passende offerte op te stellen;</li>
+      <li>de overeengekomen dienstverlening uit te voeren, wanneer u klant wordt;</li>
+      <li>te voldoen aan wettelijke verplichtingen, zoals onze administratie- en fiscale bewaarplicht;</li>
+      <li>(uitsluitend met uw toestemming) inzicht te krijgen in het gebruik van onze website, om deze te verbeteren.</li>
+    </ul>
+
+    <h2>Hoe lang bewaren wij uw gegevens</h2>
+    <p>Wij bewaren uw gegevens niet langer dan nodig is voor het doel waarvoor ze zijn verzameld. Gegevens van een offerteaanvraag die niet tot een opdracht leidt, bewaren wij een redelijke termijn om eventuele vervolgvragen te kunnen beantwoorden, en verwijderen wij daarna. Gegevens die horen bij een lopende of afgeronde opdracht bewaren wij zolang de wet dit voorschrijft, bijvoorbeeld de fiscale bewaarplicht van 7 jaar voor administratieve gegevens.</p>
+
+    <h2>Delen met derden</h2>
+    <p>Wij verkopen uw gegevens nooit aan derden. Voor de uitvoering van onze dienstverlening en website maken wij gebruik van enkele externe partijen die als verwerker voor ons optreden of waarmee gegevens gedeeld kunnen worden:</p>
+    <ul>
+      <li>de partij die ons offerteformulier technisch verwerkt en per e-mail aan ons doorstuurt;</li>
+      <li>Google, uitsluitend voor Google Analytics (met uw toestemming) en voor het tonen van Google Maps wanneer u deze zelf laadt;</li>
+      <li>Elfsight, voor het tonen van onze Google-beoordelingen op de website.</li>
+    </ul>
+    <p>Meer details over deze externe diensten en wanneer ze worden geladen, leest u in ons <a href="{base}cookiebeleid.html" style="color:var(--link); font-weight:600;">cookiebeleid</a>.</p>
+
+    <h2>Beveiliging</h2>
+    <p>Wij nemen passende technische en organisatorische maatregelen om uw gegevens te beschermen tegen verlies of onrechtmatig gebruik.</p>
+
     <h2>Uw rechten</h2>
-    <p>U heeft recht op inzage, correctie en verwijdering van uw gegevens. Neem hiervoor contact op via {EMAIL}.</p>
+    <p>U heeft het recht op inzage, correctie of verwijdering van uw persoonsgegevens, en het recht om bezwaar te maken tegen de verwerking ervan. Neem hiervoor contact met ons op via {EMAIL}. Bent u niet tevreden over hoe wij met uw gegevens omgaan, dan kunt u ook een klacht indienen bij de Autoriteit Persoonsgegevens.</p>
+
+    <h2>Contact</h2>
+    <p>Vragen over deze privacyverklaring? Neem contact op via {EMAIL} of {PHONE_DISPLAY}.</p>
+
+    <p class="prose" style="font-size:13px; color:var(--ink-soft); margin-top:24px;">Laatst bijgewerkt: augustus 2026.</p>
   </div></section>
 """
     write("privacy.html", page_shell("Privacyverklaring | BrabantSchoon", "Lees hoe BrabantSchoon omgaat met uw persoonsgegevens bij een offerteaanvraag of samenwerking.", "privacy.html", base, "", privacy))
@@ -2646,13 +2678,55 @@ def build_legal():
     voorwaarden = f"""
   {page_hero("Juridisch", "Algemene voorwaarden.", "De voorwaarden die van toepassing zijn op onze dienstverlening.", base, "Algemene voorwaarden")}
   <section><div class="wrap-narrow prose reveal">
-    <p><em>Dit is een voorbeeldtekst. Laat deze opstellen of controleren door een jurist voordat u ze publiceert &mdash; met name nu BrabantSchoon naast zakelijke opdrachtgevers ook particuliere klanten bedient, gelden er mogelijk aanvullende wettelijke consumentenrechten (zoals herroepingsrecht) die apart moeten worden opgenomen.</em></p>
-    <h2>Toepasselijkheid</h2>
-    <p>Deze voorwaarden zijn van toepassing op alle offertes en overeenkomsten tussen BrabantSchoon en haar klanten.</p>
-    <h2>Offertes</h2>
-    <p>Offertes zijn vrijblijvend en gebaseerd op de informatie die tijdens het contact is verstrekt.</p>
-    <h2>Contact</h2>
-    <p>Vragen? Neem contact op via {EMAIL}.</p>
+    <h2>1. Toepasselijkheid</h2>
+    <p>Deze algemene voorwaarden zijn van toepassing op alle offertes, aanbiedingen en overeenkomsten van BrabantSchoon (KvK {KVK}), met zowel zakelijke opdrachtgevers (waaronder VvE's en organisaties) als particuliere klanten. Bij particuliere klanten gelden aanvullend de bepalingen van dwingend Nederlands consumentenrecht; waar deze voorwaarden daarvan zouden afwijken, gaat het consumentenrecht voor.</p>
+
+    <h2>2. Offertes en prijsopgaven</h2>
+    <p>Offertes van BrabantSchoon zijn vrijblijvend, tenzij uitdrukkelijk anders vermeld, en gebaseerd op de door u verstrekte informatie. Getoonde prijsindicaties op de website zijn richtprijzen; de definitieve prijs wordt bevestigd nadat wij uw situatie hebben beoordeeld. Vermelde prijzen zijn inclusief btw, tenzij anders aangegeven.</p>
+
+    <h2>3. Totstandkoming van de opdracht</h2>
+    <p>Een opdracht komt tot stand zodra u akkoord gaat met de offerte, hetzij schriftelijk, hetzij per e-mail of op een andere door BrabantSchoon aangeboden wijze.</p>
+
+    <h2>4. Uitvoering van de werkzaamheden</h2>
+    <p>BrabantSchoon voert de overeengekomen werkzaamheden zorgvuldig en vakkundig uit, binnen de afgesproken frequentie en op de afgesproken locatie. Waar redelijkerwijs mogelijk houden wij rekening met specifieke wensen die vooraf zijn aangegeven.</p>
+
+    <h2>5. Toegang tot de locatie</h2>
+    <p>Opdrachtgever zorgt ervoor dat onze medewerkers op de afgesproken tijden toegang hebben tot de locatie en tot eventueel benodigde voorzieningen (zoals stroom en water), tenzij anders overeengekomen.</p>
+
+    <h2>6. Verplichtingen van de opdrachtgever</h2>
+    <p>Opdrachtgever verstrekt tijdig alle informatie die redelijkerwijs nodig is voor een goede uitvoering van de werkzaamheden, waaronder bijzonderheden over de locatie of het te reinigen oppervlak die van invloed kunnen zijn op de werkzaamheden of de prijs.</p>
+
+    <h2>7. Wijzigingen en meerwerk</h2>
+    <p>Wijzigingen in de opdracht, of werkzaamheden die buiten de oorspronkelijke offerte vallen, worden vooraf met u besproken. Meerwerk wordt pas uitgevoerd en in rekening gebracht na overleg.</p>
+
+    <h2>8. Prijzen en btw</h2>
+    <p>Alle door BrabantSchoon aan particuliere klanten getoonde prijzen zijn inclusief btw. Prijzen aan zakelijke opdrachtgevers kunnen exclusief btw worden vermeld; dit wordt in de offerte duidelijk aangegeven.</p>
+
+    <h2>9. Betaling</h2>
+    <p>Betaling vindt plaats op de wijze en binnen de termijn zoals vermeld op de factuur of zoals vooraf overeengekomen. <em>[Ondernemersbeslissing nodig: de exacte betalingstermijn en betaalwijze(n) \u2014 bijvoorbeeld vooraf, na uitvoering, of via een vast maandbedrag bij periodieke schoonmaak \u2014 zijn nog niet vastgelegd. Vul dit aan zodra dit intern is bepaald.]</em></p>
+
+    <h2>10. Annulering of verplaatsing</h2>
+    <p>Wilt u een geplande schoonmaakbeurt annuleren of verplaatsen, neem dan zo tijdig mogelijk contact met ons op. <em>[Ondernemersbeslissing nodig: een exacte annuleringstermijn is nog niet vastgesteld. Vul dit aan met de door BrabantSchoon gewenste termijn, bijvoorbeeld "minimaal 24 of 48 uur van tevoren"; houd bij particuliere klanten rekening met eventueel geldend herroepingsrecht.]</em></p>
+
+    <h2>11. Situaties waarin werkzaamheden niet kunnen worden uitgevoerd</h2>
+    <p>BrabantSchoon behoudt zich het recht voor werkzaamheden geheel of gedeeltelijk niet uit te voeren, of alleen tegen een aangepaste prijs, wanneer de situatie ter plaatse afwijkt van wat is afgesproken, of wanneer veilige en redelijke uitvoering niet mogelijk is \u2014 bijvoorbeeld bij niet eerder gemelde, hardnekkige verontreiniging of bouwresten, of bij een onveilige of onbereikbare situatie. Wij nemen in dat geval eerst contact met u op.</p>
+
+    <h2>12. Aansprakelijkheid</h2>
+    <p>BrabantSchoon is aansprakelijk voor schade die het rechtstreekse gevolg is van een toerekenbare tekortkoming in de uitvoering van de werkzaamheden, binnen de grenzen van de wet en tot het bedrag dat in het voorkomende geval door onze aansprakelijkheidsverzekering wordt uitgekeerd. Voor particuliere klanten laat dit onverlet de aansprakelijkheid die op grond van dwingend consumentenrecht niet kan worden beperkt of uitgesloten.</p>
+
+    <h2>13. Klachten</h2>
+    <p>Bent u niet tevreden over de uitgevoerde werkzaamheden, meld dit dan zo snel mogelijk, en in ieder geval binnen een redelijke termijn, via {EMAIL} of {PHONE_DISPLAY}. Wij nemen uw klacht serieus en zoeken samen met u naar een passende oplossing.</p>
+
+    <h2>14. Overmacht</h2>
+    <p>In geval van overmacht \u2014 een omstandigheid die uitvoering van de opdracht redelijkerwijs verhindert en niet aan BrabantSchoon is toe te rekenen \u2014 wordt de uitvoering van de werkzaamheden opgeschort voor de duur van de overmachtsituatie, zonder dat dit tot schadeplichtigheid van BrabantSchoon leidt.</p>
+
+    <h2>15. Toepasselijk recht</h2>
+    <p>Op alle overeenkomsten tussen BrabantSchoon en haar opdrachtgevers is Nederlands recht van toepassing.</p>
+
+    <h2>16. Contact</h2>
+    <p>Vragen over deze voorwaarden? Neem contact op via {EMAIL} of {PHONE_DISPLAY}.</p>
+
+    <p class="prose" style="font-size:13px; color:var(--ink-soft); margin-top:24px;">Laatst bijgewerkt: augustus 2026. Dit is geen juridisch advies; laat deze voorwaarden \u2014 met name de onderdelen die hierboven als ondernemersbeslissing zijn gemarkeerd \u2014 controleren door een juridisch adviseur voordat u ze definitief vaststelt.</p>
   </div></section>
 """
     write("voorwaarden.html", page_shell("Algemene voorwaarden | BrabantSchoon", "De algemene voorwaarden die gelden voor offertes en opdrachten bij BrabantSchoon.", "voorwaarden.html", base, "", voorwaarden))
@@ -2660,9 +2734,8 @@ def build_legal():
     cookies = f"""
   {page_hero("Juridisch", "Cookiebeleid.", "Welke cookies en externe diensten deze website gebruikt.", base, "Cookiebeleid")}
   <section><div class="wrap-narrow prose reveal">
-    <p><em>Dit is een voorbeeldtekst. Laat deze controleren door een jurist voordat u ze publiceert.</em></p>
     <h2>Welke cookies gebruikt deze website?</h2>
-    <p>Deze website gebruikt alleen strikt noodzakelijke, functionele cookies om goed te werken. Daarnaast gebruiken we, uitsluitend met uw toestemming, Google Analytics om te meten hoe bezoekers de website gebruiken. Analytics wordt pas geladen nadat u hier via de cookiemelding expliciet toestemming voor geeft \u2014 zonder toestemming worden er geen Analytics-cookies geplaatst.</p>
+    <p>Deze website gebruikt alleen strikt noodzakelijke, functionele cookies/opslag om goed te werken (bijvoorbeeld om uw cookievoorkeur te onthouden). Daarnaast gebruiken we, uitsluitend met uw toestemming, Google Analytics om te meten hoe bezoekers de website gebruiken. Analytics wordt pas geladen nadat u hier via de cookiemelding expliciet toestemming voor geeft \u2014 zonder toestemming worden er geen Analytics-cookies geplaatst.</p>
     <h2>Uw voorkeur wijzigen</h2>
     <p>U kunt uw cookievoorkeur op elk moment wijzigen via de link "Cookievoorkeuren wijzigen" onderaan iedere pagina.</p>
     <h2>Google Analytics</h2>
@@ -2671,10 +2744,11 @@ def build_legal():
     <p>Op de contactpagina kunt u desgewenst een kaart van Google Maps laden om onze locatie te bekijken. Deze kaart wordt niet automatisch geladen: pas wanneer u zelf op "Kaart laden" klikt, wordt de iframe van Google ingeladen. Voor die klik worden er geen gegevens met Google gedeeld via deze kaart. Zodra u de kaart laadt, kan Google gegevens verzamelen conform het eigen privacybeleid van Google.</p>
     <h2>Google Reviews (Elfsight)</h2>
     <p>Op de homepage tonen we onze Google-beoordelingen via een widget van Elfsight. Elfsight kan hierbij cookies of vergelijkbare technieken plaatsen, conform het eigen privacybeleid van Elfsight.</p>
-    <h2>Offerteformulier</h2>
-    <p>Het offerteformulier wordt verwerkt via een externe formulierdienst. Zie onze <a href="{base}privacy.html" style="color:var(--link); font-weight:600;">privacyverklaring</a> voor meer informatie over hoe wij met uw gegevens omgaan.</p>
+    <h2>Offerte- en contactformulieren</h2>
+    <p>Het offerteformulier en het terugbelformulier worden verwerkt via een externe formulierdienst, die de inhoud van uw aanvraag per e-mail aan ons doorstuurt. Zie onze <a href="{base}privacy.html" style="color:var(--link); font-weight:600;">privacyverklaring</a> voor meer informatie over hoe wij met uw gegevens omgaan.</p>
     <h2>Vragen</h2>
     <p>Vragen over dit cookiebeleid? Neem contact op via {EMAIL}.</p>
+    <p class="prose" style="font-size:13px; color:var(--ink-soft); margin-top:24px;">Laatst bijgewerkt: augustus 2026.</p>
   </div></section>
 """
     write("cookiebeleid.html", page_shell("Cookiebeleid | BrabantSchoon", "Lees welke cookies en externe diensten, zoals Google Maps, BrabantSchoon.nl gebruikt en waarom.", "cookiebeleid.html", base, "", cookies))
