@@ -77,7 +77,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "171"
+ASSET_VERSION = "172"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -1948,7 +1948,6 @@ def build_particulier_detail_pages():
         <h3 class="pakket-title">{naam}</h3>
         <p class="pakket-description">{desc}</p>
         <p class="pakket-price">Vanaf \u20ac{prijsdata["prijzen"]["tm60"][pid]} <span class="pakket-price-unit">incl. btw</span></p>
-        <p class="pakket-price-staffel">{STAFFEL_LABELS["tm60"]}</p>
         <div class="pakket-details" id="pakket-details-{page['slug']}-{pid}" hidden>
           <p class="pakket-details-label">Prijs op basis van woonoppervlakte</p>
           <table class="pakket-prijstabel">
