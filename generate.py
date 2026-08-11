@@ -77,7 +77,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "173"
+ASSET_VERSION = "174"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -382,7 +382,7 @@ def render_header(base, active):
     </nav>
     <div class="nav-actions">
       <a href="tel:{PHONE_TEL}" class="phone-link">{PHONE_DISPLAY}</a>
-      <a href="{base}offerte.html#offerteWizard" class="btn btn-primary btn-sm">Offerte aanvragen</a>
+      <a href="{base}offerte.html#offerteWizard" class="btn btn-primary btn-sm">Offerte<span class="cta-full-text"> aanvragen</span></a>
       <label for="menuCheckbox" class="menu-toggle" aria-label="Menu openen">{icon('list')}</label>
     </div>
   </div>
