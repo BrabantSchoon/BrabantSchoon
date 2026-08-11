@@ -77,7 +77,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "175"
+ASSET_VERSION = "176"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -139,14 +139,14 @@ def service_visual(svc, css_class=""):
     """Geeft een <img> terug als er een foto is, anders de illustratie-SVG."""
     photo = SERVICE_PHOTOS.get(svc["slug"])
     if photo:
-        return f'<img src="../images/{photo}" alt="{svc["name"]} door BrabantSchoon in Brabant" class="{css_class}" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;">'
+        return f'<img src="../images/{photo}" alt="{svc["name"]} door Brabantschoon in Brabant" class="{css_class}" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;">'
     return service_illustration(svc["icon"])
 
 def service_visual_from_root(svc, css_class=""):
     """Zelfde als service_visual, maar met pad relatief vanaf de hoofdmap (voor home/diensten.html)."""
     photo = SERVICE_PHOTOS.get(svc["slug"])
     if photo:
-        return f'<img src="images/{photo}" alt="{svc["name"]} door BrabantSchoon in Brabant" class="{css_class}" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;">'
+        return f'<img src="images/{photo}" alt="{svc["name"]} door Brabantschoon in Brabant" class="{css_class}" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;">'
     return service_illustration(svc["icon"])
 
 def hero_illustration():
@@ -214,10 +214,10 @@ SERVICES = [
      "intro": "Gemeenschappelijke ruimtes verdienen structureel onderhoud. Van trappenhuis en entree tot gangen, vloeren, glazen deuren en veelgebruikte contactpunten zoals deurklinken en lichtschakelaars \u2014 we werken met een vaste schoonmaakplanning op een frequentie die past bij uw gebouw, van wekelijks tot periodiek. Heeft het complex een lift? Ook die nemen we desgewenst mee in de ronde. We stemmen een vast schema af met VvE-besturen en beheerders, en resultaat en afspraken worden steekproefsgewijs gecontroleerd zodat de afgesproken kwaliteit ook op langere termijn geborgd blijft. Elke VvE is anders, dus werkzaamheden en frequentie zijn altijd maatwerk.",
      "bullets": ["Trappenhuizen en entrees", "Liften en gangen, indien van toepassing", "Vloeren, glas en deuren", "Veelgebruikte contactpunten", "Vaste schoonmaakplanning", "Direct contact met het bestuur"],
      "for": "VvE-besturen en beheerders.",
-     "seo_title": "VvE-schoonmaak Brabant | Trappenhuis &amp; ruimtes | BrabantSchoon",
+     "seo_title": "VvE-schoonmaak Brabant | Trappenhuis &amp; ruimtes | Brabantschoon",
      "seo_meta": "VvE-schoonmaak in Brabant: trappenhuis, entree en gemeenschappelijke ruimtes structureel schoon. Vanuit Helmond actief voor VvE's in heel Brabant.",
      "extra_link_html": '<p class="prose" style="margin-top:16px;">Op zoek naar VvE-schoonmaak in Helmond zelf? Bekijk onze <a href="{base}schoonmaakbedrijf-helmond.html" style="color:var(--link); font-weight:600;">schoonmaakdiensten in Helmond</a>.</p>',
-     "faqs": [("Hoe wordt de frequentie van VvE-schoonmaak bepaald?", "In overleg met het bestuur stellen we een schema op dat past bij het gebruik van de gemeenschappelijke ruimtes."), ("Kan de VvE één vast aanspreekpunt krijgen?", "Ja, u krijgt een vast contact voor afstemming en eventuele bijzonderheden."), ("Wordt ook de lift meegenomen in de schoonmaak?", "Als het gebouw een lift heeft, kan die op verzoek worden meegenomen in de vaste ronde."), ("Werkt BrabantSchoon ook voor VvE's buiten Helmond?", "Ja, we verzorgen VvE-schoonmaak voor besturen en beheerders in heel Brabant, vanuit onze thuisbasis in Helmond.")]},
+     "faqs": [("Hoe wordt de frequentie van VvE-schoonmaak bepaald?", "In overleg met het bestuur stellen we een schema op dat past bij het gebruik van de gemeenschappelijke ruimtes."), ("Kan de VvE één vast aanspreekpunt krijgen?", "Ja, u krijgt een vast contact voor afstemming en eventuele bijzonderheden."), ("Wordt ook de lift meegenomen in de schoonmaak?", "Als het gebouw een lift heeft, kan die op verzoek worden meegenomen in de vaste ronde."), ("Werkt Brabantschoon ook voor VvE's buiten Helmond?", "Ja, we verzorgen VvE-schoonmaak voor besturen en beheerders in heel Brabant, vanuit onze thuisbasis in Helmond.")]},
     {"slug": "periodieke-schoonmaak", "icon": "clock", "tint": "tint-6",
      "name": "Periodieke schoonmaak",
      "short": "Een vaste schoonmaakbeurt op een vast ritme.",
@@ -230,8 +230,8 @@ SERVICES = [
      "intro": "Sommige oppervlakken vragen specifieke kennis. Van tapijtreiniging tot vloerbehandeling: we pakken werk aan dat verder gaat dan regulier onderhoud.",
      "bullets": ["Tapijt- en stofferingreiniging", "Vloerbehandeling", "Op aanvraag"],
      "for": "Bedrijven met specifieke reinigingsvragen.",
-     "seo_title": "Tapijtreiniging &amp; specialistische reiniging | BrabantSchoon",
-     "seo_meta": "Tapijtreiniging en specialistische reiniging van vloeren en bijzondere oppervlakken door BrabantSchoon, vanuit Helmond actief in Brabant.",
+     "seo_title": "Tapijtreiniging &amp; specialistische reiniging | Brabantschoon",
+     "seo_meta": "Tapijtreiniging en specialistische reiniging van vloeren en bijzondere oppervlakken door Brabantschoon, vanuit Helmond actief in Brabant.",
      "faqs": [("Welke oppervlakken kunt u specialistisch laten reinigen?", "Onder andere tapijt, stoffering en diverse vloertypen, afhankelijk van de vraag."), ("Is specialistische reiniging ook eenmalig mogelijk?", "Ja, dit is vaak maatwerk en prima als eenmalige beurt aan te vragen.")]},
 ]
 
@@ -284,7 +284,7 @@ ORG_SCHEMA = f"""<script type="application/ld+json">
 {{
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "BrabantSchoon",
+  "name": "Brabantschoon",
   "url": "{SITE_URL}/",
   "logo": "{SITE_URL}/images/logo.png",
   "telephone": "{PHONE_TEL}",
@@ -330,7 +330,7 @@ LOCALBUSINESS_SCHEMA = f"""<script type="application/ld+json">
 {{
   "@context": "https://schema.org",
   "@type": ["LocalBusiness", "CleaningService"],
-  "name": "BrabantSchoon",
+  "name": "Brabantschoon",
   "image": "{SITE_URL}/images/logo.png",
   "url": "{SITE_URL}/",
   "telephone": "{PHONE_TEL}",
@@ -352,9 +352,9 @@ def service_schema(svc):
   "@context": "https://schema.org",
   "@type": "Service",
   "serviceType": "{svc['name']}",
-  "name": "{svc['name']} | BrabantSchoon",
+  "name": "{svc['name']} | Brabantschoon",
   "description": "{svc['short']}",
-  "provider": {{"@type": "LocalBusiness", "name": "BrabantSchoon", "url": "{SITE_URL}/"}},
+  "provider": {{"@type": "LocalBusiness", "name": "Brabantschoon", "url": "{SITE_URL}/"}},
   "areaServed": "Zuidoost-Brabant"
 }}
 </script>"""
@@ -376,7 +376,7 @@ def render_header(base, active):
 <input type="checkbox" id="menuCheckbox" class="menu-checkbox">
 <header class="site-header">
   <div class="wrap nav">
-    <a href="/" class="logo"><img src="{base}images/logo.png" alt="BrabantSchoon" width="242" height="28"></a>
+    <a href="/" class="logo"><img src="{base}images/logo.png" alt="Brabantschoon" width="242" height="28"></a>
     <nav class="links">
       {links_html}
     </nav>
@@ -390,7 +390,7 @@ def render_header(base, active):
 <label for="menuCheckbox" class="menu-overlay"></label>
 <aside class="mobile-sidebar">
   <div class="mobile-menu-top">
-    <img src="{base}images/logo.png" alt="BrabantSchoon" width="225" height="26">
+    <img src="{base}images/logo.png" alt="Brabantschoon" width="225" height="26">
     <label for="menuCheckbox" class="mobile-menu-close" aria-label="Menu sluiten">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </label>
@@ -409,7 +409,7 @@ def render_footer(base):
   <div class="wrap">
     <div class="footer-top footer-top-3col">
       <div class="footer-col footer-brand-col">
-        <img src="{base}images/logo.png" alt="BrabantSchoon" width="260" height="30">
+        <img src="{base}images/logo.png" alt="Brabantschoon" width="260" height="30">
         <p class="footer-tagline">Professionele schoonmaakpartner voor bedrijven, VvE's, organisaties en particulieren in Brabant.</p>
         <div class="footer-meta">KvK {KVK} &bull; BTW NL005380198B12</div>
       </div>
@@ -449,7 +449,7 @@ def render_footer(base):
     </div>
     <div class="footer-bottom">
       <div class="footer-copy">
-        <span>&copy; 2026 BrabantSchoon. Alle rechten voorbehouden.</span>
+        <span>&copy; 2026 Brabantschoon. Alle rechten voorbehouden.</span>
       </div>
       <div class="footer-legal-links">
         <a href="{base}privacy.html">Privacybeleid</a>
@@ -552,8 +552,8 @@ def faq_block(items):
     return "\n      ".join(f'<details><summary>{q}<span class="chev">{icon("chevron")}</span></summary><div class="faq-a-wrap"><p class="faq-a">{a}</p></div></details>' for q, a in items)
 
 FAQ_ITEMS = [
-    ("Wat kost een schoonmaakdienst van BrabantSchoon?", "De prijs is afhankelijk van onder andere de locatie, werkzaamheden en frequentie. Voor periodieke zakelijke schoonmaak plannen we waar nodig eerst een korte, vrijblijvende locatieopname \u2014 zo maken we een offerte die aansluit op de daadwerkelijke werkzaamheden."),
-    ("In welke regio\u2019s is BrabantSchoon actief?", f"BrabantSchoon is actief in heel Noord-Brabant, vanuit onze thuisbasis in {CITY}. Rond {CITY} en de Peelgemeenten \u2014 Deurne, Asten, Someren, Gemert-Bakel en Laarbeek \u2014 zijn we het snelst ter plaatse; voor opdrachten elders in de provincie rijden we graag mee."),
+    ("Wat kost een schoonmaakdienst van Brabantschoon?", "De prijs is afhankelijk van onder andere de locatie, werkzaamheden en frequentie. Voor periodieke zakelijke schoonmaak plannen we waar nodig eerst een korte, vrijblijvende locatieopname \u2014 zo maken we een offerte die aansluit op de daadwerkelijke werkzaamheden."),
+    ("In welke regio\u2019s is Brabantschoon actief?", f"Brabantschoon is actief in heel Noord-Brabant, vanuit onze thuisbasis in {CITY}. Rond {CITY} en de Peelgemeenten \u2014 Deurne, Asten, Someren, Gemert-Bakel en Laarbeek \u2014 zijn we het snelst ter plaatse; voor opdrachten elders in de provincie rijden we graag mee."),
     ("Werk ik steeds met dezelfde persoon of hetzelfde team?", "Ja, u krijgt een vast aanspreekpunt en een vast team dat uw locatie kent \u2014 zodat u niet steeds opnieuw hoeft uit te leggen hoe u het wilt."),
     ("Kan ik ook een eenmalige schoonmaakbeurt aanvragen?", "Ja, naast vaste afspraken verzorgen we ook maatwerk voor eenmalige beurten, bijvoorbeeld bij een oplevering of verhuizing."),
     ("Hoe snel kunt u starten?", "Dat verschilt per situatie, maar we plannen doorgaans snel een kennismaking in. Bij spoed zijn we ook buiten kantooruren bereikbaar via telefoon of WhatsApp."),
@@ -572,7 +572,7 @@ def choice_cards_block(base=""):
     return f"""<div class="choice-grid reveal">
       <a href="{base}zakelijke-schoonmaak.html" class="choice-card">
         <div class="choice-media">
-          <img src="{base}images/diensten/kantoorreiniging.jpg" alt="Zakelijke schoonmaak door BrabantSchoon" width="1200" height="800" loading="lazy" decoding="async">
+          <img src="{base}images/diensten/kantoorreiniging.jpg" alt="Zakelijke schoonmaak door Brabantschoon" width="1200" height="800" loading="lazy" decoding="async">
         </div>
         <div class="choice-body">
           <span class="choice-label">Voor bedrijven</span>
@@ -584,7 +584,7 @@ def choice_cards_block(base=""):
       </a>
       <a href="{base}schoonmaak-particulieren.html" class="choice-card">
         <div class="choice-media">
-          <img src="{base}images/diensten/particuliere-schoonmaak-brabantschoon.webp" alt="Particuliere schoonmaak door BrabantSchoon" width="1200" height="800" loading="lazy" decoding="async">
+          <img src="{base}images/diensten/particuliere-schoonmaak-brabantschoon.webp" alt="Particuliere schoonmaak door Brabantschoon" width="1200" height="800" loading="lazy" decoding="async">
         </div>
         <div class="choice-body">
           <span class="choice-label">Voor particulieren</span>
@@ -601,7 +601,7 @@ def reviews_widget_block():
       <div class="reviews-compact-label">
         <span>Benieuwd naar onze beoordelingen?</span>
       </div>
-      <a href="https://www.google.com/search?q=BrabantSchoon+Helmond" target="_blank" rel="noopener" class="btn btn-outline">Bekijk onze reviews op Google</a>
+      <a href="https://www.google.com/search?q=Brabantschoon+Helmond" target="_blank" rel="noopener" class="btn btn-outline">Bekijk onze reviews op Google</a>
     </div>"""
 
 WIZARD_KLANTTYPE = [
@@ -1073,7 +1073,7 @@ def contact_info_block(base="", show_heading=True, show_map=True):
     map_html = f"""<div class="contact-map" id="mapWrap" data-src="{maps_src}">
       <div class="map-placeholder">
         <div class="map-placeholder-visual" aria-hidden="true">
-          <div class="map-pin">{icon('pin', cls='map-pin-icon')}<span>BrabantSchoon</span></div>
+          <div class="map-pin">{icon('pin', cls='map-pin-icon')}<span>Brabantschoon</span></div>
         </div>
         <div class="map-placeholder-info">
           <p>Actief in Brabant, vanuit {CITY}. De interactieve kaart van Google Maps wordt pas geladen na uw klik, zodat er vooraf geen gegevens met Google worden gedeeld.</p>
@@ -1149,7 +1149,7 @@ def build_home():
 
     body = f"""
   <section class="hero-full hero-full-home">
-    <img src="images/hero.jpg" alt="Bedrijfsbusjes van BrabantSchoon bij zonsondergang voor een kantoorpand" class="hero-full-img" width="2000" height="1125" fetchpriority="high" decoding="async">
+    <img src="images/hero.jpg" alt="Bedrijfsbusjes van Brabantschoon bij zonsondergang voor een kantoorpand" class="hero-full-img" width="2000" height="1125" fetchpriority="high" decoding="async">
     <div class="hero-full-overlay hero-full-overlay-home"></div>
     <div class="wrap hero-full-content hero-full-content-home">
       <div class="hero-text-panel">
@@ -1185,8 +1185,8 @@ def build_home():
   <section>
     <div class="wrap">
       <div class="sec-head reveal">
-        <span class="eyebrow">Waarom BrabantSchoon</span>
-        <h2>Waarom klanten voor BrabantSchoon kiezen.</h2>
+        <span class="eyebrow">Waarom Brabantschoon</span>
+        <h2>Waarom klanten voor Brabantschoon kiezen.</h2>
       </div>
       <div class="usp-grid reveal">
         {usp_html}
@@ -1274,8 +1274,8 @@ def build_home():
   {trust_strip()}
 """
     write("index.html", page_shell(
-        "Schoonmaakbedrijf in Brabant | Kantoren &amp; VvE&#39;s | BrabantSchoon",
-        f"BrabantSchoon is uw schoonmaakpartner voor kantoren, VvE's, organisaties en particulieren in Brabant. Vrijblijvende offerte binnen één werkdag.",
+        "Schoonmaakbedrijf in Brabant | Kantoren &amp; VvE&#39;s | Brabantschoon",
+        f"Brabantschoon is uw schoonmaakpartner voor kantoren, VvE's, organisaties en particulieren in Brabant. Vrijblijvende offerte binnen één werkdag.",
         "", base, "/", body, LOCALBUSINESS_SCHEMA + "\n" + faq_schema(FAQ_ITEMS[:5]),
         preload_image="images/hero.jpg", body_class="home-hero"
     ))
@@ -1322,8 +1322,8 @@ def build_diensten_overview():
   <section style="background:var(--bg-soft);"><div class="wrap">{cta_band(base=base)}</div></section>
 """
     write("diensten.html", page_shell(
-        "Diensten | Zakelijk &amp; particulier | BrabantSchoon",
-        "Bekijk de diensten van BrabantSchoon: zakelijke schoonmaak voor kantoren en VvE's, en particuliere schoonmaak voor uw woning. Vraag een offerte aan.",
+        "Diensten | Zakelijk &amp; particulier | Brabantschoon",
+        "Bekijk de diensten van Brabantschoon: zakelijke schoonmaak voor kantoren en VvE's, en particuliere schoonmaak voor uw woning. Vraag een offerte aan.",
         "diensten.html", base, "diensten.html", body, breadcrumb_schema("Diensten", "diensten.html")
     ))
 
@@ -1343,7 +1343,7 @@ def build_service_pages():
         photo = SERVICE_PHOTOS.get(s["slug"])
         hero = page_hero("Dienst", s['name'], s['short'], base, s['name'],
                           image=f"../images/{photo}" if photo else None,
-                          image_alt=f"{s['name']} door BrabantSchoon", compact=True)
+                          image_alt=f"{s['name']} door Brabantschoon", compact=True)
         body = f"""
   {hero}
   <section class="section-tight">
@@ -1381,8 +1381,8 @@ def build_service_pages():
 """
         SERVICE_LABEL_OVERRIDES = {"VvE-schoonmaak": "VvE-schoonmaak"}
         service_label = SERVICE_LABEL_OVERRIDES.get(s['name'], s['name'][0].lower() + s['name'][1:])
-        title = s.get('seo_title', f"{s['name']} | BrabantSchoon")
-        meta = s.get('seo_meta', f"{s['short']} BrabantSchoon verzorgt {service_label} voor bedrijven, VvE's en organisaties in Brabant.")
+        title = s.get('seo_title', f"{s['name']} | Brabantschoon")
+        meta = s.get('seo_meta', f"{s['short']} Brabantschoon verzorgt {service_label} voor bedrijven, VvE's en organisaties in Brabant.")
         write(f"diensten/{s['slug']}.html", page_shell(
             title, meta,
             f"diensten/{s['slug']}.html", base, "diensten.html",
@@ -1414,7 +1414,7 @@ def build_zakelijke_pagina():
   {hero}
   <section class="section-tight">
     <div class="wrap-narrow">
-      <p class="prose reveal">BrabantSchoon verzorgt zakelijke schoonmaak op maat: de juiste aanpak en frequentie hangen af van uw pand, het gebruik ervan en uw wensen. Van een vast, periodiek contract tot een eenmalige opdracht \u2014 hieronder vindt u een overzicht van onze zakelijke dienstverlening.</p>
+      <p class="prose reveal">Brabantschoon verzorgt zakelijke schoonmaak op maat: de juiste aanpak en frequentie hangen af van uw pand, het gebruik ervan en uw wensen. Van een vast, periodiek contract tot een eenmalige opdracht \u2014 hieronder vindt u een overzicht van onze zakelijke dienstverlening.</p>
     </div>
   </section>
   <section class="section-tight" style="padding-top:0;">
@@ -1456,8 +1456,8 @@ def build_zakelijke_pagina():
 """
     zakelijk_svc_schema = {"name": "Zakelijke schoonmaak", "short": "Professionele zakelijke schoonmaak voor kantoren, VvE's, scholen, zorglocaties en andere organisaties in Brabant."}
     write("zakelijke-schoonmaak.html", page_shell(
-        "Zakelijke schoonmaak | BrabantSchoon",
-        "Zakelijke schoonmaak door BrabantSchoon: kantoren, VvE's, scholen en zorglocaties in Brabant. Vraag vrijblijvend een offerte op maat aan.",
+        "Zakelijke schoonmaak | Brabantschoon",
+        "Zakelijke schoonmaak door Brabantschoon: kantoren, VvE's, scholen en zorglocaties in Brabant. Vraag vrijblijvend een offerte op maat aan.",
         "zakelijke-schoonmaak.html", base, "zakelijke-schoonmaak.html",
         body,
         service_schema(zakelijk_svc_schema) + "\n" + breadcrumb_schema("Zakelijke schoonmaak", "zakelijke-schoonmaak.html") + "\n" + faq_schema(zakelijke_faqs)
@@ -1468,22 +1468,22 @@ def build_zakelijke_pagina():
 # =================================================================
 PARTICULIER_SUBDIENSTEN = [
     ("Verhuisschoonmaak", "Uw oude woning schoon opgeleverd, of uw nieuwe woning grondig schoongemaakt v\u00f3\u00f3r de verhuizing.",
-     "verhuisschoonmaak-brabantschoon.webp", "BrabantSchoon-medewerker verzorgt een verhuisschoonmaak in een lege woning met verhuisdozen",
+     "verhuisschoonmaak-brabantschoon.webp", "Brabantschoon-medewerker verzorgt een verhuisschoonmaak in een lege woning met verhuisdozen",
      "verhuisschoonmaak.html"),
     ("Eenmalige grote schoonmaak", "Een grondige beurt voor uw hele woning, zonder dat daar direct een vaste overeenkomst voor nodig is.",
-     "eenmalige-grote-schoonmaak-brabantschoon.webp", "BrabantSchoon-medewerkster verzorgt een eenmalige grote schoonmaak in de woonkamer",
+     "eenmalige-grote-schoonmaak-brabantschoon.webp", "Brabantschoon-medewerkster verzorgt een eenmalige grote schoonmaak in de woonkamer",
      "eenmalige-grote-schoonmaak.html"),
     ("Schoonmaak na verbouwing", "Verwijderen van bouwstof en normaal schoonmaakvuil na een renovatie of verbouwing.",
-     "schoonmaak-na-verbouwing-brabantschoon.webp", "BrabantSchoon-medewerkster verwijdert bouwstof na een verbouwing",
+     "schoonmaak-na-verbouwing-brabantschoon.webp", "Brabantschoon-medewerkster verwijdert bouwstof na een verbouwing",
      "schoonmaak-na-verbouwing.html"),
     ("Periodieke schoonmaak", "Terugkerende professionele schoonmaak van uw woning, op een ritme dat u zelf bepaalt.",
-     "periodieke-schoonmaak-brabantschoon.webp", "BrabantSchoon-medewerkster verzorgt periodieke schoonmaak van het keukenblok",
+     "periodieke-schoonmaak-brabantschoon.webp", "Brabantschoon-medewerkster verzorgt periodieke schoonmaak van het keukenblok",
      "periodieke-schoonmaak-particulier.html"),
     ("Bij verkoop, verhuur of oplevering", "Uw woning schoon voor bezichtigingen, verhuur of de sleuteloverdracht.",
-     "opleveringsschoonmaak-brabantschoon.webp", "BrabantSchoon-medewerkster inspecteert een woning bij oplevering",
+     "opleveringsschoonmaak-brabantschoon.webp", "Brabantschoon-medewerkster inspecteert een woning bij oplevering",
      "opleveringsschoonmaak-particulier.html"),
     ("Glasbewassing", "Streeploos schone ramen voor uw woning, eenmalig of periodiek.",
-     "glasbewassing.jpg", "Streeploos schone ramen na professionele glasbewassing door BrabantSchoon",
+     "glasbewassing.jpg", "Streeploos schone ramen na professionele glasbewassing door Brabantschoon",
      "glasbewassing-particulier.html"),
 ]
 
@@ -1503,11 +1503,11 @@ PARTICULIER_PAGES = [
         "filename": "verhuisschoonmaak.html",
         "slug": "verhuisschoonmaak",
         "title": "Verhuisschoonmaak",
-        "meta_title": "Verhuisschoonmaak | BrabantSchoon",
-        "meta_description": "Verhuisschoonmaak door BrabantSchoon: uw oude woning schoon opgeleverd of uw nieuwe woning grondig schoon v\u00f3\u00f3r de verhuizing. Vraag vrijblijvend een offerte aan.",
+        "meta_title": "Verhuisschoonmaak | Brabantschoon",
+        "meta_description": "Verhuisschoonmaak door Brabantschoon: uw oude woning schoon opgeleverd of uw nieuwe woning grondig schoon v\u00f3\u00f3r de verhuizing. Vraag vrijblijvend een offerte aan.",
         "lead": "Uw oude woning schoon opgeleverd, of uw nieuwe woning grondig schoongemaakt v\u00f3\u00f3r de verhuizing.",
         "img": "verhuisschoonmaak-brabantschoon.webp",
-        "alt": "BrabantSchoon-medewerker verzorgt een verhuisschoonmaak in een lege woning met verhuisdozen",
+        "alt": "Brabantschoon-medewerker verzorgt een verhuisschoonmaak in een lege woning met verhuisdozen",
         "voor_wie": [
             "U levert uw oude woning schoon op bij het einde van de huur",
             "U wilt uw nieuwe woning grondig schoon v\u00f3\u00f3r de intrek",
@@ -1537,11 +1537,11 @@ PARTICULIER_PAGES = [
         "filename": "eenmalige-grote-schoonmaak.html",
         "slug": "grote-schoonmaak",
         "title": "Eenmalige grote schoonmaak",
-        "meta_title": "Eenmalige grote schoonmaak | BrabantSchoon",
-        "meta_description": "Eenmalige grote schoonmaak door BrabantSchoon: een grondige beurt voor uw hele woning, zonder vast contract. Vraag vrijblijvend een offerte aan.",
+        "meta_title": "Eenmalige grote schoonmaak | Brabantschoon",
+        "meta_description": "Eenmalige grote schoonmaak door Brabantschoon: een grondige beurt voor uw hele woning, zonder vast contract. Vraag vrijblijvend een offerte aan.",
         "lead": "Een grondige beurt voor uw hele woning, zonder dat daar direct een vaste overeenkomst voor nodig is.",
         "img": "eenmalige-grote-schoonmaak-brabantschoon.webp",
-        "alt": "BrabantSchoon-medewerkster verzorgt een eenmalige grote schoonmaak in de woonkamer",
+        "alt": "Brabantschoon-medewerkster verzorgt een eenmalige grote schoonmaak in de woonkamer",
         "voor_wie": [
             "Uw woning heeft al langere tijd geen grondige beurt gehad",
             "U wilt \u00e9\u00e9n keer flink laten schoonmaken, zonder vast contract",
@@ -1571,11 +1571,11 @@ PARTICULIER_PAGES = [
         "filename": "schoonmaak-na-verbouwing.html",
         "slug": "na-verbouwing",
         "title": "Schoonmaak na verbouwing",
-        "meta_title": "Schoonmaak na verbouwing | BrabantSchoon",
-        "meta_description": "Schoonmaak na verbouwing door BrabantSchoon: bouwstof en normaal schoonmaakvuil verwijderd na renovatie of verbouwing. Vraag vrijblijvend een offerte aan.",
+        "meta_title": "Schoonmaak na verbouwing | Brabantschoon",
+        "meta_description": "Schoonmaak na verbouwing door Brabantschoon: bouwstof en normaal schoonmaakvuil verwijderd na renovatie of verbouwing. Vraag vrijblijvend een offerte aan.",
         "lead": "Verwijderen van bouwstof en normaal schoonmaakvuil na een renovatie of verbouwing.",
         "img": "schoonmaak-na-verbouwing-brabantschoon.webp",
-        "alt": "BrabantSchoon-medewerkster verwijdert bouwstof na een verbouwing",
+        "alt": "Brabantschoon-medewerkster verwijdert bouwstof na een verbouwing",
         "voor_wie": ["Na een renovatie of verbouwing", "Na het plaatsen van een nieuwe keuken", "Na het plaatsen van een nieuwe badkamer", "Na stucwerk- of schilderwerkzaamheden", "Na een complete woningverbouwing"],
         "onderdelen": ["Bouwstof verwijderen", "Oppervlakken stofvrij maken", "Deuren", "Kozijnen", "Plinten", "Keuken", "Sanitair", "Vloeren", "Stofzuigen", "Dweilen", "Woning gebruiksklaar maken"],
         "pakketten": [
@@ -1600,11 +1600,11 @@ PARTICULIER_PAGES = [
         "filename": "periodieke-schoonmaak-particulier.html",
         "slug": "periodiek",
         "title": "Periodieke schoonmaak",
-        "meta_title": "Periodieke schoonmaak voor particulieren | BrabantSchoon",
-        "meta_description": "Periodieke schoonmaak van BrabantSchoon voor particulieren: terugkerende professionele schoonmaak op een ritme dat u zelf bepaalt. Vraag vrijblijvend een offerte aan.",
+        "meta_title": "Periodieke schoonmaak voor particulieren | Brabantschoon",
+        "meta_description": "Periodieke schoonmaak van Brabantschoon voor particulieren: terugkerende professionele schoonmaak op een ritme dat u zelf bepaalt. Vraag vrijblijvend een offerte aan.",
         "lead": "Terugkerende professionele schoonmaak van uw woning, op een ritme dat u zelf bepaalt.",
         "img": "periodieke-schoonmaak-brabantschoon.webp",
-        "alt": "BrabantSchoon-medewerkster verzorgt periodieke schoonmaak van het keukenblok",
+        "alt": "Brabantschoon-medewerkster verzorgt periodieke schoonmaak van het keukenblok",
         "voor_wie": ["Huishoudens die terugkerend ondersteuning willen bij het schoonhouden van hun woning", "Drukke gezinnen die structureel tijd willen besparen", "Wie liever een vast aanspreekpunt heeft dan wisselende hulp"],
         "onderdelen": ["Stofzuigen", "Dweilen", "Bereikbare oppervlakken afstoffen", "Keukenwerkblad", "Spoelbak", "Keukenoppervlakken", "Sanitair", "Spiegels", "Vensterbanken", "Afvalbakken legen, indien gewenst"],
         "pakketten": [],
@@ -1622,11 +1622,11 @@ PARTICULIER_PAGES = [
         "filename": "opleveringsschoonmaak-particulier.html",
         "slug": "oplevering",
         "title": "Schoonmaak bij verkoop, verhuur of oplevering",
-        "meta_title": "Schoonmaak bij verkoop, verhuur of oplevering | BrabantSchoon",
-        "meta_description": "Schoonmaak bij verkoop, verhuur of oplevering door BrabantSchoon: uw woning schoon voor bezichtigingen of de sleuteloverdracht. Vraag vrijblijvend een offerte aan.",
+        "meta_title": "Schoonmaak bij verkoop, verhuur of oplevering | Brabantschoon",
+        "meta_description": "Schoonmaak bij verkoop, verhuur of oplevering door Brabantschoon: uw woning schoon voor bezichtigingen of de sleuteloverdracht. Vraag vrijblijvend een offerte aan.",
         "lead": "Uw woning schoon voor bezichtigingen, verhuur of de sleuteloverdracht.",
         "img": "opleveringsschoonmaak-brabantschoon.webp",
-        "alt": "BrabantSchoon-medewerkster inspecteert een woning bij oplevering",
+        "alt": "Brabantschoon-medewerkster inspecteert een woning bij oplevering",
         "voor_wie": ["Woningverkoop en bezichtigingen", "Einde huurperiode", "Een nieuwe huurder die de woning betrekt", "Verhuurders die hun woning gereed willen maken", "Sleuteloverdracht bij oplevering"],
         "onderdelen": ["Keuken", "Sanitair", "Vloeren", "Deuren", "Plinten", "Kozijnen", "Oppervlakken", "Lege kasten", "Laatste controle"],
         "pakketten": [
@@ -1651,11 +1651,11 @@ PARTICULIER_PAGES = [
         "filename": "glasbewassing-particulier.html",
         "slug": "glasbewassing-particulier",
         "title": "Glasbewassing voor particulieren",
-        "meta_title": "Glasbewassing voor particulieren | BrabantSchoon",
-        "meta_description": "Professionele glasbewassing voor particulieren door BrabantSchoon: streeploos schone ramen, eenmalig of periodiek. Vraag vrijblijvend een offerte op maat aan.",
+        "meta_title": "Glasbewassing voor particulieren | Brabantschoon",
+        "meta_description": "Professionele glasbewassing voor particulieren door Brabantschoon: streeploos schone ramen, eenmalig of periodiek. Vraag vrijblijvend een offerte op maat aan.",
         "lead": "Streeploos schone ramen voor uw woning \u2014 eenmalig of op een vast ritme.",
         "img": "glasbewassing.jpg",
-        "alt": "Streeploos schone ramen na professionele glasbewassing door BrabantSchoon",
+        "alt": "Streeploos schone ramen na professionele glasbewassing door Brabantschoon",
         "voor_wie": ["Woningeigenaren die hun ramen liever laten reinigen dan zelf doen", "Moeilijk bereikbare ramen, zoals een bovenverdieping", "Wie op een vast ritme schone ramen wil, zonder er zelf aan te hoeven denken", "Een eenmalige grondige beurt, bijvoorbeeld voor een speciale gelegenheid"],
         "onderdelen": ["Buitenzijde ramen", "Binnenzijde ramen, indien gewenst", "Kozijnen, indien gewenst", "Vensterbanken, indien gewenst"],
         "pakketten": [],
@@ -1803,13 +1803,13 @@ def build_particulieren_page():
       <div class="body"><h3>{r['name']}</h3><p>{r['short']}</p></div>
     </a>""" for r in related)
     hero = page_hero("Particuliere schoonmaak", "Schoonmaak voor particulieren.",
-                      "Professionele schoonmaak voor uw woning \u2014 dezelfde zorgvuldige aanpak die bedrijven en VvE's van BrabantSchoon gewend zijn.",
+                      "Professionele schoonmaak voor uw woning \u2014 dezelfde zorgvuldige aanpak die bedrijven en VvE's van Brabantschoon gewend zijn.",
                       base, "Schoonmaak voor particulieren")
     body = f"""
   {hero}
   <section class="section-tight">
     <div class="wrap-narrow">
-      <p class="prose reveal">Naast bedrijven, VvE's en organisaties is BrabantSchoon ook inzetbaar voor particuliere woningen. Van een eenmalige grote schoonmaak tot periodieke ondersteuning: dezelfde professionele aanpak, heldere afspraken en een vast aanspreekpunt dat u van onze zakelijke dienstverlening kent.</p>
+      <p class="prose reveal">Naast bedrijven, VvE's en organisaties is Brabantschoon ook inzetbaar voor particuliere woningen. Van een eenmalige grote schoonmaak tot periodieke ondersteuning: dezelfde professionele aanpak, heldere afspraken en een vast aanspreekpunt dat u van onze zakelijke dienstverlening kent.</p>
     </div>
   </section>
   <section class="section-tight" style="padding-top:0;">
@@ -1849,8 +1849,8 @@ def build_particulieren_page():
 """
     particulier_svc_schema = {"name": "Schoonmaak voor particulieren", "short": "Professionele schoonmaak voor particuliere woningen: verhuisschoonmaak, grote schoonmaak, schoonmaak na verbouwing, periodieke schoonmaak en schoonmaak bij verkoop of verhuur."}
     write("schoonmaak-particulieren.html", page_shell(
-        "Schoonmaak voor particulieren | BrabantSchoon",
-        "Particuliere schoonmaak door BrabantSchoon: verhuisschoonmaak, grote schoonmaakbeurten en schoonmaak na verbouwing. Vraag vrijblijvend een offerte aan.",
+        "Schoonmaak voor particulieren | Brabantschoon",
+        "Particuliere schoonmaak door Brabantschoon: verhuisschoonmaak, grote schoonmaakbeurten en schoonmaak na verbouwing. Vraag vrijblijvend een offerte aan.",
         "schoonmaak-particulieren.html", base, "schoonmaak-particulieren.html",
         body,
         service_schema(particulier_svc_schema) + "\n" + breadcrumb_schema("Schoonmaak voor particulieren", "schoonmaak-particulieren.html") + "\n" + faq_schema(PARTICULIER_FAQS)
@@ -2105,16 +2105,16 @@ def build_over_ons():
     base = ""
     about_items = [
         ("chat", "Persoonlijke aanpak", "Voor ons is schoonmaak geen anoniem proces. We nemen de tijd om uw pand en wensen te leren kennen, zodat de aanpak aansluit op uw situatie \u2014 geen standaardpakket."),
-        ("phone", "Direct contact, geen callcenter", "Vragen of een aanpassing nodig? U belt of appt rechtstreeks met uw vaste aanspreekpunt bij BrabantSchoon \u2014 niet met een callcenter of wisselende medewerkers."),
+        ("phone", "Direct contact, geen callcenter", "Vragen of een aanpassing nodig? U belt of appt rechtstreeks met uw vaste aanspreekpunt bij Brabantschoon \u2014 niet met een callcenter of wisselende medewerkers."),
         ("check", "Vaste afspraken en kwaliteitscontrole", "Wat we afspreken, komen we na. Daarnaast controleren we resultaat en afspraken steekproefsgewijs, ook nadat de eerste schoonmaakbeurt achter de rug is."),
-        ("spark", "Herkenbare, professionele medewerkers", "Onze medewerkers werken in herkenbare BrabantSchoon-bedrijfskleding en weten wat er van hen verwacht wordt: representatief, zorgvuldig en met oog voor detail."),
+        ("spark", "Herkenbare, professionele medewerkers", "Onze medewerkers werken in herkenbare Brabantschoon-bedrijfskleding en weten wat er van hen verwacht wordt: representatief, zorgvuldig en met oog voor detail."),
     ]
     about_html = "\n    ".join(f'<div class="usp"><div class="icon-circle">{icon(n)}</div><h3>{t}</h3><p>{d}</p></div>' for n, t, d in about_items)
     body = f"""
-  {page_hero("Over ons", "Persoonlijk en professioneel.", f"Een schoonmaakpartner uit {CITY}, met korte lijnen en heldere afspraken.", base, "Over ons", image="images/over-ons.jpg", image_alt="Medewerker van BrabantSchoon bij de bedrijfswagen")}
+  {page_hero("Over ons", "Persoonlijk en professioneel.", f"Een schoonmaakpartner uit {CITY}, met korte lijnen en heldere afspraken.", base, "Over ons", image="images/over-ons.jpg", image_alt="Medewerker van Brabantschoon bij de bedrijfswagen")}
   <section class="section-tight">
     <div class="wrap-narrow">
-      <p class="prose">BrabantSchoon is de schoonmaakpartner voor kantoren, bedrijfsverzamelgebouwen, VvE's en scholen in heel Noord-Brabant, vanuit onze thuisbasis in {CITY}. In {CITY} en de Peelgemeenten zijn we het snelst ter plaatse. Geen callcenter: direct contact met wie uw locatie kent, en afspraken die we nakomen.</p>
+      <p class="prose">Brabantschoon is de schoonmaakpartner voor kantoren, bedrijfsverzamelgebouwen, VvE's en scholen in heel Noord-Brabant, vanuit onze thuisbasis in {CITY}. In {CITY} en de Peelgemeenten zijn we het snelst ter plaatse. Geen callcenter: direct contact met wie uw locatie kent, en afspraken die we nakomen.</p>
       <div class="hero-actions" style="margin-top:24px;">
         <a href="{base}diensten.html" class="btn btn-outline">Onze diensten</a>
         <a href="{base}werkgebied.html" class="btn btn-outline">Ons werkgebied</a>
@@ -2132,8 +2132,8 @@ def build_over_ons():
   <section style="background:var(--bg-soft);"><div class="wrap">{cta_band(base=base)}</div></section>
 """
     write("over-ons.html", page_shell(
-        "Over ons | BrabantSchoon Schoonmaakbedrijf",
-        f"BrabantSchoon is een professionele schoonmaakpartner voor Brabant, met een thuisbasis in {CITY}.",
+        "Over ons | Brabantschoon Schoonmaakbedrijf",
+        f"Brabantschoon is een professionele schoonmaakpartner voor Brabant, met een thuisbasis in {CITY}.",
         "over-ons.html", base, "over-ons.html", body, breadcrumb_schema("Over ons", "over-ons.html")
     ))
 
@@ -2158,33 +2158,33 @@ WERKGEBIED_TEKST = {
 LOCATIONS = [
     {
         "slug": "tilburg", "name": "Tilburg",
-        "intro": "BrabantSchoon is actief in heel Noord-Brabant, dus ook in Tilburg. We rijden geregeld naar de stad voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak. Vraag gerust naar de mogelijkheden voor uw locatie.",
+        "intro": "Brabantschoon is actief in heel Noord-Brabant, dus ook in Tilburg. We rijden geregeld naar de stad voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak. Vraag gerust naar de mogelijkheden voor uw locatie.",
         "faq_q": "Werkt u ook in Tilburg voor kleinere klussen?",
-        "kaart_tekst": "BrabantSchoon is in Tilburg inzetbaar voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak.",
+        "kaart_tekst": "Brabantschoon is in Tilburg inzetbaar voor kantoorreiniging, opleveringsschoonmaak en VvE-schoonmaak.",
         "uitgelicht": ('Tilburg is een grote studentenstad met een textielverleden en, dankzij de ligging aan de A58 en A65, een belangrijke logistieke sector met veel distributiecentra. Voor kantoren en bedrijfsverzamelgebouwen in de stad zijn we inzetbaar voor kantoorreiniging en VvE-schoonmaak.', 'Of het nu gaat om een vast kantoorcontract, een opleveringsschoonmaak of een eenmalige beurt: vraag gerust naar de mogelijkheden voor uw locatie in Tilburg.'),
-        "faq_a": "Ja, BrabantSchoon is actief in heel Noord-Brabant. Vraag gerust een vrijblijvende offerte aan, dan bespreken we de mogelijkheden voor uw situatie.",
+        "faq_a": "Ja, Brabantschoon is actief in heel Noord-Brabant. Vraag gerust een vrijblijvende offerte aan, dan bespreken we de mogelijkheden voor uw situatie.",
     },
     {
         "slug": "breda", "name": "Breda",
-        "intro": "BrabantSchoon is actief in heel Noord-Brabant, dus ook in Breda. Voor kantoren, VvE's en opleveringsschoonmaak rijden we ook hiernaartoe. Vraag gerust naar de mogelijkheden voor uw locatie.",
+        "intro": "Brabantschoon is actief in heel Noord-Brabant, dus ook in Breda. Voor kantoren, VvE's en opleveringsschoonmaak rijden we ook hiernaartoe. Vraag gerust naar de mogelijkheden voor uw locatie.",
         "faq_q": "Is een eenmalige beurt in Breda mogelijk?",
-        "kaart_tekst": "In Breda is BrabantSchoon inzetbaar voor kantoren en VvE's, van eenmalige tot structurele schoonmaakopdrachten.",
+        "kaart_tekst": "In Breda is Brabantschoon inzetbaar voor kantoren en VvE's, van eenmalige tot structurele schoonmaakopdrachten.",
         "uitgelicht": ('Breda combineert een historisch centrum met een groeiende sector aan kantoren en bedrijfsverzamelgebouwen, mede dankzij onderwijsinstellingen als Breda University of Applied Sciences. Voor een vast kantoorcontract, VvE-schoonmaak of een opleveringsschoonmaak zijn we hier inzetbaar.', 'Neem gerust contact op om de mogelijkheden voor uw specifieke situatie in Breda te bespreken.'),
-        "faq_a": "Ja, BrabantSchoon is actief in heel Noord-Brabant. Neem contact op met de details van uw situatie, dan bespreken we de mogelijkheden.",
+        "faq_a": "Ja, Brabantschoon is actief in heel Noord-Brabant. Neem contact op met de details van uw situatie, dan bespreken we de mogelijkheden.",
     },
     {
         "slug": "den-bosch", "name": "Den Bosch",
-        "intro": "'s-Hertogenbosch ligt op een goed bereikbare afstand vanuit Helmond, en BrabantSchoon is hier actief voor kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak.",
+        "intro": "'s-Hertogenbosch ligt op een goed bereikbare afstand vanuit Helmond, en Brabantschoon is hier actief voor kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak.",
         "faq_q": "Werkt u ook voor VvE's in Den Bosch?",
-        "kaart_tekst": "Voor kantoren, VvE's en bedrijfsverzamelgebouwen in 's-Hertogenbosch is BrabantSchoon inzetbaar voor periodieke en facilitaire schoonmaak.",
+        "kaart_tekst": "Voor kantoren, VvE's en bedrijfsverzamelgebouwen in 's-Hertogenbosch is Brabantschoon inzetbaar voor periodieke en facilitaire schoonmaak.",
         "uitgelicht": ("'s-Hertogenbosch is als provinciehoofdstad van Noord-Brabant een stad met veel kantoren van overheid, onderwijs en dienstverlening, onder meer rond het moderne Paleiskwartier bij het station. Voor kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak zijn we hier inzetbaar.", 'De goede bereikbaarheid vanuit Helmond maakt het mogelijk om zowel structurele, terugkerende opdrachten als eenmalige klussen zoals een opleveringsschoonmaak in Den Bosch in te plannen.'),
         "faq_a": "Ja, we zijn inzetbaar voor schoonmaak van trappenhuizen en gemeenschappelijke ruimtes voor VvE's in en rond 's-Hertogenbosch, in overleg met het bestuur.",
     },
     {
         "slug": "waalwijk", "name": "Waalwijk",
-        "intro": "Waalwijk ligt tussen Tilburg en 's-Hertogenbosch in. BrabantSchoon is actief in heel Noord-Brabant, dus ook hier zijn we voor bedrijven en VvE's inzetbaar.",
+        "intro": "Waalwijk ligt tussen Tilburg en 's-Hertogenbosch in. Brabantschoon is actief in heel Noord-Brabant, dus ook hier zijn we voor bedrijven en VvE's inzetbaar.",
         "faq_q": "Kunt u een vast schoonmaakcontract voor Waalwijk laten verzorgen?",
-        "kaart_tekst": "In Waalwijk is BrabantSchoon inzetbaar voor vaste schoonmaakcontracten en eenmalige opdrachten voor bedrijven en VvE's.",
+        "kaart_tekst": "In Waalwijk is Brabantschoon inzetbaar voor vaste schoonmaakcontracten en eenmalige opdrachten voor bedrijven en VvE's.",
         "uitgelicht": ("Waalwijk staat historisch bekend om de schoen- en lederindustrie — zichtbaar in het Schoenenkwartier — en heeft dankzij de ligging aan de A59 een flinke logistieke sector met distributiecentra. Voor bedrijven en VvE's hier zijn we inzetbaar, van periodiek onderhoud tot een eenmalige beurt.", 'Voor een vast, terugkerend contract is Waalwijk goed inpasbaar in onze planning; vraag gerust naar de mogelijkheden voor uw specifieke situatie.'),
         "faq_a": "Ja, voor een vast, terugkerend contract is Waalwijk goed inpasbaar in onze planning. Neem contact op om de mogelijkheden te bespreken.",
     },
@@ -2221,7 +2221,7 @@ def build_werkgebied():
       </div>''' for naam, plaatsen in REGIOS)
 
     body = f"""
-  {page_hero("Werkgebied", "Actief in heel Noord-Brabant.", f"Vanuit {CITY} verzorgen we schoonmaak voor bedrijven en particulieren in heel Noord-Brabant. Van eenmalige opdrachten tot periodieke schoonmaak: vraag gerust naar de mogelijkheden voor uw locatie.", base, "Werkgebied", image="images/werkgebied-kerngebied.jpg", image_alt="Medewerker van BrabantSchoon bij de bedrijfswagen op locatie")}
+  {page_hero("Werkgebied", "Actief in heel Noord-Brabant.", f"Vanuit {CITY} verzorgen we schoonmaak voor bedrijven en particulieren in heel Noord-Brabant. Van eenmalige opdrachten tot periodieke schoonmaak: vraag gerust naar de mogelijkheden voor uw locatie.", base, "Werkgebied", image="images/werkgebied-kerngebied.jpg", image_alt="Medewerker van Brabantschoon bij de bedrijfswagen op locatie")}
   <section class="section-tight">
     <div class="wrap">
       <div class="sec-head reveal"><span class="eyebrow">Onder andere actief in</span><h2>Een selectie van plaatsen waar wij actief zijn.</h2></div>
@@ -2247,8 +2247,8 @@ def build_werkgebied():
   </section>
 """
     write("werkgebied.html", page_shell(
-        "Werkgebied | Actief in heel Noord-Brabant | BrabantSchoon",
-        f"BrabantSchoon is uw schoonmaakpartner in heel Noord-Brabant, vanuit Helmond \u2014 voor bedrijven, VvE's, organisaties en particulieren.",
+        "Werkgebied | Actief in heel Noord-Brabant | Brabantschoon",
+        f"Brabantschoon is uw schoonmaakpartner in heel Noord-Brabant, vanuit Helmond \u2014 voor bedrijven, VvE's, organisaties en particulieren.",
         "werkgebied.html", base, "werkgebied.html", body, breadcrumb_schema("Werkgebied", "werkgebied.html")
     ))
 
@@ -2283,15 +2283,15 @@ def local_doelgroep(loc):
     fallback_klanten = loc.get('klanten', "kantoren, VvE's en bedrijfspanden")
     doelgroep = loc.get("doelgroep_lokaal", f"In {loc['name']} werken we voor uiteenlopende organisaties: {fallback_klanten}.")
     return f"""<p class="prose">{doelgroep}</p>
-      <p class="prose" style="margin-top:14px;">De planning stemmen we af op uw openingstijden of het gebruik van het pand \u2014 vaak buiten de reguliere uren, zodat de dagelijkse werkzaamheden geen hinder ondervinden. Voor vragen of aanpassingen heeft u altijd één vast aanspreekpunt bij BrabantSchoon, rechtstreeks bereikbaar, zonder callcenter.</p>"""
+      <p class="prose" style="margin-top:14px;">De planning stemmen we af op uw openingstijden of het gebruik van het pand \u2014 vaak buiten de reguliere uren, zodat de dagelijkse werkzaamheden geen hinder ondervinden. Voor vragen of aanpassingen heeft u altijd één vast aanspreekpunt bij Brabantschoon, rechtstreeks bereikbaar, zonder callcenter.</p>"""
 
 KERNGEBIED = [
     {
         "slug": "helmond", "name": "Helmond",
-        "intro": "Als thuisbasis van BrabantSchoon is Helmond ons voornaamste werkgebied. Van periodieke tot eenmalige schoonmaak en bredere facilitaire dienstverlening — we zijn hier inzetbaar voor kantoren, bedrijfsverzamelgebouwen en winkelpanden.",
+        "intro": "Als thuisbasis van Brabantschoon is Helmond ons voornaamste werkgebied. Van periodieke tot eenmalige schoonmaak en bredere facilitaire dienstverlening — we zijn hier inzetbaar voor kantoren, bedrijfsverzamelgebouwen en winkelpanden.",
         "waarom": "Doordat we in Helmond zelf gevestigd zijn, is de reistijd naar elke locatie kort. Dat betekent snel kunnen schakelen bij een spoedklus, en een team dat zich snel inwerkt in uw pand.",
         "klanten": "kantoren, bedrijfsverzamelgebouwen, VvE's, winkels, praktijken en andere zakelijke organisaties",
-        "kaart_tekst": "BrabantSchoon is vanuit Helmond inzetbaar voor periodieke en eenmalige schoonmaak, voor kantoren, VvE's en winkels in de hele regio.",
+        "kaart_tekst": "Brabantschoon is vanuit Helmond inzetbaar voor periodieke en eenmalige schoonmaak, voor kantoren, VvE's en winkels in de hele regio.",
         "uitgelicht": ('Als vestigingsplaats is Helmond ons voornaamste werkgebied: van kantoren op en rond de Automotive Campus tot bedrijfsverzamelgebouwen in Suytkade en het centrum. Kantoorreiniging en VvE-schoonmaak vormen hier de kern van onze dienstverlening, aangevuld met opleveringsschoonmaak bij verhuizingen of nieuwbouw.', 'Ook glasbewassing en specialistische reiniging \u2014 bijvoorbeeld van tapijt en vloeren \u2014 vragen we regelmatig aan in Helmond, vaak in combinatie met periodieke schoonmaak op een vast ritme. Door de korte afstand tot ons kantoor kunnen we hier ook kleinere of onregelmatige klussen inplannen die verder weg minder snel rendabel zijn — denk aan een eenmalige beurt of een spoedklus tussen de vaste planning door.'),
         "doelgroep_lokaal": "In Helmond zijn we inzetbaar voor uiteenlopende organisaties: kantoren, bedrijfsverzamelgebouwen, VvE's, winkels en praktijken. Omdat dit onze thuisbasis is, bespreken we hier snel de mogelijkheden voor een kennismaking op locatie.",
         "faqs": [
@@ -2319,7 +2319,7 @@ KERNGEBIED = [
         "intro": "Asten en de kern Heusden liggen goed bereikbaar vanuit Helmond. We zijn hier inzetbaar voor zowel eenmalige als periodieke schoonmaak, op een ritme dat bij uw organisatie past.",
         "waarom": "De korte afstand vanuit Helmond maakt het voor ons eenvoudig om ook kleinere opdrachten in Asten rendabel in te plannen.",
         "klanten": "kantoren, bedrijfsruimtes, VvE's en productiebedrijven",
-        "kaart_tekst": "BrabantSchoon is in Asten inzetbaar voor zowel eenmalige als terugkerende schoonmaak, voor kantoren, bedrijfsruimtes en VvE's.",
+        "kaart_tekst": "Brabantschoon is in Asten inzetbaar voor zowel eenmalige als terugkerende schoonmaak, voor kantoren, bedrijfsruimtes en VvE's.",
         "uitgelicht": ('Asten en de kern Heusden liggen in De Peel, een regio met relatief veel agrarische bedrijven en kleinere bedrijfsterreinen zoals Molenakkers. Voor kantoren en bedrijfsruimtes hier zijn we inzetbaar voor zowel periodieke schoonmaak als eenmalige beurten.', 'Door de korte afstand vanuit Helmond kunnen we in Asten ook kleinere opdrachten rendabel inplannen — iets wat verder van ons kerngebied minder vanzelfsprekend is.'),
         "doelgroep_lokaal": "In Asten zijn we inzetbaar voor kantoren, bedrijfsruimtes, VvE's en productiebedrijven. Voor VvE's gaat het met name om trappenhuizen en gemeenschappelijke ruimtes, in overleg met het bestuur.",
         "faqs": [
@@ -2347,7 +2347,7 @@ KERNGEBIED = [
         "intro": "Gemert en Bakel behoren tot ons kerngebied. Of het nu gaat om facilitaire schoonmaak voor een bedrijfspand in Gemert of een opleveringsschoonmaak in Bakel, we pakken dit met dezelfde zorg aan als in Helmond zelf.",
         "waarom": "Als schoonmaakbedrijf in de Peelregio hebben we oog voor de wensen van lokale bedrijven.",
         "klanten": "bedrijfspanden, VvE's, logistieke bedrijven en organisaties met een opleveringsklus",
-        "kaart_tekst": "BrabantSchoon is in Gemert-Bakel inzetbaar voor facilitaire schoonmaak, opleveringsschoonmaak en periodiek onderhoud, voor bedrijven en VvE's.",
+        "kaart_tekst": "Brabantschoon is in Gemert-Bakel inzetbaar voor facilitaire schoonmaak, opleveringsschoonmaak en periodiek onderhoud, voor bedrijven en VvE's.",
         "uitgelicht": ('Gemert-Bakel heeft een sterke agrifoodsector — met de champignonteelt als bekende bedrijfstak — en huisvest onderwijsinstellingen zoals Helicon. Voor bedrijfspanden in deze sector zijn we inzetbaar voor facilitaire schoonmaak en, bij verbouwing of verhuizing, opleveringsschoonmaak.', 'Ook in het centrum van Gemert, rond Kasteel Gemert, zitten kantoren en praktijken die om periodieke schoonmaak vragen — vaak in combinatie met glasbewassing van etalages of kantoorramen.'),
         "doelgroep_lokaal": "Organisaties waarvoor wij in Gemert-Bakel inzetbaar zijn: bedrijfspanden, VvE's, logistieke bedrijven en organisaties met een opleveringsklus. De agrarische en foodsector in de regio betekent dat hygiëne vaak net iets meer aandacht vraagt dan gemiddeld.",
         "faqs": [
@@ -2375,7 +2375,7 @@ KERNGEBIED = [
         "intro": "In Nuenen zijn we inzetbaar voor zowel periodieke als eenmalige schoonmaak, voor kantoren, praktijken en scholen, waarbij persoonlijk contact en een vast aanspreekpunt voorop staan.",
         "waarom": "Nuenen heeft veel zelfstandige ondernemers en professionele praktijken — juist daar telt een schoonmaakpartner die meedenkt in plaats van alleen uitvoert.",
         "klanten": "kantoren, praktijken, scholen en organisaties met een eigen bedrijfspand",
-        "kaart_tekst": "BrabantSchoon is in Nuenen inzetbaar voor periodieke en eenmalige schoonmaak, voor kantoren, praktijken en scholen.",
+        "kaart_tekst": "Brabantschoon is in Nuenen inzetbaar voor periodieke en eenmalige schoonmaak, voor kantoren, praktijken en scholen.",
         "uitgelicht": ('Nuenen is vooral bekend als woonplaats van Vincent van Gogh en heeft een overwegend kleinschalig, welvarend ondernemersklimaat: veel zelfstandige praktijken en kleinere kantoren, minder zware industrie dan in de rest van de regio.', 'Dat vertaalt zich in onze aanpak: periodieke schoonmaak op maat voor praktijkruimtes en kantoren, waarbij representativiteit en een persoonlijke aanpak vaak net iets zwaarder wegen dan bij grootschalige bedrijfspanden.'),
         "doelgroep_lokaal": 'Organisaties waarvoor wij in Nuenen inzetbaar zijn: kantoren, praktijken, scholen en organisaties met een eigen bedrijfspand — van eenmanszaak tot grotere praktijk, telkens met een offerte op maat.',
         "faqs": [
@@ -2403,7 +2403,7 @@ KERNGEBIED = [
         "intro": "Eindhoven ligt op korte afstand van ons kerngebied in de Peel. We zijn hier inzetbaar voor kantoorreiniging, facilitaire schoonmaak, VvE-schoonmaak en specialistische reiniging — van eenmalige klussen tot vaste contracten.",
         "waarom": "Eindhoven is de grootste stad in onze regio, met veel kantoren, bedrijfsverzamelgebouwen en VvE's. Daarom zijn we hier goed inzetbaar voor zowel incidentele als structurele opdrachten.",
         "klanten": "kantoren, bedrijfsverzamelgebouwen, VvE's, zorginstellingen en gemeentelijke instellingen",
-        "kaart_tekst": "BrabantSchoon is in Eindhoven inzetbaar voor periodieke, eenmalige en specialistische schoonmaak, voor kantoren, VvE's, zorginstellingen en gemeentelijke instellingen.",
+        "kaart_tekst": "Brabantschoon is in Eindhoven inzetbaar voor periodieke, eenmalige en specialistische schoonmaak, voor kantoren, VvE's, zorginstellingen en gemeentelijke instellingen.",
         "uitgelicht": ('Eindhoven is met Brainport en de High Tech Campus de grootste en meest kantorendichte stad in onze regio. Voor kantoren en bedrijfsverzamelgebouwen hier zijn we inzetbaar voor periodieke en facilitaire schoonmaak, van een enkele verdieping tot een compleet pand.', "Door het grote aantal VvE's, zorginstellingen en gemeentelijke gebouwen in Eindhoven zijn we hier goed inzetbaar voor structurele opdrachten — met een vast team dat zich snel inwerkt in uw pand."),
         "doelgroep_lokaal": "Organisaties waarvoor wij in Eindhoven inzetbaar zijn: kantoren, bedrijfsverzamelgebouwen, VvE's, zorginstellingen en gemeentelijke instellingen. Bij bedrijfsverzamelgebouwen met meerdere huurders werken we met één vast aanspreekpunt voor het hele pand.",
         "faqs": [
@@ -2430,12 +2430,12 @@ def build_kerngebied_pages():
     </a>""" for s in SERVICES[:6])
         faq_html = faq_block(k["faqs"])
         body = f"""
-  {page_hero("Werkgebied", f"Schoonmaakbedrijf {k['name']}", k['intro'], base, k['name'], image="images/werkgebied-kerngebied.jpg", image_alt=f"BrabantSchoon actief in {k['name']} en omgeving")}
+  {page_hero("Werkgebied", f"Schoonmaakbedrijf {k['name']}", k['intro'], base, k['name'], image="images/werkgebied-kerngebied.jpg", image_alt=f"Brabantschoon actief in {k['name']} en omgeving")}
   <section class="section-tight">
     <div class="wrap">
       <div class="two-col reveal">
         <div>
-          <span class="eyebrow">Waarom BrabantSchoon in {k['name']}</span>
+          <span class="eyebrow">Waarom Brabantschoon in {k['name']}</span>
           <h2 style="font-size:24px; margin-top:8px;">Lokaal betrokken, professioneel uitgevoerd.</h2>
           <p class="prose" style="margin-top:14px;">{k['waarom']}</p>
           <p class="prose" style="margin-top:12px;"><strong style="color:var(--ink);">Voor wie:</strong> {k['klanten']}.</p>
@@ -2483,8 +2483,8 @@ def build_kerngebied_pages():
   </section>
   <section><div class="wrap">{cta_band(f"Schoonmaak nodig in {k['name']}?", "Vraag een vrijblijvende offerte aan.", base)}</div></section>
 """
-        title = f"Schoonmaakbedrijf {k['name']} | BrabantSchoon"
-        desc = f"Schoonmaakbedrijf in {k['name']}? BrabantSchoon verzorgt kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak. Vrijblijvende offerte binnen 1 werkdag."
+        title = f"Schoonmaakbedrijf {k['name']} | Brabantschoon"
+        desc = f"Schoonmaakbedrijf in {k['name']}? Brabantschoon verzorgt kantoorreiniging, VvE-schoonmaak en opleveringsschoonmaak. Vrijblijvende offerte binnen 1 werkdag."
         url = f"schoonmaakbedrijf-{k['slug']}.html"
         write(url, page_shell(
             title, desc, url, base, url, body,
@@ -2502,12 +2502,12 @@ def build_location_pages():
       <div class="body"><h3>{s['name']}</h3><p>{s['short']}</p></div>
     </a>""" for s in SERVICES[:6])
         body = f"""
-  {page_hero("Werkgebied", f"Schoonmaakbedrijf {loc['name']}", loc['intro'], base, loc['name'], image="images/werkgebied-regio.jpg", image_alt=f"BrabantSchoon actief in {loc['name']} en omgeving")}
+  {page_hero("Werkgebied", f"Schoonmaakbedrijf {loc['name']}", loc['intro'], base, loc['name'], image="images/werkgebied-regio.jpg", image_alt=f"Brabantschoon actief in {loc['name']} en omgeving")}
   <section>
     <div class="wrap">
       <div class="two-col reveal">
         <div>
-          <p class="prose">BrabantSchoon is actief in heel Noord-Brabant, vanuit onze thuisbasis in Helmond. Voor {loc['name']} zijn we inzetbaar voor onder meer een vast kantoorcontract, VvE-schoonmaak of een opleveringsschoonmaak \u2014 vraag gerust naar de mogelijkheden voor uw locatie.</p>
+          <p class="prose">Brabantschoon is actief in heel Noord-Brabant, vanuit onze thuisbasis in Helmond. Voor {loc['name']} zijn we inzetbaar voor onder meer een vast kantoorcontract, VvE-schoonmaak of een opleveringsschoonmaak \u2014 vraag gerust naar de mogelijkheden voor uw locatie.</p>
           <div class="hero-actions" style="margin-top:26px;">
             <a href="{base}offerte.html?type=zakelijk#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
@@ -2552,8 +2552,8 @@ def build_location_pages():
   </section>
   <section><div class="wrap">{cta_band(f"Schoonmaak nodig in {loc['name']}?", "Vraag een vrijblijvende offerte aan.", base)}</div></section>
 """
-        title = f"Schoonmaakbedrijf {loc['name']} | BrabantSchoon"
-        desc = f"Schoonmaakbedrijf voor {loc['name']}? BrabantSchoon verzorgt kantoorreiniging en VvE-schoonmaak voor grotere opdrachten, vanuit Helmond. Vrijblijvende offerte."
+        title = f"Schoonmaakbedrijf {loc['name']} | Brabantschoon"
+        desc = f"Schoonmaakbedrijf voor {loc['name']}? Brabantschoon verzorgt kantoorreiniging en VvE-schoonmaak voor grotere opdrachten, vanuit Helmond. Vrijblijvende offerte."
         url = f"schoonmaakbedrijf-{loc['slug']}.html"
         write(url, page_shell(
             title, desc, url, base, url, body,
@@ -2586,8 +2586,8 @@ def build_contact():
   </section>
 """
     write("contact.html", page_shell(
-        "Contact | BrabantSchoon Schoonmaakbedrijf Brabant",
-        "Neem contact op met BrabantSchoon \u2014 telefonisch, per e-mail of via het contactformulier. Voor een offerte op maat verwijzen we u naar onze offertepagina.",
+        "Contact | Brabantschoon Schoonmaakbedrijf Brabant",
+        "Neem contact op met Brabantschoon \u2014 telefonisch, per e-mail of via het contactformulier. Voor een offerte op maat verwijzen we u naar onze offertepagina.",
         "contact.html", base, "contact.html", body, LOCALBUSINESS_SCHEMA + "\n" + breadcrumb_schema("Contact", "contact.html")
     ))
 
@@ -2602,8 +2602,8 @@ def build_offerte():
   </section>
 """
     write("offerte.html", page_shell(
-        "Offerte aanvragen | BrabantSchoon",
-        "Vraag vrijblijvend een offerte aan bij BrabantSchoon \u2014 voor bedrijven, VvE's, organisaties en particulieren. Beantwoord een paar korte vragen voor een offerte op maat.",
+        "Offerte aanvragen | Brabantschoon",
+        "Vraag vrijblijvend een offerte aan bij Brabantschoon \u2014 voor bedrijven, VvE's, organisaties en particulieren. Beantwoord een paar korte vragen voor een offerte op maat.",
         "offerte.html", base, "contact.html", body, LOCALBUSINESS_SCHEMA + "\n" + breadcrumb_schema("Offerte aanvragen", "offerte.html")
     ))
 
@@ -2614,21 +2614,21 @@ def build_thanks():
     body = f"""
   <section style="min-height:56vh; display:flex; align-items:center; justify-content:center; text-align:center;">
     <div class="wrap-narrow">
-      <img src="images/logo.png" alt="BrabantSchoon" width="260" height="30" style="height:30px; width:auto; margin:0 auto 20px;">
+      <img src="images/logo.png" alt="Brabantschoon" width="260" height="30" style="height:30px; width:auto; margin:0 auto 20px;">
       <h1 style="font-size:34px;">Bedankt voor uw aanvraag.</h1>
       <p class="prose" style="margin-top:12px;">We hebben uw bericht ontvangen en nemen binnen \u00e9\u00e9n werkdag contact met u op.</p>
       <a class="btn btn-primary" href="/" style="margin-top:24px;">Terug naar de website</a>
     </div>
   </section>
 """
-    write("thanks.html", page_shell("Bedankt | BrabantSchoon", "Bedankt voor uw offerteaanvraag bij BrabantSchoon. We nemen binnen \u00e9\u00e9n werkdag contact met u op.", "thanks.html", "", "", body))
+    write("thanks.html", page_shell("Bedankt | Brabantschoon", "Bedankt voor uw offerteaanvraag bij Brabantschoon. We nemen binnen \u00e9\u00e9n werkdag contact met u op.", "thanks.html", "", "", body))
 
 def build_legal():
     base = ""
     privacy = f"""
-  {page_hero("Juridisch", "Privacyverklaring.", "Hoe BrabantSchoon omgaat met uw persoonsgegevens.", base, "Privacyverklaring")}
+  {page_hero("Juridisch", "Privacyverklaring.", "Hoe Brabantschoon omgaat met uw persoonsgegevens.", base, "Privacyverklaring")}
   <section><div class="wrap-narrow prose reveal">
-    <p>BrabantSchoon (KvK {KVK}), gevestigd in {CITY}, is verantwoordelijk voor de verwerking van persoonsgegevens zoals beschreven in deze privacyverklaring. Wij gaan zorgvuldig met uw gegevens om en vragen nooit meer gegevens dan nodig is om uw aanvraag goed te kunnen behandelen.</p>
+    <p>Brabantschoon (KvK {KVK}), gevestigd in {CITY}, is verantwoordelijk voor de verwerking van persoonsgegevens zoals beschreven in deze privacyverklaring. Wij gaan zorgvuldig met uw gegevens om en vragen nooit meer gegevens dan nodig is om uw aanvraag goed te kunnen behandelen.</p>
 
     <h2>Welke gegevens verzamelen wij</h2>
     <p>Wanneer u een offerte aanvraagt via onze website, verwerken wij de volgende soorten gegevens:</p>
@@ -2673,22 +2673,22 @@ def build_legal():
     <p class="prose" style="font-size:13px; color:var(--ink-soft); margin-top:24px;">Laatst bijgewerkt: augustus 2026.</p>
   </div></section>
 """
-    write("privacy.html", page_shell("Privacyverklaring | BrabantSchoon", "Lees hoe BrabantSchoon omgaat met uw persoonsgegevens bij een offerteaanvraag of samenwerking.", "privacy.html", base, "", privacy))
+    write("privacy.html", page_shell("Privacyverklaring | Brabantschoon", "Lees hoe Brabantschoon omgaat met uw persoonsgegevens bij een offerteaanvraag of samenwerking.", "privacy.html", base, "", privacy))
 
     voorwaarden = f"""
   {page_hero("Juridisch", "Algemene voorwaarden.", "De voorwaarden die van toepassing zijn op onze dienstverlening.", base, "Algemene voorwaarden")}
   <section><div class="wrap-narrow prose reveal">
     <h2>1. Toepasselijkheid</h2>
-    <p>Deze algemene voorwaarden zijn van toepassing op alle offertes, aanbiedingen en overeenkomsten van BrabantSchoon (KvK {KVK}), met zowel zakelijke opdrachtgevers (waaronder VvE's en organisaties) als particuliere klanten. Bij particuliere klanten gelden aanvullend de bepalingen van dwingend Nederlands consumentenrecht; waar deze voorwaarden daarvan zouden afwijken, gaat het consumentenrecht voor.</p>
+    <p>Deze algemene voorwaarden zijn van toepassing op alle offertes, aanbiedingen en overeenkomsten van Brabantschoon (KvK {KVK}), met zowel zakelijke opdrachtgevers (waaronder VvE's en organisaties) als particuliere klanten. Bij particuliere klanten gelden aanvullend de bepalingen van dwingend Nederlands consumentenrecht; waar deze voorwaarden daarvan zouden afwijken, gaat het consumentenrecht voor.</p>
 
     <h2>2. Offertes en prijsopgaven</h2>
-    <p>Offertes van BrabantSchoon zijn vrijblijvend, tenzij uitdrukkelijk anders vermeld, en gebaseerd op de door u verstrekte informatie. Getoonde prijsindicaties op de website zijn richtprijzen; de definitieve prijs wordt bevestigd nadat wij uw situatie hebben beoordeeld. Vermelde prijzen zijn inclusief btw, tenzij anders aangegeven.</p>
+    <p>Offertes van Brabantschoon zijn vrijblijvend, tenzij uitdrukkelijk anders vermeld, en gebaseerd op de door u verstrekte informatie. Getoonde prijsindicaties op de website zijn richtprijzen; de definitieve prijs wordt bevestigd nadat wij uw situatie hebben beoordeeld. Vermelde prijzen zijn inclusief btw, tenzij anders aangegeven.</p>
 
     <h2>3. Totstandkoming van de opdracht</h2>
-    <p>Een opdracht komt tot stand zodra u akkoord gaat met de offerte, hetzij schriftelijk, hetzij per e-mail of op een andere door BrabantSchoon aangeboden wijze.</p>
+    <p>Een opdracht komt tot stand zodra u akkoord gaat met de offerte, hetzij schriftelijk, hetzij per e-mail of op een andere door Brabantschoon aangeboden wijze.</p>
 
     <h2>4. Uitvoering van de werkzaamheden</h2>
-    <p>BrabantSchoon voert de overeengekomen werkzaamheden zorgvuldig en vakkundig uit, binnen de afgesproken frequentie en op de afgesproken locatie. Waar redelijkerwijs mogelijk houden wij rekening met specifieke wensen die vooraf zijn aangegeven.</p>
+    <p>Brabantschoon voert de overeengekomen werkzaamheden zorgvuldig en vakkundig uit, binnen de afgesproken frequentie en op de afgesproken locatie. Waar redelijkerwijs mogelijk houden wij rekening met specifieke wensen die vooraf zijn aangegeven.</p>
 
     <h2>5. Toegang tot de locatie</h2>
     <p>Opdrachtgever zorgt ervoor dat onze medewerkers op de afgesproken tijden toegang hebben tot de locatie en tot eventueel benodigde voorzieningen (zoals stroom en water), tenzij anders overeengekomen.</p>
@@ -2700,28 +2700,28 @@ def build_legal():
     <p>Wijzigingen in de opdracht, of werkzaamheden die buiten de oorspronkelijke offerte vallen, worden vooraf met u besproken. Meerwerk wordt pas uitgevoerd en in rekening gebracht na overleg.</p>
 
     <h2>8. Prijzen en btw</h2>
-    <p>Alle door BrabantSchoon aan particuliere klanten getoonde prijzen zijn inclusief btw. Prijzen aan zakelijke opdrachtgevers kunnen exclusief btw worden vermeld; dit wordt in de offerte duidelijk aangegeven.</p>
+    <p>Alle door Brabantschoon aan particuliere klanten getoonde prijzen zijn inclusief btw. Prijzen aan zakelijke opdrachtgevers kunnen exclusief btw worden vermeld; dit wordt in de offerte duidelijk aangegeven.</p>
 
     <h2>9. Betaling</h2>
     <p>Betaling vindt plaats op de wijze en binnen de termijn zoals vermeld op de factuur of zoals vooraf overeengekomen. <em>[Ondernemersbeslissing nodig: de exacte betalingstermijn en betaalwijze(n) \u2014 bijvoorbeeld vooraf, na uitvoering, of via een vast maandbedrag bij periodieke schoonmaak \u2014 zijn nog niet vastgelegd. Vul dit aan zodra dit intern is bepaald.]</em></p>
 
     <h2>10. Annulering of verplaatsing</h2>
-    <p>Wilt u een geplande schoonmaakbeurt annuleren of verplaatsen, neem dan zo tijdig mogelijk contact met ons op. <em>[Ondernemersbeslissing nodig: een exacte annuleringstermijn is nog niet vastgesteld. Vul dit aan met de door BrabantSchoon gewenste termijn, bijvoorbeeld "minimaal 24 of 48 uur van tevoren"; houd bij particuliere klanten rekening met eventueel geldend herroepingsrecht.]</em></p>
+    <p>Wilt u een geplande schoonmaakbeurt annuleren of verplaatsen, neem dan zo tijdig mogelijk contact met ons op. <em>[Ondernemersbeslissing nodig: een exacte annuleringstermijn is nog niet vastgesteld. Vul dit aan met de door Brabantschoon gewenste termijn, bijvoorbeeld "minimaal 24 of 48 uur van tevoren"; houd bij particuliere klanten rekening met eventueel geldend herroepingsrecht.]</em></p>
 
     <h2>11. Situaties waarin werkzaamheden niet kunnen worden uitgevoerd</h2>
-    <p>BrabantSchoon behoudt zich het recht voor werkzaamheden geheel of gedeeltelijk niet uit te voeren, of alleen tegen een aangepaste prijs, wanneer de situatie ter plaatse afwijkt van wat is afgesproken, of wanneer veilige en redelijke uitvoering niet mogelijk is \u2014 bijvoorbeeld bij niet eerder gemelde, hardnekkige verontreiniging of bouwresten, of bij een onveilige of onbereikbare situatie. Wij nemen in dat geval eerst contact met u op.</p>
+    <p>Brabantschoon behoudt zich het recht voor werkzaamheden geheel of gedeeltelijk niet uit te voeren, of alleen tegen een aangepaste prijs, wanneer de situatie ter plaatse afwijkt van wat is afgesproken, of wanneer veilige en redelijke uitvoering niet mogelijk is \u2014 bijvoorbeeld bij niet eerder gemelde, hardnekkige verontreiniging of bouwresten, of bij een onveilige of onbereikbare situatie. Wij nemen in dat geval eerst contact met u op.</p>
 
     <h2>12. Aansprakelijkheid</h2>
-    <p>BrabantSchoon is aansprakelijk voor schade die het rechtstreekse gevolg is van een toerekenbare tekortkoming in de uitvoering van de werkzaamheden, binnen de grenzen van de wet en tot het bedrag dat in het voorkomende geval door onze aansprakelijkheidsverzekering wordt uitgekeerd. Voor particuliere klanten laat dit onverlet de aansprakelijkheid die op grond van dwingend consumentenrecht niet kan worden beperkt of uitgesloten.</p>
+    <p>Brabantschoon is aansprakelijk voor schade die het rechtstreekse gevolg is van een toerekenbare tekortkoming in de uitvoering van de werkzaamheden, binnen de grenzen van de wet en tot het bedrag dat in het voorkomende geval door onze aansprakelijkheidsverzekering wordt uitgekeerd. Voor particuliere klanten laat dit onverlet de aansprakelijkheid die op grond van dwingend consumentenrecht niet kan worden beperkt of uitgesloten.</p>
 
     <h2>13. Klachten</h2>
     <p>Bent u niet tevreden over de uitgevoerde werkzaamheden, meld dit dan zo snel mogelijk, en in ieder geval binnen een redelijke termijn, via {EMAIL} of {PHONE_DISPLAY}. Wij nemen uw klacht serieus en zoeken samen met u naar een passende oplossing.</p>
 
     <h2>14. Overmacht</h2>
-    <p>In geval van overmacht \u2014 een omstandigheid die uitvoering van de opdracht redelijkerwijs verhindert en niet aan BrabantSchoon is toe te rekenen \u2014 wordt de uitvoering van de werkzaamheden opgeschort voor de duur van de overmachtsituatie, zonder dat dit tot schadeplichtigheid van BrabantSchoon leidt.</p>
+    <p>In geval van overmacht \u2014 een omstandigheid die uitvoering van de opdracht redelijkerwijs verhindert en niet aan Brabantschoon is toe te rekenen \u2014 wordt de uitvoering van de werkzaamheden opgeschort voor de duur van de overmachtsituatie, zonder dat dit tot schadeplichtigheid van Brabantschoon leidt.</p>
 
     <h2>15. Toepasselijk recht</h2>
-    <p>Op alle overeenkomsten tussen BrabantSchoon en haar opdrachtgevers is Nederlands recht van toepassing.</p>
+    <p>Op alle overeenkomsten tussen Brabantschoon en haar opdrachtgevers is Nederlands recht van toepassing.</p>
 
     <h2>16. Contact</h2>
     <p>Vragen over deze voorwaarden? Neem contact op via {EMAIL} of {PHONE_DISPLAY}.</p>
@@ -2729,7 +2729,7 @@ def build_legal():
     <p class="prose" style="font-size:13px; color:var(--ink-soft); margin-top:24px;">Laatst bijgewerkt: augustus 2026. Dit is geen juridisch advies; laat deze voorwaarden \u2014 met name de onderdelen die hierboven als ondernemersbeslissing zijn gemarkeerd \u2014 controleren door een juridisch adviseur voordat u ze definitief vaststelt.</p>
   </div></section>
 """
-    write("voorwaarden.html", page_shell("Algemene voorwaarden | BrabantSchoon", "De algemene voorwaarden die gelden voor offertes en opdrachten bij BrabantSchoon.", "voorwaarden.html", base, "", voorwaarden))
+    write("voorwaarden.html", page_shell("Algemene voorwaarden | Brabantschoon", "De algemene voorwaarden die gelden voor offertes en opdrachten bij Brabantschoon.", "voorwaarden.html", base, "", voorwaarden))
 
     cookies = f"""
   {page_hero("Juridisch", "Cookiebeleid.", "Welke cookies en externe diensten deze website gebruikt.", base, "Cookiebeleid")}
@@ -2751,7 +2751,7 @@ def build_legal():
     <p class="prose" style="font-size:13px; color:var(--ink-soft); margin-top:24px;">Laatst bijgewerkt: augustus 2026.</p>
   </div></section>
 """
-    write("cookiebeleid.html", page_shell("Cookiebeleid | BrabantSchoon", "Lees welke cookies en externe diensten, zoals Google Maps, BrabantSchoon.nl gebruikt en waarom.", "cookiebeleid.html", base, "", cookies))
+    write("cookiebeleid.html", page_shell("Cookiebeleid | Brabantschoon", "Lees welke cookies en externe diensten, zoals Google Maps, Brabantschoon.nl gebruikt en waarom.", "cookiebeleid.html", base, "", cookies))
 
 # =================================================================
 # SEO FILES
