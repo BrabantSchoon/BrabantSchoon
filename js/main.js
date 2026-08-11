@@ -778,7 +778,15 @@ if (document.readyState === 'loading') {
     let pakketLabel = '';
     const requestedPakketId = dienstOk ? params.get('pakket') : null;
     if (requestedPakketId) {
-      const pakketRadio = Array.from(form.querySelectorAll('.wizard-step[data-step="3"] input[name="pakket"][data-pakket-id]'))
+      // BELANGRIJK: pakket-ID's zoals "basis" en "uitgebreid" zijn NIET uniek
+      // — meerdere diensten gebruiken dezelfde ID voor hun eerste twee
+      // pakketten (bijv. verhuisschoonmaak, grote-schoonmaak en
+      // na-verbouwing hebben allemaal een "basis"). Zoek daarom altijd
+      // binnen de wrap van de AANGEVRAAGDE dienst, nooit los op pakket-ID
+      // alleen — anders kan de eerste (nog uitgeschakelde) radio van een
+      // andere dienst gevonden worden, die als 'disabled' de match laat
+      // mislukken.
+      const pakketRadio = Array.from(form.querySelectorAll('.wizard-step[data-step="3"] .rc-wrap[data-dienst-for="' + requestedDienstSlug + '"] input[name="pakket"][data-pakket-id]'))
         .find(r => r.getAttribute('data-pakket-id') === requestedPakketId);
       if (pakketRadio && !pakketRadio.disabled) {
         pakketRadio.checked = true;
