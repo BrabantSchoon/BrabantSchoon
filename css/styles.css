@@ -185,21 +185,23 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
    verschil in één oogopslag duidelijk is: navy voor zakelijk, groen voor
    particulier. Platte tekstknoppen, geen iconen. */
 /* Zakelijk is de primaire keuze (~80% van de doelgroep): stevige, gevulde
-   knop. Particulier blijft volwaardig aanwezig en duidelijk klikbaar, maar
-   als transparante outline-knop iets minder dominant. */
+   navy knop. Particulier blijft volwaardig aanwezig, als lichte/witte
+   secundaire knop met duidelijke navy tekst/rand \u2014 zo blijft het verschil
+   in \u00e9\u00e9n oogopslag duidelijk (primair vs. secundair) zonder dat particulier
+   moeilijk leesbaar wordt. */
 .hero-audience-choice{display:flex; gap:14px; margin-top:26px; flex-wrap:wrap;}
 .btn-audience-lg{
-  display:inline-flex; align-items:center; justify-content:center; flex:1 1 auto; min-width:160px;
+  display:inline-flex; align-items:center; justify-content:center; gap:6px; flex:1 1 auto; min-width:160px;
   padding:16px 26px; border-radius:100px; font-weight:700; font-size:15.5px; text-align:center;
   color:#fff; text-decoration:none; border:1.5px solid transparent;
-  transition:background .15s ease, transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  transition:background .15s ease, transform .15s ease, box-shadow .15s ease, border-color .15s ease, color .15s ease;
   box-shadow:0 10px 24px -10px rgba(0,0,0,0.4);
 }
 .btn-audience-lg:hover{transform:translateY(-2px);}
 .btn-audience-business{background:var(--navy);}
 .btn-audience-business:hover{background:var(--navy-deep);}
-.btn-audience-particulier{background:transparent; border-color:rgba(255,255,255,0.7); box-shadow:none;}
-.btn-audience-particulier:hover{background:rgba(255,255,255,0.12); border-color:#fff;}
+.btn-audience-particulier{background:#fff; color:var(--navy); border-color:#fff; box-shadow:none;}
+.btn-audience-particulier:hover{background:#EAF1FA; border-color:#EAF1FA;}
 .hero-full-content h1{color:#fff; font-size:clamp(36px,6vw,64px); line-height:1.05; margin-top:14px;}
 @media(min-width:760px){.hero-full{min-height:74vh;} .hero-full-content{padding:72px 0 72px;}}
 @media(max-width:640px){.hero-full{min-height:480px;}}
@@ -247,7 +249,6 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 @media(max-width:640px){.hero-full-content-home{padding-top:80px;}}
 @media(max-width:480px){
   .hero-full-content-home .hero-actions{margin-top:18px;}
-  .hero-full-content-home .lead{margin-top:10px;}
 }
 .hero-text-panel{
   display:inline-block; background:rgba(0,17,36,0.50); backdrop-filter:blur(3px);
@@ -257,6 +258,22 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 .hero-full-content-home .lead{font-size:17.5px; max-width:420px; margin-top:14px;}
 @media(max-width:640px){.hero-full-content-home .lead{max-width:none;}}
 .hero-slogan-dark{font-size:15.5px; font-weight:700; color:#8FE0C1; margin-top:10px; letter-spacing:-0.005em;}
+/* Compactere mobiele hero (\u2264640px), toegepast N\u00c1 alle bovenstaande
+   basisregels zodat deze overrides ook echt winnen: de belangrijkste actie
+   \u2014 Voor bedrijven / Voor particulieren \u2014 moet zo snel mogelijk zichtbaar
+   zijn, zonder scrollen. Kleinere verticale paddings/gaps, geen
+   100vh-hoogte (die staat al content-gestuurd via .hero-full-home
+   hierboven), en de slogan-regel vervalt op mobiel (staat wel nog op
+   desktop). */
+@media(max-width:640px){
+  .hero-full-content-home{padding-top:64px; padding-bottom:32px;}
+  .hero-text-panel{padding:18px 18px;}
+  .hero-slogan-dark{display:none;}
+  .hero-full-content-home h1{margin-top:8px;}
+  .hero-full-content-home .lead{margin-top:8px; font-size:16px;}
+  .hero-audience-choice{margin-top:14px; gap:10px;}
+  .btn-audience-lg{padding:13px 20px; font-size:14.5px;}
+}
 /* Lange samengestelde woorden (zoals "schoonmaakpartner") mogen nooit
    halverwege afbreken: normale woordafbreking, geen geforceerde
    letter-voor-letter afbreking en geen afbreekstreepjes. De kolombreedte,
