@@ -77,7 +77,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "174"
+ASSET_VERSION = "175"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -1156,10 +1156,10 @@ def build_home():
         <span class="eyebrow" style="color:#BFE0FF;">Professionele schoonmaak in Brabant</span>
         <h1>De schoonmaakpartner van Brabant</h1>
         <p class="hero-slogan-dark">Schoon werk. Elke dag opnieuw.</p>
-        <p class="lead" style="color:rgba(255,255,255,0.92);">BrabantSchoon is uw schoonmaakpartner voor bedrijven, VvE's, organisaties en particulieren. Vanuit Helmond actief in Brabant, met een vast aanspreekpunt en heldere afspraken.</p>
+        <p class="lead" style="color:rgba(255,255,255,0.92);">Voor bedrijven en particulieren. Professioneel, betrouwbaar en met een vast aanspreekpunt.</p>
         <div class="hero-audience-choice">
-          <a href="zakelijke-schoonmaak.html" class="btn-audience-lg btn-audience-business">Voor bedrijven</a>
-          <a href="schoonmaak-particulieren.html" class="btn-audience-lg btn-audience-particulier">Voor particulieren</a>
+          <a href="zakelijke-schoonmaak.html" class="btn-audience-lg btn-audience-business">Voor bedrijven <span aria-hidden="true">&rarr;</span></a>
+          <a href="schoonmaak-particulieren.html" class="btn-audience-lg btn-audience-particulier">Voor particulieren <span aria-hidden="true">&rarr;</span></a>
         </div>
       </div>
     </div>
