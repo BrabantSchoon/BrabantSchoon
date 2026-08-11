@@ -77,7 +77,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "169"
+ASSET_VERSION = "171"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -639,6 +639,7 @@ MASTER_DIENSTEN = [
     ("Schoonmaak na verbouwing", "check", "Bouwstof en normaal schoonmaakvuil verwijderen", ["particulier"], "na-verbouwing"),
     ("Periodieke schoonmaak", "clock", "Vaste, terugkerende schoonmaak van uw woning", ["particulier"], "periodiek"),
     ("Bij verkoop, verhuur of oplevering", "doc", "Woning schoon voor bezichtiging of oplevering", ["particulier"], "oplevering"),
+    ("Glasbewassing", "window", "Ramen streeploos schoon, eenmalig of periodiek", ["particulier"], "glasbewassing-particulier"),
     ("Ik weet het nog niet / graag advies", "chat", "We denken graag met u mee", ["particulier"], "weet-niet"),
     ("Anders / eigen omschrijving", "chat", "Vertel ons uw situatie", ["bedrijf", "vve"], ""),
 ]
@@ -669,6 +670,30 @@ PARTICULIER_VERBOUWING_OPTIES = [
 PARTICULIER_BOUWRESTEN_OPTIES = [
     ("Nee, geen hardnekkige bouwresten", "Normale hoeveelheid bouwstof"),
     ("Ja, er zijn hardnekkige bouwresten", "Bijv. verf-, kit-, lijm- of cementresten \u2014 prijs op maat"),
+]
+
+# Alleen relevant bij particuliere glasbewassing (wizard-subsection
+# data-requires-dienst="glasbewassing-particulier"). Nog geen vaste
+# tarieven/staffels (zie brief) — uitsluitend intake-informatie voor een
+# prijsindicatie op maat.
+GLAS_TYPE_OPTIES = [
+    ("Alleen buitenzijde", "Buitenkant van de ramen"),
+    ("Binnen- en buitenzijde", "Beide zijden"),
+    ("Graag advies / weet ik nog niet", "We denken graag met u mee"),
+]
+GLAS_FREQUENTIE_OPTIES = [
+    ("Eenmalig", "E\u00e9n keer"),
+    ("Periodiek", "Vast terugkerend ritme"),
+    ("Weet ik nog niet", "In overleg te bepalen"),
+]
+GLAS_VERDIEPING_OPTIES = [
+    ("Begane grond", ""), ("Eerste verdieping", ""),
+    ("Tweede verdieping of hoger", ""), ("Verschillende verdiepingen", ""),
+]
+GLAS_BEREIKBAARHEID_OPTIES = [
+    ("Ja, normaal bereikbaar", "Met een gewone ladder of vanaf de grond"),
+    ("Nee, moeilijk bereikbaar", "Bijzondere situatie \u2014 prijs op maat"),
+    ("Weet ik niet", "We beoordelen dit graag met u"),
 ]
 
 WIZARD_OPPERVLAKTE = [
@@ -818,6 +843,10 @@ def contact_form():
     bewoond_cards = radio_cards("bewoond_leeg", PARTICULIER_BEWOOND, columns=2)
     verbouwing_cards = radio_cards("verbouwing_type", PARTICULIER_VERBOUWING_OPTIES, columns=3)
     bouwresten_cards = radio_cards("bouwresten", PARTICULIER_BOUWRESTEN_OPTIES, columns=2)
+    glas_type_cards = radio_cards("glas_type", GLAS_TYPE_OPTIES, columns=1)
+    glas_frequentie_cards = radio_cards("glas_frequentie", GLAS_FREQUENTIE_OPTIES, columns=1)
+    glas_verdieping_cards = radio_cards("glas_verdieping", GLAS_VERDIEPING_OPTIES, columns=2)
+    glas_bereikbaarheid_cards = radio_cards("glas_bereikbaarheid", GLAS_BEREIKBAARHEID_OPTIES, columns=1)
     staffel_options = [(STAFFEL_LABELS[s], "") for s in STAFFEL_OPTIES]
     staffel_cards = radio_cards("woonoppervlakte_staffel", staffel_options, columns=2)
     prijs_data_json = json.dumps({
@@ -833,6 +862,21 @@ def contact_form():
   <script type="application/json" id="prijsData">{prijs_data_json}</script>
   <form name="offerte" method="POST" action="https://api.web3forms.com/submit" class="wizard-form" id="offerteWizard" novalidate>
     <p id="wizardLive" class="sr-only" role="status" aria-live="polite"></p>
+    <nav class="wizard-phases" id="wizardPhases" hidden aria-label="Voortgang offerteaanvraag">
+      <div class="wizard-phases-track">
+        <span class="wizard-phase" data-phase="woning"><span class="wizard-phase-dot"></span><span class="wizard-phase-label">Woning</span></span>
+        <span class="wizard-phase" data-phase="extras"><span class="wizard-phase-dot"></span><span class="wizard-phase-label">Extra's</span></span>
+        <span class="wizard-phase" data-phase="gegevens"><span class="wizard-phase-dot"></span><span class="wizard-phase-label">Gegevens</span></span>
+        <span class="wizard-phase" data-phase="controleren"><span class="wizard-phase-dot"></span><span class="wizard-phase-label">Controleren</span></span>
+      </div>
+      <div class="wizard-phases-mobile">
+        <div class="wizard-phases-mobile-top">
+          <strong id="wizardPhaseNow"></strong>
+          <span id="wizardPhaseNext"></span>
+        </div>
+        <div class="wizard-phases-mobile-bar"><div class="wizard-phases-mobile-fill" id="wizardPhaseFill"></div></div>
+      </div>
+    </nav>
     <p id="wizardStepLabel" class="wizard-step-label"></p>
     <input type="hidden" name="access_key" value="abc98c0d-af16-42b0-ae5c-3337f35e5299">
     <input type="hidden" name="subject" value="Nieuwe offerteaanvraag via de website" id="wizardSubject">
@@ -867,7 +911,7 @@ def contact_form():
       {dienst_cards}
     </div>
 
-    <div class="wizard-step" data-step="3" hidden data-applies-to="particulier" data-excludes-dienst="periodiek">
+    <div class="wizard-step" data-step="3" hidden data-applies-to="particulier" data-excludes-dienst="periodiek glasbewassing-particulier">
       <h3 class="wizard-q">Welke uitvoering past bij u?</h3>
       <p class="wizard-sub">Kies het pakket dat het beste aansluit \u2014 op de dienstpagina leest u precies wat elk pakket inhoudt.</p>
       {pakket_cards}
@@ -876,24 +920,26 @@ def contact_form():
     <div class="wizard-step" data-step="4" hidden data-applies-to="particulier">
       <h3 class="wizard-q">Informatie over uw woning</h3>
       <p class="wizard-sub">Dit helpt ons een goede inschatting te maken \u2014 en bepaalt bij eenmalige diensten uw prijsindicatie hieronder.</p>
-      <div class="row2">
-        <div><label for="typewoning">Type woning</label><input id="typewoning" name="typewoning" type="text" placeholder="Bijv. eengezinswoning, appartement"></div>
-        <div><label for="slaapkamers">Aantal slaapkamers</label><input id="slaapkamers" name="slaapkamers" type="number" min="0" placeholder="Bijv. 3"></div>
-      </div>
-      <div class="row2" style="margin-top:14px;">
-        <div><label for="badkamers">Aantal badkamers</label><input id="badkamers" name="badkamers" type="number" min="0" placeholder="Bijv. 1"></div>
-        <div><label for="toiletten">Aantal toiletten</label><input id="toiletten" name="toiletten" type="number" min="0" placeholder="Bijv. 1"></div>
-      </div>
-      <div style="margin-top:22px;">
-        <label style="display:block; margin-bottom:10px;">Woonoppervlakte</label>
-        {staffel_cards}
+      <div class="wizard-subsection" data-excludes-dienst="glasbewassing-particulier">
+        <div class="row2">
+          <div><label for="typewoning">Type woning</label><input id="typewoning" name="typewoning" type="text" placeholder="Bijv. eengezinswoning, appartement"></div>
+          <div><label for="slaapkamers">Aantal slaapkamers</label><input id="slaapkamers" name="slaapkamers" type="number" min="0" placeholder="Bijv. 3"></div>
+        </div>
+        <div class="row2" style="margin-top:14px;">
+          <div><label for="badkamers">Aantal badkamers</label><input id="badkamers" name="badkamers" type="number" min="0" placeholder="Bijv. 1"></div>
+          <div><label for="toiletten">Aantal toiletten</label><input id="toiletten" name="toiletten" type="number" min="0" placeholder="Bijv. 1"></div>
+        </div>
+        <div style="margin-top:22px;">
+          <label style="display:block; margin-bottom:10px;">Woonoppervlakte</label>
+          {staffel_cards}
+        </div>
       </div>
       <div class="wizard-subsection" data-requires-dienst="verhuisschoonmaak" style="margin-top:22px;">
         <label style="display:block; margin-bottom:10px;">Is de woning tijdens de schoonmaak leeg?</label>
         {bewoond_cards}
         <p class="prose" id="ingerichtNote" style="margin-top:10px; font-size:13px; background:var(--bg-soft); border-radius:10px; padding:10px 14px;" hidden>Een ingerichte woning kan extra werkzaamheden vereisen. De definitieve prijs wordt na beoordeling bevestigd.</p>
       </div>
-      <div class="wizard-subsection" data-excludes-dienst="periodiek" style="margin-top:22px;">
+      <div class="wizard-subsection" data-excludes-dienst="periodiek glasbewassing-particulier" style="margin-top:22px;">
         <label style="display:block; margin-bottom:10px;">Hoe zou u de huidige staat omschrijven?</label>
         {vervuiling_cards}
       </div>
@@ -907,24 +953,43 @@ def contact_form():
         {bouwresten_cards}
         <p class="prose" id="bouwrestenNote" style="margin-top:10px; font-size:13px; background:var(--bg-soft); border-radius:10px; padding:10px 14px;" hidden>Verwijdering van hardnekkige verf-, kit-, lijm-, cement- en vergelijkbare bouwresten is niet standaard in het pakket inbegrepen. We beoordelen dit soort situaties eerst, voordat we een definitieve prijs kunnen geven.</p>
       </div>
+      <div class="wizard-subsection" data-requires-dienst="glasbewassing-particulier">
+        <label style="display:block; margin-bottom:10px;">Wat wilt u laten reinigen?</label>
+        {glas_type_cards}
+        <label style="display:block; margin:20px 0 10px;">Hoe wilt u de glasbewassing afnemen?</label>
+        {glas_frequentie_cards}
+        <div class="row2" style="margin-top:20px;">
+          <div><label for="glas_aantal">Aantal ramen/glasvlakken (indicatie)</label><input id="glas_aantal" name="glas_aantal" type="text" placeholder="Bijv. 8, of 'hele woning'"></div>
+        </div>
+        <label style="display:block; margin:20px 0 10px;">Waar bevinden de ramen zich?</label>
+        {glas_verdieping_cards}
+        <label style="display:block; margin:20px 0 10px;">Zijn alle ramen normaal bereikbaar?</label>
+        {glas_bereikbaarheid_cards}
+        <p class="prose" id="glasBereikbaarheidNote" style="margin-top:10px; font-size:13px; background:var(--bg-soft); border-radius:10px; padding:10px 14px;" hidden>Bij moeilijk bereikbare of bijzondere situaties beoordelen we dit eerst persoonlijk, voordat we een passende offerte kunnen opstellen.</p>
+      </div>
       <div id="prijsBlokWoning"></div>
     </div>
 
     <div class="wizard-step" data-step="5" hidden data-applies-to="particulier">
       <h3 class="wizard-q">Extra werkzaamheden</h3>
-      <p class="wizard-sub">Optioneel \u2014 kies alles wat van toepassing is. Prijzen zijn incl. btw en tellen mee in uw prijsindicatie.</p>
+      <p class="wizard-sub" data-excludes-dienst="glasbewassing-particulier">Optioneel \u2014 kies alles wat van toepassing is. Prijzen zijn incl. btw en tellen mee in uw prijsindicatie.</p>
+      <p class="wizard-sub" data-requires-dienst="glasbewassing-particulier" hidden>Optioneel \u2014 laat weten of er nog iets bij mag, of vertel kort een bijzonderheid.</p>
       <div class="wizard-subsection" data-requires-dienst="periodiek" style="margin-bottom:14px;">
         <p class="prose" style="font-size:13px; background:var(--bg-soft); border-radius:10px; padding:10px 14px; margin:0;">Deze extra prijs geldt voor de schoonmaakbeurt waarvoor u nu een offerte aanvraagt \u2014 niet automatisch voor elke toekomstige beurt. Wilt u een extra werkzaamheid vaker laten uitvoeren, geef dat dan aan bij "Omschrijving" verderop, dan bespreken we dit graag met u.</p>
       </div>
-      <div class="counter-cards" id="extraCounters">
-        {extra_counters}
+      <div class="wizard-subsection" data-excludes-dienst="glasbewassing-particulier">
+        <div class="counter-cards" id="extraCounters">
+          {extra_counters}
+        </div>
       </div>
       <div class="checkbox-cards" id="extraCheckboxes" style="margin-top:12px;">
         {extra_checkboxes_overig}
+      </div>
+      <div class="checkbox-cards" style="margin-top:12px;">
         <label class="cb-card" data-dienst-for="all"><input type="checkbox" id="extraAndersCheck"><span>Anders, namelijk\u2026 <em style="font-weight:400;">(prijs op maat)</em></span></label>
       </div>
       <div id="extraAndersWrap" style="margin-top:14px;" hidden>
-        <label for="extra_anders">Omschrijving</label>
+        <label for="extra_anders">Omschrijving / opmerkingen</label>
         <input id="extra_anders" name="extra_anders" type="text" placeholder="Vertel kort wat u bedoelt" disabled>
       </div>
       <div id="prijsBlokExtra" style="margin-top:18px;"></div>
@@ -1421,6 +1486,9 @@ PARTICULIER_SUBDIENSTEN = [
     ("Bij verkoop, verhuur of oplevering", "Uw woning schoon voor bezichtigingen, verhuur of de sleuteloverdracht.",
      "opleveringsschoonmaak-brabantschoon.webp", "BrabantSchoon-medewerkster inspecteert een woning bij oplevering",
      "opleveringsschoonmaak-particulier.html"),
+    ("Glasbewassing", "Streeploos schone ramen voor uw woning, eenmalig of periodiek.",
+     "glasbewassing.jpg", "Streeploos schone ramen na professionele glasbewassing door BrabantSchoon",
+     "glasbewassing-particulier.html"),
 ]
 
 # Generieke werkwijze-stappen, hergebruikt op alle 5 particuliere detailpagina's
@@ -1581,6 +1649,28 @@ PARTICULIER_PAGES = [
             ("Voert u ook een laatste controle uit v\u00f3\u00f3r de sleuteloverdracht?", "Ja, desgewenst voeren we een laatste controle uit zodat de woning netjes wordt overgedragen."),
             ("Kan de schoonmaak vlak v\u00f3\u00f3r de bezichtiging of overdracht plaatsvinden?", "We plannen de schoonmaak graag rond uw gewenste datum \u2014 neem tijdig contact op voor de beste planning."),
             ("Maakt u ook de binnenzijde van kasten schoon?", "Dit kan als extra optie worden afgesproken."),
+        ],
+    },
+    {
+        "filename": "glasbewassing-particulier.html",
+        "slug": "glasbewassing-particulier",
+        "title": "Glasbewassing voor particulieren",
+        "meta_title": "Glasbewassing voor particulieren | BrabantSchoon",
+        "meta_description": "Professionele glasbewassing voor particulieren door BrabantSchoon: streeploos schone ramen, eenmalig of periodiek. Vraag vrijblijvend een offerte op maat aan.",
+        "lead": "Streeploos schone ramen voor uw woning \u2014 eenmalig of op een vast ritme.",
+        "img": "glasbewassing.jpg",
+        "alt": "Streeploos schone ramen na professionele glasbewassing door BrabantSchoon",
+        "voor_wie": ["Woningeigenaren die hun ramen liever laten reinigen dan zelf doen", "Moeilijk bereikbare ramen, zoals een bovenverdieping", "Wie op een vast ritme schone ramen wil, zonder er zelf aan te hoeven denken", "Een eenmalige grondige beurt, bijvoorbeeld voor een speciale gelegenheid"],
+        "onderdelen": ["Buitenzijde ramen", "Binnenzijde ramen, indien gewenst", "Kozijnen, indien gewenst", "Vensterbanken, indien gewenst"],
+        "pakketten": [],
+        "extra_opties": ["Kozijnen meenemen", "Vensterbanken meenemen"],
+        "prijs_factoren": ["Hoeveelheid glas", "Formaat van de ramen", "Verdieping", "Bereikbaarheid", "Eenmalig of periodiek"],
+        "note": "Er zijn nog geen vaste tarieven voor particuliere glasbewassing \u2014 u ontvangt altijd een vrijblijvende prijsindicatie op basis van uw situatie.",
+        "faqs": [
+            ("Wat is het verschil met 'ramen binnenzijde' in jullie schoonmaakpakketten?", "Bij 'ramen binnenzijde' in een schoonmaakpakket gaat het om een reguliere reiniging als onderdeel van de totale schoonmaakbeurt. Professionele glasbewassing is gericht op streeploos glas, ook aan de buitenzijde, en is een aparte dienst."),
+            ("Kan glasbewassing ook periodiek, bijvoorbeeld iedere paar maanden?", "Ja, u kunt kiezen voor een eenmalige beurt of een vast terugkerend ritme \u2014 dat bespreken we graag met u."),
+            ("Wat als mijn ramen moeilijk bereikbaar zijn?", "Geef dit aan bij uw aanvraag. Bij moeilijk bereikbare of bijzondere situaties beoordelen we dit eerst persoonlijk, voordat we een passende offerte opstellen."),
+            ("Wat kost glasbewassing?", "Dat hangt af van onder meer de hoeveelheid glas, het formaat, de verdieping en de bereikbaarheid. Er zijn nog geen vaste tarieven \u2014 u ontvangt een vrijblijvende prijsindicatie op basis van uw situatie."),
         ],
     },
 ]
@@ -1838,13 +1928,27 @@ def build_particulier_detail_pages():
       <div class="hero-actions" style="margin-top:22px;">
         <a href="{base}offerte.html?type=particulier&amp;dienst={page['slug']}#offerteWizard" class="btn btn-primary">Bereken uw prijsindicatie</a>
       </div>'''
+        elif page["slug"] == "glasbewassing-particulier":
+            # Geen pakketten, nog geen vaste tarieven: leg het aanbod uit en
+            # verwijs direct door naar de eigen (korte) offerteflow.
+            keuze_sectie = f'''<div class="sec-head reveal"><h2>Waar kunt u uit kiezen?</h2><p class="prose" style="margin-top:8px;">Glasbewassing is maatwerk \u2014 er zijn nog geen vaste tarieven, u ontvangt altijd een vrijblijvende prijsindicatie op basis van uw situatie.</p></div>
+      <div class="pakket-grid">
+        <div class="pakket-card reveal"><h3 class="pakket-title">Alleen buitenzijde</h3><p class="pakket-description">De buitenkant van uw ramen streeploos schoon.</p><p class="pakket-price">Prijs op maat</p></div>
+        <div class="pakket-card reveal"><h3 class="pakket-title">Binnen- en buitenzijde</h3><p class="pakket-description">Beide zijden in \u00e9\u00e9n afspraak.</p><p class="pakket-price">Prijs op maat</p></div>
+        <div class="pakket-card reveal"><h3 class="pakket-title">Eenmalig of periodiek</h3><p class="pakket-description">Een enkele beurt, of een vast terugkerend ritme dat u zelf bepaalt.</p><p class="pakket-price">Prijs op maat</p></div>
+      </div>
+      <p class="prose reveal" style="margin-top:20px;">De uiteindelijke prijs hangt onder meer af van de hoeveelheid glas, het formaat, de verdieping en de bereikbaarheid van de ramen. Bij moeilijk bereikbare of bijzondere situaties beoordelen we dit eerst persoonlijk.</p>
+      <div class="hero-actions" style="margin-top:22px;">
+        <a href="{base}offerte.html?type=particulier&amp;dienst={page['slug']}#offerteWizard" class="btn btn-primary">Offerte aanvragen</a>
+      </div>'''
         elif page["slug"] in PARTICULIER_PRIJZEN:
             prijsdata = PARTICULIER_PRIJZEN[page["slug"]]
             vanaf_prefix = "vanaf " if prijsdata["vanaf"] else ""
             pakketten_html = "\n      ".join(f'''<div class="pakket-card reveal">
         <h3 class="pakket-title">{naam}</h3>
         <p class="pakket-description">{desc}</p>
-        <p class="pakket-price">{vanaf_prefix}\u20ac{prijsdata["prijzen"]["tm60"][pid]} <span class="pakket-price-unit">incl. btw</span></p>
+        <p class="pakket-price">Vanaf \u20ac{prijsdata["prijzen"]["tm60"][pid]} <span class="pakket-price-unit">incl. btw</span></p>
+        <p class="pakket-price-staffel">{STAFFEL_LABELS["tm60"]}</p>
         <div class="pakket-details" id="pakket-details-{page['slug']}-{pid}" hidden>
           <p class="pakket-details-label">Prijs op basis van woonoppervlakte</p>
           <table class="pakket-prijstabel">

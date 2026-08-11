@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="css/styles.css?v=169">
+<link rel="stylesheet" href="css/styles.css?v=171">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
@@ -131,6 +131,21 @@
   <script type="application/json" id="prijsData">{"eenmalig": {"grote-schoonmaak": {"vanaf": false, "prijzen": {"tm60": {"basis": 200, "uitgebreid": 275, "compleet": 375}, "61-90": {"basis": 250, "uitgebreid": 350, "compleet": 475}, "91-120": {"basis": 300, "uitgebreid": 425, "compleet": 575}, "121-150": {"basis": 350, "uitgebreid": 500, "compleet": 700}}}, "verhuisschoonmaak": {"vanaf": false, "prijzen": {"tm60": {"basis": 225, "uitgebreid": 300, "opleverklaar": 400}, "61-90": {"basis": 275, "uitgebreid": 375, "opleverklaar": 500}, "91-120": {"basis": 325, "uitgebreid": 450, "opleverklaar": 625}, "121-150": {"basis": 400, "uitgebreid": 550, "opleverklaar": 750}}}, "na-verbouwing": {"vanaf": false, "prijzen": {"tm60": {"basis": 250, "uitgebreid": 325, "instapklaar": 450}, "61-90": {"basis": 300, "uitgebreid": 400, "instapklaar": 550}, "91-120": {"basis": 375, "uitgebreid": 500, "instapklaar": 675}, "121-150": {"basis": 450, "uitgebreid": 600, "instapklaar": 825}}}}, "periodiek": {"tm60": {"wekelijks": 90, "2weken": 100, "4weken": 115}, "61-90": {"wekelijks": 110, "2weken": 125, "4weken": 145}, "91-120": {"wekelijks": 135, "2weken": 155, "4weken": 180}, "121-150": {"wekelijks": 160, "2weken": 185, "4weken": 215}}, "extras": {"oven": {"label": "Oven binnenzijde", "prijs": 35, "eenheid": "stuk"}, "koelkast": {"label": "Koelkast binnenzijde", "prijs": 25, "eenheid": "stuk"}, "vriezer": {"label": "Vriezer binnenzijde", "prijs": 20, "eenheid": "stuk"}, "magnetron": {"label": "Magnetron binnenzijde", "prijs": 15, "eenheid": "stuk"}, "afzuigkap": {"label": "Afzuigkap intensief", "prijs": 25, "eenheid": "stuk"}, "kalkbadkamer": {"label": "Extra kalkreiniging badkamer", "prijs": 30, "eenheid": "badkamer"}, "balkon": {"label": "Balkon", "prijs": 30, "eenheid": "stuk"}, "berging": {"label": "Berging", "prijs": 25, "eenheid": "stuk"}, "ruimte_extra": {"label": "Specifieke ruimte extra grondig", "prijs": 35, "eenheid": "ruimte"}}, "inbegrepen": {"grote-schoonmaak": {"compleet": {"oven": 1, "koelkast": 1, "vriezer": 1, "magnetron": 1, "afzuigkap": 1, "kalkbadkamer": 1}}, "verhuisschoonmaak": {"opleverklaar": {"oven": 1, "koelkast": 1, "vriezer": 1, "magnetron": 1, "afzuigkap": 1, "kalkbadkamer": 1}}, "na-verbouwing": {}, "periodiek": {}}, "staffelLabels": {"tm60": "t/m 60 m²", "61-90": "61–90 m²", "91-120": "91–120 m²", "121-150": "121–150 m²", "boven150": "Boven 150 m²"}, "toeslagPercentage": 20}</script>
   <form name="offerte" method="POST" action="https://api.web3forms.com/submit" class="wizard-form" id="offerteWizard" novalidate>
     <p id="wizardLive" class="sr-only" role="status" aria-live="polite"></p>
+    <nav class="wizard-phases" id="wizardPhases" hidden aria-label="Voortgang offerteaanvraag">
+      <div class="wizard-phases-track">
+        <span class="wizard-phase" data-phase="woning"><span class="wizard-phase-dot"></span><span class="wizard-phase-label">Woning</span></span>
+        <span class="wizard-phase" data-phase="extras"><span class="wizard-phase-dot"></span><span class="wizard-phase-label">Extra's</span></span>
+        <span class="wizard-phase" data-phase="gegevens"><span class="wizard-phase-dot"></span><span class="wizard-phase-label">Gegevens</span></span>
+        <span class="wizard-phase" data-phase="controleren"><span class="wizard-phase-dot"></span><span class="wizard-phase-label">Controleren</span></span>
+      </div>
+      <div class="wizard-phases-mobile">
+        <div class="wizard-phases-mobile-top">
+          <strong id="wizardPhaseNow"></strong>
+          <span id="wizardPhaseNext"></span>
+        </div>
+        <div class="wizard-phases-mobile-bar"><div class="wizard-phases-mobile-fill" id="wizardPhaseFill"></div></div>
+      </div>
+    </nav>
     <p id="wizardStepLabel" class="wizard-step-label"></p>
     <input type="hidden" name="access_key" value="abc98c0d-af16-42b0-ae5c-3337f35e5299">
     <input type="hidden" name="subject" value="Nieuwe offerteaanvraag via de website" id="wizardSubject">
@@ -305,6 +320,12 @@
         <span class="rc-label">Bij verkoop, verhuur of oplevering</span>
         <span class="rc-desc">Woning schoon voor bezichtiging of oplevering</span>
       </label></div>
+      <div class="rc-wrap" data-customer-types="particulier" data-dienst-slug="glasbewassing-particulier"><input type="radio" name="dienst" id="dienst-glasbewassing-2" value="Glasbewassing" class="rc-input" required>
+      <label for="dienst-glasbewassing-2" class="rc-card">
+        <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M12 4v16M4 12h16"/></svg></div>
+        <span class="rc-label">Glasbewassing</span>
+        <span class="rc-desc">Ramen streeploos schoon, eenmalig of periodiek</span>
+      </label></div>
       <div class="rc-wrap" data-customer-types="particulier" data-dienst-slug="weet-niet"><input type="radio" name="dienst" id="dienst-ik-weet-het-nog-niet-graag-advies" value="Ik weet het nog niet / graag advies" class="rc-input" required>
       <label for="dienst-ik-weet-het-nog-niet-graag-advies" class="rc-card">
         <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
@@ -319,7 +340,7 @@
       </label></div></div>
     </div>
 
-    <div class="wizard-step" data-step="3" hidden data-applies-to="particulier" data-excludes-dienst="periodiek">
+    <div class="wizard-step" data-step="3" hidden data-applies-to="particulier" data-excludes-dienst="periodiek glasbewassing-particulier">
       <h3 class="wizard-q">Welke uitvoering past bij u?</h3>
       <p class="wizard-sub">Kies het pakket dat het beste aansluit — op de dienstpagina leest u precies wat elk pakket inhoudt.</p>
       <div class="radio-cards cols-3"><div class="rc-wrap rc-hidden" data-dienst-for="verhuisschoonmaak">
@@ -418,17 +439,18 @@
     <div class="wizard-step" data-step="4" hidden data-applies-to="particulier">
       <h3 class="wizard-q">Informatie over uw woning</h3>
       <p class="wizard-sub">Dit helpt ons een goede inschatting te maken — en bepaalt bij eenmalige diensten uw prijsindicatie hieronder.</p>
-      <div class="row2">
-        <div><label for="typewoning">Type woning</label><input id="typewoning" name="typewoning" type="text" placeholder="Bijv. eengezinswoning, appartement"></div>
-        <div><label for="slaapkamers">Aantal slaapkamers</label><input id="slaapkamers" name="slaapkamers" type="number" min="0" placeholder="Bijv. 3"></div>
-      </div>
-      <div class="row2" style="margin-top:14px;">
-        <div><label for="badkamers">Aantal badkamers</label><input id="badkamers" name="badkamers" type="number" min="0" placeholder="Bijv. 1"></div>
-        <div><label for="toiletten">Aantal toiletten</label><input id="toiletten" name="toiletten" type="number" min="0" placeholder="Bijv. 1"></div>
-      </div>
-      <div style="margin-top:22px;">
-        <label style="display:block; margin-bottom:10px;">Woonoppervlakte</label>
-        <div class="radio-cards cols-2"><input type="radio" name="woonoppervlakte_staffel" id="woonoppervlakte_staffel-t-m-60-m-" value="t/m 60 m²" class="rc-input" required>
+      <div class="wizard-subsection" data-excludes-dienst="glasbewassing-particulier">
+        <div class="row2">
+          <div><label for="typewoning">Type woning</label><input id="typewoning" name="typewoning" type="text" placeholder="Bijv. eengezinswoning, appartement"></div>
+          <div><label for="slaapkamers">Aantal slaapkamers</label><input id="slaapkamers" name="slaapkamers" type="number" min="0" placeholder="Bijv. 3"></div>
+        </div>
+        <div class="row2" style="margin-top:14px;">
+          <div><label for="badkamers">Aantal badkamers</label><input id="badkamers" name="badkamers" type="number" min="0" placeholder="Bijv. 1"></div>
+          <div><label for="toiletten">Aantal toiletten</label><input id="toiletten" name="toiletten" type="number" min="0" placeholder="Bijv. 1"></div>
+        </div>
+        <div style="margin-top:22px;">
+          <label style="display:block; margin-bottom:10px;">Woonoppervlakte</label>
+          <div class="radio-cards cols-2"><input type="radio" name="woonoppervlakte_staffel" id="woonoppervlakte_staffel-t-m-60-m-" value="t/m 60 m²" class="rc-input" required>
       <label for="woonoppervlakte_staffel-t-m-60-m-" class="rc-card">
         
         <span class="rc-label">t/m 60 m²</span>
@@ -458,6 +480,7 @@
         <span class="rc-label">Boven 150 m²</span>
         <span class="rc-desc"></span>
       </label></div>
+        </div>
       </div>
       <div class="wizard-subsection" data-requires-dienst="verhuisschoonmaak" style="margin-top:22px;">
         <label style="display:block; margin-bottom:10px;">Is de woning tijdens de schoonmaak leeg?</label>
@@ -481,7 +504,7 @@
       </label></div>
         <p class="prose" id="ingerichtNote" style="margin-top:10px; font-size:13px; background:var(--bg-soft); border-radius:10px; padding:10px 14px;" hidden>Een ingerichte woning kan extra werkzaamheden vereisen. De definitieve prijs wordt na beoordeling bevestigd.</p>
       </div>
-      <div class="wizard-subsection" data-excludes-dienst="periodiek" style="margin-top:22px;">
+      <div class="wizard-subsection" data-excludes-dienst="periodiek glasbewassing-particulier" style="margin-top:22px;">
         <label style="display:block; margin-bottom:10px;">Hoe zou u de huidige staat omschrijven?</label>
         <div class="radio-cards cols-2"><input type="radio" name="vervuilingsgraad" id="vervuilingsgraad-normaal-vervuild" value="Normaal vervuild" class="rc-input" required>
       <label for="vervuilingsgraad-normaal-vervuild" class="rc-card">
@@ -558,17 +581,107 @@
       </label></div>
         <p class="prose" id="bouwrestenNote" style="margin-top:10px; font-size:13px; background:var(--bg-soft); border-radius:10px; padding:10px 14px;" hidden>Verwijdering van hardnekkige verf-, kit-, lijm-, cement- en vergelijkbare bouwresten is niet standaard in het pakket inbegrepen. We beoordelen dit soort situaties eerst, voordat we een definitieve prijs kunnen geven.</p>
       </div>
+      <div class="wizard-subsection" data-requires-dienst="glasbewassing-particulier">
+        <label style="display:block; margin-bottom:10px;">Wat wilt u laten reinigen?</label>
+        <div class="radio-cards cols-1"><input type="radio" name="glas_type" id="glas_type-alleen-buitenzijde" value="Alleen buitenzijde" class="rc-input" required>
+      <label for="glas_type-alleen-buitenzijde" class="rc-card">
+        
+        <span class="rc-label">Alleen buitenzijde</span>
+        <span class="rc-desc">Buitenkant van de ramen</span>
+      </label>
+      <input type="radio" name="glas_type" id="glas_type-binnen-en-buitenzijde" value="Binnen- en buitenzijde" class="rc-input" required>
+      <label for="glas_type-binnen-en-buitenzijde" class="rc-card">
+        
+        <span class="rc-label">Binnen- en buitenzijde</span>
+        <span class="rc-desc">Beide zijden</span>
+      </label>
+      <input type="radio" name="glas_type" id="glas_type-graag-advies-weet-ik-nog-niet" value="Graag advies / weet ik nog niet" class="rc-input" required>
+      <label for="glas_type-graag-advies-weet-ik-nog-niet" class="rc-card">
+        
+        <span class="rc-label">Graag advies / weet ik nog niet</span>
+        <span class="rc-desc">We denken graag met u mee</span>
+      </label></div>
+        <label style="display:block; margin:20px 0 10px;">Hoe wilt u de glasbewassing afnemen?</label>
+        <div class="radio-cards cols-1"><input type="radio" name="glas_frequentie" id="glas_frequentie-eenmalig" value="Eenmalig" class="rc-input" required>
+      <label for="glas_frequentie-eenmalig" class="rc-card">
+        
+        <span class="rc-label">Eenmalig</span>
+        <span class="rc-desc">Eén keer</span>
+      </label>
+      <input type="radio" name="glas_frequentie" id="glas_frequentie-periodiek" value="Periodiek" class="rc-input" required>
+      <label for="glas_frequentie-periodiek" class="rc-card">
+        
+        <span class="rc-label">Periodiek</span>
+        <span class="rc-desc">Vast terugkerend ritme</span>
+      </label>
+      <input type="radio" name="glas_frequentie" id="glas_frequentie-weet-ik-nog-niet" value="Weet ik nog niet" class="rc-input" required>
+      <label for="glas_frequentie-weet-ik-nog-niet" class="rc-card">
+        
+        <span class="rc-label">Weet ik nog niet</span>
+        <span class="rc-desc">In overleg te bepalen</span>
+      </label></div>
+        <div class="row2" style="margin-top:20px;">
+          <div><label for="glas_aantal">Aantal ramen/glasvlakken (indicatie)</label><input id="glas_aantal" name="glas_aantal" type="text" placeholder="Bijv. 8, of 'hele woning'"></div>
+        </div>
+        <label style="display:block; margin:20px 0 10px;">Waar bevinden de ramen zich?</label>
+        <div class="radio-cards cols-2"><input type="radio" name="glas_verdieping" id="glas_verdieping-begane-grond" value="Begane grond" class="rc-input" required>
+      <label for="glas_verdieping-begane-grond" class="rc-card">
+        
+        <span class="rc-label">Begane grond</span>
+        <span class="rc-desc"></span>
+      </label>
+      <input type="radio" name="glas_verdieping" id="glas_verdieping-eerste-verdieping" value="Eerste verdieping" class="rc-input" required>
+      <label for="glas_verdieping-eerste-verdieping" class="rc-card">
+        
+        <span class="rc-label">Eerste verdieping</span>
+        <span class="rc-desc"></span>
+      </label>
+      <input type="radio" name="glas_verdieping" id="glas_verdieping-tweede-verdieping-of-hoger" value="Tweede verdieping of hoger" class="rc-input" required>
+      <label for="glas_verdieping-tweede-verdieping-of-hoger" class="rc-card">
+        
+        <span class="rc-label">Tweede verdieping of hoger</span>
+        <span class="rc-desc"></span>
+      </label>
+      <input type="radio" name="glas_verdieping" id="glas_verdieping-verschillende-verdiepingen" value="Verschillende verdiepingen" class="rc-input" required>
+      <label for="glas_verdieping-verschillende-verdiepingen" class="rc-card">
+        
+        <span class="rc-label">Verschillende verdiepingen</span>
+        <span class="rc-desc"></span>
+      </label></div>
+        <label style="display:block; margin:20px 0 10px;">Zijn alle ramen normaal bereikbaar?</label>
+        <div class="radio-cards cols-1"><input type="radio" name="glas_bereikbaarheid" id="glas_bereikbaarheid-ja-normaal-bereikbaar" value="Ja, normaal bereikbaar" class="rc-input" required>
+      <label for="glas_bereikbaarheid-ja-normaal-bereikbaar" class="rc-card">
+        
+        <span class="rc-label">Ja, normaal bereikbaar</span>
+        <span class="rc-desc">Met een gewone ladder of vanaf de grond</span>
+      </label>
+      <input type="radio" name="glas_bereikbaarheid" id="glas_bereikbaarheid-nee-moeilijk-bereikbaar" value="Nee, moeilijk bereikbaar" class="rc-input" required>
+      <label for="glas_bereikbaarheid-nee-moeilijk-bereikbaar" class="rc-card">
+        
+        <span class="rc-label">Nee, moeilijk bereikbaar</span>
+        <span class="rc-desc">Bijzondere situatie — prijs op maat</span>
+      </label>
+      <input type="radio" name="glas_bereikbaarheid" id="glas_bereikbaarheid-weet-ik-niet" value="Weet ik niet" class="rc-input" required>
+      <label for="glas_bereikbaarheid-weet-ik-niet" class="rc-card">
+        
+        <span class="rc-label">Weet ik niet</span>
+        <span class="rc-desc">We beoordelen dit graag met u</span>
+      </label></div>
+        <p class="prose" id="glasBereikbaarheidNote" style="margin-top:10px; font-size:13px; background:var(--bg-soft); border-radius:10px; padding:10px 14px;" hidden>Bij moeilijk bereikbare of bijzondere situaties beoordelen we dit eerst persoonlijk, voordat we een passende offerte kunnen opstellen.</p>
+      </div>
       <div id="prijsBlokWoning"></div>
     </div>
 
     <div class="wizard-step" data-step="5" hidden data-applies-to="particulier">
       <h3 class="wizard-q">Extra werkzaamheden</h3>
-      <p class="wizard-sub">Optioneel — kies alles wat van toepassing is. Prijzen zijn incl. btw en tellen mee in uw prijsindicatie.</p>
+      <p class="wizard-sub" data-excludes-dienst="glasbewassing-particulier">Optioneel — kies alles wat van toepassing is. Prijzen zijn incl. btw en tellen mee in uw prijsindicatie.</p>
+      <p class="wizard-sub" data-requires-dienst="glasbewassing-particulier" hidden>Optioneel — laat weten of er nog iets bij mag, of vertel kort een bijzonderheid.</p>
       <div class="wizard-subsection" data-requires-dienst="periodiek" style="margin-bottom:14px;">
         <p class="prose" style="font-size:13px; background:var(--bg-soft); border-radius:10px; padding:10px 14px; margin:0;">Deze extra prijs geldt voor de schoonmaakbeurt waarvoor u nu een offerte aanvraagt — niet automatisch voor elke toekomstige beurt. Wilt u een extra werkzaamheid vaker laten uitvoeren, geef dat dan aan bij "Omschrijving" verderop, dan bespreken we dit graag met u.</p>
       </div>
-      <div class="counter-cards" id="extraCounters">
-        <div class="counter-card cb-hidden" data-dienst-for="grote-schoonmaak" data-extra-id="oven" data-price="35" data-eenheid="stuk" data-max="5">
+      <div class="wizard-subsection" data-excludes-dienst="glasbewassing-particulier">
+        <div class="counter-cards" id="extraCounters">
+          <div class="counter-card cb-hidden" data-dienst-for="grote-schoonmaak" data-extra-id="oven" data-price="35" data-eenheid="stuk" data-max="5">
       <div class="counter-info">
         <span class="counter-label">Oven binnenzijde</span>
         <span class="counter-included-note" hidden></span>
@@ -1000,6 +1113,7 @@
         <button type="button" class="counter-btn counter-plus" aria-label="Meer Specifieke ruimte extra grondig">+</button>
       </div>
     </div>
+        </div>
       </div>
       <div class="checkbox-cards" id="extraCheckboxes" style="margin-top:12px;">
         <label class="cb-card cb-hidden" data-dienst-for="oplevering"><input type="checkbox" class="extra-checkbox" value="Oven"><span>Oven</span></label>
@@ -1011,10 +1125,14 @@
       <label class="cb-card cb-hidden" data-dienst-for="oplevering"><input type="checkbox" class="extra-checkbox" value="Berging"><span>Berging</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="oplevering"><input type="checkbox" class="extra-checkbox" value="Extra sanitair"><span>Extra sanitair</span></label>
       <label class="cb-card cb-hidden" data-dienst-for="oplevering"><input type="checkbox" class="extra-checkbox" value="Extra controle vóór sleuteloverdracht"><span>Extra controle vóór sleuteloverdracht</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="glasbewassing-particulier"><input type="checkbox" class="extra-checkbox" value="Kozijnen meenemen"><span>Kozijnen meenemen</span></label>
+      <label class="cb-card cb-hidden" data-dienst-for="glasbewassing-particulier"><input type="checkbox" class="extra-checkbox" value="Vensterbanken meenemen"><span>Vensterbanken meenemen</span></label>
+      </div>
+      <div class="checkbox-cards" style="margin-top:12px;">
         <label class="cb-card" data-dienst-for="all"><input type="checkbox" id="extraAndersCheck"><span>Anders, namelijk… <em style="font-weight:400;">(prijs op maat)</em></span></label>
       </div>
       <div id="extraAndersWrap" style="margin-top:14px;" hidden>
-        <label for="extra_anders">Omschrijving</label>
+        <label for="extra_anders">Omschrijving / opmerkingen</label>
         <input id="extra_anders" name="extra_anders" type="text" placeholder="Vertel kort wat u bedoelt" disabled>
       </div>
       <div id="prijsBlokExtra" style="margin-top:18px;"></div>
@@ -1300,6 +1418,6 @@
   applyStoredConsent();
 })();
 </script>
-<script src="js/main.js?v=169" defer></script>
+<script src="js/main.js?v=171" defer></script>
 </body>
 </html>
