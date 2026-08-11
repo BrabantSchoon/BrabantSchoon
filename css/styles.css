@@ -95,17 +95,23 @@ body.home-hero main{padding-top:76px;}
 body.home-hero .hero-full-home{margin-top:-76px;}
 .nav{display:flex; align-items:center; justify-content:space-between; padding:14px 0; gap:20px;}
 .logo{flex-shrink:0;}
-.logo img{height:28px; width:auto;}
-/* Op smallere mobiele breedtes iets kleiner, zodat logo + CTA-knop +
-   hamburgermenu altijd naast elkaar blijven passen zonder dat het logo
-   (via flexbox-krimp i.c.m. de sitewide img{max-width:100%}-regel) buiten
-   proportie samengedrukt raakt. flex-shrink:0 hierboven voorkomt dat
-   sowieso al helemaal; deze kleinere maat is puur voor een comfortabele
-   pasvorm op smalle schermen. */
+.logo img{height:28px; width:auto; object-fit:contain;}
+/* Mobiele header: ~16px veilige ruimte links/rechts (i.p.v. de sitebrede
+   24px van .wrap), logo iets kleiner en compactere gaps/CTA-tekst, zodat
+   logo + "Offerte"-knop + hamburgermenu altijd naast elkaar passen zonder
+   dat het logo (via flexbox-krimp i.c.m. de sitewide img{max-width:100%}
+   -regel) buiten proportie samengedrukt raakt — flex-shrink:0 hierboven
+   voorkomt dat sowieso al helemaal, dit is puur voor een comfortabele
+   pasvorm. Uitsluitend van toepassing op de mobiele header; .wrap zelf
+   (elders op de site) blijft ongewijzigd op 24px.
+   Geen absolute positionering en geen negatieve margins — puur flex +
+   compacte, expliciete waarden. */
 @media(max-width:480px){
-  .logo img{height:23px;}
-  .nav{gap:12px;}
+  header.site-header .wrap{padding-left:16px; padding-right:16px;}
+  .logo img{height:21px;}
+  .nav{gap:8px;}
 }
+.cta-full-text{display:inline;}
 nav.links{display:none; align-items:center; gap:20px; font-size:14px; font-weight:500;}
 nav.links > a{text-decoration:none; color:var(--ink-soft); transition:color .15s; padding:8px 0;}
 nav.links > a:hover, nav.links > a.active{color:var(--navy);}
@@ -113,17 +119,21 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 .nav-actions{display:flex; align-items:center; gap:10px;}
 .phone-link{display:none; font-size:14px; font-weight:600; text-decoration:none; color:var(--navy);}
 @media(min-width:640px){.phone-link{display:inline;}}
-/* Compactere CTA-knop op smalle mobiele breedtes, zodat logo + knop +
-   hamburgermenu comfortabel naast elkaar blijven passen (i.p.v. de knop pas
-   bij gebrek aan ruimte te verbergen). */
-@media(max-width:480px){.nav-actions .btn-sm{padding:9px 14px; font-size:13px;}}
-/* Op zeer smalle schermen (~360px en smaller) is er alsnog niet genoeg
-   ruimte voor logo + "Offerte aanvragen"-knop + menu-icoon naast elkaar. De
-   knop staat ook al prominent in het mobiele menu zelf, dus we verbergen
-   hem hier pas als laatste redmiddel bij echt gebrek aan ruimte, i.p.v. de
-   tekst te laten afsnijden. */
-@media(max-width:360px){.nav-actions > a.btn{display:none;}}
-.menu-toggle{display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:10px; border:1px solid var(--line); background:#fff; cursor:pointer;}
+/* Compactere CTA op mobiel: alleen "Offerte" i.p.v. "Offerte aanvragen"
+   (bespaart aanzienlijk breedte), plus krappere padding — zodat logo + knop
+   + hamburgermenu ruim binnen het scherm blijven passen op alle geteste
+   breedtes (320\u2013430px), zonder de knop te hoeven verbergen. */
+@media(max-width:480px){
+  .cta-full-text{display:none;}
+  .nav-actions .btn-sm{padding:8px 12px; font-size:12.5px;}
+  .nav-actions{gap:8px;}
+}
+/* Uitsluitend nog als allerlaatste redmiddel op zeer smalle/oude toestellen
+   (kleiner dan 340px, bijv. sommige oudere 320px-schermen) waar zelfs de
+   verkorte knop niet meer past: de knop staat ook al prominent in het
+   mobiele menu zelf. Vanaf 340px blijft de knop overal zichtbaar. */
+@media(max-width:340px){.nav-actions > a.btn{display:none;}}
+.menu-toggle{display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:10px; border:1px solid var(--line); background:#fff; cursor:pointer; flex-shrink:0;}
 @media(min-width:900px){.menu-toggle{display:none;}}
 .menu-toggle svg{width:20px; height:20px;}
 
