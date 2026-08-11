@@ -55,6 +55,39 @@ if (document.readyState === 'loading') {
   const stepLabelEl = document.getElementById('wizardStepLabel');
   let current = 1;
 
+  // === Klantgerichte fasenvoortgang (Woning \u2192 Extra's \u2192 Gegevens \u2192
+  // Controleren) — een VISUELE groepering bovenop de bestaande technische
+  // stappen, alleen voor de particuliere flow. De technische stapnummers en
+  // -logica blijven ongewijzigd; dit vertaalt alleen welk nummer bij welke
+  // klantfase hoort. Selectiestappen (klanttype/dienst/pakket) en de
+  // zakelijke/VvE-stappen tellen niet mee als fase (null) — de balk blijft
+  // dan verborgen, precies zoals gevraagd.
+  const STEP_PHASE = { 1: null, 2: null, 3: null, 4: 'woning', 5: 'extras', 6: 'woning', 7: null, 8: null, 9: 'gegevens', 10: 'gegevens', 11: 'controleren' };
+  const PHASE_ORDER = ['woning', 'extras', 'gegevens', 'controleren'];
+  const PHASE_LABELS = { woning: 'Woning', extras: "Extra's", gegevens: 'Gegevens', controleren: 'Controleren' };
+  const phasesNav = document.getElementById('wizardPhases');
+  const phaseEls = phasesNav ? Array.from(phasesNav.querySelectorAll('.wizard-phase')) : [];
+  const phaseNowEl = document.getElementById('wizardPhaseNow');
+  const phaseNextEl = document.getElementById('wizardPhaseNext');
+  const phaseFillEl = document.getElementById('wizardPhaseFill');
+  function updatePhaseNav(stepNum) {
+    if (!phasesNav) return;
+    const phase = STEP_PHASE[stepNum];
+    if (!phase || currentKlanttype() !== 'particulier') { phasesNav.hidden = true; return; }
+    phasesNav.hidden = false;
+    const idx = PHASE_ORDER.indexOf(phase);
+    phaseEls.forEach(el => {
+      const p = el.getAttribute('data-phase');
+      const i = PHASE_ORDER.indexOf(p);
+      el.classList.toggle('is-done', i < idx);
+      el.classList.toggle('is-current', i === idx);
+    });
+    if (phaseNowEl) phaseNowEl.textContent = PHASE_LABELS[phase];
+    const next = PHASE_ORDER[idx + 1];
+    if (phaseNextEl) phaseNextEl.textContent = next ? ('Hierna: ' + PHASE_LABELS[next] + ' \u2192') : '';
+    if (phaseFillEl) phaseFillEl.style.width = (((idx + 1) / PHASE_ORDER.length) * 100) + '%';
+  }
+
   function currentStepEl() {
     return steps.find(s => parseInt(s.dataset.step, 10) === current);
   }
@@ -102,6 +135,7 @@ if (document.readyState === 'loading') {
     const pos = idx === -1 ? 1 : idx + 1;
     const totalAppl = appl.length || 1;
     fill.style.width = (pos / totalAppl * 100) + '%';
+    updatePhaseNav(stepNum);
     backBtn.hidden = pos === 1;
     nextBtn.hidden = pos === totalAppl;
     submitBtn.hidden = pos !== totalAppl;
@@ -266,6 +300,7 @@ if (document.readyState === 'loading') {
   const FREQ_ID_MAP = { 'Wekelijks': 'wekelijks', 'Iedere 2 weken': '2weken', 'Iedere 4 weken': '4weken' };
   const ingerichtNote = document.getElementById('ingerichtNote');
   const bouwrestenNote = document.getElementById('bouwrestenNote');
+  const glasBereikbaarheidNote = document.getElementById('glasBereikbaarheidNote');
 
   function getRadioValue(name) {
     const checked = form.querySelector(`input[name="${name}"]:checked:not(:disabled)`);
@@ -334,6 +369,15 @@ if (document.readyState === 'loading') {
       const regelsPeriodiek = [['Prijs per beurt', bedrag]];
       extraRegelsPeriodiek.forEach(r => regelsPeriodiek.push(r));
       return { opMaat: false, regels: regelsPeriodiek, totaal: bedrag + extraTotaalPeriodiek, perBeurt: true, vanaf: false };
+    }
+
+    if (slug === 'glasbewassing-particulier') {
+      // Nog geen vaste tarieven (zie brief) — altijd een prijs op maat,
+      // maar wel al met een duidelijke, klantvriendelijke boodschap i.p.v.
+      // stilte, zodra er genoeg bekend is om die te tonen.
+      const glasType = getRadioValue('glas_type');
+      if (!glasType) return null;
+      return { opMaat: true, reden: 'glasbewassing \u2014 hier zijn nog geen vaste tarieven voor' };
     }
 
     const dienstPrijzen = prijsData.eenmalig[slug];
@@ -510,10 +554,12 @@ if (document.readyState === 'loading') {
         const f = form.querySelector(`[name="${n}"]`);
         if (f) f.value = '';
       });
-      form.querySelectorAll('input[name="bewoond_leeg"], input[name="vervuilingsgraad"], input[name="frequentie_particulier"], input[name="woonoppervlakte_staffel"], input[name="verbouwing_type"], input[name="bouwresten"]').forEach(r => { r.checked = false; });
+      form.querySelectorAll('input[name="bewoond_leeg"], input[name="vervuilingsgraad"], input[name="frequentie_particulier"], input[name="woonoppervlakte_staffel"], input[name="verbouwing_type"], input[name="bouwresten"], input[name="glas_type"], input[name="glas_frequentie"], input[name="glas_verdieping"], input[name="glas_bereikbaarheid"]').forEach(r => { r.checked = false; });
+      ['glas_aantal'].forEach(n => { const f = form.querySelector(`[name="${n}"]`); if (f) f.value = ''; });
       applySubsections('');
       if (ingerichtNote) ingerichtNote.hidden = true;
       if (bouwrestenNote) bouwrestenNote.hidden = true;
+      if (glasBereikbaarheidNote) glasBereikbaarheidNote.hidden = true;
       updatePrijsIndicatie();
     }
 
@@ -559,6 +605,7 @@ if (document.readyState === 'loading') {
     // vorige zichtbaarheidsstatus.
     if (ingerichtNote) ingerichtNote.hidden = true;
     if (bouwrestenNote) bouwrestenNote.hidden = true;
+    if (glasBereikbaarheidNote) glasBereikbaarheidNote.hidden = true;
     syncExtraOptiesField();
     syncPakketNaamField();
     updatePrijsIndicatie();
@@ -641,9 +688,9 @@ if (document.readyState === 'loading') {
   }
 
   // Prijsafhankelijke velden: woonoppervlakte, vervuilingsgraad, frequentie
-  // (periodiek), bouwresten (na-verbouwing) — bij elke wijziging direct de
-  // prijsindicatie herberekenen.
-  form.querySelectorAll('input[name="woonoppervlakte_staffel"], input[name="vervuilingsgraad"], input[name="frequentie_particulier"], input[name="bouwresten"]').forEach(radio => {
+  // (periodiek), bouwresten (na-verbouwing), glas_type (glasbewassing) — bij
+  // elke wijziging direct de prijsindicatie herberekenen.
+  form.querySelectorAll('input[name="woonoppervlakte_staffel"], input[name="vervuilingsgraad"], input[name="frequentie_particulier"], input[name="bouwresten"], input[name="glas_type"]').forEach(radio => {
     radio.addEventListener('change', updatePrijsIndicatie);
   });
   // "Is de woning tijdens de schoonmaak leeg?" (alleen verhuisschoonmaak) —
@@ -661,6 +708,14 @@ if (document.readyState === 'loading') {
   form.querySelectorAll('input[name="bouwresten"]').forEach(radio => {
     radio.addEventListener('change', () => {
       if (bouwrestenNote) bouwrestenNote.hidden = radio.value !== 'Ja, er zijn hardnekkige bouwresten' || !radio.checked;
+    });
+  });
+  // "Zijn alle ramen normaal bereikbaar?" (alleen glasbewassing) — bij
+  // "Nee, moeilijk bereikbaar" een toelichting tonen dat we dit eerst
+  // beoordelen; de prijs is bij glasbewassing sowieso altijd op maat.
+  form.querySelectorAll('input[name="glas_bereikbaarheid"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      if (glasBereikbaarheidNote) glasBereikbaarheidNote.hidden = radio.value !== 'Nee, moeilijk bereikbaar' || !radio.checked;
     });
   });
 
@@ -761,8 +816,15 @@ if (document.readyState === 'loading') {
   if (preselectChangeBtn) {
     preselectChangeBtn.addEventListener('click', () => {
       if (preselectBox) preselectBox.hidden = true;
-      current = 2;
-      show(2, true);
+      // Gericht: is er al een pakket bekend, dan gaan we naar de pakketstap
+      // zélf (binnen dezelfde dienst) in plaats van helemaal terug naar de
+      // doelgroep- of dienstkeuze. Is er geen pakket (bijv. periodiek of
+      // glasbewassing), dan is de dienststap de meest gerichte stap. Vanaf
+      // de pakketstap blijft "Terug" gewoon beschikbaar als iemand alsnog
+      // een andere dienst wil kiezen.
+      const target = currentPakketId() ? 3 : 2;
+      current = target;
+      show(target, true);
     });
   }
 
@@ -806,6 +868,11 @@ if (document.readyState === 'loading') {
         ['Staat van de woning', getFieldValue('vervuilingsgraad')],
         ['Wat is er verbouwd', getFieldValue('verbouwing_type')],
         ['Hardnekkige bouwresten', getFieldValue('bouwresten')],
+        ['Glasbewassing: te reinigen', getFieldValue('glas_type')],
+        ['Glasbewassing: frequentie', getFieldValue('glas_frequentie')],
+        ['Aantal ramen/glasvlakken', getFieldValue('glas_aantal')],
+        ['Verdieping', getFieldValue('glas_verdieping')],
+        ['Bereikbaarheid', getFieldValue('glas_bereikbaarheid')],
         ['Gewenste frequentie', getFieldValue('frequentie_particulier')],
         ['Prijsindicatie', getFieldValue('prijsindicatie')]
       );
