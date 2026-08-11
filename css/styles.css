@@ -94,7 +94,18 @@ body.home-hero header.site-header{position:fixed; top:0; left:0; right:0; width:
 body.home-hero main{padding-top:76px;}
 body.home-hero .hero-full-home{margin-top:-76px;}
 .nav{display:flex; align-items:center; justify-content:space-between; padding:14px 0; gap:20px;}
+.logo{flex-shrink:0;}
 .logo img{height:28px; width:auto;}
+/* Op smallere mobiele breedtes iets kleiner, zodat logo + CTA-knop +
+   hamburgermenu altijd naast elkaar blijven passen zonder dat het logo
+   (via flexbox-krimp i.c.m. de sitewide img{max-width:100%}-regel) buiten
+   proportie samengedrukt raakt. flex-shrink:0 hierboven voorkomt dat
+   sowieso al helemaal; deze kleinere maat is puur voor een comfortabele
+   pasvorm op smalle schermen. */
+@media(max-width:480px){
+  .logo img{height:23px;}
+  .nav{gap:12px;}
+}
 nav.links{display:none; align-items:center; gap:20px; font-size:14px; font-weight:500;}
 nav.links > a{text-decoration:none; color:var(--ink-soft); transition:color .15s; padding:8px 0;}
 nav.links > a:hover, nav.links > a.active{color:var(--navy);}
@@ -102,10 +113,15 @@ nav.links > a:hover, nav.links > a.active{color:var(--navy);}
 .nav-actions{display:flex; align-items:center; gap:10px;}
 .phone-link{display:none; font-size:14px; font-weight:600; text-decoration:none; color:var(--navy);}
 @media(min-width:640px){.phone-link{display:inline;}}
-/* Op zeer smalle schermen (~360px en smaller) is er niet genoeg ruimte voor
-   logo + "Offerte aanvragen"-knop + menu-icoon naast elkaar. De knop staat
-   ook al prominent in het mobiele menu zelf, dus we verbergen hem hier pas
-   bij gebrek aan ruimte i.p.v. de tekst te laten afsnijden. */
+/* Compactere CTA-knop op smalle mobiele breedtes, zodat logo + knop +
+   hamburgermenu comfortabel naast elkaar blijven passen (i.p.v. de knop pas
+   bij gebrek aan ruimte te verbergen). */
+@media(max-width:480px){.nav-actions .btn-sm{padding:9px 14px; font-size:13px;}}
+/* Op zeer smalle schermen (~360px en smaller) is er alsnog niet genoeg
+   ruimte voor logo + "Offerte aanvragen"-knop + menu-icoon naast elkaar. De
+   knop staat ook al prominent in het mobiele menu zelf, dus we verbergen
+   hem hier pas als laatste redmiddel bij echt gebrek aan ruimte, i.p.v. de
+   tekst te laten afsnijden. */
 @media(max-width:360px){.nav-actions > a.btn{display:none;}}
 .menu-toggle{display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:10px; border:1px solid var(--line); background:#fff; cursor:pointer;}
 @media(min-width:900px){.menu-toggle{display:none;}}
@@ -628,6 +644,26 @@ section{padding:96px 0;}
 .prijstabel tbody tr{border-bottom:1px solid var(--line);}
 .prijstabel tbody tr:last-child{border-bottom:none;}
 .prijstabel tbody td{color:var(--ink);}
+.prijstabel-eenheid{font-size:11px; font-weight:500; color:var(--ink-soft);}
+
+/* Periodieke schoonmaak: op mobiel 3 kaarten (\u00e9\u00e9n per frequentie) i.p.v. de
+   tabel, zodat niemand horizontaal hoeft te scrollen en de
+   woonoppervlakte-kolom nooit buiten beeld valt. Desktop houdt de
+   overzichtelijke tabel. */
+.prijstabel-mobile-only{display:block;}
+.prijstabel-desktop-only{display:none;}
+@media(min-width:700px){
+  .prijstabel-mobile-only{display:none;}
+  .prijstabel-desktop-only{display:block;}
+}
+.periodiek-kaarten-wrap{display:flex; flex-direction:column; gap:14px; margin-top:22px;}
+.periodiek-kaart{border:1.5px solid var(--line); border-radius:var(--radius-sm); padding:16px 18px;}
+.periodiek-kaart-titel{font-size:16px; font-weight:800; color:var(--navy);}
+.periodiek-kaart-sub{font-size:12.5px; font-weight:600; color:var(--green); margin-top:2px;}
+.periodiek-kaart-rij{display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:8px 0; border-bottom:1px solid var(--line); font-size:14px;}
+.periodiek-kaart-rij:last-child{border-bottom:none;}
+.periodiek-kaart-rij span:first-child{color:var(--ink-soft); font-weight:600;}
+.periodiek-kaart-rij span:last-child{color:var(--ink); font-weight:700; text-align:right; white-space:nowrap;}
 
 /* ---------- "Bekijk alle werkzaamheden" uitklapper (particuliere detailpagina's) ---------- */
 .onderdelen-more{margin-top:12px;}
