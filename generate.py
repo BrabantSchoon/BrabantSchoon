@@ -77,7 +77,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "172"
+ASSET_VERSION = "173"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -1886,6 +1886,12 @@ def prijstabel_eenmalig_html(slug, pakket_ids, pakket_namen):
       <p class="prose" style="font-size:12.5px; margin-top:10px;">Prijsindicaties incl. 21% btw, bij normale vervuiling. Bij sterk vervuilde woningen geldt een toeslag van {VERVUILING_TOESLAG_PERCENTAGE}% op de pakketprijs; bij zeer sterke vervuiling, bijzondere situaties of een woning boven 150 m\u00b2 stellen we een prijs op maat op. Vraag een offerte aan voor een prijsindicatie op basis van uw eigen situatie.</p>'''
 
 def prijstabel_periodiek_html():
+    # Desktop: overzichtelijke tabel (ongewijzigd, staat toch al goed op een
+    # breed scherm). Mobiel: 3 kaarten (\u00e9\u00e9n per frequentie) i.p.v. de tabel
+    # \u2014 zo hoeft niemand op een klein scherm horizontaal te scrollen en
+    # valt de woonoppervlakte-kolom nooit buiten beeld. Beide gebruiken
+    # dezelfde bestaande PERIODIEK_PRIJZEN-data; er wordt niets dubbel
+    # bijgehouden en er verandert geen enkel bedrag.
     header_cells = "".join(f"<th>{lbl}</th>" for lbl in ["Wekelijks", "Iedere 2 weken", "Iedere 4 weken"])
     rows = []
     for staffel in STAFFEL_OPTIES:
@@ -1893,15 +1899,37 @@ def prijstabel_periodiek_html():
             rows.append(f'<tr><td>{STAFFEL_LABELS[staffel]}</td><td colspan="3">Prijs op maat</td></tr>')
             continue
         prijzen = PERIODIEK_PRIJZEN[staffel]
-        cells = "".join(f"<td>\u20ac{prijzen[k]}</td>" for k in ("wekelijks", "2weken", "4weken"))
+        cells = "".join(f"<td>\u20ac{prijzen[k]} <span class=\"prijstabel-eenheid\">per beurt</span></td>" for k in ("wekelijks", "2weken", "4weken"))
         rows.append(f"<tr><td>{STAFFEL_LABELS[staffel]}</td>{cells}</tr>")
-    return f'''<div class="prijstabel-wrap reveal">
+    desktop_table = f'''<div class="prijstabel-wrap prijstabel-desktop-only reveal">
         <table class="prijstabel">
           <thead><tr><th>Woonoppervlakte</th>{header_cells}</tr></thead>
           <tbody>{"".join(rows)}</tbody>
         </table>
-      </div>
-      <p class="prose" style="font-size:12.5px; margin-top:10px;">Indicatieve prijs per schoonmaakbeurt, incl. 21% btw. Bij een woning boven 150 m\u00b2 stellen we een prijs op maat op. Vraag een offerte aan voor een prijsindicatie op basis van uw eigen situatie.</p>'''
+      </div>'''
+
+    freq_labels = {"wekelijks": "Wekelijks", "2weken": "Iedere 2 weken", "4weken": "Iedere 4 weken"}
+    freq_sub = {"wekelijks": "Voordeligste prijs per beurt", "2weken": "", "4weken": ""}
+    cards = []
+    for k in ("wekelijks", "2weken", "4weken"):
+        rijen = "".join(
+            f'<div class="periodiek-kaart-rij"><span>{STAFFEL_LABELS[s]}</span><span>\u20ac{PERIODIEK_PRIJZEN[s][k]} <span class="prijstabel-eenheid">per beurt</span></span></div>'
+            for s in STAFFEL_OPTIES if s != "boven150"
+        )
+        rijen += '<div class="periodiek-kaart-rij"><span>Boven 150 m\u00b2</span><span>Prijs op maat</span></div>'
+        sub = f'<p class="periodiek-kaart-sub">{freq_sub[k]}</p>' if freq_sub[k] else ""
+        cards.append(f'''<div class="periodiek-kaart reveal">
+        <h3 class="periodiek-kaart-titel">{freq_labels[k]}</h3>
+        {sub}
+        {rijen}
+      </div>''')
+    mobile_cards = f'''<div class="periodiek-kaarten-wrap prijstabel-mobile-only">
+        {"".join(cards)}
+      </div>'''
+
+    return f'''{desktop_table}
+      {mobile_cards}
+      <p class="prose" style="font-size:12.5px; margin-top:10px;">Prijs per schoonmaakbeurt, incl. 21% btw. Hoe vaker wij komen, hoe voordeliger de prijs per schoonmaakbeurt. Bij een woning boven 150 m\u00b2 stellen we een prijs op maat op. Vraag een offerte aan voor een prijsindicatie op basis van uw eigen situatie.</p>'''
 
 def build_particulier_detail_pages():
     base = ""
