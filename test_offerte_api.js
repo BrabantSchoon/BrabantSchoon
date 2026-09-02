@@ -12,7 +12,12 @@
 // 6. Particuliere flow: dienstSlug !== 'periodiek-zakelijk' => geen calc-sectie.
 const assert = require('assert');
 const api = require('./api/offerte-aanvraag.js');
-const { berekenInterneCalculatie, bouwEmailTekst, bouwOnderwerp, lijktOpBot, valideerVerplichteVelden, CONFIG } = api._internal;
+// 10. WEB3FORMS_ACCESS_KEY komt uitsluitend uit process.env (nooit hardcoded) --
+//     de handler faalt veilig (geen "ok:true", geen secret in respons/log) als
+//     de omgevingsvariabele ontbreekt, en verstuurt normaal zodra hij aanwezig
+//     is. Deze test gebruikt uitsluitend een verzonnen testwaarde, nooit de
+//     echte productiesleutel.
+const { berekenInterneCalculatie, bouwEmailTekst, bouwOnderwerp, lijktOpBot, valideerVerplichteVelden, getWeb3FormsAccessKey, CONFIG } = api._internal;
 
 const garageVelden = [
   ['Klanttype', 'Bedrijf'],
@@ -260,4 +265,87 @@ console.log('\n=== Test 9: e-mailtekst bij meerdere locaties bevat waarschuwing 
   console.log('OK: waarschuwing bij meerdere locaties aanwezig.');
 }
 
-console.log('\nAlle tests geslaagd.');
+console.log('\n=== Test 10: WEB3FORMS_ACCESS_KEY uitsluitend uit process.env, nooit hardcoded ===');
+{
+  // Regressiebewaking: CONFIG mag nooit weer een echte sleutel bevatten.
+  assert.ok(!('WEB3FORMS_ACCESS_KEY' in CONFIG), 'CONFIG mag geen WEB3FORMS_ACCESS_KEY-veld hebben -- die hoort alleen in process.env te staan');
+  const origKey = process.env.WEB3FORMS_ACCESS_KEY;
+  try {
+    delete process.env.WEB3FORMS_ACCESS_KEY;
+    assert.strictEqual(getWeb3FormsAccessKey(), null, 'ontbrekende env var -> null');
+    process.env.WEB3FORMS_ACCESS_KEY = '   ';
+    assert.strictEqual(getWeb3FormsAccessKey(), null, 'lege/whitespace env var -> null');
+    process.env.WEB3FORMS_ACCESS_KEY = 'test-fake-key-niet-echt-1234';
+    assert.strictEqual(getWeb3FormsAccessKey(), 'test-fake-key-niet-echt-1234', 'aanwezige env var (getrimd) wordt teruggegeven');
+    console.log('OK: getWeb3FormsAccessKey() gedraagt zich correct (null bij ontbreken/leeg, waarde bij aanwezigheid).');
+  } finally {
+    if (origKey === undefined) delete process.env.WEB3FORMS_ACCESS_KEY; else process.env.WEB3FORMS_ACCESS_KEY = origKey;
+  }
+}
+
+function mockRes() {
+  const res = { statusCode: null, body: null };
+  res.status = (code) => { res.statusCode = code; return res; };
+  res.json = (obj) => { res.body = obj; return res; };
+  return res;
+}
+
+async function testHandlerZonderAccessKey() {
+  console.log('\n=== Test 11: handler faalt veilig zonder WEB3FORMS_ACCESS_KEY (geen "ok:true", geen secret-lek) ===');
+  const origKey = process.env.WEB3FORMS_ACCESS_KEY;
+  const origConsoleError = console.error;
+  const loggedLines = [];
+  console.error = (...args) => { loggedLines.push(args.join(' ')); };
+  try {
+    delete process.env.WEB3FORMS_ACCESS_KEY;
+    const req = { method: 'POST', body: JSON.stringify(garagePayload) };
+    const res = mockRes();
+    await api(req, res);
+    console.log('Statuscode zonder access key (verwacht 500):', res.statusCode);
+    console.log('Response body:', JSON.stringify(res.body));
+    assert.strictEqual(res.statusCode, 500);
+    assert.strictEqual(res.body.ok, false, 'mag NOOIT ok:true teruggeven wanneer er geen access key is -- de aanvraag is niet verzonden');
+    assert.strictEqual(res.body.error, 'server_misconfigured');
+    const loggedText = loggedLines.join('\n');
+    assert.ok(loggedText.includes('WEB3FORMS_ACCESS_KEY ontbreekt'), 'log moet duidelijk maken WAT ontbreekt');
+    assert.ok(!/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i.test(loggedText), 'log mag nergens een sleutelwaarde (UUID-vormig) bevatten');
+    console.log('OK: handler faalt veilig (500/ok:false/server_misconfigured), logt alleen dat de variabele ontbreekt, nooit een waarde.');
+  } finally {
+    console.error = origConsoleError;
+    if (origKey === undefined) delete process.env.WEB3FORMS_ACCESS_KEY; else process.env.WEB3FORMS_ACCESS_KEY = origKey;
+  }
+}
+
+async function testHandlerMetAccessKey() {
+  console.log('\n=== Test 12: handler verstuurt normaal zodra WEB3FORMS_ACCESS_KEY aanwezig is (fetch gemockt, nooit een echt netwerkverzoek) ===');
+  const origKey = process.env.WEB3FORMS_ACCESS_KEY;
+  const origFetch = global.fetch;
+  try {
+    process.env.WEB3FORMS_ACCESS_KEY = 'test-fake-key-niet-echt-1234';
+    let capturedFetchBody = null;
+    global.fetch = (url, opts) => {
+      capturedFetchBody = JSON.parse(opts.body);
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({ success: true }) });
+    };
+    const req = { method: 'POST', body: JSON.stringify(garagePayload) };
+    const res = mockRes();
+    await api(req, res);
+    console.log('Statuscode met (test-)access key (verwacht 200):', res.statusCode);
+    assert.strictEqual(res.statusCode, 200);
+    assert.deepStrictEqual(res.body, { ok: true });
+    assert.strictEqual(capturedFetchBody.access_key, 'test-fake-key-niet-echt-1234');
+    console.log('OK: bij aanwezige access key verloopt verzending normaal; de (test-)sleutel gaat alleen naar Web3Forms, nooit terug naar de bezoeker (respons bevat alleen {ok:true}).');
+  } finally {
+    global.fetch = origFetch;
+    if (origKey === undefined) delete process.env.WEB3FORMS_ACCESS_KEY; else process.env.WEB3FORMS_ACCESS_KEY = origKey;
+  }
+}
+
+(async () => {
+  await testHandlerZonderAccessKey();
+  await testHandlerMetAccessKey();
+  console.log('\nAlle tests geslaagd.');
+})().catch((err) => {
+  console.error(err);
+  process.exitCode = 1;
+});

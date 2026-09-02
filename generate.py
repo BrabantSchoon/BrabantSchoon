@@ -77,7 +77,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "176"
+ASSET_VERSION = "177"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -429,11 +429,10 @@ def render_footer(base):
       <div class="footer-col footer-form-col">
         <h4>Snel contact aanvragen</h4>
         <p class="footer-form-intro">Laat uw naam en telefoonnummer achter. Wij nemen doorgaans binnen \u00e9\u00e9n werkdag contact met u op.</p>
-        <form name="footer-terugbel" method="POST" action="https://api.web3forms.com/submit" class="footer-form">
-          <input type="hidden" name="access_key" value="abc98c0d-af16-42b0-ae5c-3337f35e5299">
-          <input type="hidden" name="subject" value="Terugbelverzoek via de footer (geen volledige offerteaanvraag)">
-          <input type="hidden" name="redirect" value="{SITE_URL}/thanks.html">
+        <noscript><p class="prose" style="background:#FFF7E6; border:1px solid #F0D9A0; border-radius:12px; padding:12px 16px; margin-bottom:12px; font-size:13px;">Dit formulier werkt het best met JavaScript ingeschakeld. Lukt dat niet? Bel of mail ons gerust rechtstreeks: <a href="tel:{PHONE_TEL}" style="color:var(--link); font-weight:600;">{PHONE_DISPLAY}</a> of <a href="mailto:{EMAIL}" style="color:var(--link); font-weight:600;">{EMAIL}</a>.</p></noscript>
+        <form name="footer-terugbel" method="POST" action="/api/contact-aanvraag" class="footer-form" id="footerTerugbelForm">
           <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
+          <input type="hidden" name="form_rendered_at" id="footerFormRenderedAtField" value="">
           <div class="footer-form-row">
             <input type="text" name="naam" placeholder="Naam" required>
             <input type="tel" name="telefoon" placeholder="Telefoonnummer" required pattern="[0-9+\\-\\s()]{{6,}}" title="Gebruik alleen cijfers, spaties en +/-/()">
@@ -444,6 +443,7 @@ def render_footer(base):
           </div>
           <textarea name="bericht" placeholder="Bericht (optioneel)" rows="2"></textarea>
           <button type="submit" class="btn btn-primary footer-form-submit">Laat mij terugbellen</button>
+          <p class="wizard-status" id="footerFormStatus" aria-live="polite"></p>
         </form>
       </div>
     </div>

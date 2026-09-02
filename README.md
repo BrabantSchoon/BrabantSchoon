@@ -1,7 +1,7 @@
-# BrabantSchoon — website
+# Brabantschoon — website
 
 Broncode van [brabantschoon.nl](https://www.brabantschoon.nl), een statische website
-voor schoonmaakbedrijf BrabantSchoon (gevestigd in Helmond, actief in Brabant).
+voor schoonmaakbedrijf Brabantschoon (gevestigd in Helmond, actief in Brabant).
 
 ## Hosting & deployment
 
@@ -115,35 +115,80 @@ gebruikt tijdelijk nog een oudere afbeelding, in afwachting van een passend beel
 
 ## Formulieren
 
-Het compacte contactformulier (`contact.html` + het formulier in de footer) stuurt
-rechtstreeks naar **[Web3Forms](https://web3forms.com)**
-(`https://api.web3forms.com/submit`) — een gratis, serverless formulierdienst zonder
-eigen backend nodig. De access key staat als verborgen veld in het formulier zelf.
-Bij een geslaagde inzending wordt de bezoeker doorgestuurd naar `thanks.html`.
+Alle formulieren op de site sturen **server-side** naar
+**[Web3Forms](https://web3forms.com)** (`https://api.web3forms.com/submit`) — nooit
+rechtstreeks vanuit de browser. De Web3Forms access key staat dus nergens in publieke
+HTML of JavaScript; hij bestaat alleen server-side, als omgevingsvariabele (zie
+"Secrets & environment variables" hieronder).
 
-De **offertewizard** (`offerte.html`) werkt sinds de zakelijke-calculator-uitbreiding
-anders: die stuurt géén rechtstreekse form-POST naar Web3Forms meer, maar een
-`fetch()` met JSON naar het eigen endpoint **`/api/offerte-aanvraag`**
-(`api/offerte-aanvraag.js`, een Vercel Serverless Function — vereist geen eigen
-build-stap, elk bestand onder `/api/` wordt automatisch een endpoint). Reden: alleen
-zo kan (1) de e-mail conditioneel worden opgebouwd — nooit lege/irrelevante velden,
-nooit particuliere woningvelden in een zakelijke aanvraag of andersom — en (2) de
-interne tijd-/kostprijs-/margecalculatie voor periodieke bedrijfsschoonmaak
-volledig server-side blijven, zodat een bezoeker deze nooit via devtools of
-netwerkverkeer kan achterhalen. De browser levert alleen de ruwe invoer aan
-(oppervlakte, ruimtes, vervuiling, frequentie); het endpoint berekent, bouwt de
-e-mailtekst en stuurt die zelf, server-to-server, door naar Web3Forms (met dezelfde
-access key als het contactformulier). Zie de commentaren bovenin
-`api/offerte-aanvraag.js` voor de volledige `CONFIG` (uurtarief, marge, minimumprijs,
-reistijd, materiaalkosten, tijdmodel per ruimte/vervuilingsgraad) — elke financiële
-waarde die nog niet door de ondernemer is bevestigd, staat daar expliciet gemarkeerd
-als `// TE BEVESTIGEN`.
+- **Compacte contactformulier** (`contact.html` + hetzelfde formulier in de footer op
+  elke pagina, `id="footerTerugbelForm"`): de browser doet een `fetch()` met JSON naar
+  het eigen endpoint **`/api/contact-aanvraag`** (`api/contact-aanvraag.js`, een
+  Vercel Serverless Function). Dat endpoint valideert de verplichte velden
+  (naam/telefoon/e-mail), past dezelfde honeypot-/timing-gebaseerde botdetectie toe
+  als de offertewizard, bouwt de e-mailtekst conditioneel op (geen lege
+  bedrijfsnaam-/berichtregel) en stuurt die zelf, server-to-server, door naar
+  Web3Forms. De client-side logica staat in `initFooterForm()` in `js/main.js`. Zonder
+  JavaScript toont het formulier een `<noscript>`-melding met een verwijzing naar
+  telefoon/e-mail — er is bewust geen non-JS-fallback, net als bij de offertewizard.
+  Bij een geslaagde inzending wordt de bezoeker doorgestuurd naar `thanks.html`.
+- **Offertewizard** (`offerte.html`): stuurt een `fetch()` met JSON naar het eigen
+  endpoint **`/api/offerte-aanvraag`** (`api/offerte-aanvraag.js`). Reden: alleen zo
+  kan (1) de e-mail conditioneel worden opgebouwd — nooit lege/irrelevante velden,
+  nooit particuliere woningvelden in een zakelijke aanvraag of andersom — en (2) de
+  interne tijd-/kostprijs-/margecalculatie voor periodieke bedrijfsschoonmaak
+  volledig server-side blijven, zodat een bezoeker deze nooit via devtools of
+  netwerkverkeer kan achterhalen. De browser levert alleen de ruwe invoer aan
+  (oppervlakte, ruimtes, vervuiling, frequentie); het endpoint berekent, bouwt de
+  e-mailtekst en stuurt die zelf, server-to-server, door naar Web3Forms. Zie de
+  commentaren bovenin `api/offerte-aanvraag.js` voor de volledige `CONFIG` (uurtarief,
+  marge, minimumprijs, reistijd, materiaalkosten, tijdmodel per ruimte/
+  vervuilingsgraad) — elke financiële waarde die nog niet door de ondernemer is
+  bevestigd, staat daar expliciet gemarkeerd als `// TE BEVESTIGEN`.
+
+`api/contact-aanvraag.js` en `api/offerte-aanvraag.js` zijn bewust twee zelfstandige
+bestanden (geen gedeelde module) — zo loopt een wijziging aan het ene endpoint nooit
+risico voor het andere, al getest, endpoint. Ze delen wel hetzelfde patroon: access
+key uitsluitend uit `process.env`, dezelfde honeypot-/timing-botdetectie, en dezelfde
+veilige-faalwijze wanneer de omgevingsvariabele ontbreekt.
+
+## Secrets & environment variables
+
+Geen van beide endpoints (`api/offerte-aanvraag.js`, `api/contact-aanvraag.js`) bevat
+een hardcoded Web3Forms access key. Beide lezen hem bij elk verzoek uit dezelfde
+Vercel-omgevingsvariabele **`WEB3FORMS_ACCESS_KEY`** (zie `getWeb3FormsAccessKey()` in
+elk bestand). Instellen doet u in het Vercel-dashboard: **Project Settings →
+Environment Variables**, naam `WEB3FORMS_ACCESS_KEY`, waarde = uw Web3Forms access
+key, voor de omgeving(en) waar u hem nodig heeft (minimaal Production; ook Preview
+als u pull-request-previews wilt testen). Ontbreekt deze variabele, dan retourneert
+elk endpoint een generieke `500`-foutmelding (`{ ok: false, error:
+"server_misconfigured" }`) en wordt er **niets** verstuurd — de bezoeker krijgt nooit
+een valse succesmelding, en er wordt nooit een sleutelwaarde gelogd.
+
+Voor lokaal testen: kopieer `.env.example` naar `.env` en vul uw eigen key in. `.env`
+staat in `.gitignore` en wordt dus nooit meegecommit. (De site zelf heeft hier niets
+aan nodig — `python3 -m http.server` gebruikt geen `.env`; dit is alleen relevant
+wanneer u `api/offerte-aanvraag.js` of `api/contact-aanvraag.js` lokaal via Node
+aanroept, zie "Lokaal testen" hieronder.)
+
+**Geen client-side key meer, ook niet in het contact-/footerformulier.** Sinds deze
+ronde (zie `CHANGELOG-41.md`) stuurt ook dát formulier server-side via
+`/api/contact-aanvraag`; de eerdere nuance dat de access key nog rechtstreeks in de
+gegenereerde HTML stond, is niet langer van toepassing — de key staat nergens meer in
+publieke broncode, alleen in de Vercel-omgevingsvariabele. Bij het roteren van de key
+hoeft u dus alleen `WEB3FORMS_ACCESS_KEY` in Vercel bij te werken en een nieuwe
+deployment te triggeren; er is geen aparte stap meer nodig voor `generate.py` of de
+gegenereerde HTML. Web3Forms biedt daarnaast een "Restrict to Domain"-instelling die
+een access key aan één of meer domeinen koppelt (submissions vanaf een ander domein
+worden dan geweigerd) — dit is op dit moment een **Pro-only functie** bij Web3Forms
+(vereist een betaald abonnement), maar het overwegen waard als extra laag bovenop de
+server-side aanpak hierboven.
 
 ## SEO-opbouw
 
 - **Title & meta description**: uniek per pagina. Algemene pagina's (homepage,
   diensten-overzicht, werkgebied-overzicht, de 7 losse dienstpagina's) positioneren
-  BrabantSchoon Brabant-breed. De 13 lokale `schoonmaakbedrijf-{plaats}`-pagina's
+  Brabantschoon Brabant-breed. De 13 lokale `schoonmaakbedrijf-{plaats}`-pagina's
   richten zich juist bewust op die ene plaats — dat is waar ze op moeten scoren.
 - **Canonical tags**: op elke pagina, gegenereerd vanuit `SITE_URL` + het pad.
 - **Open Graph / Twitter Card**: op elke pagina, met `images/og-image.png` als
@@ -182,3 +227,12 @@ naar het endpoint zou gaan) end-to-end simuleren zonder een browser, dan kan dat
 [jsdom](https://www.npmjs.com/package/jsdom) (`npm install jsdom`) door
 `offerte.html` + `js/main.js` in een virtuele DOM te laden en de wizard te bedienen
 zoals een bezoeker dat zou doen.
+
+`test_offerte_api.js` (`node test_offerte_api.js`) en `test_contact_api.js`
+(`node test_contact_api.js`) draaien zonder jsdom en zonder een echte
+`WEB3FORMS_ACCESS_KEY` nodig te hebben — ze testen onder andere expliciet dat het
+betreffende endpoint veilig faalt (geen "verzonden"-melding, geen secret in de
+foutmelding/log) wanneer die omgevingsvariabele ontbreekt, en dat verzending normaal
+verloopt zodra hij aanwezig is (met een verzonnen testwaarde en een gemockte `fetch`,
+nooit een echt netwerkverzoek naar Web3Forms). `test_wizard.js` (`npm install jsdom`
+vereist) simuleert de complete offertewizard-flow end-to-end in een virtuele DOM.

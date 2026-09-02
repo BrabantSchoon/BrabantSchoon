@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="css/styles.css?v=176">
+<link rel="stylesheet" href="css/styles.css?v=177">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
@@ -179,11 +179,10 @@
       <div class="footer-col footer-form-col">
         <h4>Snel contact aanvragen</h4>
         <p class="footer-form-intro">Laat uw naam en telefoonnummer achter. Wij nemen doorgaans binnen één werkdag contact met u op.</p>
-        <form name="footer-terugbel" method="POST" action="https://api.web3forms.com/submit" class="footer-form">
-          <input type="hidden" name="access_key" value="abc98c0d-af16-42b0-ae5c-3337f35e5299">
-          <input type="hidden" name="subject" value="Terugbelverzoek via de footer (geen volledige offerteaanvraag)">
-          <input type="hidden" name="redirect" value="https://www.brabantschoon.nl/thanks.html">
+        <noscript><p class="prose" style="background:#FFF7E6; border:1px solid #F0D9A0; border-radius:12px; padding:12px 16px; margin-bottom:12px; font-size:13px;">Dit formulier werkt het best met JavaScript ingeschakeld. Lukt dat niet? Bel of mail ons gerust rechtstreeks: <a href="tel:+31492313050" style="color:var(--link); font-weight:600;">0492 - 31 30 50</a> of <a href="mailto:info@brabantschoon.nl" style="color:var(--link); font-weight:600;">info@brabantschoon.nl</a>.</p></noscript>
+        <form name="footer-terugbel" method="POST" action="/api/contact-aanvraag" class="footer-form" id="footerTerugbelForm">
           <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
+          <input type="hidden" name="form_rendered_at" id="footerFormRenderedAtField" value="">
           <div class="footer-form-row">
             <input type="text" name="naam" placeholder="Naam" required>
             <input type="tel" name="telefoon" placeholder="Telefoonnummer" required pattern="[0-9+\-\s()]{6,}" title="Gebruik alleen cijfers, spaties en +/-/()">
@@ -194,6 +193,7 @@
           </div>
           <textarea name="bericht" placeholder="Bericht (optioneel)" rows="2"></textarea>
           <button type="submit" class="btn btn-primary footer-form-submit">Laat mij terugbellen</button>
+          <p class="wizard-status" id="footerFormStatus" aria-live="polite"></p>
         </form>
       </div>
     </div>
@@ -285,6 +285,6 @@
   applyStoredConsent();
 })();
 </script>
-<script src="js/main.js?v=176" defer></script>
+<script src="js/main.js?v=177" defer></script>
 </body>
 </html>

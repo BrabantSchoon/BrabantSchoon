@@ -117,9 +117,28 @@ const CONFIG = {
   // meerstaps-wizard in <2,5s in.
   MIN_FILL_TIME_MS: 2500,
 
-  WEB3FORMS_ACCESS_KEY: "abc98c0d-af16-42b0-ae5c-3337f35e5299",
+  // BELANGRIJK — GEEN secret hier: de Web3Forms access key staat NIET meer in de
+  // broncode. Deze functie leest hem bij elk verzoek uit de Vercel-omgevings-
+  // variabele `WEB3FORMS_ACCESS_KEY` (zie getWeb3FormsAccessKey() hieronder) en
+  // faalt veilig — zonder de sleutel te loggen of te versturen — wanneer die
+  // variabele niet is ingesteld. Zie README.md ("Secrets & environment variables")
+  // voor hoe u deze in Vercel instelt.
   WEB3FORMS_ENDPOINT: "https://api.web3forms.com/submit",
 };
+
+// =================================================================
+// WEB3FORMS ACCESS KEY — uit environment variable, nooit hardcoded
+// =================================================================
+// Geeft de access key terug, of null wanneer de omgevingsvariabele ontbreekt of
+// leeg is. Bewust een aparte functie (i.p.v. rechtstreeks `process.env...` overal
+// in de code) zodat er precies één plek is die ooit met de echte sleutel omgaat,
+// en zodat tests dit gedrag kunnen simuleren zonder een echte sleutel nodig te
+// hebben (zie test_offerte_api.js — die zet/verwijdert alleen de omgevings-
+// variabele, leest of logt nooit een echte waarde).
+function getWeb3FormsAccessKey() {
+  const key = process.env.WEB3FORMS_ACCESS_KEY;
+  return typeof key === "string" && key.trim().length > 0 ? key.trim() : null;
+}
 
 // Labels die bij CONTACTGEGEVENS horen (en dus NIET nogmaals in de
 // AANVRAAG-sectie mogen verschijnen) — moet als set overeenkomen met de
@@ -362,9 +381,9 @@ function valideerVerplichteVelden(payload) {
 // VERSTUREN VIA WEB3FORMS (server-to-server — de klant ziet dit verzoek
 // nooit, in tegenstelling tot de oude rechtstreekse browser-POST)
 // =================================================================
-async function verstuurNaarWeb3Forms({ subject, message, replyto, fromName }) {
+async function verstuurNaarWeb3Forms({ subject, message, replyto, fromName, accessKey }) {
   const body = {
-    access_key: CONFIG.WEB3FORMS_ACCESS_KEY,
+    access_key: accessKey,
     subject,
     from_name: fromName || "Brabantschoon website",
     message,
@@ -412,6 +431,19 @@ module.exports = async (req, res) => {
     return;
   }
 
+  // Configuratiecontrole: zonder access key kan er sowieso niets verstuurd
+  // worden. Faal hier expliciet en veilig, VOORDAT er iets geprobeerd wordt —
+  // nooit stilzwijgend doen alsof de aanvraag is verzonden wanneer dat niet zo
+  // is. Log alleen dat de variabele ontbreekt, nooit een sleutelwaarde (die is
+  // er in dit geval per definitie ook niet). Geen foutdetails naar de bezoeker
+  // — alleen een generieke foutcode, net als bij een mislukte verzending.
+  const accessKey = getWeb3FormsAccessKey();
+  if (!accessKey) {
+    console.error("offerte-aanvraag: WEB3FORMS_ACCESS_KEY ontbreekt (omgevingsvariabele niet ingesteld) — aanvraag kan niet worden verstuurd.");
+    res.status(500).json({ ok: false, error: "server_misconfigured" });
+    return;
+  }
+
   try {
     const subject = bouwOnderwerp(payload);
     const message = bouwEmailTekst(payload);
@@ -420,12 +452,17 @@ module.exports = async (req, res) => {
       message,
       replyto: payload.email,
       fromName: payload.bedrijfsnaam || payload.naam,
+      accessKey,
     });
     res.status(200).json({ ok: true });
   } catch (err) {
+    // Nooit err.message (kan Web3Forms-responsdetails bevatten) naar de
+    // bezoeker doorgeven — alleen een generieke foutcode.
     res.status(502).json({ ok: false, error: "send_failed" });
   }
 };
 
 // Alleen voor lokale tests (zie test_offerte_api.js) — geen effect op Vercel.
-module.exports._internal = { berekenInterneCalculatie, bouwEmailTekst, bouwOnderwerp, lijktOpBot, valideerVerplichteVelden, CONFIG };
+// Bevat GEEN secret: getWeb3FormsAccessKey zelf wordt geëxporteerd (leest bij
+// aanroep uit process.env), niet een reeds-uitgelezen sleutelwaarde.
+module.exports._internal = { berekenInterneCalculatie, bouwEmailTekst, bouwOnderwerp, lijktOpBot, valideerVerplichteVelden, getWeb3FormsAccessKey, CONFIG };

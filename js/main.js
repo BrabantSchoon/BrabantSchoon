@@ -39,6 +39,68 @@ if (document.readyState === 'loading') {
   safeInitPakketCards();
 }
 
+// Footer-terugbelformulier (op elke pagina aanwezig, via render_footer() in
+// generate.py). Stuurde vroeger rechtstreeks (native form-POST) naar
+// Web3Forms met een in de HTML zichtbare access key; verstuurt nu, net als
+// de offertewizard sinds de zakelijke-calculator-uitbreiding, een JSON
+// fetch() naar een eigen server-side endpoint (/api/contact-aanvraag) zodat
+// de Web3Forms access key nergens meer in publieke HTML/JS hoeft te staan.
+// UX/validatie/honeypot blijven functioneel hetzelfde: dezelfde verplichte
+// velden (naam/telefoon/e-mail), dezelfde HTML5-constraint-validatie (geen
+// `novalidate`, dus de browser blokkeert een ongeldige inzending zoals
+// voorheen), dezelfde onzichtbare honeypot-checkbox. Bij succes dezelfde
+// doorverwijzing naar thanks.html als voorheen (nu via JS in plaats van
+// Web3Forms' eigen `redirect`-veld, dat niet meer nodig is).
+function initFooterForm() {
+  const form = document.getElementById('footerTerugbelForm');
+  if (!form) return;
+  const renderedAtField = document.getElementById('footerFormRenderedAtField');
+  if (renderedAtField) renderedAtField.value = String(Date.now());
+  const statusEl = document.getElementById('footerFormStatus');
+  const submitBtn = form.querySelector('.footer-form-submit');
+  const submitLabelDefault = submitBtn ? submitBtn.textContent : '';
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (form.dataset.submitting === '1') return;
+    // Native HTML5-validatie (required/pattern) is al gecontroleerd voordat
+    // dit submit-event vuurt (geen novalidate op het formulier) -- exact
+    // hetzelfde gedrag als bij de vroegere native form-POST.
+    const botcheckInput = form.querySelector('input[name="botcheck"]');
+    const payload = {
+      naam: (form.querySelector('input[name="naam"]') || {}).value || '',
+      telefoon: (form.querySelector('input[name="telefoon"]') || {}).value || '',
+      email: (form.querySelector('input[name="email"]') || {}).value || '',
+      bedrijfsnaam: (form.querySelector('input[name="bedrijfsnaam"]') || {}).value || '',
+      bericht: (form.querySelector('textarea[name="bericht"]') || {}).value || '',
+      botcheck: !!(botcheckInput && botcheckInput.checked),
+      form_rendered_at: renderedAtField ? renderedAtField.value : '',
+    };
+    form.dataset.submitting = '1';
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Bezig met verzenden…'; }
+    if (statusEl) statusEl.textContent = 'Bezig met verzenden…';
+    fetch(form.getAttribute('action') || '/api/contact-aanvraag', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }).then(res => res.json().catch(() => ({})).then(data => {
+      if (!res.ok || (data && data.ok === false)) throw new Error((data && data.error) || ('http-' + res.status));
+      window.location.href = '/thanks.html';
+    })).catch(() => {
+      form.dataset.submitting = '';
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = submitLabelDefault; }
+      if (statusEl) statusEl.textContent = 'Er ging iets mis bij het verzenden. Probeer het nog eens, of bel ons rechtstreeks via het nummer bovenaan de pagina.';
+    });
+  });
+}
+function safeInitFooterForm() {
+  try { initFooterForm(); } catch (e) { /* nooit de rest van de pagina blokkeren */ }
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', safeInitFooterForm);
+} else {
+  safeInitFooterForm();
+}
+
 // Offerte-wizard
 (function () {
   const form = document.getElementById('offerteWizard');
