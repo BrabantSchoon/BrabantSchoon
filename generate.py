@@ -619,7 +619,15 @@ WIZARD_KLANTTYPE = [
 # (zie PARTICULIER_WIZARD_PAKKETTEN / PARTICULIER_WIZARD_EXTRAS hieronder).
 MASTER_DIENSTEN = [
     ("Kantoorreiniging", "office", "Kantoor, praktijk of bedrijfspand", ["bedrijf"], ""),
-    ("Periodieke bedrijfsschoonmaak", "clock", "Vast ritme, wekelijks of maandelijks", ["bedrijf"], ""),
+    # "Periodieke bedrijfsschoonmaak" en "Periodieke schoonmaak" (vve) krijgen als
+    # enige zakelijke/vve-diensten een eigen slug: hierop wordt de nieuwe wizard-stap
+    # "Welke ruimtes/vervuiling/moment" (zie contact_form(), stap 9) en de interne
+    # calculatiemotor (zie api/offerte-aanvraag.js) gericht. Andere zakelijke
+    # diensten (kantoorreiniging, glasbewassing, etc.) krijgen bewust geen interne
+    # rekenmodel in deze ronde \u2014 daarvoor ontbreekt nog een betrouwbaar tijdmodel,
+    # en de brief vraagt expliciet om periodieke bedrijfsschoonmaak eerst goed te
+    # calculeren zonder de wizard voor alle zakelijke diensten op te blazen.
+    ("Periodieke bedrijfsschoonmaak", "clock", "Vast ritme, wekelijks of maandelijks", ["bedrijf"], "periodiek-zakelijk"),
     ("Winkel- of showroomreiniging", "shop", "Winkel of showroom", ["bedrijf"], ""),
     ("Praktijk- of zorglocatiereiniging", "practice", "Zorg- of behandelpraktijk", ["bedrijf"], ""),
     ("Industri\u00eble schoonmaak", "building", "Bedrijfshal of productieruimte", ["bedrijf"], ""),
@@ -627,7 +635,7 @@ MASTER_DIENSTEN = [
     ("VvE-schoonmaak", "building", "Trappenhuis of gemeenschappelijke ruimte", ["vve"], ""),
     ("Trappenhuisreiniging", "stairs", "Gemeenschappelijk trappenhuis", ["vve"], ""),
     ("Schoonmaak van gemeenschappelijke ruimtes", "building", "Entree, gangen en bergingen", ["vve"], ""),
-    ("Periodieke schoonmaak", "clock", "Vast ritme, wekelijks of maandelijks", ["vve"], ""),
+    ("Periodieke schoonmaak", "clock", "Vast ritme, wekelijks of maandelijks", ["vve"], "periodiek-zakelijk"),
     ("Schoonmaak van scholen of instellingen", "school", "Onderwijs- of instellingslocatie", ["vve"], ""),
     ("Zorglocaties", "practice", "Zorginstelling of behandellocatie", ["vve"], ""),
     ("Glasbewassing", "window", "Ramen en kozijnen binnen en buiten", ["bedrijf", "vve"], ""),
@@ -710,6 +718,41 @@ WIZARD_FREQUENTIE = [
     ("Meerdere keren per week", "Voor drukbezochte locaties"),
     ("Maandelijks", "Periodiek, op vaste afspraak"),
     ("In overleg", "We bespreken de frequentie samen"),
+]
+
+# ---------------------------------------------------------------
+# ZAKELIJKE WIZARD-UITBREIDING (periodieke bedrijfs-/VvE-schoonmaak)
+# ---------------------------------------------------------------
+# Alleen relevant bij dienst-slug "periodiek-zakelijk" (zie MASTER_DIENSTEN) —
+# ingezet via wizard-stap 9 in contact_form(). Doel: genoeg informatie
+# verzamelen om een interne tijd-/prijsindicatie te kunnen berekenen (zie
+# api/offerte-aanvraag.js), zonder de klant losse standaardwerkzaamheden
+# (stofzuigen, prullenbak legen, etc.) te laten aanvinken.
+ZAKELIJK_RUIMTE_OPTIES = [
+    ("ruimte_kantoor", "Kantoorruimte"),
+    ("ruimte_kantine", "Kantine / pantry"),
+    ("ruimte_toiletten", "Toiletten / sanitair"),
+    ("ruimte_entree", "Entree / receptie"),
+    ("ruimte_gangen", "Gangen / algemene ruimtes"),
+    ("ruimte_vergaderruimte", "Vergader-/spreekruimtes"),
+    ("ruimte_kleedruimte", "Kleedruimte"),
+    ("ruimte_werkplaats", "Werkplaats / productieruimte"),
+    ("ruimte_overig", "Overige ruimte"),
+]
+# (waarde, label, korte toelichting) — "Anders" geeft altijd een prijs op maat
+# (net als bij de particuliere vervuilingsgraad), de twee tussenliggende opties
+# tellen mee als tijdsfactor in de interne calculatie.
+ZAKELIJK_VERVUILING_OPTIES = [
+    ("Normale kantoor-/bedrijfsvervuiling", "Reguliere staat van onderhoud"),
+    ("Enige extra vervuiling", "Bijvoorbeeld door regelmatig bezoek of gebruik"),
+    ("Bovengemiddelde vervuiling", "Bijvoorbeeld vuil dat vanuit een werk- of productieruimte meekomt"),
+    ("Anders / toelichting", "Vertel kort waar we rekening mee moeten houden"),
+]
+ZAKELIJK_MOMENT_OPTIES = [
+    ("Tijdens kantooruren", "Terwijl uw locatie in gebruik is"),
+    ("Voor opening", "Voordat uw locatie open gaat"),
+    ("Na sluiting", "Nadat uw locatie gesloten is"),
+    ("Geen voorkeur / in overleg", "We bespreken dit graag samen"),
 ]
 
 # Vraag- en hulpteksten per stap, per klanttype. Wordt door JavaScript ingezet
@@ -849,6 +892,12 @@ def contact_form():
     glas_bereikbaarheid_cards = radio_cards("glas_bereikbaarheid", GLAS_BEREIKBAARHEID_OPTIES, columns=1)
     staffel_options = [(STAFFEL_LABELS[s], "") for s in STAFFEL_OPTIES]
     staffel_cards = radio_cards("woonoppervlakte_staffel", staffel_options, columns=2)
+    zakelijk_ruimte_cards = "\n      ".join(
+        f'<label class="cb-card" data-ruimte-id="{rid}"><input type="checkbox" data-ruimte-id="{rid}"><span>{label}</span></label>'
+        for rid, label in ZAKELIJK_RUIMTE_OPTIES
+    )
+    zakelijk_vervuiling_cards = radio_cards("vervuilingsgraad_zakelijk", ZAKELIJK_VERVUILING_OPTIES, columns=2)
+    zakelijk_moment_cards = radio_cards("schoonmaakmoment", ZAKELIJK_MOMENT_OPTIES, columns=2)
     prijs_data_json = json.dumps({
         "eenmalig": PARTICULIER_PRIJZEN,
         "periodiek": PERIODIEK_PRIJZEN,
@@ -860,7 +909,7 @@ def contact_form():
     L = WIZARD_STEP_LABELS
     return f"""<noscript><p class="prose" style="background:#FFF7E6; border:1px solid #F0D9A0; border-radius:12px; padding:16px 20px; margin-bottom:16px;">Dit formulier werkt het best met JavaScript ingeschakeld. Lukt dat niet? Bel of mail ons gerust rechtstreeks: <a href="tel:{PHONE_TEL}" style="color:var(--link); font-weight:600;">{PHONE_DISPLAY}</a> of <a href="mailto:{EMAIL}" style="color:var(--link); font-weight:600;">{EMAIL}</a>.</p></noscript>
   <script type="application/json" id="prijsData">{prijs_data_json}</script>
-  <form name="offerte" method="POST" action="https://api.web3forms.com/submit" class="wizard-form" id="offerteWizard" novalidate>
+  <form name="offerte" method="POST" action="/api/offerte-aanvraag" class="wizard-form" id="offerteWizard" novalidate>
     <p id="wizardLive" class="sr-only" role="status" aria-live="polite"></p>
     <nav class="wizard-phases" id="wizardPhases" hidden aria-label="Voortgang offerteaanvraag">
       <div class="wizard-phases-track">
@@ -878,12 +927,12 @@ def contact_form():
       </div>
     </nav>
     <p id="wizardStepLabel" class="wizard-step-label"></p>
-    <input type="hidden" name="access_key" value="abc98c0d-af16-42b0-ae5c-3337f35e5299">
     <input type="hidden" name="subject" value="Nieuwe offerteaanvraag via de website" id="wizardSubject">
-    <input type="hidden" name="redirect" value="{SITE_URL}/thanks.html">
     <input type="hidden" name="pakket_naam" id="pakketNaamField" value="">
     <input type="hidden" name="extra_opties" id="extraOptiesField" value="">
     <input type="hidden" name="prijsindicatie" id="prijsIndicatieField" value="">
+    <input type="hidden" name="ruimtes" id="ruimtesField" value="">
+    <input type="hidden" name="form_rendered_at" id="formRenderedAtField" value="">
     <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
 
     <div class="wizard-progress" aria-hidden="true">
@@ -1016,9 +1065,37 @@ def contact_form():
       <h3 class="wizard-q">Hoe vaak wilt u schoonmaak?</h3>
       <p class="wizard-sub">U kunt dit later altijd nog aanpassen.</p>
       {freq_cards}
+      <div id="fieldMeerderePerWeek" style="margin-top:14px;" hidden>
+        <label for="meerdere_per_week_aantal">Hoeveel keer per week ongeveer?</label>
+        <input id="meerdere_per_week_aantal" name="meerdere_per_week_aantal" type="number" min="2" max="14" placeholder="Bijv. 2" disabled>
+      </div>
     </div>
 
-    <div class="wizard-step" data-step="9" hidden>
+    <div class="wizard-step" data-step="9" hidden data-applies-to="bedrijf vve" data-requires-dienst="periodiek-zakelijk">
+      <h3 class="wizard-q">Welke ruimtes moeten worden schoongemaakt?</h3>
+      <p class="wizard-sub">Kies alles wat van toepassing is — dit helpt ons de benodigde tijd goed in te schatten.</p>
+      <div class="checkbox-cards" id="zakelijkRuimtes">
+        {zakelijk_ruimte_cards}
+      </div>
+      <div id="ruimteOverigWrap" style="margin-top:14px;" hidden>
+        <label for="ruimte_overig_toelichting">Om welke ruimte gaat het?</label>
+        <input id="ruimte_overig_toelichting" name="ruimte_overig_toelichting" type="text" placeholder="Bijv. showroom, werkplaats" disabled>
+      </div>
+      <div style="margin-top:26px;">
+        <label style="display:block; margin-bottom:10px;">Is er sprake van extra vervuiling waar we rekening mee moeten houden?</label>
+        {zakelijk_vervuiling_cards}
+      </div>
+      <div id="vervuilingZakelijkToelichtingWrap" style="margin-top:14px;" hidden>
+        <label for="vervuiling_zakelijk_toelichting">Korte toelichting</label>
+        <input id="vervuiling_zakelijk_toelichting" name="vervuiling_zakelijk_toelichting" type="text" placeholder="Vertel kort waar we rekening mee moeten houden" disabled>
+      </div>
+      <div style="margin-top:26px;">
+        <label style="display:block; margin-bottom:10px;">Wanneer heeft u de schoonmaak bij voorkeur?</label>
+        {zakelijk_moment_cards}
+      </div>
+    </div>
+
+    <div class="wizard-step" data-step="10" hidden>
       <h3 class="wizard-q" id="toelichtingQ"
           data-q-bedrijf="{L['bedrijf']['toelichting_q']}"
           data-q-vve="{L['vve']['toelichting_q']}"
@@ -1038,7 +1115,7 @@ def contact_form():
       </div>
     </div>
 
-    <div class="wizard-step" data-step="10" hidden>
+    <div class="wizard-step" data-step="11" hidden>
       <h3 class="wizard-q">Uw gegevens</h3>
       <p class="wizard-sub">Zodat we contact met u kunnen opnemen.</p>
       <div class="row2">
@@ -1052,7 +1129,7 @@ def contact_form():
       <div><label for="plaats">Plaats / postcode</label><input id="plaats" name="plaats" type="text" required placeholder="Bijv. Helmond of 5701 AB"></div>
     </div>
 
-    <div class="wizard-step" data-step="11" hidden>
+    <div class="wizard-step" data-step="12" hidden>
       <h3 class="wizard-q">Controleer uw aanvraag</h3>
       <p class="wizard-sub">Klopt alles? Dan kunt u de aanvraag verzenden. Wilt u iets aanpassen, gebruik dan "Terug".</p>
       <dl class="wizard-summary" id="wizardSummary" aria-live="polite"></dl>

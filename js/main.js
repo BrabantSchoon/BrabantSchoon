@@ -62,7 +62,7 @@ if (document.readyState === 'loading') {
   // klantfase hoort. Selectiestappen (klanttype/dienst/pakket) en de
   // zakelijke/VvE-stappen tellen niet mee als fase (null) — de balk blijft
   // dan verborgen, precies zoals gevraagd.
-  const STEP_PHASE = { 1: null, 2: null, 3: null, 4: 'woning', 5: 'extras', 6: 'woning', 7: null, 8: null, 9: 'gegevens', 10: 'gegevens', 11: 'controleren' };
+  const STEP_PHASE = { 1: null, 2: null, 3: null, 4: 'woning', 5: 'extras', 6: 'woning', 7: null, 8: null, 9: null, 10: 'gegevens', 11: 'gegevens', 12: 'controleren' };
   const PHASE_ORDER = ['woning', 'extras', 'gegevens', 'controleren'];
   const PHASE_LABELS = { woning: 'Woning', extras: "Extra's", gegevens: 'Gegevens', controleren: 'Controleren' };
   const phasesNav = document.getElementById('wizardPhases');
@@ -129,7 +129,7 @@ if (document.readyState === 'loading') {
     // vorige stap (dat kan gemist zijn bij terugnavigeren, voorinvullen via
     // URL-parameters, of een programmatische wijziging).
     if (stepNum === 3 || stepNum === 4 || stepNum === 5) applyDienst(currentDienstSlug());
-    if (stepNum === 4 || stepNum === 5 || stepNum === 6 || stepNum === 11) updatePrijsIndicatie();
+    if (stepNum === 4 || stepNum === 5 || stepNum === 6 || stepNum === 12) updatePrijsIndicatie();
     const appl = applicableSteps();
     const idx = appl.indexOf(stepNum);
     const pos = idx === -1 ? 1 : idx + 1;
@@ -204,6 +204,66 @@ if (document.readyState === 'loading') {
   const oppQ = document.getElementById('oppervlakteQ');
   const oppSub = document.getElementById('oppervlakteSub');
   const toelichtingQ = document.getElementById('toelichtingQ');
+
+  // === Zakelijke/VvE stap 9 (ruimtes/vervuiling/moment) — alleen relevant bij
+  // dienst-slug "periodiek-zakelijk" (Periodieke bedrijfsschoonmaak / Periodieke
+  // schoonmaak bij VvE). Ruimte-checkboxes hebben BEWUST geen name-attribuut
+  // (zie generate.py, contact_form): ze worden nooit los meegestuurd, alleen
+  // samengevoegd in het verborgen "ruimtes"-veld — zo kan hier nooit een lawine
+  // aan losse ruimte_*=on/off velden ontstaan.
+  const zakelijkRuimteChecks = Array.from(form.querySelectorAll('#zakelijkRuimtes input[type="checkbox"]'));
+  const ruimteOverigCheck = form.querySelector('#zakelijkRuimtes input[data-ruimte-id="ruimte_overig"]');
+  const ruimteOverigWrap = document.getElementById('ruimteOverigWrap');
+  const ruimteOverigInput = document.getElementById('ruimte_overig_toelichting');
+  const ruimtesField = document.getElementById('ruimtesField');
+  const vervuilingZakelijkToelichtingWrap = document.getElementById('vervuilingZakelijkToelichtingWrap');
+  const vervuilingZakelijkToelichtingInput = document.getElementById('vervuiling_zakelijk_toelichting');
+  const meerderePerWeekField = document.getElementById('fieldMeerderePerWeek');
+  const meerderePerWeekInput = document.getElementById('meerdere_per_week_aantal');
+
+  function syncRuimtesField() {
+    if (!ruimtesField) return;
+    const labels = zakelijkRuimteChecks.filter(cb => cb.checked).map(cb => {
+      const span = cb.closest('.cb-card') && cb.closest('.cb-card').querySelector('span');
+      return span ? span.textContent : cb.getAttribute('data-ruimte-id');
+    });
+    ruimtesField.value = labels.join(', ');
+  }
+  zakelijkRuimteChecks.forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (cb === ruimteOverigCheck) {
+        if (ruimteOverigWrap) ruimteOverigWrap.hidden = !cb.checked;
+        if (cb.checked) enableField(ruimteOverigInput); else clearAndDisable(ruimteOverigInput);
+      }
+      syncRuimtesField();
+    });
+  });
+  form.querySelectorAll('input[name="vervuilingsgraad_zakelijk"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      const isAnders = radio.value === 'Anders / toelichting';
+      if (vervuilingZakelijkToelichtingWrap) vervuilingZakelijkToelichtingWrap.hidden = !isAnders;
+      if (isAnders) enableField(vervuilingZakelijkToelichtingInput); else clearAndDisable(vervuilingZakelijkToelichtingInput);
+    });
+  });
+  form.querySelectorAll('input[name="frequentie"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      const show = radio.value === 'Meerdere keren per week';
+      if (meerderePerWeekField) meerderePerWeekField.hidden = !show;
+      if (show) enableField(meerderePerWeekInput); else clearAndDisable(meerderePerWeekInput);
+    });
+  });
+  // Wist alle stap-9-velden en verbergt de bijbehorende toelichtingen — nodig
+  // zodra klanttype wisselt naar particulier, of de zakelijke/VvE-dienst iets
+  // anders wordt dan "periodiek-zakelijk" (zie applyKlanttype/applyDienst).
+  function resetZakelijkPeriodiekStep() {
+    zakelijkRuimteChecks.forEach(cb => { cb.checked = false; });
+    syncRuimtesField();
+    if (ruimteOverigWrap) ruimteOverigWrap.hidden = true;
+    clearAndDisable(ruimteOverigInput);
+    form.querySelectorAll('input[name="vervuilingsgraad_zakelijk"], input[name="schoonmaakmoment"]').forEach(r => { r.checked = false; });
+    if (vervuilingZakelijkToelichtingWrap) vervuilingZakelijkToelichtingWrap.hidden = true;
+    clearAndDisable(vervuilingZakelijkToelichtingInput);
+  }
 
   // Particuliere stap-3/4-elementen (pakket + extra werkzaamheden), gefilterd op dienst-slug
   const pakketWraps = Array.from(form.querySelectorAll('.wizard-step[data-step="3"] .rc-wrap'));
@@ -561,6 +621,11 @@ if (document.readyState === 'loading') {
       if (bouwrestenNote) bouwrestenNote.hidden = true;
       if (glasBereikbaarheidNote) glasBereikbaarheidNote.hidden = true;
       updatePrijsIndicatie();
+      // Particulier gekozen: stap 9 (ruimtes/vervuiling/moment) is uitsluitend
+      // zakelijk/VvE — nooit particuliere data laten meesturen.
+      resetZakelijkPeriodiekStep();
+      if (meerderePerWeekField) meerderePerWeekField.hidden = true;
+      clearAndDisable(meerderePerWeekInput);
     }
 
     if (subjectInput) {
@@ -606,6 +671,11 @@ if (document.readyState === 'loading') {
     if (ingerichtNote) ingerichtNote.hidden = true;
     if (bouwrestenNote) bouwrestenNote.hidden = true;
     if (glasBereikbaarheidNote) glasBereikbaarheidNote.hidden = true;
+    // Stap 9 (ruimtes/vervuiling/moment) is uitsluitend relevant bij
+    // "periodiek-zakelijk" — bij elke andere (of geen) dienst altijd wissen,
+    // zodat er nooit een oude keuze van een vorige dienst blijft hangen of
+    // meestuurt.
+    if (slug !== 'periodiek-zakelijk') resetZakelijkPeriodiekStep();
     syncExtraOptiesField();
     syncPakketNaamField();
     updatePrijsIndicatie();
@@ -853,11 +923,16 @@ if (document.readyState === 'loading') {
     return '';
   }
 
-  function buildSummary() {
-    const dl = document.getElementById('wizardSummary');
-    if (!dl) return;
+  // Eén bron van waarheid voor "welke velden zijn nu relevant, in welke
+  // volgorde, met welk label" — gebruikt door zowel de samenvatting op het
+  // scherm (buildSummary) als de payload die naar de server gaat
+  // (buildOffertePayload). Zo kunnen samenvatting en verzonden aanvraag nooit
+  // uit de pas lopen, en komt een leeg/irrelevant veld nergens ooit terecht
+  // (alles wordt aan het einde gefilterd op een niet-lege waarde).
+  function collectRows() {
     const typeRadio = form.querySelector('input[name="klanttype"]:checked');
     const isParticulier = typeRadio && TYPE_MAP[typeRadio.value] === 'particulier';
+    const isZakelijkPeriodiek = !isParticulier && currentDienstSlug() === 'periodiek-zakelijk';
     const rows = [
       ['Klanttype', typeRadio ? typeRadio.value : ''],
       ['Dienst', getFieldValue('dienst')],
@@ -882,15 +957,25 @@ if (document.readyState === 'loading') {
         ['Verdieping', getFieldValue('glas_verdieping')],
         ['Bereikbaarheid', getFieldValue('glas_bereikbaarheid')],
         ['Gewenste frequentie', getFieldValue('frequentie_particulier')],
-        ['Prijsindicatie', getFieldValue('prijsindicatie')]
+        ['Prijsindicatie (getoond aan klant)', getFieldValue('prijsindicatie')]
       );
     } else {
       rows.push(
         ['Bedrijfsnaam / VvE', getFieldValue('bedrijfsnaam')],
         ['Omvang', getFieldValue('oppervlakte')],
         ['Aantal locaties', getFieldValue('aantal_locaties')],
-        ['Frequentie', getFieldValue('frequentie')]
+        ['Frequentie', getFieldValue('frequentie')],
+        ['Aantal keer per week', getFieldValue('meerdere_per_week_aantal')]
       );
+      if (isZakelijkPeriodiek) {
+        rows.push(
+          ['Ruimtes', getFieldValue('ruimtes')],
+          ['Toelichting ruimte', getFieldValue('ruimte_overig_toelichting')],
+          ['Extra vervuiling', getFieldValue('vervuilingsgraad_zakelijk')],
+          ['Toelichting vervuiling', getFieldValue('vervuiling_zakelijk_toelichting')],
+          ['Schoonmaakmoment', getFieldValue('schoonmaakmoment')]
+        );
+      }
     }
     rows.push(
       ['Gewenste datum/periode', getFieldValue('startdatum')],
@@ -900,26 +985,89 @@ if (document.readyState === 'loading') {
       ['Telefoonnummer', getFieldValue('telefoon')],
       ['Plaats/postcode', getFieldValue('plaats')]
     );
-    const filtered = rows.filter(row => row[1]);
+    return rows.filter(row => row[1]);
+  }
+
+  function buildSummary() {
+    const dl = document.getElementById('wizardSummary');
+    if (!dl) return;
+    const filtered = collectRows();
     dl.innerHTML = filtered.map(row => `<div class="summary-row"><dt>${escapeHtml(row[0])}</dt><dd>${escapeHtml(row[1])}</dd></div>`).join('');
+  }
+
+  // Bouwt de payload die naar /api/offerte-aanvraag gaat. "velden" is exact
+  // dezelfde, al gefilterde lijst als de samenvatting die de klant zelf ziet
+  // (collectRows) — de server gebruikt die rechtstreeks voor de AANVRAAG-sectie
+  // van de interne e-mail, zodat wat de klant ziet en wat Brabantschoon
+  // ontvangt altijd overeenkomen. "calc" bevat losse, machineleesbare velden
+  // die de server nodig heeft voor de interne tijd-/prijsberekening (alleen
+  // gebruikt bij dienstSlug "periodiek-zakelijk"); de calculatie zelf gebeurt
+  // uitsluitend server-side, hier wordt nooit een prijs berekend of verzonden.
+  function buildOffertePayload() {
+    const typeRadio = form.querySelector('input[name="klanttype"]:checked');
+    const botcheckInput = form.querySelector('input[name="botcheck"]');
+    const renderedAtInput = document.getElementById('formRenderedAtField');
+    return {
+      klanttype: typeRadio ? typeRadio.value : '',
+      dienst: getFieldValue('dienst'),
+      dienstSlug: currentDienstSlug(),
+      naam: getFieldValue('naam'),
+      bedrijfsnaam: getFieldValue('bedrijfsnaam'),
+      email: getFieldValue('email'),
+      telefoon: getFieldValue('telefoon'),
+      plaats: getFieldValue('plaats'),
+      velden: collectRows(),
+      calc: {
+        oppervlakte: getFieldValue('oppervlakte'),
+        frequentie: getFieldValue('frequentie'),
+        meerderePerWeekAantal: getFieldValue('meerdere_per_week_aantal'),
+        aantalLocaties: getFieldValue('aantal_locaties'),
+        ruimtes: zakelijkRuimteChecks.filter(cb => cb.checked && cb !== ruimteOverigCheck).map(cb => cb.getAttribute('data-ruimte-id')),
+        ruimteOverig: !!(ruimteOverigCheck && ruimteOverigCheck.checked),
+        vervuiling: getFieldValue('vervuilingsgraad_zakelijk'),
+      },
+      botcheck: !!(botcheckInput && botcheckInput.checked),
+      form_rendered_at: renderedAtInput ? renderedAtInput.value : '',
+    };
   }
 
   current = startStep;
   show(current, false);
+  const formRenderedAtField = document.getElementById('formRenderedAtField');
+  if (formRenderedAtField) formRenderedAtField.value = String(Date.now());
 
-  // Dubbel verzenden voorkomen: knop direct uitschakelen en status tonen.
-  // We doen geen preventDefault op een geldige submit, zodat het formulier
-  // gewoon normaal naar Web3Forms gaat; de knop blijft alleen uitgeschakeld
-  // zodat een tweede klik vóór de redirect niets meer doet.
+  // Verzending: JSON naar onze eigen /api/offerte-aanvraag (Vercel serverless
+  // function) i.p.v. een rechtstreekse formulier-POST naar Web3Forms. Zo bouwt
+  // de server de interne e-mail conditioneel op (nooit lege/irrelevante
+  // velden) en blijft de interne calculatie (tijd/kostprijs/marge) altijd
+  // server-side -- die verlaat de browser nooit, dus is ook niet zichtbaar via
+  // devtools/netwerkverkeer. Bij een fout blijft de ingevulde data gewoon
+  // staan, zodat de klant het simpelweg nog eens kan proberen.
   form.addEventListener('submit', (e) => {
-    if (form.dataset.submitting === '1') { e.preventDefault(); return; }
-    if (!validateStep()) { e.preventDefault(); return; }
+    e.preventDefault();
+    if (form.dataset.submitting === '1') return;
+    if (!validateStep()) return;
     syncPakketNaamField();
     syncExtraOptiesField();
+    syncRuimtesField();
     form.dataset.submitting = '1';
     submitBtn.disabled = true;
     submitBtn.textContent = 'Aanvraag wordt verzonden\u2026';
     if (statusEl) statusEl.textContent = 'Aanvraag wordt verzonden\u2026';
+    const payload = buildOffertePayload();
+    fetch(form.getAttribute('action') || '/api/offerte-aanvraag', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }).then(res => res.json().catch(() => ({})).then(data => {
+      if (!res.ok || (data && data.ok === false)) throw new Error((data && data.error) || ('http-' + res.status));
+      window.location.href = '/thanks.html';
+    })).catch(() => {
+      form.dataset.submitting = '';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Vraag vrijblijvende offerte aan';
+      if (statusEl) statusEl.textContent = 'Er ging iets mis bij het verzenden. Probeer het nog eens, of bel ons via het nummer bovenaan de pagina.';
+    });
   });
 
   // Vaste onderbalk (Bel direct / Vrijblijvende offerte) verbergen zolang de wizard zelf in
@@ -944,7 +1092,7 @@ document.querySelectorAll('.map-load-btn').forEach(btn => {
     const wrap = document.getElementById(btn.dataset.target);
     if (!wrap) return;
     const src = wrap.getAttribute('data-src');
-    wrap.innerHTML = `<iframe src="${src}" width="100%" height="280" style="border:0; border-radius:16px;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="BrabantSchoon op de kaart"></iframe>`;
+    wrap.innerHTML = `<iframe src="${src}" width="100%" height="280" style="border:0; border-radius:16px;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Brabantschoon op de kaart"></iframe>`;
   });
 });
 

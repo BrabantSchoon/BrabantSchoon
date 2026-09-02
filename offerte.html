@@ -129,7 +129,7 @@
     <div class="wrap-narrow">
       <noscript><p class="prose" style="background:#FFF7E6; border:1px solid #F0D9A0; border-radius:12px; padding:16px 20px; margin-bottom:16px;">Dit formulier werkt het best met JavaScript ingeschakeld. Lukt dat niet? Bel of mail ons gerust rechtstreeks: <a href="tel:+31492313050" style="color:var(--link); font-weight:600;">0492 - 31 30 50</a> of <a href="mailto:info@brabantschoon.nl" style="color:var(--link); font-weight:600;">info@brabantschoon.nl</a>.</p></noscript>
   <script type="application/json" id="prijsData">{"eenmalig": {"grote-schoonmaak": {"vanaf": false, "prijzen": {"tm60": {"basis": 200, "uitgebreid": 275, "compleet": 375}, "61-90": {"basis": 250, "uitgebreid": 350, "compleet": 475}, "91-120": {"basis": 300, "uitgebreid": 425, "compleet": 575}, "121-150": {"basis": 350, "uitgebreid": 500, "compleet": 700}}}, "verhuisschoonmaak": {"vanaf": false, "prijzen": {"tm60": {"basis": 225, "uitgebreid": 300, "opleverklaar": 400}, "61-90": {"basis": 275, "uitgebreid": 375, "opleverklaar": 500}, "91-120": {"basis": 325, "uitgebreid": 450, "opleverklaar": 625}, "121-150": {"basis": 400, "uitgebreid": 550, "opleverklaar": 750}}}, "na-verbouwing": {"vanaf": false, "prijzen": {"tm60": {"basis": 250, "uitgebreid": 325, "instapklaar": 450}, "61-90": {"basis": 300, "uitgebreid": 400, "instapklaar": 550}, "91-120": {"basis": 375, "uitgebreid": 500, "instapklaar": 675}, "121-150": {"basis": 450, "uitgebreid": 600, "instapklaar": 825}}}}, "periodiek": {"tm60": {"wekelijks": 90, "2weken": 100, "4weken": 115}, "61-90": {"wekelijks": 110, "2weken": 125, "4weken": 145}, "91-120": {"wekelijks": 135, "2weken": 155, "4weken": 180}, "121-150": {"wekelijks": 160, "2weken": 185, "4weken": 215}}, "extras": {"oven": {"label": "Oven binnenzijde", "prijs": 35, "eenheid": "stuk"}, "koelkast": {"label": "Koelkast binnenzijde", "prijs": 25, "eenheid": "stuk"}, "vriezer": {"label": "Vriezer binnenzijde", "prijs": 20, "eenheid": "stuk"}, "magnetron": {"label": "Magnetron binnenzijde", "prijs": 15, "eenheid": "stuk"}, "afzuigkap": {"label": "Afzuigkap intensief", "prijs": 25, "eenheid": "stuk"}, "kalkbadkamer": {"label": "Extra kalkreiniging badkamer", "prijs": 30, "eenheid": "badkamer"}, "balkon": {"label": "Balkon", "prijs": 30, "eenheid": "stuk"}, "berging": {"label": "Berging", "prijs": 25, "eenheid": "stuk"}, "ruimte_extra": {"label": "Specifieke ruimte extra grondig", "prijs": 35, "eenheid": "ruimte"}}, "inbegrepen": {"grote-schoonmaak": {"compleet": {"oven": 1, "koelkast": 1, "vriezer": 1, "magnetron": 1, "afzuigkap": 1, "kalkbadkamer": 1}}, "verhuisschoonmaak": {"opleverklaar": {"oven": 1, "koelkast": 1, "vriezer": 1, "magnetron": 1, "afzuigkap": 1, "kalkbadkamer": 1}}, "na-verbouwing": {}, "periodiek": {}}, "staffelLabels": {"tm60": "t/m 60 m²", "61-90": "61–90 m²", "91-120": "91–120 m²", "121-150": "121–150 m²", "boven150": "Boven 150 m²"}, "toeslagPercentage": 20}</script>
-  <form name="offerte" method="POST" action="https://api.web3forms.com/submit" class="wizard-form" id="offerteWizard" novalidate>
+  <form name="offerte" method="POST" action="/api/offerte-aanvraag" class="wizard-form" id="offerteWizard" novalidate>
     <p id="wizardLive" class="sr-only" role="status" aria-live="polite"></p>
     <nav class="wizard-phases" id="wizardPhases" hidden aria-label="Voortgang offerteaanvraag">
       <div class="wizard-phases-track">
@@ -147,12 +147,12 @@
       </div>
     </nav>
     <p id="wizardStepLabel" class="wizard-step-label"></p>
-    <input type="hidden" name="access_key" value="abc98c0d-af16-42b0-ae5c-3337f35e5299">
     <input type="hidden" name="subject" value="Nieuwe offerteaanvraag via de website" id="wizardSubject">
-    <input type="hidden" name="redirect" value="https://www.brabantschoon.nl/thanks.html">
     <input type="hidden" name="pakket_naam" id="pakketNaamField" value="">
     <input type="hidden" name="extra_opties" id="extraOptiesField" value="">
     <input type="hidden" name="prijsindicatie" id="prijsIndicatieField" value="">
+    <input type="hidden" name="ruimtes" id="ruimtesField" value="">
+    <input type="hidden" name="form_rendered_at" id="formRenderedAtField" value="">
     <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
 
     <div class="wizard-progress" aria-hidden="true">
@@ -200,7 +200,7 @@
         <span class="rc-label">Kantoorreiniging</span>
         <span class="rc-desc">Kantoor, praktijk of bedrijfspand</span>
       </label></div>
-      <div class="rc-wrap" data-customer-types="bedrijf"><input type="radio" name="dienst" id="dienst-periodieke-bedrijfsschoonmaak" value="Periodieke bedrijfsschoonmaak" class="rc-input" required>
+      <div class="rc-wrap" data-customer-types="bedrijf" data-dienst-slug="periodiek-zakelijk"><input type="radio" name="dienst" id="dienst-periodieke-bedrijfsschoonmaak" value="Periodieke bedrijfsschoonmaak" class="rc-input" required>
       <label for="dienst-periodieke-bedrijfsschoonmaak" class="rc-card">
         <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
         <span class="rc-label">Periodieke bedrijfsschoonmaak</span>
@@ -248,7 +248,7 @@
         <span class="rc-label">Schoonmaak van gemeenschappelijke ruimtes</span>
         <span class="rc-desc">Entree, gangen en bergingen</span>
       </label></div>
-      <div class="rc-wrap" data-customer-types="vve"><input type="radio" name="dienst" id="dienst-periodieke-schoonmaak" value="Periodieke schoonmaak" class="rc-input" required>
+      <div class="rc-wrap" data-customer-types="vve" data-dienst-slug="periodiek-zakelijk"><input type="radio" name="dienst" id="dienst-periodieke-schoonmaak" value="Periodieke schoonmaak" class="rc-input" required>
       <label for="dienst-periodieke-schoonmaak" class="rc-card">
         <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
         <span class="rc-label">Periodieke schoonmaak</span>
@@ -1234,9 +1234,91 @@
         <span class="rc-label">In overleg</span>
         <span class="rc-desc">We bespreken de frequentie samen</span>
       </label></div>
+      <div id="fieldMeerderePerWeek" style="margin-top:14px;" hidden>
+        <label for="meerdere_per_week_aantal">Hoeveel keer per week ongeveer?</label>
+        <input id="meerdere_per_week_aantal" name="meerdere_per_week_aantal" type="number" min="2" max="14" placeholder="Bijv. 2" disabled>
+      </div>
     </div>
 
-    <div class="wizard-step" data-step="9" hidden>
+    <div class="wizard-step" data-step="9" hidden data-applies-to="bedrijf vve" data-requires-dienst="periodiek-zakelijk">
+      <h3 class="wizard-q">Welke ruimtes moeten worden schoongemaakt?</h3>
+      <p class="wizard-sub">Kies alles wat van toepassing is — dit helpt ons de benodigde tijd goed in te schatten.</p>
+      <div class="checkbox-cards" id="zakelijkRuimtes">
+        <label class="cb-card" data-ruimte-id="ruimte_kantoor"><input type="checkbox" data-ruimte-id="ruimte_kantoor"><span>Kantoorruimte</span></label>
+      <label class="cb-card" data-ruimte-id="ruimte_kantine"><input type="checkbox" data-ruimte-id="ruimte_kantine"><span>Kantine / pantry</span></label>
+      <label class="cb-card" data-ruimte-id="ruimte_toiletten"><input type="checkbox" data-ruimte-id="ruimte_toiletten"><span>Toiletten / sanitair</span></label>
+      <label class="cb-card" data-ruimte-id="ruimte_entree"><input type="checkbox" data-ruimte-id="ruimte_entree"><span>Entree / receptie</span></label>
+      <label class="cb-card" data-ruimte-id="ruimte_gangen"><input type="checkbox" data-ruimte-id="ruimte_gangen"><span>Gangen / algemene ruimtes</span></label>
+      <label class="cb-card" data-ruimte-id="ruimte_vergaderruimte"><input type="checkbox" data-ruimte-id="ruimte_vergaderruimte"><span>Vergader-/spreekruimtes</span></label>
+      <label class="cb-card" data-ruimte-id="ruimte_kleedruimte"><input type="checkbox" data-ruimte-id="ruimte_kleedruimte"><span>Kleedruimte</span></label>
+      <label class="cb-card" data-ruimte-id="ruimte_werkplaats"><input type="checkbox" data-ruimte-id="ruimte_werkplaats"><span>Werkplaats / productieruimte</span></label>
+      <label class="cb-card" data-ruimte-id="ruimte_overig"><input type="checkbox" data-ruimte-id="ruimte_overig"><span>Overige ruimte</span></label>
+      </div>
+      <div id="ruimteOverigWrap" style="margin-top:14px;" hidden>
+        <label for="ruimte_overig_toelichting">Om welke ruimte gaat het?</label>
+        <input id="ruimte_overig_toelichting" name="ruimte_overig_toelichting" type="text" placeholder="Bijv. showroom, werkplaats" disabled>
+      </div>
+      <div style="margin-top:26px;">
+        <label style="display:block; margin-bottom:10px;">Is er sprake van extra vervuiling waar we rekening mee moeten houden?</label>
+        <div class="radio-cards cols-2"><input type="radio" name="vervuilingsgraad_zakelijk" id="vervuilingsgraad_zakelijk-normale-kantoor-bedrijfsvervuiling" value="Normale kantoor-/bedrijfsvervuiling" class="rc-input" required>
+      <label for="vervuilingsgraad_zakelijk-normale-kantoor-bedrijfsvervuiling" class="rc-card">
+        
+        <span class="rc-label">Normale kantoor-/bedrijfsvervuiling</span>
+        <span class="rc-desc">Reguliere staat van onderhoud</span>
+      </label>
+      <input type="radio" name="vervuilingsgraad_zakelijk" id="vervuilingsgraad_zakelijk-enige-extra-vervuiling" value="Enige extra vervuiling" class="rc-input" required>
+      <label for="vervuilingsgraad_zakelijk-enige-extra-vervuiling" class="rc-card">
+        
+        <span class="rc-label">Enige extra vervuiling</span>
+        <span class="rc-desc">Bijvoorbeeld door regelmatig bezoek of gebruik</span>
+      </label>
+      <input type="radio" name="vervuilingsgraad_zakelijk" id="vervuilingsgraad_zakelijk-bovengemiddelde-vervuiling" value="Bovengemiddelde vervuiling" class="rc-input" required>
+      <label for="vervuilingsgraad_zakelijk-bovengemiddelde-vervuiling" class="rc-card">
+        
+        <span class="rc-label">Bovengemiddelde vervuiling</span>
+        <span class="rc-desc">Bijvoorbeeld vuil dat vanuit een werk- of productieruimte meekomt</span>
+      </label>
+      <input type="radio" name="vervuilingsgraad_zakelijk" id="vervuilingsgraad_zakelijk-anders-toelichting" value="Anders / toelichting" class="rc-input" required>
+      <label for="vervuilingsgraad_zakelijk-anders-toelichting" class="rc-card">
+        
+        <span class="rc-label">Anders / toelichting</span>
+        <span class="rc-desc">Vertel kort waar we rekening mee moeten houden</span>
+      </label></div>
+      </div>
+      <div id="vervuilingZakelijkToelichtingWrap" style="margin-top:14px;" hidden>
+        <label for="vervuiling_zakelijk_toelichting">Korte toelichting</label>
+        <input id="vervuiling_zakelijk_toelichting" name="vervuiling_zakelijk_toelichting" type="text" placeholder="Vertel kort waar we rekening mee moeten houden" disabled>
+      </div>
+      <div style="margin-top:26px;">
+        <label style="display:block; margin-bottom:10px;">Wanneer heeft u de schoonmaak bij voorkeur?</label>
+        <div class="radio-cards cols-2"><input type="radio" name="schoonmaakmoment" id="schoonmaakmoment-tijdens-kantooruren" value="Tijdens kantooruren" class="rc-input" required>
+      <label for="schoonmaakmoment-tijdens-kantooruren" class="rc-card">
+        
+        <span class="rc-label">Tijdens kantooruren</span>
+        <span class="rc-desc">Terwijl uw locatie in gebruik is</span>
+      </label>
+      <input type="radio" name="schoonmaakmoment" id="schoonmaakmoment-voor-opening" value="Voor opening" class="rc-input" required>
+      <label for="schoonmaakmoment-voor-opening" class="rc-card">
+        
+        <span class="rc-label">Voor opening</span>
+        <span class="rc-desc">Voordat uw locatie open gaat</span>
+      </label>
+      <input type="radio" name="schoonmaakmoment" id="schoonmaakmoment-na-sluiting" value="Na sluiting" class="rc-input" required>
+      <label for="schoonmaakmoment-na-sluiting" class="rc-card">
+        
+        <span class="rc-label">Na sluiting</span>
+        <span class="rc-desc">Nadat uw locatie gesloten is</span>
+      </label>
+      <input type="radio" name="schoonmaakmoment" id="schoonmaakmoment-geen-voorkeur-in-overleg" value="Geen voorkeur / in overleg" class="rc-input" required>
+      <label for="schoonmaakmoment-geen-voorkeur-in-overleg" class="rc-card">
+        
+        <span class="rc-label">Geen voorkeur / in overleg</span>
+        <span class="rc-desc">We bespreken dit graag samen</span>
+      </label></div>
+      </div>
+    </div>
+
+    <div class="wizard-step" data-step="10" hidden>
       <h3 class="wizard-q" id="toelichtingQ"
           data-q-bedrijf="Nog iets toe te lichten?"
           data-q-vve="Nog iets toe te lichten?"
@@ -1256,7 +1338,7 @@
       </div>
     </div>
 
-    <div class="wizard-step" data-step="10" hidden>
+    <div class="wizard-step" data-step="11" hidden>
       <h3 class="wizard-q">Uw gegevens</h3>
       <p class="wizard-sub">Zodat we contact met u kunnen opnemen.</p>
       <div class="row2">
@@ -1270,7 +1352,7 @@
       <div><label for="plaats">Plaats / postcode</label><input id="plaats" name="plaats" type="text" required placeholder="Bijv. Helmond of 5701 AB"></div>
     </div>
 
-    <div class="wizard-step" data-step="11" hidden>
+    <div class="wizard-step" data-step="12" hidden>
       <h3 class="wizard-q">Controleer uw aanvraag</h3>
       <p class="wizard-sub">Klopt alles? Dan kunt u de aanvraag verzenden. Wilt u iets aanpassen, gebruik dan "Terug".</p>
       <dl class="wizard-summary" id="wizardSummary" aria-live="polite"></dl>

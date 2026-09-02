@@ -82,11 +82,13 @@ script draait. Wijzig deze bestanden rechtstreeks.
 ├── schoonmaakbedrijf-{plaats}.html     13 lokale SEO-pagina's (zie hierboven)
 ├── werkgebied.html                     Werkgebied-overzicht (kerngebied + regio)
 ├── over-ons.html
-├── contact.html                        Offertewizard + contactformulier
+├── contact.html                        Eenvoudig contactformulier
+├── offerte.html                        Offertewizard (particulier + zakelijk/vve)
 ├── thanks.html                         Bedankpagina na formulierverzending
 ├── privacy.html / voorwaarden.html / cookiebeleid.html
 ├── css/styles.css                      Alle styling (huisstijlkleuren als CSS-variabelen)
 ├── js/main.js                          Offertewizard-logica, mobiel menu, scroll-reveal
+├── api/offerte-aanvraag.js             Serverless function: e-mailopbouw + interne calculatie (zie hieronder)
 ├── images/
 │   ├── logo.png, favicon.png, og-image.png
 │   ├── hero.jpg, over-ons.jpg
@@ -113,11 +115,29 @@ gebruikt tijdelijk nog een oudere afbeelding, in afwachting van een passend beel
 
 ## Formulieren
 
-Zowel de offertewizard op `contact.html` als het compacte formulier in de footer
-sturen rechtstreeks naar **[Web3Forms](https://web3forms.com)**
+Het compacte contactformulier (`contact.html` + het formulier in de footer) stuurt
+rechtstreeks naar **[Web3Forms](https://web3forms.com)**
 (`https://api.web3forms.com/submit`) — een gratis, serverless formulierdienst zonder
 eigen backend nodig. De access key staat als verborgen veld in het formulier zelf.
 Bij een geslaagde inzending wordt de bezoeker doorgestuurd naar `thanks.html`.
+
+De **offertewizard** (`offerte.html`) werkt sinds de zakelijke-calculator-uitbreiding
+anders: die stuurt géén rechtstreekse form-POST naar Web3Forms meer, maar een
+`fetch()` met JSON naar het eigen endpoint **`/api/offerte-aanvraag`**
+(`api/offerte-aanvraag.js`, een Vercel Serverless Function — vereist geen eigen
+build-stap, elk bestand onder `/api/` wordt automatisch een endpoint). Reden: alleen
+zo kan (1) de e-mail conditioneel worden opgebouwd — nooit lege/irrelevante velden,
+nooit particuliere woningvelden in een zakelijke aanvraag of andersom — en (2) de
+interne tijd-/kostprijs-/margecalculatie voor periodieke bedrijfsschoonmaak
+volledig server-side blijven, zodat een bezoeker deze nooit via devtools of
+netwerkverkeer kan achterhalen. De browser levert alleen de ruwe invoer aan
+(oppervlakte, ruimtes, vervuiling, frequentie); het endpoint berekent, bouwt de
+e-mailtekst en stuurt die zelf, server-to-server, door naar Web3Forms (met dezelfde
+access key als het contactformulier). Zie de commentaren bovenin
+`api/offerte-aanvraag.js` voor de volledige `CONFIG` (uurtarief, marge, minimumprijs,
+reistijd, materiaalkosten, tijdmodel per ruimte/vervuilingsgraad) — elke financiële
+waarde die nog niet door de ondernemer is bevestigd, staat daar expliciet gemarkeerd
+als `// TE BEVESTIGEN`.
 
 ## SEO-opbouw
 
@@ -143,8 +163,22 @@ Bij een geslaagde inzending wordt de bezoeker doorgestuurd naar `thanks.html`.
 
 ## Lokaal testen
 
-Geen build-stap nodig. Vanuit de hoofdmap:
+Geen build-stap nodig voor de statische pagina's. Vanuit de hoofdmap:
 ```
 python3 -m http.server 8000
 ```
 en open `http://localhost:8000/` in de browser.
+
+**Let op:** een gewone `http.server` voert `/api/offerte-aanvraag.js` niet uit (dat
+is alleen een Vercel Serverless Function) — de offertewizard kan dan dus niet
+daadwerkelijk verzenden. Om alleen de e-mailopbouw en interne calculatie te testen
+(zonder Vercel of een echte deploy nodig te hebben), gebruik je de functies in
+`api/offerte-aanvraag.js` rechtstreeks vanuit Node, bijvoorbeeld:
+```js
+const { berekenInterneCalculatie, bouwEmailTekst, bouwOnderwerp } = require('./api/offerte-aanvraag.js')._internal;
+```
+Wil je de complete wizard-flow (stapnavigatie, conditionele velden, de payload die
+naar het endpoint zou gaan) end-to-end simuleren zonder een browser, dan kan dat met
+[jsdom](https://www.npmjs.com/package/jsdom) (`npm install jsdom`) door
+`offerte.html` + `js/main.js` in een virtuele DOM te laden en de wizard te bedienen
+zoals een bezoeker dat zou doen.
