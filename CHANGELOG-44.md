@@ -324,7 +324,12 @@ overeen met wat u zelf waarnam, wat alleen kan als de formule ongewijzigd is.
   `SERVICE_TO_WIZARD_DIENST_SLUG`/`SERVICE_TO_WIZARD_TYPE`-mappings,
   `cta_band()` kreeg een `dienst_param`, `build_service_pages()` geeft nu
   dienstcontext mee aan beide CTA's per dienstpagina, wizardstap 9's
-  `data-requires-dienst` uitgebreid.
+  `data-requires-dienst` uitgebreid, `ASSET_VERSION` **177 → 178** (cache-
+  busting, omdat `js/main.js` deze ronde substantieel is gewijzigd — anders
+  zouden bezoekers de oude, niet-auto-advancende main.js uit hun
+  browsercache kunnen blijven laden na deployment). Hele site opnieuw
+  gegenereerd met deze nieuwe versie; alle tests hierna opnieuw gedraaid en
+  nog steeds groen.
 - **`js/main.js`** — nieuwe `CALC_DIENST_SLUGS`-constante,
   `stepApplies()`/`data-requires-dienst` ondersteunt nu meerdere waarden,
   URL-preselectie zoekt de dienst-slug nu ook binnen het juiste klanttype

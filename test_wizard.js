@@ -486,5 +486,85 @@ function huidigeStap(doc) {
     console.log('OK: particuliere wizard auto-advancet op zijn eigen pure single-choice-stap (frequentie), niet op de samengestelde woningstap.');
   }
 
-  console.log('\nAlle ronde-44-scenario\'s (6 t/m 13) geslaagd.');
-})().catch((e) => { console.error('FOUT in ronde-44-scenario:', e); process.exitCode = 1; });
+  console.log('\n=== Scenario 14 (ronde 45): oppervlaktestap (7) advancet betrouwbaar op elk van de 3 gemelde opties ===');
+  {
+    // Punt 1-3 uit de ronde-45-brief: Klein / Middel / Groot moeten elk
+    // individueel, in een verse wizard-sessie, automatisch naar de
+    // eerstvolgende stap gaan -- dit is precies het scenario dat gemeld werd
+    // als kapot (auto-advance werkte wel bij andere stappen, niet hier).
+    for (const optie of ['Klein', 'Middel', 'Groot']) {
+      const dom = makeDom();
+      const doc = dom.window.document;
+      setRadio(doc, 'klanttype', 'Bedrijf');
+      await sleep(260); // -> stap 2
+      setRadio(doc, 'dienst', 'Kantoorreiniging');
+      await sleep(260); // -> stap 7 (oppervlakte)
+      assert.strictEqual(huidigeStap(doc), '7', `voorbereiding (${optie}): moet op de oppervlaktestap staan`);
+      setRadio(doc, 'oppervlakte', optie);
+      await sleep(260);
+      assert.strictEqual(huidigeStap(doc), '8', `oppervlakte="${optie}" moet automatisch naar stap 8 (frequentie) gaan`);
+    }
+    console.log('OK: Klein, Middel en Groot advancen elk betrouwbaar automatisch naar de volgende stap.');
+  }
+
+  console.log('\n=== Scenario 15 (ronde 45): Terug naar oppervlakte -> geen automatische sprong; nieuwe keuze -> wel ===');
+  {
+    // Punt 4-5 uit de ronde-45-brief -- dezelfde beveiliging als scenario 10,
+    // nu expliciet herhaald als eigen regressietest voor de gerapporteerde
+    // oppervlaktestap na de ronde-45-herstructurering (delegated listener).
+    const dom = makeDom();
+    const doc = dom.window.document;
+    setRadio(doc, 'klanttype', 'Bedrijf');
+    await sleep(260);
+    setRadio(doc, 'dienst', 'Kantoorreiniging');
+    await sleep(260); // -> stap 7
+    setRadio(doc, 'oppervlakte', 'Klein');
+    await sleep(260); // -> stap 8
+    assert.strictEqual(huidigeStap(doc), '8', 'voorbereiding: moet op de frequentiestap staan');
+    click(doc.getElementById('wizardBack')); // -> terug naar stap 7
+    assert.strictEqual(huidigeStap(doc), '7', 'Terug moet naar de oppervlaktestap gaan');
+    assert.ok(doc.querySelector('input[name="oppervlakte"][value="Klein"]').checked, 'de eerdere keuze ("Klein") moet nog aangevinkt staan');
+    await sleep(300);
+    assert.strictEqual(huidigeStap(doc), '7', 'punt 4: mag NIET vanzelf weer doorspringen na Terug, alleen omdat er al een waarde staat');
+    setRadio(doc, 'oppervlakte', 'Groot'); // een ECHTE nieuwe, bewuste keuze
+    await sleep(260);
+    assert.strictEqual(huidigeStap(doc), '8', 'punt 5: een nieuwe bewuste keuze na Terug moet weer gewoon auto-advancen');
+    console.log('OK: Terug naar oppervlakte springt niet vanzelf door; een nieuwe bewuste keuze doet dat wel.');
+  }
+
+  console.log('\n=== Scenario 16 (ronde 45): samengestelde stappen advancen nog steeds nooit vanzelf (controle na de refactor) ===');
+  {
+    // Punt 6 uit de ronde-45-brief: expliciete herbevestiging dat de
+    // delegated-listener-herstructurering het gedrag van samengestelde
+    // stappen niet heeft aangetast. Dekt zowel een zakelijke samengestelde
+    // stap (9: ruimtes/vervuiling/moment) als een particuliere (4: woning).
+    const dom = makeDom();
+    const doc = dom.window.document;
+    setRadio(doc, 'klanttype', 'Bedrijf');
+    await sleep(260);
+    setRadio(doc, 'dienst', 'Kantoorreiniging');
+    await sleep(260); // -> stap 7
+    setRadio(doc, 'oppervlakte', 'Klein');
+    await sleep(260); // -> stap 8
+    setRadio(doc, 'frequentie', 'Wekelijks');
+    await sleep(260); // -> stap 9 (samengesteld: ruimtes/vervuiling/moment)
+    assert.strictEqual(huidigeStap(doc), '9', 'voorbereiding: moet op de samengestelde ruimtes-stap staan');
+    setRadio(doc, 'vervuilingsgraad_zakelijk', 'Normale kantoor-/bedrijfsvervuiling');
+    await sleep(300);
+    assert.strictEqual(huidigeStap(doc), '9', 'een los veld op een samengestelde stap mag nog steeds nooit auto-advancen');
+
+    const dom2 = makeDom();
+    const doc2 = dom2.window.document;
+    setRadio(doc2, 'klanttype', 'Particulier');
+    await sleep(260);
+    setRadio(doc2, 'dienst', 'Periodieke schoonmaak', 'particulier');
+    await sleep(260); // -> stap 4 (woning, samengesteld)
+    assert.strictEqual(huidigeStap(doc2), '4', 'voorbereiding: particuliere woningstap');
+    setRadio(doc2, 'woonoppervlakte_staffel', 't/m 60 m²');
+    await sleep(300);
+    assert.strictEqual(huidigeStap(doc2), '4', 'de particuliere samengestelde woningstap mag ook nog steeds nooit auto-advancen');
+    console.log('OK: samengestelde stappen (zakelijk en particulier) advancen na de refactor nog steeds nooit vanzelf.');
+  }
+
+  console.log('\nAlle ronde-44- en ronde-45-scenario\'s geslaagd.');
+})().catch((e) => { console.error('FOUT in ronde-44/45-scenario:', e); process.exitCode = 1; });
