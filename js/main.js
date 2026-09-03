@@ -263,6 +263,20 @@ if (document.readyState === 'loading') {
     }
   });
 
+  // Ronde 46: het optionele exacte-m²-veld staat op dezelfde stap (7) als de
+  // auto-advancende oppervlakte-categoriekaarten. Zonder ingreep zou een
+  // gebruiker die eerst een categorie aanklikt (waarmee de 200ms-auto-advance-
+  // timer start) en daarna nog een exact m²-getal wil intypen, halverwege naar
+  // stap 8 kunnen worden doorgestuurd. Elke focus/invoer in dit veld annuleert
+  // daarom een eventueel lopende auto-advance-timer, zodat de gebruiker onbeperkt
+  // de tijd heeft om te typen — daarna blijft "Volgende" gewoon beschikbaar.
+  const oppervlakteM2ExactInput = document.getElementById('oppervlakte_m2_exact');
+  if (oppervlakteM2ExactInput) {
+    ['focus', 'input'].forEach(evt => {
+      oppervlakteM2ExactInput.addEventListener(evt, cancelAutoAdvance);
+    });
+  }
+
   function show(stepNum, scrollTo) {
     cancelAutoAdvance();
     steps.forEach(s => { s.hidden = parseInt(s.dataset.step, 10) !== stepNum; });
@@ -353,6 +367,8 @@ if (document.readyState === 'loading') {
   const bedrijfsnaamInput = document.getElementById('bedrijfsnaam');
   const aantalLocatiesField = document.getElementById('fieldAantalLocaties');
   const aantalLocatiesInput = document.getElementById('aantal_locaties');
+  const retourKmField = document.getElementById('fieldRetourKm');
+  const retourKmInput = document.getElementById('retour_km');
   const oppQ = document.getElementById('oppervlakteQ');
   const oppSub = document.getElementById('oppervlakteSub');
   const toelichtingQ = document.getElementById('toelichtingQ');
@@ -417,7 +433,7 @@ if (document.readyState === 'loading') {
     syncRuimtesField();
     if (ruimteOverigWrap) ruimteOverigWrap.hidden = true;
     clearAndDisable(ruimteOverigInput);
-    form.querySelectorAll('input[name="vervuilingsgraad_zakelijk"], input[name="schoonmaakmoment"]').forEach(r => { r.checked = false; });
+    form.querySelectorAll('input[name="vervuilingsgraad_zakelijk"], input[name="schoonmaakmoment"], input[name="gebruiksintensiteit_zakelijk"]').forEach(r => { r.checked = false; });
     if (vervuilingZakelijkToelichtingWrap) vervuilingZakelijkToelichtingWrap.hidden = true;
     clearAndDisable(vervuilingZakelijkToelichtingInput);
   }
@@ -749,6 +765,16 @@ if (document.readyState === 'loading') {
     const showAantal = type === 'bedrijf' || type === 'vve';
     if (aantalLocatiesField) aantalLocatiesField.hidden = !showAantal;
     if (showAantal) enableField(aantalLocatiesInput); else clearAndDisable(aantalLocatiesInput);
+
+    // Retourafstand (ronde 47, briefpunt 11): zelfde zichtbaarheidsregel als
+    // "Aantal locaties" hierboven (elke zakelijke/VvE-aanvraag) -- alleen
+    // relevant voor de interne calculatie (CALC_DIENST_SLUGS), maar wordt
+    // hier bewust niet verder dienst-specifiek gemaakt, net als aantal
+    // locaties. Leeg laten is expliciet toegestaan: dan behandelt de
+    // server-side calculator (lib/calculator.js) dit als "afstand nog
+    // onbekend" en telt er nooit een verzonnen kilometeraantal mee.
+    if (retourKmField) retourKmField.hidden = !showAantal;
+    if (showAantal) enableField(retourKmInput); else clearAndDisable(retourKmInput);
 
     if (!isParticulier) {
       // Particuliere stappen (pakket, extra's, woning, frequentie-particulier)
@@ -1149,7 +1175,9 @@ if (document.readyState === 'loading') {
       rows.push(
         ['Bedrijfsnaam / VvE', getFieldValue('bedrijfsnaam')],
         ['Omvang', getFieldValue('oppervlakte')],
+        ['Exacte oppervlakte (m²)', getFieldValue('oppervlakte_m2_exact')],
         ['Aantal locaties', getFieldValue('aantal_locaties')],
+        ['Retourafstand (km)', getFieldValue('retour_km')],
         ['Frequentie', getFieldValue('frequentie')],
         ['Aantal keer per week', getFieldValue('meerdere_per_week_aantal')]
       );
@@ -1157,6 +1185,7 @@ if (document.readyState === 'loading') {
         rows.push(
           ['Ruimtes', getFieldValue('ruimtes')],
           ['Toelichting ruimte', getFieldValue('ruimte_overig_toelichting')],
+          ['Gebruiksintensiteit', getFieldValue('gebruiksintensiteit_zakelijk')],
           ['Extra vervuiling', getFieldValue('vervuilingsgraad_zakelijk')],
           ['Toelichting vervuiling', getFieldValue('vervuiling_zakelijk_toelichting')],
           ['Schoonmaakmoment', getFieldValue('schoonmaakmoment')]
@@ -1205,12 +1234,15 @@ if (document.readyState === 'loading') {
       velden: collectRows(),
       calc: {
         oppervlakte: getFieldValue('oppervlakte'),
+        oppervlakteExactM2: getFieldValue('oppervlakte_m2_exact'),
         frequentie: getFieldValue('frequentie'),
         meerderePerWeekAantal: getFieldValue('meerdere_per_week_aantal'),
         aantalLocaties: getFieldValue('aantal_locaties'),
         ruimtes: zakelijkRuimteChecks.filter(cb => cb.checked && cb !== ruimteOverigCheck).map(cb => cb.getAttribute('data-ruimte-id')),
         ruimteOverig: !!(ruimteOverigCheck && ruimteOverigCheck.checked),
         vervuiling: getFieldValue('vervuilingsgraad_zakelijk'),
+        gebruiksintensiteit: getFieldValue('gebruiksintensiteit_zakelijk'),
+        retourKm: getFieldValue('retour_km'),
       },
       botcheck: !!(botcheckInput && botcheckInput.checked),
       form_rendered_at: renderedAtInput ? renderedAtInput.value : '',

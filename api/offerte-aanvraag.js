@@ -28,106 +28,25 @@
 // volledige verzendlogica (`process.env.RESEND_API_KEY`/`RESEND_FROM_EMAIL`,
 // nooit hardcoded).
 //
-// BELANGRIJK — financiële parameters: dit is de ENIGE plek in de repository
-// waar interne kostprijzen/marges voor zakelijke periodieke schoonmaak
-// hardcoded staan. Er is in de rest van de repository GEEN eerdere zakelijke
-// prijsconfiguratie of calculatorlogica aangetroffen (alleen consumentprijzen
-// voor particuliere pakketten, in generate.py) — de onderstaande waarden zijn
-// dus nieuw, en zijn bewuste, verdedigbare placeholders, GEEN door
-// Brabantschoon bevestigde tarieven. Alles wat hieronder "TE BEVESTIGEN" is
-// gemarkeerd moet door de ondernemer worden nagekeken/aangepast voordat de
-// interne indicaties als leidend voor calculatie worden gebruikt.
+// BELANGRIJK — financiële parameters: sinds ronde 46 staan alle interne
+// kostprijzen/marges/tijdnormen voor Calculator v2 centraal in
+// lib/calculator.js (NIET meer in dit bestand — zie CHANGELOG-46.md voor de
+// volledige oud-vs-nieuw-vergelijking). Dit bestand roept die gedeelde module
+// alleen aan en bouwt er de interne e-mail omheen. Er is in de rest van de
+// repository geen andere plek met calculatielogica (briefpunt 16: één
+// gedeelde bron).
 
 "use strict";
 
 const { bouwEmailHtml, verstuurEmail } = require("../lib/mail.js");
+const calculator = require("../lib/calculator.js");
+const { calculateOffer, euro } = calculator;
 
-// =================================================================
-// CENTRALE CONFIGURATIE — interne calculatie periodieke bedrijfsschoonmaak
-// (ONGEWIJZIGD deze ronde — zie briefpunt 17: geen enkele financiële
-// parameter, tijdmodel- of vervuilingsfactor-waarde is aangepast)
-// =================================================================
-const CONFIG = {
-  // --- Kostprijs & marge (TE BEVESTIGEN door Brabantschoon) ---
-  // Interne uitvoeringskost per uur: wat het BEDRIJF een schoonmaakuur kost
-  // om te laten uitvoeren, inclusief werkgeverslasten/overhead als het geen
-  // "de eigenaar maakt zelf schoon"-uur is (zzp'er inhuren of personeel in
-  // loondienst). Bewust NIET nul, ook al maakt Egzon momenteel misschien nog
-  // zelf schoon — de calculator moet ook kloppen zodra iemand anders wordt
-  // ingezet (zie briefpunt 8).
-  INTERNAL_HOURLY_COST_EXCL_BTW: 27.5, // TE BEVESTIGEN
-  // Gewenste brutomarge op de adviesprijs (excl. btw), als fractie.
-  DESIRED_GROSS_MARGIN: 0.35, // TE BEVESTIGEN (35%)
-  // Minimumprijs per bezoek (excl. btw) — voorkomt dat kleine opdrachten
-  // onrendabel worden door reistijd/administratie/opstart- en afsluittijd.
-  MIN_PRICE_PER_VISIT_EXCL_BTW: 45, // TE BEVESTIGEN
-
-  // --- Reistijd (TE BEVESTIGEN) ---
-  // Vlakke inschatting per bezoek (heen + terug), tot een preciezer model
-  // (bijv. per postcodegebied) beschikbaar is.
-  TRAVEL_MINUTES_PER_VISIT: 20, // TE BEVESTIGEN
-  // Uurtarief waartegen reistijd wordt gewaardeerd — standaard gelijk aan de
-  // uitvoeringskost, maar apart configureerbaar mocht Brabantschoon reistijd
-  // tegen een ander tarief willen waarderen.
-  TRAVEL_RATE_PER_HOUR_EXCL_BTW: 27.5, // TE BEVESTIGEN
-
-  // --- Materiaal & overig (TE BEVESTIGEN) ---
-  MATERIAL_COST_PER_VISIT_EXCL_BTW: 3.5, // TE BEVESTIGEN
-  OTHER_DIRECT_COSTS_PER_VISIT_EXCL_BTW: 0,
-
-  // --- Btw ---
-  // Standaard Nederlands btw-tarief — GEEN placeholder, dit is het geldende
-  // wettelijke tarief voor deze diensten.
-  VAT_RATE_PERCENT: 21,
-
-  // --- Weken per maand ---
-  // 52 weken / 12 maanden, intern altijd met volle precisie gebruikt (zie
-  // briefpunt 7); alleen bedragen worden afgerond voor presentatie.
-  WEEKS_PER_MONTH: 52 / 12,
-
-  // --- Tijdmodel (TE BEVESTIGEN/verfijnen) ---
-  // Concept: basis schoonmaaktijd (afhankelijk van oppervlaktecategorie) +
-  // tijd per geselecteerde ruimte, vermenigvuldigd met een vervuilingsfactor.
-  // Dit vervangt de oude, te simpele regel "tot 50 m² = altijd 1 uur".
-  TIME_MODEL: {
-    BASE_MINUTES_BY_OPPERVLAKTE: {
-      "Klein": 45, // tot 50 m²
-      "Middel": 90, // 50-150 m²
-      "Groot": 180, // 150-500 m²
-      "Zeer groot": 300, // 500 m² of meer
-      // "Weet ik niet" bestaat bewust niet in deze tabel: bij onbekende
-      // oppervlakte is een automatische tijdschatting niet verantwoord.
-    },
-    // Extra minuten per geselecteerde ruimte (bovenop de basistijd) — komt
-    // overeen met ZAKELIJK_RUIMTE_OPTIES in generate.py; ids moeten exact
-    // overeenkomen.
-    ROOM_EXTRA_MINUTES: {
-      ruimte_kantoor: 10,
-      ruimte_kantine: 15,
-      ruimte_toiletten: 15,
-      ruimte_entree: 10,
-      ruimte_gangen: 10,
-      ruimte_vergaderruimte: 10,
-      ruimte_kleedruimte: 10,
-      ruimte_werkplaats: 20,
-      ruimte_overig: 15,
-    },
-    // Vervuilingsfactor — komt overeen met ZAKELIJK_VERVUILING_OPTIES in
-    // generate.py; labels moeten exact overeenkomen (geen aparte ids nodig,
-    // deze labels zijn stabiele, door de gebruiker gekozen tekst).
-    VERVUILING_FACTOR: {
-      "Normale kantoor-/bedrijfsvervuiling": 1.0,
-      "Enige extra vervuiling": 1.15,
-      "Bovengemiddelde vervuiling": 1.35,
-      "Anders / toelichting": 1.35, // conservatief behandeld tot handmatig beoordeeld
-    },
-  },
-
-  // Minimale tijd (ms) tussen renderen en versturen van het formulier — een
-  // eenvoudige, dependency-vrije bot-heuristiek: geen mens vult een
-  // meerstaps-wizard in <2,5s in.
-  MIN_FILL_TIME_MS: 2500,
-};
+// Minimale tijd (ms) tussen renderen en versturen van het formulier — een
+// eenvoudige, dependency-vrije bot-heuristiek: geen mens vult een
+// meerstaps-wizard in <2,5s in. Losstaand van de Calculator v2-config
+// (lib/calculator.js) — dit is een spamcontrole, geen prijs-/tijdparameter.
+const MIN_FILL_TIME_MS = 2500;
 
 // Labels die bij CONTACTGEGEVENS horen (en dus NIET nogmaals in de
 // AANVRAAG-sectie mogen verschijnen) — moet als set overeenkomen met de
@@ -144,16 +63,6 @@ const CONTACT_LABELS = new Set([
 // =================================================================
 // HELPERS
 // =================================================================
-function euro(bedrag) {
-  return "€" + bedrag.toFixed(2).replace(".", ",");
-}
-
-function parseLeadingInt(str) {
-  if (!str) return null;
-  const m = String(str).match(/\d+/);
-  return m ? parseInt(m[0], 10) : null;
-}
-
 function isNietLeeg(v) {
   return typeof v === "string" ? v.trim().length > 0 : !!v;
 }
@@ -163,124 +72,34 @@ function isValidEmail(v) {
 }
 
 // =================================================================
-// INTERNE CALCULATIE
+// INTERNE CALCULATIE — Calculator v2 (lib/calculator.js, ronde 46)
 // =================================================================
-// Ronde 44: het rekenmodel zelf (tijdmodel/kostprijs/marge hieronder in
-// CONFIG) is NIET gewijzigd — alleen het BEREIK is uitgebreid van uitsluitend
-// "periodiek-zakelijk" naar ook "kantoorreiniging" (zelfde onderliggende
-// vraagset: oppervlakte/ruimtes/vervuiling/frequentie, zie
-// CHANGELOG-44.md § calculatorbereik-analyse). Moet in sync blijven met
-// CALC_DIENST_SLUGS in js/main.js en data-requires-dienst op wizardstap 9 in
-// generate.py.
-const CALC_DIENST_SLUGS = ["periodiek-zakelijk", "kantoorreiniging"];
+// De volledige rekenlogica (tijdsbandbreedte, kostprijs, adviesprijs-
+// bandbreedte, betrouwbaarheid, max. ZZP-tarief) staat sinds ronde 46
+// uitsluitend in lib/calculator.js — hier wordt die alleen aangeroepen.
+// `calculateOffer()` retourneert altijd één van drie vormen:
+//   null                                       -- particuliere aanvraag (geen interne sectie)
+//   { status: "niet_beschikbaar" }              -- dienst buiten CALC_DIENST_SLUGS
+//   { status: "onvoldoende_info", redenen }      -- te weinig basisinvoer
+//   { status: "ok", ... }                        -- een bandbreedte-inschatting
+// Zie CHANGELOG-46.md voor de volledige vergelijking met Calculator v1.
 
-function berekenInterneCalculatie(payload) {
-  if (!payload) return null;
-  const type = payload.klanttype || "";
-  const isZakelijk = type === "Bedrijf" || type === "VvE / organisatie";
-  // Particuliere aanvragen hebben hun eigen, aan de klant getoonde
-  // prijsindicatie (zie generate.py/js/main.js) — daar hoort nooit een
-  // "INTERNE CALCULATIE"-sectie bij, dus geen wijziging t.o.v. voorheen.
-  if (!isZakelijk) return null;
-  // Zakelijke/VvE-aanvraag voor een dienst waarvoor (nog) geen betrouwbaar
-  // intern rekenmodel bestaat (bijv. glasbewassing, gevelreiniging,
-  // opleveringsschoonmaak — zie brief ronde 44, sectie 12): toon dit expliciet
-  // intern, in plaats van de sectie stilzwijgend weg te laten of een bedrag te
-  // verzinnen.
-  if (CALC_DIENST_SLUGS.indexOf(payload.dienstSlug) === -1) {
-    return { nietBeschikbaar: true };
+// Eén regel, alleen intern, die de betrouwbaarheid/het vervolgadvies
+// samenvat (briefpunt 13, "Intern advies"). Gebruikt de kleurcodes uit de
+// brief zelf (🟢/🟡/🟠) als snelle visuele indicator voor Egzon — geen
+// klantwaarde, puur intern leesgemak.
+function bouwInterneAdviesRegel(calc) {
+  if (calc.locatieopnameAanbevolen) {
+    const reden = (calc.betrouwbaarheidFactoren || []).length
+      ? calc.betrouwbaarheidFactoren.join("; ")
+      : "bijzondere situatie opgegeven door de klant";
+    return "🟠 Locatieopname aanbevolen – " + reden + ".";
   }
-  const calc = payload.calc || {};
-  const redenen = [];
-
-  const baseMinutes = CONFIG.TIME_MODEL.BASE_MINUTES_BY_OPPERVLAKTE[calc.oppervlakte];
-  if (baseMinutes == null) redenen.push("oppervlakte onbekend of nog niet beoordeeld (“weet ik niet”)");
-
-  const vervuilingFactor = calc.vervuiling ? CONFIG.TIME_MODEL.VERVUILING_FACTOR[calc.vervuiling] : null;
-  if (!vervuilingFactor) redenen.push("vervuilingsgraad niet opgegeven");
-
-  let visitsPerMonth = null;
-  let frequentieLabel = calc.frequentie || "";
-  if (calc.frequentie === "Wekelijks") {
-    visitsPerMonth = CONFIG.WEEKS_PER_MONTH;
-  } else if (calc.frequentie === "Meerdere keren per week") {
-    const n = parseInt(calc.meerderePerWeekAantal, 10);
-    if (Number.isFinite(n) && n >= 2) {
-      visitsPerMonth = n * CONFIG.WEEKS_PER_MONTH;
-      frequentieLabel = n + "× per week";
-    } else {
-      redenen.push('exact aantal keer per week niet opgegeven bij "Meerdere keren per week"');
-    }
-  } else if (calc.frequentie === "Maandelijks") {
-    visitsPerMonth = 1;
-  } else {
-    redenen.push('frequentie is "' + (calc.frequentie || "onbekend") + '" — geen automatische periodieke prijsindicatie mogelijk');
+  if (calc.betrouwbaarheid === "Middel") {
+    const redenen = (calc.betrouwbaarheidFactoren || []).join("; ");
+    return "🟡 Betrouwbaarheid: Middel" + (redenen ? " – " + redenen + "." : ".");
   }
-
-  if (redenen.length > 0) {
-    return { onvoldoendeInfo: true, redenen };
-  }
-
-  let roomMinutes = 0;
-  (calc.ruimtes || []).forEach((rid) => {
-    roomMinutes += CONFIG.TIME_MODEL.ROOM_EXTRA_MINUTES[rid] || 0;
-  });
-  if (calc.ruimteOverig) roomMinutes += CONFIG.TIME_MODEL.ROOM_EXTRA_MINUTES.ruimte_overig;
-
-  const totaalMinuten = (baseMinutes + roomMinutes) * vervuilingFactor;
-  const uren = totaalMinuten / 60;
-
-  const arbeidskosten = uren * CONFIG.INTERNAL_HOURLY_COST_EXCL_BTW;
-  const reiskosten = (CONFIG.TRAVEL_MINUTES_PER_VISIT / 60) * CONFIG.TRAVEL_RATE_PER_HOUR_EXCL_BTW;
-  const materiaalkosten = CONFIG.MATERIAL_COST_PER_VISIT_EXCL_BTW;
-  const overigeKosten = CONFIG.OTHER_DIRECT_COSTS_PER_VISIT_EXCL_BTW;
-  const directeKostenPerBezoek = arbeidskosten + reiskosten + materiaalkosten + overigeKosten;
-
-  const adviesprijsRuwExclBtw = directeKostenPerBezoek / (1 - CONFIG.DESIRED_GROSS_MARGIN);
-  const adviesprijsExclBtw = Math.max(adviesprijsRuwExclBtw, CONFIG.MIN_PRICE_PER_VISIT_EXCL_BTW);
-  const minimumToegepast = adviesprijsExclBtw > adviesprijsRuwExclBtw + 0.005;
-  const btwBedrag = adviesprijsExclBtw * (CONFIG.VAT_RATE_PERCENT / 100);
-  const adviesprijsInclBtw = adviesprijsExclBtw + btwBedrag;
-  const werkelijkeMargePercent = ((adviesprijsExclBtw - directeKostenPerBezoek) / adviesprijsExclBtw) * 100;
-
-  const adviesprijsPerMaandExclBtw = adviesprijsExclBtw * visitsPerMonth;
-  const adviesprijsPerMaandInclBtw = adviesprijsInclBtw * visitsPerMonth;
-  const directeKostenPerMaand = directeKostenPerBezoek * visitsPerMonth;
-
-  const locatiesAantal = parseLeadingInt(calc.aantalLocaties);
-  const meerdereLocaties = !!(locatiesAantal && locatiesAantal > 1);
-
-  return {
-    onvoldoendeInfo: false,
-    totaalMinuten,
-    uren,
-    frequentieLabel,
-    visitsPerMonth,
-    arbeidskosten,
-    reiskosten,
-    materiaalkosten,
-    overigeKosten,
-    directeKostenPerBezoek,
-    directeKostenPerMaand,
-    adviesprijsExclBtw,
-    adviesprijsInclBtw,
-    adviesprijsPerMaandExclBtw,
-    adviesprijsPerMaandInclBtw,
-    btwBedrag,
-    werkelijkeMargePercent,
-    minimumToegepast,
-    meerdereLocaties,
-    locatiesAantal,
-  };
-}
-
-function formatDuur(minuten) {
-  const afgerond = Math.round(minuten / 5) * 5; // afronden op 5 min voor leesbaarheid
-  const uren = Math.floor(afgerond / 60);
-  const min = afgerond % 60;
-  if (uren === 0) return min + " min";
-  if (min === 0) return uren + " uur";
-  return uren + " uur " + min + " min";
+  return "🟢 Betrouwbaarheid: Hoog – bruikbaar als eerste interne indicatie.";
 }
 
 // =================================================================
@@ -313,56 +132,68 @@ function bouwEmailTekst(payload) {
     regels.push("");
   });
 
-  const calc = berekenInterneCalculatie(payload);
+  const calc = calculateOffer(payload);
   if (calc) {
-    regels.push("INTERNE CALCULATIE");
-    if (calc.nietBeschikbaar) {
-      regels.push("Automatische prijsindicatie:");
-      regels.push("Niet beschikbaar voor deze dienst.");
+    if (calc.status === "niet_beschikbaar") {
+      regels.push("INTERNE PRIJSINDICATIE");
+      regels.push("Niet beschikbaar voor deze dienst (nog geen betrouwbaar rekenmodel).");
       regels.push("");
-      regels.push("Advies:");
+      regels.push("INTERN ADVIES");
       regels.push("Handmatige calculatie / locatieopname aanbevolen.");
-    } else if (calc.onvoldoendeInfo) {
-      regels.push("Onvoldoende informatie voor een automatische prijsindicatie.");
+      regels.push("");
+    } else if (calc.status === "onvoldoende_info") {
+      regels.push("INTERNE PRIJSINDICATIE");
+      regels.push("Onvoldoende informatie voor een automatische inschatting.");
       regels.push("Reden: " + calc.redenen.join("; "));
-    } else {
-      regels.push("Geschatte schoonmaaktijd:");
-      regels.push(formatDuur(calc.totaalMinuten) + " per bezoek");
       regels.push("");
-      regels.push("Frequentie:");
-      regels.push(calc.frequentieLabel);
-      regels.push("Gemiddeld " + calc.visitsPerMonth.toFixed(2).replace(".", ",") + " bezoeken per maand");
+      regels.push("INTERN ADVIES");
+      regels.push("Handmatige calculatie / locatieopname aanbevolen.");
+      regels.push("Interne calculatie – niet automatisch aan de klant gecommuniceerd en geen definitieve offerte.");
       regels.push("");
-      regels.push("Geschatte directe kosten:");
-      regels.push(euro(calc.directeKostenPerBezoek) + " per bezoek — " + euro(calc.directeKostenPerMaand) + " per maand");
-      regels.push("");
-      regels.push("Adviesprijs per bezoek:");
-      regels.push(euro(calc.adviesprijsExclBtw) + " excl. btw" + (calc.minimumToegepast ? " (minimumprijs per bezoek toegepast)" : ""));
-      regels.push("");
-      regels.push("Adviesprijs per maand:");
-      regels.push(euro(calc.adviesprijsPerMaandExclBtw) + " excl. btw");
-      regels.push("");
-      regels.push("Btw (per bezoek):");
-      regels.push(euro(calc.btwBedrag));
-      regels.push("");
-      regels.push("Adviesprijs incl. btw:");
-      regels.push(euro(calc.adviesprijsInclBtw) + " per bezoek — " + euro(calc.adviesprijsPerMaandInclBtw) + " per maand");
-      regels.push("");
-      regels.push("Verwachte brutomarge:");
-      regels.push(calc.werkelijkeMargePercent.toFixed(1).replace(".", ",") + "%");
-      if (calc.meerdereLocaties) {
-        regels.push("");
-        regels.push("Let op: aanvraag betreft " + calc.locatiesAantal + " locaties — bovenstaande calculatie is PER LOCATIE, vermenigvuldig handmatig voor een totaalinschatting.");
+    } else if (calc.status === "ok") {
+      regels.push("INTERNE PRIJSINDICATIE");
+      regels.push("Geschatte schoonmaaktijd: " + calc.tijdsbandbreedteTekst + " per bezoek");
+      regels.push("Calculatietijd (gebruikt voor onderstaande prijzen): " + calc.calculatietijdTekst);
+      regels.push("Minimum gezonde prijs: " + euro(calc.minimumGezondePrijsExclBtw) + " excl. btw per bezoek");
+      regels.push("Adviesprijs: " + calc.adviesprijsTekst + " excl. btw per bezoek" + (calc.minimumToegepast ? " (minimumprijs toegepast)" : ""));
+      if (calc.maandbedragTekst) {
+        regels.push("Advies maandbedrag: " + calc.maandbedragTekst + " excl. btw (" + calc.frequentieLabel + ")");
+      } else {
+        regels.push("Advies maandbedrag: niet beschikbaar (" + (calc.meerdereKerenPerWeekOnvolledig ? 'aantal keer per week niet opgegeven' : 'frequentie "' + calc.frequentieLabel + '" heeft geen maandritme') + ")");
       }
-    }
-    // Disclaimer alleen bij een daadwerkelijk (of poging tot) berekend bedrag
-    // — bij "nietBeschikbaar" is er nooit iets berekend, dus zou de zin
-    // "prijsindicatie niet automatisch gecommuniceerd" verwarrend zijn.
-    if (!calc.nietBeschikbaar) {
+      regels.push("Referentie ZZP-tarief: " + calc.referentieZzpTariefTekst);
+      if (calc.maxZzpTariefTekst) {
+        regels.push("Max. verantwoord ZZP-tarief: " + calc.maxZzpTariefTekst);
+      }
+      if (calc.uitbesteedbaarheid) {
+        regels.push("Uitbesteedbaarheid: " + calc.uitbesteedbaarheid);
+      }
+      regels.push("Betrouwbaarheid: " + calc.betrouwbaarheid);
+      if (calc.meerdereLocaties) {
+        regels.push("Let op: aanvraag betreft " + calc.locatiesAantal + " locaties — bovenstaande is PER LOCATIE, vermenigvuldig handmatig voor een totaalinschatting.");
+      }
       regels.push("");
-      regels.push('Interne prijsindicatie – niet automatisch aan de klant gecommuniceerd en geen definitieve offerte.');
+
+      regels.push("MIDDELEN & VERVOER");
+      regels.push("Middelen/materialen: " + calc.materiaalkostenTekst + " per bezoek (gebruikt: " + euro(calc.materiaalkosten) + ")");
+      if (calc.vervoerBekend) {
+        regels.push("Retourkilometers: " + calc.km + " km");
+        regels.push("Voertuigkosten: " + euro(calc.voertuigkosten) + " per bezoek");
+      } else {
+        regels.push("Retourkilometers: nog te bepalen");
+        regels.push("Voertuigkosten: nog te bepalen");
+      }
+      regels.push("Totale bekende interne kostprijs per bezoek: " + euro(calc.kostprijsPerBezoek));
+      if (calc.vervoerNogTeBepalen) {
+        regels.push("Vervoer nog niet meegerekend — verkoopindicatie is exclusief nog te bepalen vervoerskosten.");
+      }
+      regels.push("");
+
+      regels.push("INTERN ADVIES");
+      regels.push(bouwInterneAdviesRegel(calc));
+      regels.push("Interne calculatie – niet automatisch aan de klant gecommuniceerd en geen definitieve offerte.");
+      regels.push("");
     }
-    regels.push("");
   }
 
   regels.push("CONTACTGEGEVENS");
@@ -395,36 +226,73 @@ function bouwEmailHtmlOfferte(payload) {
     rows: aanvraagVelden.map(([label, waarde]) => [label, String(waarde)]),
   });
 
-  const calc = berekenInterneCalculatie(payload);
+  const calc = calculateOffer(payload);
   let noot = null;
   if (calc) {
-    if (calc.nietBeschikbaar) {
+    if (calc.status === "niet_beschikbaar") {
       secties.push({
-        heading: "Interne calculatie",
-        tekst: "Automatische prijsindicatie: Niet beschikbaar voor deze dienst. Advies: Handmatige calculatie / locatieopname aanbevolen.",
+        heading: "Interne prijsindicatie",
+        tekst: "Niet beschikbaar voor deze dienst (nog geen betrouwbaar rekenmodel).",
       });
-    } else if (calc.onvoldoendeInfo) {
       secties.push({
-        heading: "Interne calculatie",
-        tekst: "Onvoldoende informatie voor een automatische prijsindicatie. Reden: " + calc.redenen.join("; "),
+        heading: "Intern advies",
+        tekst: "Handmatige calculatie / locatieopname aanbevolen.",
       });
-    } else {
-      const calcRows = [
-        ["Geschatte schoonmaaktijd", formatDuur(calc.totaalMinuten) + " per bezoek"],
-        ["Frequentie", calc.frequentieLabel],
-        ["Bezoeken per maand (gem.)", calc.visitsPerMonth.toFixed(2).replace(".", ",")],
-        ["Geschatte directe kosten", euro(calc.directeKostenPerBezoek) + " per bezoek — " + euro(calc.directeKostenPerMaand) + " per maand"],
-        ["Adviesprijs per bezoek", euro(calc.adviesprijsExclBtw) + " excl. btw" + (calc.minimumToegepast ? " (minimumprijs toegepast)" : "")],
-        ["Adviesprijs per maand", euro(calc.adviesprijsPerMaandExclBtw) + " excl. btw"],
-        ["Btw (per bezoek)", euro(calc.btwBedrag)],
-        ["Adviesprijs incl. btw", euro(calc.adviesprijsInclBtw) + " per bezoek — " + euro(calc.adviesprijsPerMaandInclBtw) + " per maand"],
-        ["Verwachte brutomarge", calc.werkelijkeMargePercent.toFixed(1).replace(".", ",") + "%"],
+    } else if (calc.status === "onvoldoende_info") {
+      secties.push({
+        heading: "Interne prijsindicatie",
+        tekst: "Onvoldoende informatie voor een automatische inschatting. Reden: " + calc.redenen.join("; "),
+      });
+      secties.push({
+        heading: "Intern advies",
+        tekst: "Handmatige calculatie / locatieopname aanbevolen.",
+      });
+      noot = "Interne calculatie – niet automatisch aan de klant gecommuniceerd en geen definitieve offerte.";
+    } else if (calc.status === "ok") {
+      const prijsRows = [
+        ["Geschatte schoonmaaktijd", calc.tijdsbandbreedteTekst + " per bezoek"],
+        ["Calculatietijd", calc.calculatietijdTekst],
+        ["Minimum gezonde prijs", euro(calc.minimumGezondePrijsExclBtw) + " excl. btw per bezoek"],
+        ["Adviesprijs", calc.adviesprijsTekst + " excl. btw per bezoek" + (calc.minimumToegepast ? " (minimumprijs toegepast)" : "")],
+        ["Advies maandbedrag", calc.maandbedragTekst ? calc.maandbedragTekst + " excl. btw (" + calc.frequentieLabel + ")" : "Niet beschikbaar (" + (calc.meerdereKerenPerWeekOnvolledig ? "aantal keer per week niet opgegeven" : "frequentie “" + calc.frequentieLabel + "” heeft geen maandritme") + ")"],
       ];
-      if (calc.meerdereLocaties) {
-        calcRows.push(["Let op", "Aanvraag betreft " + calc.locatiesAantal + " locaties — calculatie is PER LOCATIE, vermenigvuldig handmatig voor een totaalinschatting."]);
+      prijsRows.push(["Referentie ZZP-tarief", calc.referentieZzpTariefTekst]);
+      if (calc.maxZzpTariefTekst) {
+        prijsRows.push(["Max. verantwoord ZZP-tarief", calc.maxZzpTariefTekst]);
       }
-      secties.push({ heading: "Interne calculatie", rows: calcRows });
-      noot = "Interne prijsindicatie – niet automatisch aan de klant gecommuniceerd en geen definitieve offerte.";
+      if (calc.uitbesteedbaarheid) {
+        prijsRows.push(["Uitbesteedbaarheid", calc.uitbesteedbaarheid]);
+      }
+      prijsRows.push(["Betrouwbaarheid", calc.betrouwbaarheid]);
+      if (calc.meerdereLocaties) {
+        prijsRows.push(["Let op", "Aanvraag betreft " + calc.locatiesAantal + " locaties — bovenstaande is PER LOCATIE, vermenigvuldig handmatig voor een totaalinschatting."]);
+      }
+      secties.push({ heading: "Interne prijsindicatie", rows: prijsRows });
+
+      const vervoerRows = [
+        ["Middelen/materialen", calc.materiaalkostenTekst + " per bezoek (gebruikt: " + euro(calc.materiaalkosten) + ")"],
+      ];
+      if (calc.vervoerBekend) {
+        vervoerRows.push(["Retourkilometers", calc.km + " km"]);
+        vervoerRows.push(["Voertuigkosten", euro(calc.voertuigkosten) + " per bezoek"]);
+      } else {
+        vervoerRows.push(["Retourkilometers", "nog te bepalen"]);
+        vervoerRows.push(["Voertuigkosten", "nog te bepalen"]);
+      }
+      vervoerRows.push(["Totale bekende interne kostprijs per bezoek", euro(calc.kostprijsPerBezoek)]);
+      if (calc.vervoerNogTeBepalen) {
+        vervoerRows.push(["Let op", "Vervoer nog niet meegerekend — verkoopindicatie is exclusief nog te bepalen vervoerskosten."]);
+      }
+      secties.push({
+        heading: "Middelen & vervoer",
+        rows: vervoerRows,
+      });
+
+      secties.push({
+        heading: "Intern advies",
+        tekst: bouwInterneAdviesRegel(calc),
+      });
+      noot = "Interne calculatie – niet automatisch aan de klant gecommuniceerd en geen definitieve offerte.";
     }
   }
 
@@ -448,7 +316,7 @@ function lijktOpBot(payload) {
   const renderedAt = parseInt(payload.form_rendered_at, 10);
   if (Number.isFinite(renderedAt)) {
     const verstreken = Date.now() - renderedAt;
-    if (verstreken >= 0 && verstreken < CONFIG.MIN_FILL_TIME_MS) return true;
+    if (verstreken >= 0 && verstreken < MIN_FILL_TIME_MS) return true;
   }
   return false;
 }
@@ -523,4 +391,15 @@ module.exports = async (req, res) => {
 
 // Alleen voor lokale tests (zie test_offerte_api.js) — geen effect op Vercel.
 // Bevat GEEN secret.
-module.exports._internal = { berekenInterneCalculatie, bouwEmailTekst, bouwEmailHtmlOfferte, bouwOnderwerp, lijktOpBot, valideerVerplichteVelden, CONFIG, CALC_DIENST_SLUGS };
+module.exports._internal = {
+  calculateOffer,
+  bouwEmailTekst,
+  bouwEmailHtmlOfferte,
+  bouwOnderwerp,
+  bouwInterneAdviesRegel,
+  lijktOpBot,
+  valideerVerplichteVelden,
+  MIN_FILL_TIME_MS,
+  CONFIG: calculator.CONFIG,
+  CALC_DIENST_SLUGS: calculator.CALC_DIENST_SLUGS,
+};
