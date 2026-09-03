@@ -172,8 +172,13 @@ if (document.readyState === 'loading') {
     if (!stepEl) return false;
     const types = stepEl.getAttribute('data-applies-to');
     if (types && !types.split(' ').includes(currentKlanttype())) return false;
+    // data-requires-dienst ondersteunt (net als data-applies-to/-excludes-dienst)
+    // meerdere spatie-gescheiden waarden — nodig sinds ronde 44, waarin stap 9
+    // zowel bij "periodiek-zakelijk" als bij "kantoorreiniging" van toepassing is.
+    // Eén losse waarde (het meest voorkomende geval) gedraagt zich identiek aan
+    // de oude exacte '!==='-vergelijking.
     const requiresDienst = stepEl.getAttribute('data-requires-dienst');
-    if (requiresDienst && currentDienstSlug() !== requiresDienst) return false;
+    if (requiresDienst && !requiresDienst.split(' ').includes(currentDienstSlug())) return false;
     const excludesDienst = stepEl.getAttribute('data-excludes-dienst');
     if (excludesDienst && excludesDienst.split(' ').includes(currentDienstSlug())) return false;
     return true;
@@ -182,7 +187,84 @@ if (document.readyState === 'loading') {
     return steps.filter(stepApplies).map(s => parseInt(s.dataset.step, 10));
   }
 
+  // === Auto-advance (ronde 44) ===
+  // Voor stappen met precies ÉÉN mogelijk antwoord (klanttype, dienst, pakket,
+  // oppervlakte, frequentie-particulier, en frequentie-zakelijk behalve bij
+  // "Meerdere keren per week") gaat de wizard na een korte, zichtbare
+  // bevestiging (het geselecteerde kaartje krijgt direct zijn 'geselecteerd'-
+  // stijl) automatisch door naar de volgende stap — zie CHANGELOG-44.md.
+  // Bewust GEEN auto-advance op samengestelde stappen (bijv. stap 4/5/9) waar
+  // meerdere losse keuzes gecombineerd moeten worden vóór de stap compleet is.
+  //
+  // Betrouwbaarheid: de timer wordt uitsluitend gestart vanuit een 'change'-
+  // event van een ECHTE gebruikersactie (klik/toetsenbord) — een programmatische
+  // `.checked = true` (bijv. bij URL-voorselectie, of bij het legen/resetten van
+  // velden elders in dit bestand) vuurt in JavaScript nooit een 'change'-event,
+  // dus kan nooit per ongeluk een auto-advance triggeren. Bij elke handmatige
+  // navigatie (Terug/Volgende/Keuze wijzigen) en bij elke aanroep van show()
+  // zelf wordt een eventueel nog lopende timer meteen geannuleerd — zo kan een
+  // late auto-advance nooit een inmiddels handmatige stap-wissel overschrijven,
+  // en springt de wizard bij terug-navigeren nooit vanzelf weer vooruit alleen
+  // omdat er al een eerdere keuze staat (die keuze is dan geen NIEUWE
+  // gebruikersactie, dus er is ook geen 'change'-event geweest om een timer te
+  // starten).
+  let autoAdvanceTimer = null;
+  const AUTO_ADVANCE_DELAY_MS = 200;
+  function cancelAutoAdvance() {
+    if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
+  }
+  function scheduleAutoAdvance(fromStep) {
+    cancelAutoAdvance();
+    autoAdvanceTimer = setTimeout(() => {
+      autoAdvanceTimer = null;
+      // Nooit doorspringen als de gebruiker in de tussentijd al (handmatig of
+      // via een andere weg) een andere stap heeft bereikt.
+      if (current !== fromStep) return;
+      if (!validateStep()) return;
+      const appl = applicableSteps();
+      const idx = appl.indexOf(current);
+      if (idx > -1 && idx < appl.length - 1) { current = appl[idx + 1]; show(current, true); }
+    }, AUTO_ADVANCE_DELAY_MS);
+  }
+
+  // Welke radiogroepen zijn "pure" single-choice stappen (geen ander verplicht
+  // veld op dezelfde stap) en mogen dus auto-advancen. "frequentie" staat hier
+  // bewust NIET generiek in — die kent één uitzondering ("Meerdere keren per
+  // week", zie hieronder) en wordt daarom apart afgehandeld.
+  const AUTO_ADVANCE_RADIO_NAMES = ['klanttype', 'dienst', 'pakket', 'oppervlakte', 'frequentie_particulier'];
+
+  // === Ronde 45: één centrale, delegated 'change'-listener voor auto-advance ===
+  // Eerder (ronde 44) werd scheduleAutoAdvance() per veld los aangeroepen,
+  // verspreid over losse `form.querySelectorAll(...).forEach(el =>
+  // el.addEventListener('change', ...))`-blokken. Dat werkte aantoonbaar in
+  // alle geautomatiseerde tests, maar is inherent kwetsbaarder dan nodig: elke
+  // los gebonden listener hangt af van het moment/de volgorde waarop dat
+  // specifieke queryAll-blok draait, en bindt alleen aan de radio's die op
+  // dát moment al in de DOM staan. Eén listener op het <form>-element zelf
+  // (event delegation) vangt ELKE 'change' die vanaf een radio-input omhoog
+  // bubbelt, ongeacht wanneer/hoe die specifieke listener-registratie liep —
+  // dit is dezelfde bestaande scheduleAutoAdvance()/cancelAutoAdvance()-
+  // architectuur, alleen de manier waarop de trigger wordt opgevangen is
+  // robuuster gemaakt. De eigen effecten per veld (applyKlanttype/applyDienst/
+  // syncPakketNaamField/het "Meerdere keren per week"-veld tonen, etc.) blijven
+  // gewoon in hun eigen listeners hieronder — deze delegated listener regelt
+  // uitsluitend het WEL/NIET auto-advancen, op precies dezelfde velden als
+  // voorheen.
+  form.addEventListener('change', (e) => {
+    const t = e.target;
+    if (!t || t.tagName !== 'INPUT' || t.type !== 'radio' || !t.checked) return;
+    if (AUTO_ADVANCE_RADIO_NAMES.indexOf(t.name) !== -1) {
+      scheduleAutoAdvance(current);
+    } else if (t.name === 'frequentie' && t.value !== 'Meerdere keren per week') {
+      // Stap 8 (frequentie, zakelijk/VvE): pure single-choice, BEHALVE bij
+      // "Meerdere keren per week" — dan verschijnt een extra verplicht
+      // invoerveld op dezelfde stap (zie brief ronde 44, sectie 6).
+      scheduleAutoAdvance(current);
+    }
+  });
+
   function show(stepNum, scrollTo) {
+    cancelAutoAdvance();
     steps.forEach(s => { s.hidden = parseInt(s.dataset.step, 10) !== stepNum; });
     // Robuustheid: bij het openen van de pakket- of extra's-stap altijd opnieuw
     // uitlezen welke dienst nu daadwerkelijk gekozen is en de pakketten/extra's
@@ -257,6 +339,15 @@ if (document.readyState === 'loading') {
   // 'Volgende'. Dat is voorspelbaarder op mobiel (geen onverwachte
   // schermwissel net na een tik) en betrouwbaarder voor toetsenbordgebruikers.
   const TYPE_MAP = { 'Bedrijf': 'bedrijf', 'VvE / organisatie': 'vve', 'Particulier': 'particulier' };
+  // Ronde 44: dienst-slugs waarvoor wizard-stap 9 (ruimtes/vervuiling/moment) en
+  // de interne calculatie van toepassing zijn — was uitsluitend "periodiek-zakelijk",
+  // nu ook "kantoorreiniging" (zelfde onderliggende vraagset/tijdmodel, zie
+  // CHANGELOG-44.md). Eén bron van waarheid, gebruikt door zowel applyDienst()
+  // (stap-9-velden resetten) als collectRows() (welke velden in de samenvatting/
+  // e-mail terechtkomen) — moet in sync blijven met data-requires-dienst op stap 9
+  // in generate.py (contact_form()) en de server-side gate in
+  // api/offerte-aanvraag.js (berekenInterneCalculatie()).
+  const CALC_DIENST_SLUGS = ['periodiek-zakelijk', 'kantoorreiniging'];
   const dienstWraps = Array.from(form.querySelectorAll('#offerteWizard .wizard-step[data-step="2"] .rc-wrap'));
   const bedrijfsnaamField = document.getElementById('fieldBedrijfsnaam');
   const bedrijfsnaamInput = document.getElementById('bedrijfsnaam');
@@ -308,9 +399,14 @@ if (document.readyState === 'loading') {
   });
   form.querySelectorAll('input[name="frequentie"]').forEach(radio => {
     radio.addEventListener('change', () => {
-      const show = radio.value === 'Meerdere keren per week';
-      if (meerderePerWeekField) meerderePerWeekField.hidden = !show;
-      if (show) enableField(meerderePerWeekInput); else clearAndDisable(meerderePerWeekInput);
+      const toonAantalVeld = radio.value === 'Meerdere keren per week';
+      if (meerderePerWeekField) meerderePerWeekField.hidden = !toonAantalVeld;
+      if (toonAantalVeld) enableField(meerderePerWeekInput); else clearAndDisable(meerderePerWeekInput);
+      // Auto-advance voor deze stap loopt sinds ronde 45 via de centrale
+      // delegated 'change'-listener op het form (zie hierboven bij
+      // scheduleAutoAdvance) — inclusief de "Meerdere keren per week"-
+      // uitzondering. Deze listener regelt hier uitsluitend het tonen/
+      // verplicht maken van het aantal-per-week-veld.
     });
   });
   // Wist alle stap-9-velden en verbergt de bijbehorende toelichtingen — nodig
@@ -736,7 +832,7 @@ if (document.readyState === 'loading') {
     // "periodiek-zakelijk" — bij elke andere (of geen) dienst altijd wissen,
     // zodat er nooit een oude keuze van een vorige dienst blijft hangen of
     // meestuurt.
-    if (slug !== 'periodiek-zakelijk') resetZakelijkPeriodiekStep();
+    if (CALC_DIENST_SLUGS.indexOf(slug) === -1) resetZakelijkPeriodiekStep();
     syncExtraOptiesField();
     syncPakketNaamField();
     updatePrijsIndicatie();
@@ -784,6 +880,8 @@ if (document.readyState === 'loading') {
         const types = wrap ? (wrap.getAttribute('data-customer-types') || '').split(' ') : [];
         if (!types.includes(type)) dienstChecked.checked = false;
       }
+      // Auto-advance voor stap 1 loopt sinds ronde 45 via de centrale
+      // delegated 'change'-listener (zie scheduleAutoAdvance hierboven).
     });
   });
 
@@ -793,11 +891,19 @@ if (document.readyState === 'loading') {
       const wrap = radio.closest('.rc-wrap');
       const slug = wrap ? (wrap.getAttribute('data-dienst-slug') || '') : '';
       if (slug) applyDienst(slug);
+      // Auto-advance voor stap 2 loopt sinds ronde 45 via de centrale
+      // delegated 'change'-listener (zie scheduleAutoAdvance hierboven).
     });
   });
 
   form.querySelectorAll('input[name="pakket"]').forEach(radio => {
-    radio.addEventListener('change', () => { syncPakketNaamField(); updateAllCounters(); updatePrijsIndicatie(); });
+    radio.addEventListener('change', () => {
+      syncPakketNaamField();
+      updateAllCounters();
+      updatePrijsIndicatie();
+      // Auto-advance voor stap 3 loopt sinds ronde 45 via de centrale
+      // delegated 'change'-listener (zie scheduleAutoAdvance hierboven).
+    });
   });
 
   extraCheckboxLabels.forEach(label => {
@@ -824,6 +930,15 @@ if (document.readyState === 'loading') {
   form.querySelectorAll('input[name="woonoppervlakte_staffel"], input[name="vervuilingsgraad"], input[name="frequentie_particulier"], input[name="bouwresten"], input[name="glas_type"]').forEach(radio => {
     radio.addEventListener('change', updatePrijsIndicatie);
   });
+  // "Hoe vaak wilt u schoonmaak?" (particulier, stap 6) en "Hoe groot is de
+  // locatie/het gebouw ongeveer?" (bedrijf/VvE, stap 7) zijn allebei pure
+  // single-choice-stappen. Woonoppervlakte/vervuilingsgraad/bouwresten/
+  // glas_type horen bij stap 4/5, die ELK meerdere (deels conditionele)
+  // vragen combineren — daar dus bewust GEEN auto-advance, ook al is elke
+  // individuele vraag zelf single-choice. Auto-advance voor
+  // frequentie_particulier/oppervlakte loopt sinds ronde 45 via de centrale
+  // delegated 'change'-listener (zie scheduleAutoAdvance hierboven,
+  // AUTO_ADVANCE_RADIO_NAMES) — hier alleen nog de prijsindicatie-koppeling.
   // "Is de woning tijdens de schoonmaak leeg?" (alleen verhuisschoonmaak) —
   // bij "Nee, nog ingericht" een korte, niet-prijsverhogende toelichting
   // tonen (zie brief-punt F): de calculator verhoogt de prijs hier NIET
@@ -894,8 +1009,18 @@ if (document.readyState === 'loading') {
     let dienstLabel = '';
     const requestedDienstSlug = typeOk ? params.get('dienst') : null;
     if (requestedDienstSlug) {
+      // BELANGRIJK (zie repo-geheugen "Standing Lesson #4"): een dienst-slug is
+      // NIET altijd uniek — "periodiek-zakelijk" komt zowel bij een bedrijfs- als
+      // een VvE-dienstkaart voor (twee losse .rc-wraps, met een verschillende
+      // data-customer-types). Zoek daarom altijd BINNEN het al vastgestelde
+      // klanttype (wantedType), nooit los op slug alleen — anders kan de eerste
+      // (mogelijk disabled) wrap van het ANDERE klanttype gevonden worden, wat de
+      // match altijd laat mislukken zodra die twee wraps niet in dezelfde volgorde
+      // als het gekozen type in de HTML staan.
+      const wantedTypeKey = TYPE_MAP[wantedType] || '';
       const dienstWrap = Array.from(form.querySelectorAll('.wizard-step[data-step="2"] .rc-wrap[data-dienst-slug]'))
-        .find(w => w.getAttribute('data-dienst-slug') === requestedDienstSlug);
+        .filter(w => w.getAttribute('data-dienst-slug') === requestedDienstSlug)
+        .find(w => (w.getAttribute('data-customer-types') || '').split(' ').includes(wantedTypeKey));
       const dienstRadio = dienstWrap ? dienstWrap.querySelector('input[type="radio"]') : null;
       if (dienstRadio && !dienstRadio.disabled) {
         dienstRadio.checked = true;
@@ -993,7 +1118,7 @@ if (document.readyState === 'loading') {
   function collectRows() {
     const typeRadio = form.querySelector('input[name="klanttype"]:checked');
     const isParticulier = typeRadio && TYPE_MAP[typeRadio.value] === 'particulier';
-    const isZakelijkPeriodiek = !isParticulier && currentDienstSlug() === 'periodiek-zakelijk';
+    const isZakelijkPeriodiek = !isParticulier && CALC_DIENST_SLUGS.indexOf(currentDienstSlug()) !== -1;
     const rows = [
       ['Klanttype', typeRadio ? typeRadio.value : ''],
       ['Dienst', getFieldValue('dienst')],
