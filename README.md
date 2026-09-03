@@ -147,8 +147,23 @@ wat een structurele `502` in productie veroorzaakte — zie `CHANGELOG-42.md` en
   bovenin `api/offerte-aanvraag.js` voor de volledige `CONFIG` (uurtarief, marge,
   minimumprijs, reistijd, materiaalkosten, tijdmodel per ruimte/vervuilingsgraad) —
   elke financiële waarde die nog niet door de ondernemer is bevestigd, staat daar
-  expliciet gemarkeerd als `// TE BEVESTIGEN`. **Deze calculator is in ronde 43 niet
-  aangeraakt** — alleen de manier van versturen is veranderd.
+  expliciet gemarkeerd als `// TE BEVESTIGEN`. **De formule/parameters zijn in ronde
+  43 én 44 niet aangeraakt** — ronde 43 veranderde alleen de manier van versturen;
+  ronde 44 breidde uitsluitend het BEREIK uit (welke diensten de calculator mogen
+  gebruiken — zie `CALC_DIENST_SLUGS` in zowel `api/offerte-aanvraag.js` als
+  `js/main.js`, en `CHANGELOG-44.md` voor de volledige analyse/rapportage). Een
+  zakelijke/VvE-aanvraag voor een dienst buiten dat bereik krijgt intern altijd een
+  expliciete "Automatische prijsindicatie: niet beschikbaar" + "Handmatige
+  calculatie / locatieopname aanbevolen"-melding — nooit een verzonnen bedrag en
+  nooit een stilzwijgend ontbrekende sectie.
+- **Dienstcontext vanaf een specifieke dienstpagina** (ronde 44): elke
+  `diensten/<slug>.html`-pagina geeft zijn eigen wizard-dienst-slug mee aan de
+  offerte-CTA's (zie `SERVICE_TO_WIZARD_DIENST_SLUG` in `generate.py`), zodat de
+  wizard de vraag "Waar wilt u een offerte voor aanvragen?" overslaat wanneer de
+  bezoeker al vanaf een specifieke dienst komt — de algemene offerteknop (vanaf de
+  diensten-/zakelijke-schoonmaak-overzichtspagina) blijft die vraag wél gewoon
+  stellen. Zie `CHANGELOG-44.md` voor de volledige dienstenmapping en de
+  auto-advance-UX die in dezelfde ronde is toegevoegd.
 
 Beide endpoints delen de daadwerkelijke Resend-verzendlogica via **`lib/mail.js`**
 (zie "Gedeelde mailservice" hieronder) — dat voorkomt dubbele code voor iets dat écht

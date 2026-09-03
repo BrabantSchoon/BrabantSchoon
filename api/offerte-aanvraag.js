@@ -163,10 +163,33 @@ function isValidEmail(v) {
 }
 
 // =================================================================
-// INTERNE CALCULATIE (alleen voor dienstSlug === "periodiek-zakelijk")
+// INTERNE CALCULATIE
 // =================================================================
+// Ronde 44: het rekenmodel zelf (tijdmodel/kostprijs/marge hieronder in
+// CONFIG) is NIET gewijzigd — alleen het BEREIK is uitgebreid van uitsluitend
+// "periodiek-zakelijk" naar ook "kantoorreiniging" (zelfde onderliggende
+// vraagset: oppervlakte/ruimtes/vervuiling/frequentie, zie
+// CHANGELOG-44.md § calculatorbereik-analyse). Moet in sync blijven met
+// CALC_DIENST_SLUGS in js/main.js en data-requires-dienst op wizardstap 9 in
+// generate.py.
+const CALC_DIENST_SLUGS = ["periodiek-zakelijk", "kantoorreiniging"];
+
 function berekenInterneCalculatie(payload) {
-  if (!payload || payload.dienstSlug !== "periodiek-zakelijk") return null;
+  if (!payload) return null;
+  const type = payload.klanttype || "";
+  const isZakelijk = type === "Bedrijf" || type === "VvE / organisatie";
+  // Particuliere aanvragen hebben hun eigen, aan de klant getoonde
+  // prijsindicatie (zie generate.py/js/main.js) — daar hoort nooit een
+  // "INTERNE CALCULATIE"-sectie bij, dus geen wijziging t.o.v. voorheen.
+  if (!isZakelijk) return null;
+  // Zakelijke/VvE-aanvraag voor een dienst waarvoor (nog) geen betrouwbaar
+  // intern rekenmodel bestaat (bijv. glasbewassing, gevelreiniging,
+  // opleveringsschoonmaak — zie brief ronde 44, sectie 12): toon dit expliciet
+  // intern, in plaats van de sectie stilzwijgend weg te laten of een bedrag te
+  // verzinnen.
+  if (CALC_DIENST_SLUGS.indexOf(payload.dienstSlug) === -1) {
+    return { nietBeschikbaar: true };
+  }
   const calc = payload.calc || {};
   const redenen = [];
 
@@ -293,7 +316,13 @@ function bouwEmailTekst(payload) {
   const calc = berekenInterneCalculatie(payload);
   if (calc) {
     regels.push("INTERNE CALCULATIE");
-    if (calc.onvoldoendeInfo) {
+    if (calc.nietBeschikbaar) {
+      regels.push("Automatische prijsindicatie:");
+      regels.push("Niet beschikbaar voor deze dienst.");
+      regels.push("");
+      regels.push("Advies:");
+      regels.push("Handmatige calculatie / locatieopname aanbevolen.");
+    } else if (calc.onvoldoendeInfo) {
       regels.push("Onvoldoende informatie voor een automatische prijsindicatie.");
       regels.push("Reden: " + calc.redenen.join("; "));
     } else {
@@ -326,8 +355,13 @@ function bouwEmailTekst(payload) {
         regels.push("Let op: aanvraag betreft " + calc.locatiesAantal + " locaties — bovenstaande calculatie is PER LOCATIE, vermenigvuldig handmatig voor een totaalinschatting.");
       }
     }
-    regels.push("");
-    regels.push('Interne prijsindicatie – niet automatisch aan de klant gecommuniceerd en geen definitieve offerte.');
+    // Disclaimer alleen bij een daadwerkelijk (of poging tot) berekend bedrag
+    // — bij "nietBeschikbaar" is er nooit iets berekend, dus zou de zin
+    // "prijsindicatie niet automatisch gecommuniceerd" verwarrend zijn.
+    if (!calc.nietBeschikbaar) {
+      regels.push("");
+      regels.push('Interne prijsindicatie – niet automatisch aan de klant gecommuniceerd en geen definitieve offerte.');
+    }
     regels.push("");
   }
 
@@ -364,7 +398,12 @@ function bouwEmailHtmlOfferte(payload) {
   const calc = berekenInterneCalculatie(payload);
   let noot = null;
   if (calc) {
-    if (calc.onvoldoendeInfo) {
+    if (calc.nietBeschikbaar) {
+      secties.push({
+        heading: "Interne calculatie",
+        tekst: "Automatische prijsindicatie: Niet beschikbaar voor deze dienst. Advies: Handmatige calculatie / locatieopname aanbevolen.",
+      });
+    } else if (calc.onvoldoendeInfo) {
       secties.push({
         heading: "Interne calculatie",
         tekst: "Onvoldoende informatie voor een automatische prijsindicatie. Reden: " + calc.redenen.join("; "),
@@ -484,4 +523,4 @@ module.exports = async (req, res) => {
 
 // Alleen voor lokale tests (zie test_offerte_api.js) — geen effect op Vercel.
 // Bevat GEEN secret.
-module.exports._internal = { berekenInterneCalculatie, bouwEmailTekst, bouwEmailHtmlOfferte, bouwOnderwerp, lijktOpBot, valideerVerplichteVelden, CONFIG };
+module.exports._internal = { berekenInterneCalculatie, bouwEmailTekst, bouwEmailHtmlOfferte, bouwOnderwerp, lijktOpBot, valideerVerplichteVelden, CONFIG, CALC_DIENST_SLUGS };

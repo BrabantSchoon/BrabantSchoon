@@ -77,7 +77,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "177"
+ASSET_VERSION = "178"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -234,6 +234,33 @@ SERVICES = [
      "seo_meta": "Tapijtreiniging en specialistische reiniging van vloeren en bijzondere oppervlakken door Brabantschoon, vanuit Helmond actief in Brabant.",
      "faqs": [("Welke oppervlakken kunt u specialistisch laten reinigen?", "Onder andere tapijt, stoffering en diverse vloertypen, afhankelijk van de vraag."), ("Is specialistische reiniging ook eenmalig mogelijk?", "Ja, dit is vaak maatwerk en prima als eenmalige beurt aan te vragen.")]},
 ]
+
+# Ronde 44: koppelt elke zakelijke dienstpagina (SERVICES, hierboven) aan de
+# bijbehorende wizard-dienst-slug (MASTER_DIENSTEN, verderop in dit bestand) en
+# het klanttype waarmee de offertewizard-CTA moet voorselecteren — zodat een
+# bezoeker die vanaf een SPECIFIEKE dienstpagina op "Offerte aanvragen" klikt de
+# vraag "Waar wilt u een offerte voor aanvragen?" nooit nogmaals hoeft te
+# beantwoorden (zie CHANGELOG-44.md). "periodieke-schoonmaak" hergebruikt bewust
+# de bestaande, gedeelde slug "periodiek-zakelijk" (zie MASTER_DIENSTEN) in
+# plaats van een nieuwe slug te introduceren voor exact dezelfde dienst.
+# vve-schoonmaak is de enige dienst die uitsluitend bij klanttype "vve" hoort
+# (zie MASTER_DIENSTEN); de overige 6 zijn beschikbaar voor zowel bedrijf als
+# vve, en gebruiken daarom net als de rest van de site het generieke
+# "type=zakelijk" (komt in de wizard overeen met klanttype "Bedrijf" — zie
+# QUERY_TYPE_MAP in js/main.js; de bezoeker kan dit altijd corrigeren via
+# "Terug").
+SERVICE_TO_WIZARD_DIENST_SLUG = {
+    "kantoorreiniging": "kantoorreiniging",
+    "glasbewassing": "glasbewassing-zakelijk",
+    "gevelreiniging": "gevelreiniging",
+    "opleveringsschoonmaak": "opleveringsschoonmaak",
+    "vve-schoonmaak": "vve-schoonmaak",
+    "periodieke-schoonmaak": "periodiek-zakelijk",
+    "specialistische-reiniging": "specialistische-reiniging",
+}
+SERVICE_TO_WIZARD_TYPE = {
+    "vve-schoonmaak": "vve",
+}
 
 WERKGEBIED_KERN = ["Helmond", "Deurne", "Asten", "Someren", "Gemert-Bakel", "Laarbeek"]
 WERKGEBIED_OVERIG = ["Eindhoven", "Geldrop-Mierlo", "Nuenen", "Mierlo"]
@@ -537,8 +564,17 @@ def werkgebied_kaart(highlight_slug, base=""):
       </svg>
     </div>'''
 
-def cta_band(heading="Interesse in onze diensten?", sub="Vraag een vrijblijvende offerte aan of neem direct contact op.", base="", type_param=""):
-    type_qs = f"?type={type_param}" if type_param else ""
+def cta_band(heading="Interesse in onze diensten?", sub="Vraag een vrijblijvende offerte aan of neem direct contact op.", base="", type_param="", dienst_param=""):
+    # dienst_param mag alleen gevuld zijn als type_param ook gevuld is (de wizard
+    # negeert een dienst-parameter sowieso als het type niet eerst bekend is, zie
+    # js/main.js) — hier expliciet zo gebouwd zodat een aanroep nooit per ongeluk
+    # alleen &dienst= zonder ?type= oplevert.
+    qs_parts = []
+    if type_param:
+        qs_parts.append(f"type={type_param}")
+        if dienst_param:
+            qs_parts.append(f"dienst={dienst_param}")
+    type_qs = ("?" + "&amp;".join(qs_parts)) if qs_parts else ""
     return f"""<div class="cta-band reveal">
     <h2>{heading}</h2>
     <p>{sub}</p>
@@ -618,30 +654,41 @@ WIZARD_KLANTTYPE = [
 # de wizard automatisch de bijbehorende pakketten en extra werkzaamheden
 # (zie PARTICULIER_WIZARD_PAKKETTEN / PARTICULIER_WIZARD_EXTRAS hieronder).
 MASTER_DIENSTEN = [
-    ("Kantoorreiniging", "office", "Kantoor, praktijk of bedrijfspand", ["bedrijf"], ""),
-    # "Periodieke bedrijfsschoonmaak" en "Periodieke schoonmaak" (vve) krijgen als
-    # enige zakelijke/vve-diensten een eigen slug: hierop wordt de nieuwe wizard-stap
-    # "Welke ruimtes/vervuiling/moment" (zie contact_form(), stap 9) en de interne
+    # Ronde 44: Kantoorreiniging krijgt als tweede zakelijke dienst een eigen slug
+    # ("kantoorreiniging", zelfde string als de website-slug diensten/kantoorreiniging.html)
+    # \u2014 hiermee kan zowel de dienstpagina-CTA de wizard voorselecteren (zie
+    # build_service_pages()/SERVICE_TO_WIZARD_DIENST_SLUG) als de interne calculator
+    # (api/offerte-aanvraag.js) hem gericht aanroepen: dezelfde vraagset (oppervlakte/
+    # ruimtes/vervuiling/frequentie) als periodieke bedrijfsschoonmaak is hier
+    # inhoudelijk toepasbaar (zie CHANGELOG-44.md \u00a7 calculatorbereik-analyse).
+    ("Kantoorreiniging", "office", "Kantoor, praktijk of bedrijfspand", ["bedrijf"], "kantoorreiniging"),
+    # "Periodieke bedrijfsschoonmaak" en "Periodieke schoonmaak" (vve) delen bewust
+    # dezelfde slug "periodiek-zakelijk": hierop wordt de wizard-stap "Welke
+    # ruimtes/vervuiling/moment" (zie contact_form(), stap 9) en de interne
     # calculatiemotor (zie api/offerte-aanvraag.js) gericht. Andere zakelijke
-    # diensten (kantoorreiniging, glasbewassing, etc.) krijgen bewust geen interne
-    # rekenmodel in deze ronde \u2014 daarvoor ontbreekt nog een betrouwbaar tijdmodel,
-    # en de brief vraagt expliciet om periodieke bedrijfsschoonmaak eerst goed te
-    # calculeren zonder de wizard voor alle zakelijke diensten op te blazen.
+    # diensten hieronder kregen in ronde 44 ALLEEN een slug voor CTA-voorselectie
+    # (zie SERVICE_TO_WIZARD_DIENST_SLUG) \u2014 g\u00e9\u00e9n interne calculatie, omdat daar
+    # geen betrouwbaar tijdmodel/kenmerkenset voor bestaat (zie CHANGELOG-44.md).
     ("Periodieke bedrijfsschoonmaak", "clock", "Vast ritme, wekelijks of maandelijks", ["bedrijf"], "periodiek-zakelijk"),
     ("Winkel- of showroomreiniging", "shop", "Winkel of showroom", ["bedrijf"], ""),
     ("Praktijk- of zorglocatiereiniging", "practice", "Zorg- of behandelpraktijk", ["bedrijf"], ""),
     ("Industri\u00eble schoonmaak", "building", "Bedrijfshal of productieruimte", ["bedrijf"], ""),
     ("Evenementenreiniging", "check", "Voor of na een evenement", ["bedrijf"], ""),
-    ("VvE-schoonmaak", "building", "Trappenhuis of gemeenschappelijke ruimte", ["vve"], ""),
+    # VvE-schoonmaak krijgt slug "vve-schoonmaak" (zelfde string als de
+    # website-slug diensten/vve-schoonmaak.html) voor CTA-voorselectie.
+    ("VvE-schoonmaak", "building", "Trappenhuis of gemeenschappelijke ruimte", ["vve"], "vve-schoonmaak"),
     ("Trappenhuisreiniging", "stairs", "Gemeenschappelijk trappenhuis", ["vve"], ""),
     ("Schoonmaak van gemeenschappelijke ruimtes", "building", "Entree, gangen en bergingen", ["vve"], ""),
     ("Periodieke schoonmaak", "clock", "Vast ritme, wekelijks of maandelijks", ["vve"], "periodiek-zakelijk"),
     ("Schoonmaak van scholen of instellingen", "school", "Onderwijs- of instellingslocatie", ["vve"], ""),
     ("Zorglocaties", "practice", "Zorginstelling of behandellocatie", ["vve"], ""),
-    ("Glasbewassing", "window", "Ramen en kozijnen binnen en buiten", ["bedrijf", "vve"], ""),
-    ("Gevelreiniging", "facade", "Buitengevel of buitenmuur", ["bedrijf", "vve"], ""),
-    ("Opleveringsschoonmaak", "key", "Verhuizing, oplevering of verbouwing", ["bedrijf", "vve"], ""),
-    ("Specialistische reiniging", "spark", "Tapijt, vloer of maatwerk", ["bedrijf", "vve"], ""),
+    # Glasbewassing (zakelijk/VvE) krijgt bewust een ANDERE slug dan de
+    # particuliere "glasbewassing-particulier" hierbeneden, zodat beide nooit met
+    # elkaar te verwarren zijn in logs/tests/e-mails.
+    ("Glasbewassing", "window", "Ramen en kozijnen binnen en buiten", ["bedrijf", "vve"], "glasbewassing-zakelijk"),
+    ("Gevelreiniging", "facade", "Buitengevel of buitenmuur", ["bedrijf", "vve"], "gevelreiniging"),
+    ("Opleveringsschoonmaak", "key", "Verhuizing, oplevering of verbouwing", ["bedrijf", "vve"], "opleveringsschoonmaak"),
+    ("Specialistische reiniging", "spark", "Tapijt, vloer of maatwerk", ["bedrijf", "vve"], "specialistische-reiniging"),
     ("Verhuisschoonmaak", "key", "Woning schoon voor of na de verhuizing", ["particulier"], "verhuisschoonmaak"),
     ("Eenmalige grote schoonmaak", "spark", "Grondige beurt zonder vast contract", ["particulier"], "grote-schoonmaak"),
     ("Schoonmaak na verbouwing", "check", "Bouwstof en normaal schoonmaakvuil verwijderen", ["particulier"], "na-verbouwing"),
@@ -1071,7 +1118,7 @@ def contact_form():
       </div>
     </div>
 
-    <div class="wizard-step" data-step="9" hidden data-applies-to="bedrijf vve" data-requires-dienst="periodiek-zakelijk">
+    <div class="wizard-step" data-step="9" hidden data-applies-to="bedrijf vve" data-requires-dienst="periodiek-zakelijk kantoorreiniging">
       <h3 class="wizard-q">Welke ruimtes moeten worden schoongemaakt?</h3>
       <p class="wizard-sub">Kies alles wat van toepassing is — dit helpt ons de benodigde tijd goed in te schatten.</p>
       <div class="checkbox-cards" id="zakelijkRuimtes">
@@ -1410,6 +1457,17 @@ def build_diensten_overview():
 def build_service_pages():
     base = "../"
     for s in SERVICES:
+        # Ronde 44: elke dienstpagina kent zijn eigen wizard-dienst-slug (zie
+        # SERVICE_TO_WIZARD_DIENST_SLUG hierboven) — de offerte-CTA's op deze
+        # pagina geven die slug altijd mee, zodat de wizard de dienstvraag kan
+        # overslaan (zie contact_form()/js/main.js). Elke SERVICES-dienst heeft
+        # een mapping; de lege-string-fallback is puur een vangnet mocht een
+        # toekomstige nieuwe dienst per ongeluk nog niet in de mapping staan —
+        # dan valt de CTA terug op het oude, generieke gedrag (dienstvraag blijft
+        # gewoon verschijnen) in plaats van een kapotte link te genereren.
+        wizard_slug = SERVICE_TO_WIZARD_DIENST_SLUG.get(s["slug"], "")
+        wizard_type = SERVICE_TO_WIZARD_TYPE.get(s["slug"], "zakelijk")
+        offerte_qs = f"?type={wizard_type}&amp;dienst={wizard_slug}" if wizard_slug else f"?type={wizard_type}"
         bullets_html = "\n          ".join(f"<li>{b}</li>" for b in s["bullets"])
         others = [o for o in SERVICES if o["slug"] != s["slug"]][:3]
         others_html = "\n    ".join(f"""<a href="{o['slug']}.html" class="service-card">
@@ -1430,7 +1488,7 @@ def build_service_pages():
           <p class="prose">{s['intro']}</p>
           <ul class="prose" style="margin-top:16px;">{bullets_html}</ul>
           <div class="hero-actions" style="margin-top:24px;">
-            <a href="{base}offerte.html?type=zakelijk#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
+            <a href="{base}offerte.html{offerte_qs}#offerteWizard" class="btn btn-primary">Vraag offerte aan</a>
             <a href="tel:{PHONE_TEL}" class="btn btn-outline">Bel direct</a>
           </div>
           {'<p class="prose" style="margin-top:14px; font-size:13.5px;">Nog niet zeker wat u nodig heeft? <a href="' + base + 'contact.html" style="color:var(--link); font-weight:600;">Plan vrijblijvend een locatieopname</a> \u2014 we bekijken de werkzaamheden samen, zodat de offerte precies aansluit.</p>' if s['slug'] == 'periodieke-schoonmaak' else ''}
@@ -1449,7 +1507,7 @@ def build_service_pages():
       <div class="grid-3 reveal">{others_html}</div>
     </div>
   </section>
-  <section><div class="wrap">{cta_band(f"Interesse in {s['name']}?", "Vraag een vrijblijvende offerte aan.", base)}</div></section>
+  <section><div class="wrap">{cta_band(f"Interesse in {s['name']}?", "Vraag een vrijblijvende offerte aan.", base, type_param=wizard_type, dienst_param=wizard_slug)}</div></section>
   <section class="section-tight">
     <div class="wrap-narrow" style="text-align:center;">
       <p class="prose">Actief in <a href="{base}werkgebied.html" style="color:var(--link); font-weight:600;">Brabant</a> &mdash; bekijk ook onze <a href="{base}diensten.html" style="color:var(--link); font-weight:600;">overige diensten</a>.</p>

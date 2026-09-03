@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="css/styles.css?v=177">
+<link rel="stylesheet" href="css/styles.css?v=178">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
@@ -194,7 +194,7 @@
     <div class="wizard-step" data-step="2" hidden>
       <h3 class="wizard-q">Waar wilt u een offerte voor aanvragen?</h3>
       <p class="wizard-sub">Kies de dienst die het beste bij uw situatie past.</p>
-      <div class="radio-cards cols-3"><div class="rc-wrap" data-customer-types="bedrijf"><input type="radio" name="dienst" id="dienst-kantoorreiniging" value="Kantoorreiniging" class="rc-input" required>
+      <div class="radio-cards cols-3"><div class="rc-wrap" data-customer-types="bedrijf" data-dienst-slug="kantoorreiniging"><input type="radio" name="dienst" id="dienst-kantoorreiniging" value="Kantoorreiniging" class="rc-input" required>
       <label for="dienst-kantoorreiniging" class="rc-card">
         <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 21v-4h6v4M9 8h.01M9 12h.01M15 8h.01M15 12h.01"/></svg></div>
         <span class="rc-label">Kantoorreiniging</span>
@@ -230,7 +230,7 @@
         <span class="rc-label">Evenementenreiniging</span>
         <span class="rc-desc">Voor of na een evenement</span>
       </label></div>
-      <div class="rc-wrap" data-customer-types="vve"><input type="radio" name="dienst" id="dienst-vve-schoonmaak" value="VvE-schoonmaak" class="rc-input" required>
+      <div class="rc-wrap" data-customer-types="vve" data-dienst-slug="vve-schoonmaak"><input type="radio" name="dienst" id="dienst-vve-schoonmaak" value="VvE-schoonmaak" class="rc-input" required>
       <label for="dienst-vve-schoonmaak" class="rc-card">
         <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg></div>
         <span class="rc-label">VvE-schoonmaak</span>
@@ -266,25 +266,25 @@
         <span class="rc-label">Zorglocaties</span>
         <span class="rc-desc">Zorginstelling of behandellocatie</span>
       </label></div>
-      <div class="rc-wrap" data-customer-types="bedrijf vve"><input type="radio" name="dienst" id="dienst-glasbewassing" value="Glasbewassing" class="rc-input" required>
+      <div class="rc-wrap" data-customer-types="bedrijf vve" data-dienst-slug="glasbewassing-zakelijk"><input type="radio" name="dienst" id="dienst-glasbewassing" value="Glasbewassing" class="rc-input" required>
       <label for="dienst-glasbewassing" class="rc-card">
         <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M12 4v16M4 12h16"/></svg></div>
         <span class="rc-label">Glasbewassing</span>
         <span class="rc-desc">Ramen en kozijnen binnen en buiten</span>
       </label></div>
-      <div class="rc-wrap" data-customer-types="bedrijf vve"><input type="radio" name="dienst" id="dienst-gevelreiniging" value="Gevelreiniging" class="rc-input" required>
+      <div class="rc-wrap" data-customer-types="bedrijf vve" data-dienst-slug="gevelreiniging"><input type="radio" name="dienst" id="dienst-gevelreiniging" value="Gevelreiniging" class="rc-input" required>
       <label for="dienst-gevelreiniging" class="rc-card">
         <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-6 8 6v12"/><path d="M4 21h16M9 21v-8h6v8"/></svg></div>
         <span class="rc-label">Gevelreiniging</span>
         <span class="rc-desc">Buitengevel of buitenmuur</span>
       </label></div>
-      <div class="rc-wrap" data-customer-types="bedrijf vve"><input type="radio" name="dienst" id="dienst-opleveringsschoonmaak" value="Opleveringsschoonmaak" class="rc-input" required>
+      <div class="rc-wrap" data-customer-types="bedrijf vve" data-dienst-slug="opleveringsschoonmaak"><input type="radio" name="dienst" id="dienst-opleveringsschoonmaak" value="Opleveringsschoonmaak" class="rc-input" required>
       <label for="dienst-opleveringsschoonmaak" class="rc-card">
         <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
         <span class="rc-label">Opleveringsschoonmaak</span>
         <span class="rc-desc">Verhuizing, oplevering of verbouwing</span>
       </label></div>
-      <div class="rc-wrap" data-customer-types="bedrijf vve"><input type="radio" name="dienst" id="dienst-specialistische-reiniging" value="Specialistische reiniging" class="rc-input" required>
+      <div class="rc-wrap" data-customer-types="bedrijf vve" data-dienst-slug="specialistische-reiniging"><input type="radio" name="dienst" id="dienst-specialistische-reiniging" value="Specialistische reiniging" class="rc-input" required>
       <label for="dienst-specialistische-reiniging" class="rc-card">
         <div class="rc-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg></div>
         <span class="rc-label">Specialistische reiniging</span>
@@ -1240,7 +1240,7 @@
       </div>
     </div>
 
-    <div class="wizard-step" data-step="9" hidden data-applies-to="bedrijf vve" data-requires-dienst="periodiek-zakelijk">
+    <div class="wizard-step" data-step="9" hidden data-applies-to="bedrijf vve" data-requires-dienst="periodiek-zakelijk kantoorreiniging">
       <h3 class="wizard-q">Welke ruimtes moeten worden schoongemaakt?</h3>
       <p class="wizard-sub">Kies alles wat van toepassing is — dit helpt ons de benodigde tijd goed in te schatten.</p>
       <div class="checkbox-cards" id="zakelijkRuimtes">
@@ -1500,6 +1500,6 @@
   applyStoredConsent();
 })();
 </script>
-<script src="js/main.js?v=177" defer></script>
+<script src="js/main.js?v=178" defer></script>
 </body>
 </html>

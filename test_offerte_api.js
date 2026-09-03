@@ -239,6 +239,117 @@ console.log('\n=== Test 6: particuliere flow / niet-periodieke zakelijke dienst 
   console.log('\n--- Particuliere e-mailtekst ---\n' + tekst + '\n--- einde ---');
 }
 
+console.log('\n=== Test 6b: Kantoorreiniging krijgt nu WEL een interne calculatie (ronde 44 calculatorbereik-uitbreiding) ===');
+{
+  // Zelfde onderliggende model/CONFIG als periodiek-zakelijk (zie
+  // CHANGELOG-44.md) -- alleen dienstSlug/dienst-label wijken af van
+  // garagePayload. Bevestigt dat de calculator nu ECHT wordt aangeroepen voor
+  // deze dienst (niet alleen dat de gate-conditie is aangepast).
+  const kantoorPayload = {
+    klanttype: 'Bedrijf',
+    dienst: 'Kantoorreiniging',
+    dienstSlug: 'kantoorreiniging',
+    naam: 'Test Kantoor',
+    bedrijfsnaam: 'Testbedrijf B.V.',
+    email: 'test@voorbeeld.nl',
+    telefoon: '0611112222',
+    plaats: 'Helmond',
+    velden: [
+      ['Klanttype', 'Bedrijf'],
+      ['Dienst', 'Kantoorreiniging'],
+      ['Bedrijfsnaam / VvE', 'Testbedrijf B.V.'],
+      ['Omvang', 'Klein'],
+      ['Frequentie', 'Wekelijks'],
+      ['Ruimtes', 'Kantoorruimte, Kantine / pantry, Toiletten / sanitair'],
+      ['Extra vervuiling', 'Bovengemiddelde vervuiling'],
+      ['Schoonmaakmoment', 'Na sluiting'],
+      ['Naam', 'Test Kantoor'],
+      ['E-mailadres', 'test@voorbeeld.nl'],
+      ['Telefoonnummer', '0611112222'],
+      ['Plaats/postcode', 'Helmond'],
+    ],
+    calc: {
+      oppervlakte: 'Klein',
+      frequentie: 'Wekelijks',
+      meerderePerWeekAantal: '',
+      aantalLocaties: '',
+      ruimtes: ['ruimte_kantoor', 'ruimte_kantine', 'ruimte_toiletten'],
+      ruimteOverig: false,
+      vervuiling: 'Bovengemiddelde vervuiling',
+    },
+    botcheck: false,
+    form_rendered_at: String(Date.now() - 9000),
+  };
+  const calc = berekenInterneCalculatie(kantoorPayload);
+  assert.ok(calc && calc.onvoldoendeInfo === false, 'Kantoorreiniging moet nu een volledige interne calculatie krijgen');
+  // Handmatige herberekening van het exacte scenario uit de brief (ronde 44,
+  // sectie 13): Klein (45 min) + kantoor(10)+kantine(15)+toiletten(15) = 40
+  // extra min, vervuilingsfactor "Bovengemiddelde vervuiling" = 1.35.
+  const verwachteMinuten = (45 + 10 + 15 + 15) * 1.35;
+  assert.ok(Math.abs(calc.totaalMinuten - verwachteMinuten) < 0.001, 'totaalMinuten moet exact overeenkomen met het CONFIG-tijdmodel (ongewijzigd)');
+  const verwachteUren = verwachteMinuten / 60;
+  const verwachteArbeid = verwachteUren * CONFIG.INTERNAL_HOURLY_COST_EXCL_BTW;
+  const verwachteReis = (CONFIG.TRAVEL_MINUTES_PER_VISIT / 60) * CONFIG.TRAVEL_RATE_PER_HOUR_EXCL_BTW;
+  const verwachteDirecteKosten = verwachteArbeid + verwachteReis + CONFIG.MATERIAL_COST_PER_VISIT_EXCL_BTW + CONFIG.OTHER_DIRECT_COSTS_PER_VISIT_EXCL_BTW;
+  const verwachteAdviesprijs = verwachteDirecteKosten / (1 - CONFIG.DESIRED_GROSS_MARGIN);
+  assert.ok(Math.abs(calc.adviesprijsExclBtw - verwachteAdviesprijs) < 0.005, 'adviesprijsExclBtw moet overeenkomen met de ONGEWIJZIGDE formule/parameters');
+  console.log('Kantoorreiniging-scenario -- totaalMinuten (verwacht ' + verwachteMinuten.toFixed(2) + '): ' + calc.totaalMinuten.toFixed(2) + ' (' + formatDuurLokaal(calc.totaalMinuten) + ')');
+  console.log('Kantoorreiniging-scenario -- adviesprijsExclBtw (verwacht ' + verwachteAdviesprijs.toFixed(2) + '): ' + calc.adviesprijsExclBtw.toFixed(2));
+  const tekst = bouwEmailTekst(kantoorPayload);
+  assert.ok(tekst.includes('INTERNE CALCULATIE'), 'e-mail moet nu een INTERNE CALCULATIE-sectie bevatten voor Kantoorreiniging');
+  assert.ok(tekst.includes('Interne prijsindicatie'), 'disclaimer moet aanwezig zijn bij een daadwerkelijk berekend bedrag');
+  const html = bouwEmailHtmlOfferte(kantoorPayload);
+  assert.ok(html.includes('Interne calculatie'), 'HTML-mail moet ook de interne-calculatiesectie bevatten');
+  console.log('OK: Kantoorreiniging krijgt nu een volledige, correcte interne calculatie (formule zelf ongewijzigd).');
+}
+function formatDuurLokaal(minuten) {
+  const afgerond = Math.round(minuten / 5) * 5;
+  const uren = Math.floor(afgerond / 60);
+  const min = afgerond % 60;
+  if (uren === 0) return min + ' min';
+  if (min === 0) return uren + ' uur';
+  return uren + ' uur ' + min + ' min';
+}
+
+console.log('\n=== Test 6c: niet-calculeerbare zakelijke dienst (Glasbewassing) krijgt expliciete "niet beschikbaar"-melding, GEEN verzonnen bedrag ===');
+{
+  const glasZakelijkPayload = {
+    klanttype: 'Bedrijf',
+    dienst: 'Glasbewassing',
+    dienstSlug: 'glasbewassing-zakelijk',
+    naam: 'Test Glas',
+    bedrijfsnaam: 'Glasbedrijf B.V.',
+    email: 'glas@voorbeeld.nl',
+    telefoon: '0611113333',
+    plaats: 'Helmond',
+    velden: [
+      ['Klanttype', 'Bedrijf'],
+      ['Dienst', 'Glasbewassing'],
+      ['Bedrijfsnaam / VvE', 'Glasbedrijf B.V.'],
+      ['Omvang', 'Klein'],
+      ['Frequentie', 'Maandelijks'],
+      ['Naam', 'Test Glas'],
+      ['E-mailadres', 'glas@voorbeeld.nl'],
+      ['Telefoonnummer', '0611113333'],
+      ['Plaats/postcode', 'Helmond'],
+    ],
+    calc: { oppervlakte: 'Klein', frequentie: 'Maandelijks', meerderePerWeekAantal: '', aantalLocaties: '', ruimtes: [], ruimteOverig: false, vervuiling: '' },
+    botcheck: false,
+    form_rendered_at: String(Date.now() - 9000),
+  };
+  const calc = berekenInterneCalculatie(glasZakelijkPayload);
+  assert.deepStrictEqual(calc, { nietBeschikbaar: true }, 'niet-calculeerbare zakelijke dienst moet nietBeschikbaar:true opleveren, geen bedrag');
+  const tekst = bouwEmailTekst(glasZakelijkPayload);
+  assert.ok(tekst.includes('INTERNE CALCULATIE'), 'sectie moet WEL getoond worden (niet stilzwijgend weggelaten)');
+  assert.ok(tekst.includes('Niet beschikbaar voor deze dienst'), 'moet expliciet "niet beschikbaar" tonen');
+  assert.ok(tekst.includes('Handmatige calculatie / locatieopname aanbevolen'), 'moet het advies tonen');
+  assert.ok(!/€\d/.test(tekst.split('INTERNE CALCULATIE')[1].split('CONTACTGEGEVENS')[0]), 'er mag GEEN verzonnen bedrag in de interne-calculatiesectie staan');
+  assert.ok(!tekst.includes('Interne prijsindicatie – niet automatisch'), 'de "berekend bedrag"-disclaimer hoort hier niet thuis (er is niets berekend)');
+  const html = bouwEmailHtmlOfferte(glasZakelijkPayload);
+  assert.ok(html.includes('Niet beschikbaar voor deze dienst'), 'HTML-versie moet dezelfde melding tonen');
+  console.log('OK: niet-calculeerbare zakelijke dienst toont intern een expliciete "niet beschikbaar"-melding, nooit een verzonnen bedrag.');
+}
+
 console.log('\n=== Test 7: botdetectie (honeypot + te snel ingevuld) ===');
 {
   assert.strictEqual(lijktOpBot({ botcheck: true, form_rendered_at: String(Date.now() - 9000) }), true, 'honeypot aangevinkt => bot');
