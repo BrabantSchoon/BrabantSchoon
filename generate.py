@@ -77,7 +77,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "181"
+ASSET_VERSION = "182"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -1177,11 +1177,6 @@ def contact_form():
       <div id="fieldAantalLocaties" style="margin-top:14px;" hidden>
         <label for="aantal_locaties">Aantal locaties <span style="font-weight:400;">(indien van toepassing, optioneel)</span></label>
         <input id="aantal_locaties" name="aantal_locaties" type="text" placeholder="Bijv. 1, of 3 vestigingen" disabled>
-      </div>
-      <div id="fieldRetourKm" style="margin-top:14px;" hidden>
-        <label for="retour_km">Retourafstand vanaf Brabantschoon <span style="font-weight:400;">(in km, indien bekend, optioneel)</span></label>
-        <input id="retour_km" name="retour_km" type="text" inputmode="decimal" placeholder="Bijv. 18" disabled>
-        <p class="wizard-sub" style="margin-top:6px;">Nog niet bekend? Laat dit veld leeg — we bepalen de reisafstand later; dit heeft geen invloed op de geschatte schoonmaaktijd.</p>
       </div>
       <div style="margin-top:14px;">
         <label for="bericht">Omschrijving <span style="font-weight:400;">(optioneel)</span></label>

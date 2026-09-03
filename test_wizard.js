@@ -675,7 +675,7 @@ function huidigeStap(doc) {
     // (ronde 46 gaf hier 65-140 min / 137 calculatieminuten).
     assert.ok(calcResultaat.totaalMinutenMin > 0 && calcResultaat.totaalMinutenMax < 120, 'garagescenario moet een realistische bandbreedte opleveren, nooit meer richting 2+ uur');
     assert.notStrictEqual(calcResultaat.betrouwbaarheid, 'Hoog');
-    assert.strictEqual(body.calc.retourKm, '', 'afstand bewust niet ingevuld in dit scenario -- mag nooit als een verzonnen kilometeraantal worden behandeld');
+    assert.strictEqual(body.calc.retourKm, undefined, 'ronde 48: het klantzichtbare retourafstand-veld bestaat niet meer, dus calc.retourKm mag helemaal niet in de payload voorkomen (en dus zeker geen verzonnen kilometeraantal bevatten)');
     assert.strictEqual(calcResultaat.km, null);
     assert.strictEqual(calcResultaat.vervoerNogTeBepalen, true);
     console.log('Wizard -> calc-payload:', JSON.stringify(body.calc));
@@ -683,29 +683,31 @@ function huidigeStap(doc) {
     console.log('OK: de volledige wizardflow (incl. de nieuwe velden) levert exact de payload op die het autogarage-regressiescenario uit de brief vereist, en de werkplaats wordt nooit automatisch meegerekend.');
   }
 
-  console.log('\n=== Scenario 20 (ronde 47, briefpunt 11): nieuw optioneel retourafstand-veld -- zichtbaarheid + payload ===');
+  console.log('\n=== Scenario 20 (ronde 48, Deel A): klantzichtbaar retourafstand-veld volledig verwijderd ===');
   {
     const dom = makeDom();
     const doc = dom.window.document;
     dom.window.Element.prototype.scrollIntoView = () => {};
 
-    // Voor klanttype "Particulier" moet het veld verborgen/disabled blijven
-    // (net als "Aantal locaties" -- alleen relevant voor zakelijke aanvragen).
+    // Het veld/de input mogen na ronde 48 helemaal niet meer in de gegenereerde
+    // HTML voorkomen, voor GEEN enkel klanttype -- niet verborgen, gewoon afwezig.
     setRadio(doc, 'klanttype', 'Particulier');
-    let veld = doc.getElementById('fieldRetourKm');
-    let input = doc.getElementById('retour_km');
-    assert.strictEqual(veld.hidden, true, 'retourafstand-veld moet verborgen zijn voor particuliere aanvragen');
-    assert.strictEqual(input.disabled, true);
+    assert.strictEqual(doc.getElementById('fieldRetourKm'), null, 'het retourafstand-veld mag niet meer in de DOM bestaan (particulier)');
+    assert.strictEqual(doc.getElementById('retour_km'), null, 'de retour_km-input mag niet meer in de DOM bestaan (particulier)');
 
-    // Terug naar "Bedrijf": veld moet verschijnen en weer bruikbaar worden.
     setRadio(doc, 'klanttype', 'Bedrijf');
-    veld = doc.getElementById('fieldRetourKm');
-    input = doc.getElementById('retour_km');
-    assert.strictEqual(veld.hidden, false, 'retourafstand-veld moet zichtbaar zijn voor zakelijke aanvragen');
-    assert.strictEqual(input.disabled, false);
+    assert.strictEqual(doc.getElementById('fieldRetourKm'), null, 'het retourafstand-veld mag niet meer in de DOM bestaan (zakelijk)');
+    assert.strictEqual(doc.getElementById('retour_km'), null, 'de retour_km-input mag niet meer in de DOM bestaan (zakelijk)');
 
-    // Doorlopen tot stap 10 en een waarde invullen; moet in de payload
-    // terechtkomen als calc.retourKm.
+    // Repo-brede check: de klantzichtbare tekst "Retourafstand vanaf
+    // Brabantschoon" mag nergens meer in de gegenereerde pagina voorkomen.
+    assert.ok(!doc.documentElement.outerHTML.includes('Retourafstand vanaf Brabantschoon'), 'de tekst "Retourafstand vanaf Brabantschoon" mag nergens meer klantzichtbaar voorkomen');
+
+    // Volledige zakelijke wizardflow doorlopen zonder het veld: de payload mag
+    // nooit een calc.retourKm-sleutel bevatten (het wordt simpelweg niet meer
+    // door de client verzonden), en de calculator moet dit -- exact als in
+    // Scenario 19 (garagescenario) -- als "nog te bepalen" behandelen, nooit
+    // als een verzonnen kilometeraantal of de oude 20-km-fallback.
     next(doc); // -> dienst
     setRadio(doc, 'dienst', 'Periodieke bedrijfsschoonmaak');
     next(doc); // -> oppervlakte
@@ -717,9 +719,9 @@ function huidigeStap(doc) {
     setRadio(doc, 'gebruiksintensiteit_zakelijk', 'Gemiddeld');
     setRadio(doc, 'vervuilingsgraad_zakelijk', 'Normale kantoor-/bedrijfsvervuiling');
     setRadio(doc, 'schoonmaakmoment', 'Geen voorkeur / in overleg');
-    next(doc); // -> stap 10 (toelichting, incl. retour_km)
+    next(doc); // -> stap 10 (toelichting, zonder retour_km)
     assert.strictEqual(huidigeStap(doc), '10', 'voorbereiding: toelichtingstap');
-    setValue(doc, '#retour_km', '22');
+    assert.strictEqual(doc.getElementById('retour_km'), null, 'ook op stap 10 zelf mag de input niet meer bestaan');
 
     let captured = null;
     dom.window.fetch = (url, opts) => {
@@ -738,14 +740,16 @@ function huidigeStap(doc) {
     await sleep(80);
 
     assert.ok(captured, 'de wizard moet een POST-payload verzonden hebben');
-    assert.strictEqual(captured.body.calc.retourKm, '22', 'de ingevulde retourafstand moet in de payload terechtkomen');
+    assert.strictEqual(captured.body.calc.retourKm, undefined, 'calc.retourKm mag niet meer in de payload voorkomen -- het veld bestaat niet meer client-side');
+    assert.ok(!JSON.stringify(captured.body).includes('retour_km'), 'de payload mag nergens meer een retour_km-sleutel bevatten');
 
     const { calculateOffer } = require('./lib/calculator.js');
     const calcResultaat = calculateOffer(captured.body);
-    assert.strictEqual(calcResultaat.km, 22);
-    assert.strictEqual(calcResultaat.vervoerBekend, true);
-    console.log('OK: retourafstand-veld is correct gegated op klanttype, en een ingevulde waarde komt correct in de calculatie terecht.');
+    assert.strictEqual(calcResultaat.km, null, 'zonder klantinvoer moet de afstand null zijn -- nooit een verzonnen/geraden waarde, en zeker niet de oude 20-km-fallback');
+    assert.strictEqual(calcResultaat.vervoerBekend, false);
+    assert.strictEqual(calcResultaat.vervoerNogTeBepalen, true);
+    console.log('OK: het retourafstand-veld is volledig verwijderd uit de klantinterface; de calculator behandelt een onbekende afstand correct als "nog te bepalen", zonder ooit een kilometeraantal te verzinnen.');
   }
 
-  console.log('\nAlle ronde-44- t/m ronde-47-scenario\'s geslaagd.');
-})().catch((e) => { console.error('FOUT in ronde-44/45/46/47-scenario:', e); process.exitCode = 1; });
+  console.log('\nAlle ronde-44- t/m ronde-48-scenario\'s geslaagd.');
+})().catch((e) => { console.error('FOUT in ronde-44/45/46/47/48-scenario:', e); process.exitCode = 1; });

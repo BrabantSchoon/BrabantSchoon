@@ -37,6 +37,16 @@ console.log('=== Test 1: e-mailtekst -- alleen ingevulde velden, geen lege bedri
   console.log('OK: alleen ingevulde velden in de e-mail.');
 }
 
+console.log('\n=== Test 1b (ronde 48, Deel B, briefpunt 11): vaste onderwerpregel is zakelijk en niet spamachtig ===');
+{
+  const onderwerp = CONFIG.SUBJECT;
+  assert.ok(!/[!]/.test(onderwerp), 'onderwerpregel mag geen uitroepteken bevatten: ' + onderwerp);
+  assert.ok(!/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(onderwerp), 'onderwerpregel mag geen emoji bevatten: ' + onderwerp);
+  assert.ok(!/\b[A-Z]{4,}\b/.test(onderwerp), 'onderwerpregel mag geen overdreven hoofdletters bevatten: ' + onderwerp);
+  assert.ok(!/gratis|korting|actie|nu bestellen|klik hier/i.test(onderwerp), 'onderwerpregel mag geen commerciële reclametaal/spamwoorden bevatten: ' + onderwerp);
+  console.log('OK: de vaste onderwerpregel ("' + onderwerp + '") is zakelijk/herkenbaar, zonder uitroeptekens, emoji, overdreven hoofdletters of spamwoorden.');
+}
+
 console.log('\n=== Test 2: e-mailtekst met optionele velden ingevuld ===');
 {
   const payload = { ...volledigPayload, bedrijfsnaam: 'Garagebedrijf Van Brussel B.V.', bericht: 'Graag deze week nog contact.' };

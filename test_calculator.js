@@ -438,6 +438,14 @@ console.log("\n=== Test 15b: onbekende afstand verlaagt de betrouwbaarheid van d
 }
 
 console.log("\n=== Test 15c: expliciete retourafstand -> juiste km x €0,35, alleen bekende kosten meegenomen ===");
+// Ronde 48: het klantzichtbare retourafstand-veld is uit de wizard verwijderd
+// (reisafstand bepalen is een interne verantwoordelijkheid, geen klantvraag).
+// calc.retourKm wordt daardoor in de praktijk nooit meer door de client
+// aangeleverd. Deze test roept calculateOffer() nog steeds rechtstreeks aan
+// met een expliciete retourKm-waarde om de onderliggende parseRetourKm()/
+// vervoerBekend-berekening als interne capaciteit te blijven bewaken (bijv.
+// voor toekomstige handmatige invoer door Brabantschoon zelf) -- dit is GEEN
+// test van een bestaand klantinvoerpad meer.
 {
   const r = calculateOffer(basisPayload({ retourKm: "18" }));
   assert.strictEqual(r.km, 18);

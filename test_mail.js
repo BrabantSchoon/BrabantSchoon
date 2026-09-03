@@ -59,19 +59,21 @@ console.log('\n=== Test 4: getResendConfig() -- RESEND_API_KEY/RESEND_FROM_EMAIL
   metEnv({ RESEND_API_KEY: undefined, RESEND_FROM_EMAIL: undefined, RESEND_TO_EMAIL: undefined }, () => {
     const cfg = getResendConfig();
     assert.strictEqual(cfg.apiKey, null);
-    assert.strictEqual(cfg.from, null);
+    assert.strictEqual(cfg.from, null, 'RESEND_FROM_EMAIL heeft GEEN code-default -- en dus zeker geen hardcoded noreply@-adres');
     assert.strictEqual(cfg.to, DEFAULT_TO_EMAIL);
     assert.strictEqual(cfg.to, 'info@brabantschoon.nl');
     assert.deepStrictEqual(cfg.ontbrekend.sort(), ['RESEND_API_KEY', 'RESEND_FROM_EMAIL']);
   });
-  metEnv({ RESEND_API_KEY: 're_test_fake_1234', RESEND_FROM_EMAIL: 'Brabantschoon <noreply@brabantschoon.nl>', RESEND_TO_EMAIL: 'aanvragen@brabantschoon.nl' }, () => {
+  metEnv({ RESEND_API_KEY: 're_test_fake_1234', RESEND_FROM_EMAIL: 'Brabantschoon <info@brabantschoon.nl>', RESEND_TO_EMAIL: 'aanvragen@brabantschoon.nl' }, () => {
     const cfg = getResendConfig();
     assert.strictEqual(cfg.apiKey, 're_test_fake_1234');
-    assert.strictEqual(cfg.from, 'Brabantschoon <noreply@brabantschoon.nl>');
+    assert.strictEqual(cfg.from, 'Brabantschoon <info@brabantschoon.nl>');
+    assert.ok(cfg.from.includes('@brabantschoon.nl'), 'het From-adres moet op het brabantschoon.nl-domein staan (alignment)');
+    assert.ok(!/noreply/i.test(cfg.from), 'het geconfigureerde From-adres in dit voorbeeld is bewust geen noreply-adres');
     assert.strictEqual(cfg.to, 'aanvragen@brabantschoon.nl');
     assert.deepStrictEqual(cfg.ontbrekend, []);
   });
-  console.log('OK: config komt uitsluitend uit process.env; RESEND_TO_EMAIL valt terug op het bestaande, publieke info@brabantschoon.nl-adres (geen secret).');
+  console.log('OK: config komt uitsluitend uit process.env (geen hardcoded noreply-default); RESEND_TO_EMAIL valt terug op het bestaande, publieke info@brabantschoon.nl-adres (geen secret).');
 }
 
 console.log('\n=== Test 5: bouwEmailHtml() escaped waarden, laat lege secties weg ===');
@@ -161,19 +163,63 @@ async function testVerstuurEmailNormaal() {
 }
 
 async function testVerstuurEmailOngeldigeReplyTo() {
-  console.log('\n=== Test 8: verstuurEmail() laat reply_to weg bij een ongeldig e-mailadres ===');
+  console.log('\n=== Test 8 (ronde 48, Deel B, briefpunt 9): ongeldig/ontbrekend replyTo -> veilige fallback naar het eigen Brabantschoon-adres, NOOIT een kapotte header ===');
   const origFetch = global.fetch;
   const captured = {};
   global.fetch = mockFetchOk(captured);
   try {
-    await metEnv({ RESEND_API_KEY: 're_test_fake_1234', RESEND_FROM_EMAIL: 'Brabantschoon <noreply@brabantschoon.nl>' }, async () => {
+    await metEnv({ RESEND_API_KEY: 're_test_fake_1234', RESEND_FROM_EMAIL: 'Brabantschoon <info@brabantschoon.nl>', RESEND_TO_EMAIL: 'aanvragen@brabantschoon.nl' }, async () => {
+      // Ongeldig (bijv. gemanipuleerd) klantadres: reply_to moet nooit
+      // ontbreken, kapot zijn, of het ongeldige adres doorzetten -- het valt
+      // veilig terug op het eigen, al gevalideerde ontvangstadres.
       await verstuurEmail({ subject: 'Test', html: '<p>x</p>', text: 'x', replyTo: 'niet-geldig', logPrefix: 'test' });
-      assert.ok(!('reply_to' in captured.body), 'een ongeldig replyTo-adres mag nooit als reply_to worden meegestuurd');
+      assert.strictEqual(captured.body.reply_to, 'aanvragen@brabantschoon.nl', 'bij een ongeldig replyTo-adres moet reply_to veilig terugvallen op het eigen Brabantschoon-adres (RESEND_TO_EMAIL)');
+    });
+    captured.body = null;
+    await metEnv({ RESEND_API_KEY: 're_test_fake_1234', RESEND_FROM_EMAIL: 'Brabantschoon <info@brabantschoon.nl>', RESEND_TO_EMAIL: 'aanvragen@brabantschoon.nl' }, async () => {
+      // Ontbrekend replyTo (bijv. contactformulier zonder e-mailveld): zelfde
+      // veilige fallback, nooit een lege/ontbrekende reply_to-header.
+      await verstuurEmail({ subject: 'Test', html: '<p>x</p>', text: 'x', logPrefix: 'test' });
+      assert.strictEqual(captured.body.reply_to, 'aanvragen@brabantschoon.nl', 'zonder replyTo moet reply_to ook veilig terugvallen op het eigen Brabantschoon-adres');
     });
   } finally {
     global.fetch = origFetch;
   }
-  console.log('OK: ongeldig replyTo-adres wordt server-side geweerd, nooit klakkeloos doorgestuurd.');
+  console.log('OK: een ongeldig of ontbrekend klantadres veroorzaakt nooit een kapotte/onveilige reply_to-header -- altijd een veilige, geldige fallback.');
+}
+
+console.log('\n=== Test 8b (ronde 48, Deel B): geen tracking-parameters, geen scripts/tracking-pixels/forms in de mail ===');
+{
+  const html = bouwEmailHtml({
+    titel: 'Nieuwe zakelijke offerteaanvraag',
+    secties: [{ heading: 'Aanvraag', rows: [['Naam', 'Test Persoon']] }],
+    noot: 'Interne calculatie – niet automatisch aan de klant gecommuniceerd en geen definitieve offerte.',
+  });
+  assert.ok(!/<script/i.test(html), 'de HTML-mail mag geen <script> bevatten');
+  assert.ok(!/<form/i.test(html), 'de HTML-mail mag geen <form> bevatten');
+  assert.ok(!/<img/i.test(html), 'de HTML-mail mag geen afbeeldingen (bijv. tracking pixels) bevatten');
+  assert.ok(!/onclick|onload|onerror=/i.test(html), 'de HTML-mail mag geen inline event-handlers bevatten');
+  console.log('OK: de HTML-mail bevat geen scripts, forms, afbeeldingen/tracking-pixels of inline event-handlers -- een eenvoudige, transactionele melding.');
+}
+
+async function testVerstuurEmailGeenTrackingParams() {
+  console.log('\n=== Test 8c (ronde 48, Deel B, briefpunt 13): geen tracking-parameters in de Resend-aanroep vanuit onze eigen code ===');
+  const origFetch = global.fetch;
+  const captured = {};
+  global.fetch = mockFetchOk(captured);
+  try {
+    await metEnv({ RESEND_API_KEY: 're_test_fake_1234', RESEND_FROM_EMAIL: 'Brabantschoon <info@brabantschoon.nl>' }, async () => {
+      await verstuurEmail({ subject: 'Test', html: '<p>x</p>', text: 'x', replyTo: 'klant@voorbeeld.com', logPrefix: 'test' });
+      assert.ok(!('tags' in captured.body), 'de Resend-aanroep mag geen tags/trackingvelden meesturen vanuit onze code');
+      assert.ok(!('track_opens' in captured.body) && !('open_tracking' in captured.body), 'geen open-tracking-parameter vanuit onze code');
+      assert.ok(!('track_clicks' in captured.body) && !('click_tracking' in captured.body), 'geen klik-tracking-parameter vanuit onze code');
+      const verwachteSleutels = ['from', 'to', 'subject', 'html', 'text', 'reply_to'].sort();
+      assert.deepStrictEqual(Object.keys(captured.body).sort(), verwachteSleutels, 'de Resend-requestbody mag alleen de bekende, noodzakelijke velden bevatten -- niets extra\'s zoals tracking- of marketingparameters');
+    });
+  } finally {
+    global.fetch = origFetch;
+  }
+  console.log('OK: onze eigen code stuurt geen enkele tracking-parameter mee naar Resend -- eventuele tracking kan dus alleen dashboard-/accountconfiguratie bij Resend zelf zijn.');
 }
 
 async function testVerstuurEmailResendFout() {
@@ -236,6 +282,7 @@ async function testVerstuurEmailNetwerkfout() {
   await testVerstuurEmailZonderConfig();
   await testVerstuurEmailNormaal();
   await testVerstuurEmailOngeldigeReplyTo();
+  await testVerstuurEmailGeenTrackingParams();
   await testVerstuurEmailResendFout();
   await testVerstuurEmailNetwerkfout();
   console.log('\nAlle tests geslaagd.');

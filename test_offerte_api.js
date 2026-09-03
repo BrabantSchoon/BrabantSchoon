@@ -73,7 +73,7 @@ const garagePayload = {
     ruimteOverig: false,
     vervuiling: 'Bovengemiddelde vervuiling',
     gebruiksintensiteit: 'Intensief',
-    retourKm: '', // ronde 47: afstand onbekend -- mag NOOIT als 20km fallback behandeld worden
+    retourKm: '', // ronde 48: representeert de normale situatie -- de client stuurt dit veld niet meer mee (klantzichtbaar veld verwijderd), dus dit is altijd leeg/afwezig; mag NOOIT als 20km-fallback behandeld worden
   },
   botcheck: false,
   form_rendered_at: String(Date.now() - 9000),
@@ -110,6 +110,23 @@ console.log('=== Test 1: onderwerp + e-mailtekst (Garagebedrijf Van Brussel) ===
   console.log('OK: subject + body bevatten verwachte secties, geen rommelvelden, geen interne termen in de AANVRAAG-sectie.');
 }
 
+console.log('\n=== Test 1b (ronde 48, Deel B, briefpunt 11): onderwerpregels zijn zakelijk en niet spamachtig ===');
+{
+  const zakelijkOnderwerp = bouwOnderwerp(garagePayload);
+  const particulierOnderwerp = bouwOnderwerp({ klanttype: 'Particulier', naam: 'Jan Peeters', plaats: 'Eindhoven' });
+  [zakelijkOnderwerp, particulierOnderwerp].forEach((onderwerp) => {
+    assert.ok(!/[!]/.test(onderwerp), 'onderwerpregel mag geen uitroepteken bevatten: ' + onderwerp);
+    assert.ok(!/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(onderwerp), 'onderwerpregel mag geen emoji bevatten: ' + onderwerp);
+    // Geen "GESCHREEUWDE" woorden: geen los woord van 4+ letters volledig in
+    // hoofdletters (namen/afkortingen als "B.V." vallen hier vanzelf buiten).
+    assert.ok(!/\b[A-Z]{4,}\b/.test(onderwerp), 'onderwerpregel mag geen overdreven hoofdletters bevatten: ' + onderwerp);
+    assert.ok(!/gratis|korting|actie|nu bestellen|klik hier/i.test(onderwerp), 'onderwerpregel mag geen commerciële reclametaal/spamwoorden bevatten: ' + onderwerp);
+  });
+  assert.ok(zakelijkOnderwerp.startsWith('Nieuwe zakelijke offerteaanvraag'));
+  assert.ok(particulierOnderwerp.startsWith('Nieuwe particuliere offerteaanvraag'));
+  console.log('OK: onderwerpregels zijn zakelijk/herkenbaar, zonder uitroeptekens, emoji, overdreven hoofdletters of spamwoorden.');
+}
+
 console.log('\n=== Test 2: kruiscontrole -- e-mail gebruikt exact calculateOffer() uit lib/calculator.js (geen tweede formule) ===');
 {
   const calc = calculateOffer(garagePayload);
@@ -140,7 +157,10 @@ console.log('\n=== Test 2: kruiscontrole -- e-mail gebruikt exact calculateOffer
   console.log('OK: zowel de teksversie als de HTML-versie geven exact dezelfde cijfers als calculateOffer() zelf -- geen dubbele/verouderde calculatielogica in api/offerte-aanvraag.js.');
 }
 
-console.log('\n=== Test 2b: expliciete retourafstand -> juiste km getoond in de e-mail, geen "nog te bepalen" meer ===');
+console.log('\n=== Test 2b: expliciete (interne) retourafstand -> juiste km getoond in de e-mail, geen "nog te bepalen" meer ===');
+// Ronde 48: dit pad wordt niet meer door de klantwizard gevoed (het veld is
+// verwijderd), maar de onderliggende server-side afhandeling van een bekende
+// afstand blijft bestaan als interne capaciteit en wordt hier bewaakt.
 {
   const metKm = JSON.parse(JSON.stringify(garagePayload));
   metKm.calc.retourKm = '14';

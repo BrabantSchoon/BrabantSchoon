@@ -222,7 +222,7 @@ pull-request-previews wilt testen):
 | Variabele | Verplicht | Betekenis |
 |---|---|---|
 | `RESEND_API_KEY` | Ja | Uw Resend API-sleutel (begint met `re_`). Zonder deze variabele faalt elk endpoint veilig met een generieke `500` — er wordt **niets** verstuurd, de bezoeker krijgt nooit een valse succesmelding, en er wordt nooit een sleutelwaarde gelogd. |
-| `RESEND_FROM_EMAIL` | Ja | Het afzenderadres, bijv. `Brabantschoon <noreply@brabantschoon.nl>`. Moet op een bij Resend **geverifieerd domein** staan (zie hieronder) — anders wijst Resend elke verzending af. Bewust GEEN default in code: een verzonnen adres zonder verificatie zou toch mislukken, en het is aan u welk adres u kiest. |
+| `RESEND_FROM_EMAIL` | Ja | Het afzenderadres, bijv. `Brabantschoon <info@brabantschoon.nl>`. Moet op een bij Resend **geverifieerd domein** staan (zie hieronder) — anders wijst Resend elke verzending af. Gebruik **geen `noreply@`-adres**: dat oogt onpersoonlijk/automatisch en wordt door met name Outlook/Microsoft-mailboxen vaker als spam-signaal meegewogen dan een herkenbaar bedrijfsadres. Bewust GEEN default in code: een verzonnen adres zonder verificatie zou toch mislukken, en het is aan u welk adres u kiest — maar kies dus bij voorkeur `info@`, `offerte@` of `contact@brabantschoon.nl` in plaats van `noreply@`. |
 | `RESEND_TO_EMAIL` | Nee | De ontvanger. Valt terug op `info@brabantschoon.nl` (het bestaande, overal al zichtbare bedrijfsadres — geen secret) wanneer niet ingesteld. Alleen nodig als aanvragen naar een ander adres moeten. |
 
 Dit zijn allemaal **server-only** variabelen — gebruik geen client-side prefix zoals
@@ -244,9 +244,12 @@ toevoegt — die verzin ik hier niet):
    domeinregistrar/DNS-provider.
 4. Domein verifiëren in het Resend-dashboard (kan enige tijd duren na het instellen
    van de DNS-records).
-5. Een geschikt afzenderadres op dat domein kiezen (bijv. `noreply@brabantschoon.nl`
-   of `aanvragen@brabantschoon.nl`) en dat als `RESEND_FROM_EMAIL` in Vercel
-   instellen.
+5. Een geschikt afzenderadres op dat domein kiezen — **geen `noreply@`-adres**,
+   gebruik bij voorkeur een herkenbaar Brabantschoon-adres zoals
+   `info@brabantschoon.nl` (of `offerte@brabantschoon.nl` /
+   `contact@brabantschoon.nl` als u dat liever apart houdt) — en dat als
+   `RESEND_FROM_EMAIL` in Vercel instellen, bijv. `Brabantschoon
+   <info@brabantschoon.nl>`.
 
 Voor lokaal testen: kopieer `.env.example` naar `.env` en vul uw eigen waarden in.
 `.env` staat in `.gitignore` en wordt dus nooit meegecommit. (De site zelf heeft hier
@@ -254,11 +257,62 @@ niets aan nodig — `python3 -m http.server` gebruikt geen `.env`; dit is alleen
 relevant wanneer u `api/offerte-aanvraag.js`/`api/contact-aanvraag.js`/`lib/mail.js`
 lokaal via Node aanroept, zie "Lokaal testen" hieronder.)
 
-**`reply_to` — "Beantwoorden" gaat naar de klant, niet naar het noreply-adres.** Beide
-endpoints geven het door de klant ingevulde, server-side gevalideerde e-mailadres mee
-als `reply_to` aan Resend (nooit een ongeldig adres — dat wordt vóór verzending al
-geweerd door de bestaande veldvalidatie). Klikt u in uw mailbox op "Beantwoorden", dan
-gaat het antwoord dus naar de klant.
+**`reply_to` — "Beantwoorden" gaat naar de klant, niet naar het afzenderadres.** Beide
+endpoints geven het door de klant ingevulde e-mailadres door aan `verstuurEmail()` in
+`lib/mail.js`, die dit adres **server-side valideert** (`isValidEmail()`) vóórdat het
+als `reply_to` naar Resend gaat. Is het klantadres geldig, dan gaat "Beantwoorden" in
+uw mailbox rechtstreeks naar de klant. Ontbreekt het adres, of is het (bijv. door
+gemanipuleerde forminvoer) ongeldig, dan valt `reply_to` automatisch veilig terug op
+uw eigen `RESEND_TO_EMAIL`-adres — er wordt nooit een kapotte, lege of onveilige
+`reply_to`-header verstuurd (ronde 48).
+
+## E-maildeliverability (spamfilters)
+
+Interne meldingsmails (offerte-/contactaanvragen) worden verstuurd van uw eigen
+`RESEND_FROM_EMAIL`-adres náár uw eigen `RESEND_TO_EMAIL`-adres, via Resend als
+tussenpartij. Of zo'n mail in de inbox of in Spam/Ongewenste e-mail belandt, hangt
+grotendeels af van zaken die **buiten deze code liggen** (domeinauthenticatie,
+afzenderreputatie) — de code zelf bevat sinds ronde 48 geen bekende
+deliverability-problemen meer (professioneel, niet-`noreply`-afzenderadres; veilige
+`reply_to`-fallback; nette platte-tekst + HTML-versie; zakelijke onderwerpregel zonder
+hoofdletters/uitroeptekens/emoji/spamwoorden; geen tracking, scripts, verborgen tekst
+of externe afbeeldingen in de HTML-mail).
+
+Wat u zelf in het Resend-dashboard (en eventueel bij uw DNS-provider) kunt
+controleren — **dit zijn geen waarden die vanuit deze repository af te leiden zijn,
+dus verzin ze niet zelf en vraag ze op in Resend**:
+
+- **SPF**: Resend toont bij uw geverifieerde domein (**Domains → brabantschoon.nl**)
+  of het benodigde SPF-record correct staat. Alleen Resend/uw DNS-provider weten de
+  actuele status; deze repository bevat geen DNS-gegevens.
+- **DKIM**: idem — Resend genereert de exacte DKIM-recordwaarden bij domeinverificatie
+  en toont de status (geverifieerd / niet geverifieerd) in hetzelfde scherm.
+- **DMARC**: controleer of er al een DMARC-record staat voor `brabantschoon.nl`. Als
+  dat ontbreekt: voeg dit **pas toe nadat u heeft nagegaan welke andere diensten**
+  (bijv. een ander mailprogramma, factuursysteem, nieuwsbrieftool) ook namens
+  `brabantschoon.nl` mail versturen — een te streng beleid (`p=reject`) kan anders
+  legitieme mail van die andere diensten blokkeren. Begin bij twijfel met een mild
+  beleid (bijv. `p=none`, alleen monitoren) en verstreng dit pas later bewust. De
+  exacte recordwaarde bepaalt u zelf/met uw DNS-provider — dat verzint deze
+  documentatie niet.
+- **Tracking**: deze code stuurt geen open-/klik-tracking mee in de Resend-aanroep
+  (geen `tags`, geen trackingparameters). Als Resend op accountniveau (dashboard)
+  toch tracking heeft staan, schakel dit voor deze transactionele meldingsmails uit
+  via **Resend-dashboard → instellingen** — dat is dashboardconfiguratie, niet iets
+  wat vanuit de code te sturen is.
+
+**Na deploy — één keer live testen:**
+1. Verstuur één test-offerteaanvraag (zakelijk) via de live site.
+2. Open het Resend-dashboard → **Emails** en open de zojuist verzonden mail.
+3. Bekijk **Deliverability Insights** (indien beschikbaar) en de headers van de mail
+   voor eventuele waarschuwingen (SPF/DKIM/DMARC-status van dit specifieke bericht).
+4. Controleer de ontvangst in Outlook (inbox vs. Ongewenste e-mail).
+5. Controleer de ontvangst in Gmail, indien u daar ook een testadres voor heeft.
+6. Belandt de mail nog steeds in spam? Geef dan het volgende door (nooit de
+   API-sleutel): de volledige "raw"/brontekst van de ontvangen mail inclusief
+   headers (via "bericht weergeven als tekst"/"raw source" in Outlook/Gmail), de
+   SPF/DKIM/DMARC-status die Resend's Deliverability Insights toont, en of het om de
+   zakelijke of particuliere offerteaanvraag (of het contactformulier) ging.
 
 ## SEO-opbouw
 
