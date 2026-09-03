@@ -367,8 +367,6 @@ if (document.readyState === 'loading') {
   const bedrijfsnaamInput = document.getElementById('bedrijfsnaam');
   const aantalLocatiesField = document.getElementById('fieldAantalLocaties');
   const aantalLocatiesInput = document.getElementById('aantal_locaties');
-  const retourKmField = document.getElementById('fieldRetourKm');
-  const retourKmInput = document.getElementById('retour_km');
   const oppQ = document.getElementById('oppervlakteQ');
   const oppSub = document.getElementById('oppervlakteSub');
   const toelichtingQ = document.getElementById('toelichtingQ');
@@ -765,16 +763,6 @@ if (document.readyState === 'loading') {
     const showAantal = type === 'bedrijf' || type === 'vve';
     if (aantalLocatiesField) aantalLocatiesField.hidden = !showAantal;
     if (showAantal) enableField(aantalLocatiesInput); else clearAndDisable(aantalLocatiesInput);
-
-    // Retourafstand (ronde 47, briefpunt 11): zelfde zichtbaarheidsregel als
-    // "Aantal locaties" hierboven (elke zakelijke/VvE-aanvraag) -- alleen
-    // relevant voor de interne calculatie (CALC_DIENST_SLUGS), maar wordt
-    // hier bewust niet verder dienst-specifiek gemaakt, net als aantal
-    // locaties. Leeg laten is expliciet toegestaan: dan behandelt de
-    // server-side calculator (lib/calculator.js) dit als "afstand nog
-    // onbekend" en telt er nooit een verzonnen kilometeraantal mee.
-    if (retourKmField) retourKmField.hidden = !showAantal;
-    if (showAantal) enableField(retourKmInput); else clearAndDisable(retourKmInput);
 
     if (!isParticulier) {
       // Particuliere stappen (pakket, extra's, woning, frequentie-particulier)
@@ -1177,7 +1165,6 @@ if (document.readyState === 'loading') {
         ['Omvang', getFieldValue('oppervlakte')],
         ['Exacte oppervlakte (m²)', getFieldValue('oppervlakte_m2_exact')],
         ['Aantal locaties', getFieldValue('aantal_locaties')],
-        ['Retourafstand (km)', getFieldValue('retour_km')],
         ['Frequentie', getFieldValue('frequentie')],
         ['Aantal keer per week', getFieldValue('meerdere_per_week_aantal')]
       );
@@ -1242,7 +1229,6 @@ if (document.readyState === 'loading') {
         ruimteOverig: !!(ruimteOverigCheck && ruimteOverigCheck.checked),
         vervuiling: getFieldValue('vervuilingsgraad_zakelijk'),
         gebruiksintensiteit: getFieldValue('gebruiksintensiteit_zakelijk'),
-        retourKm: getFieldValue('retour_km'),
       },
       botcheck: !!(botcheckInput && botcheckInput.checked),
       form_rendered_at: renderedAtInput ? renderedAtInput.value : '',
