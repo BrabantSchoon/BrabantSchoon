@@ -77,7 +77,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "179"
+ASSET_VERSION = "181"
 
 # ---------------------------------------------------------------
 # ICONS
@@ -770,10 +770,12 @@ WIZARD_FREQUENTIE = [
 # ---------------------------------------------------------------
 # ZAKELIJKE WIZARD-UITBREIDING (periodieke bedrijfs-/VvE-schoonmaak)
 # ---------------------------------------------------------------
-# Alleen relevant bij dienst-slug "periodiek-zakelijk" (zie MASTER_DIENSTEN) —
-# ingezet via wizard-stap 9 in contact_form(). Doel: genoeg informatie
-# verzamelen om een interne tijd-/prijsindicatie te kunnen berekenen (zie
-# api/offerte-aanvraag.js), zonder de klant losse standaardwerkzaamheden
+# Relevant bij de dienst-slugs in CALC_DIENST_SLUGS (js/main.js /
+# lib/calculator.js — sinds ronde 44 ook "kantoorreiniging", niet meer
+# uitsluitend "periodiek-zakelijk"; zie MASTER_DIENSTEN) — ingezet via
+# wizard-stap 9 in contact_form(). Doel: genoeg informatie verzamelen om een
+# interne tijd-/prijsindicatie te kunnen berekenen (Calculator v2, zie
+# lib/calculator.js), zonder de klant losse standaardwerkzaamheden
 # (stofzuigen, prullenbak legen, etc.) te laten aanvinken.
 ZAKELIJK_RUIMTE_OPTIES = [
     ("ruimte_kantoor", "Kantoorruimte"),
@@ -800,6 +802,16 @@ ZAKELIJK_MOMENT_OPTIES = [
     ("Voor opening", "Voordat uw locatie open gaat"),
     ("Na sluiting", "Nadat uw locatie gesloten is"),
     ("Geen voorkeur / in overleg", "We bespreken dit graag samen"),
+]
+# Ronde 46 (Calculator v2, zie lib/calculator.js): oppervlakte alleen is
+# onvoldoende om de benodigde tijd goed in te schatten -- een kantoor met 5
+# medewerkers vraagt een andere aanpak dan hetzelfde kantoor met 30. Alleen
+# relevant/getoond op wizardstap 9, dus bij dezelfde diensten als de
+# calculator zelf (CALC_DIENST_SLUGS).
+ZAKELIJK_INTENSITEIT_OPTIES = [
+    ("Rustig", "Weinig mensen, weinig beweging door de ruimte"),
+    ("Gemiddeld", "Normale bezetting en gebruik"),
+    ("Intensief", "Veel mensen/bezoek, of intensief gebruik van de ruimte"),
 ]
 
 # Vraag- en hulpteksten per stap, per klanttype. Wordt door JavaScript ingezet
@@ -945,6 +957,7 @@ def contact_form():
     )
     zakelijk_vervuiling_cards = radio_cards("vervuilingsgraad_zakelijk", ZAKELIJK_VERVUILING_OPTIES, columns=2)
     zakelijk_moment_cards = radio_cards("schoonmaakmoment", ZAKELIJK_MOMENT_OPTIES, columns=2)
+    zakelijk_intensiteit_cards = radio_cards("gebruiksintensiteit_zakelijk", ZAKELIJK_INTENSITEIT_OPTIES, columns=3)
     prijs_data_json = json.dumps({
         "eenmalig": PARTICULIER_PRIJZEN,
         "periodiek": PERIODIEK_PRIJZEN,
@@ -1106,6 +1119,11 @@ def contact_form():
           data-q-bedrijf="{L['bedrijf']['oppervlakte_sub']}"
           data-q-vve="{L['vve']['oppervlakte_sub']}">{L['bedrijf']['oppervlakte_sub']}</p>
       {opp_cards}
+      <div style="margin-top:18px; max-width:260px;">
+        <label for="oppervlakte_m2_exact">Weet u ongeveer hoeveel m² er daadwerkelijk schoongemaakt moet worden? <span style="font-weight:400;">(optioneel)</span></label>
+        <input id="oppervlakte_m2_exact" name="oppervlakte_m2_exact" type="number" inputmode="numeric" min="1" max="20000" placeholder="Bijv. 85" autocomplete="off">
+        <p class="wizard-sub" style="margin-top:6px; font-size:13px;">Niet zeker? U kunt dit overslaan. Het gaat nadrukkelijk om de schoon te maken oppervlakte, niet noodzakelijk het volledige bedrijfspand.</p>
+      </div>
     </div>
 
     <div class="wizard-step" data-step="8" hidden data-applies-to="bedrijf vve">
@@ -1127,6 +1145,10 @@ def contact_form():
       <div id="ruimteOverigWrap" style="margin-top:14px;" hidden>
         <label for="ruimte_overig_toelichting">Om welke ruimte gaat het?</label>
         <input id="ruimte_overig_toelichting" name="ruimte_overig_toelichting" type="text" placeholder="Bijv. showroom, werkplaats" disabled>
+      </div>
+      <div style="margin-top:26px;">
+        <label style="display:block; margin-bottom:10px;">Hoe intensief wordt de locatie dagelijks gebruikt?</label>
+        {zakelijk_intensiteit_cards}
       </div>
       <div style="margin-top:26px;">
         <label style="display:block; margin-bottom:10px;">Is er sprake van extra vervuiling waar we rekening mee moeten houden?</label>
@@ -1155,6 +1177,11 @@ def contact_form():
       <div id="fieldAantalLocaties" style="margin-top:14px;" hidden>
         <label for="aantal_locaties">Aantal locaties <span style="font-weight:400;">(indien van toepassing, optioneel)</span></label>
         <input id="aantal_locaties" name="aantal_locaties" type="text" placeholder="Bijv. 1, of 3 vestigingen" disabled>
+      </div>
+      <div id="fieldRetourKm" style="margin-top:14px;" hidden>
+        <label for="retour_km">Retourafstand vanaf Brabantschoon <span style="font-weight:400;">(in km, indien bekend, optioneel)</span></label>
+        <input id="retour_km" name="retour_km" type="text" inputmode="decimal" placeholder="Bijv. 18" disabled>
+        <p class="wizard-sub" style="margin-top:6px;">Nog niet bekend? Laat dit veld leeg — we bepalen de reisafstand later; dit heeft geen invloed op de geschatte schoonmaaktijd.</p>
       </div>
       <div style="margin-top:14px;">
         <label for="bericht">Omschrijving <span style="font-weight:400;">(optioneel)</span></label>

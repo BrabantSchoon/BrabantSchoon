@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="css/styles.css?v=179">
+<link rel="stylesheet" href="css/styles.css?v=181">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
@@ -1199,6 +1199,11 @@
         <span class="rc-label">Weet ik niet</span>
         <span class="rc-desc">Overleg liever tijdens een kennismaking</span>
       </label></div>
+      <div style="margin-top:18px; max-width:260px;">
+        <label for="oppervlakte_m2_exact">Weet u ongeveer hoeveel m² er daadwerkelijk schoongemaakt moet worden? <span style="font-weight:400;">(optioneel)</span></label>
+        <input id="oppervlakte_m2_exact" name="oppervlakte_m2_exact" type="number" inputmode="numeric" min="1" max="20000" placeholder="Bijv. 85" autocomplete="off">
+        <p class="wizard-sub" style="margin-top:6px; font-size:13px;">Niet zeker? U kunt dit overslaan. Het gaat nadrukkelijk om de schoon te maken oppervlakte, niet noodzakelijk het volledige bedrijfspand.</p>
+      </div>
     </div>
 
     <div class="wizard-step" data-step="8" hidden data-applies-to="bedrijf vve">
@@ -1257,6 +1262,27 @@
       <div id="ruimteOverigWrap" style="margin-top:14px;" hidden>
         <label for="ruimte_overig_toelichting">Om welke ruimte gaat het?</label>
         <input id="ruimte_overig_toelichting" name="ruimte_overig_toelichting" type="text" placeholder="Bijv. showroom, werkplaats" disabled>
+      </div>
+      <div style="margin-top:26px;">
+        <label style="display:block; margin-bottom:10px;">Hoe intensief wordt de locatie dagelijks gebruikt?</label>
+        <div class="radio-cards cols-3"><input type="radio" name="gebruiksintensiteit_zakelijk" id="gebruiksintensiteit_zakelijk-rustig" value="Rustig" class="rc-input" required>
+      <label for="gebruiksintensiteit_zakelijk-rustig" class="rc-card">
+        
+        <span class="rc-label">Rustig</span>
+        <span class="rc-desc">Weinig mensen, weinig beweging door de ruimte</span>
+      </label>
+      <input type="radio" name="gebruiksintensiteit_zakelijk" id="gebruiksintensiteit_zakelijk-gemiddeld" value="Gemiddeld" class="rc-input" required>
+      <label for="gebruiksintensiteit_zakelijk-gemiddeld" class="rc-card">
+        
+        <span class="rc-label">Gemiddeld</span>
+        <span class="rc-desc">Normale bezetting en gebruik</span>
+      </label>
+      <input type="radio" name="gebruiksintensiteit_zakelijk" id="gebruiksintensiteit_zakelijk-intensief" value="Intensief" class="rc-input" required>
+      <label for="gebruiksintensiteit_zakelijk-intensief" class="rc-card">
+        
+        <span class="rc-label">Intensief</span>
+        <span class="rc-desc">Veel mensen/bezoek, of intensief gebruik van de ruimte</span>
+      </label></div>
       </div>
       <div style="margin-top:26px;">
         <label style="display:block; margin-bottom:10px;">Is er sprake van extra vervuiling waar we rekening mee moeten houden?</label>
@@ -1331,6 +1357,11 @@
       <div id="fieldAantalLocaties" style="margin-top:14px;" hidden>
         <label for="aantal_locaties">Aantal locaties <span style="font-weight:400;">(indien van toepassing, optioneel)</span></label>
         <input id="aantal_locaties" name="aantal_locaties" type="text" placeholder="Bijv. 1, of 3 vestigingen" disabled>
+      </div>
+      <div id="fieldRetourKm" style="margin-top:14px;" hidden>
+        <label for="retour_km">Retourafstand vanaf Brabantschoon <span style="font-weight:400;">(in km, indien bekend, optioneel)</span></label>
+        <input id="retour_km" name="retour_km" type="text" inputmode="decimal" placeholder="Bijv. 18" disabled>
+        <p class="wizard-sub" style="margin-top:6px;">Nog niet bekend? Laat dit veld leeg — we bepalen de reisafstand later; dit heeft geen invloed op de geschatte schoonmaaktijd.</p>
       </div>
       <div style="margin-top:14px;">
         <label for="bericht">Omschrijving <span style="font-weight:400;">(optioneel)</span></label>
@@ -1500,6 +1531,6 @@
   applyStoredConsent();
 })();
 </script>
-<script src="js/main.js?v=179" defer></script>
+<script src="js/main.js?v=181" defer></script>
 </body>
 </html>

@@ -1,25 +1,36 @@
 // Test voor api/offerte-aanvraag.js: voedt de _internal-functies met exacte
-// payloads (waaronder de "Garagebedrijf Van Brussel"-scenario, letterlijk
-// gekopieerd uit de fetch-payload die test_wizard.js Scenario 5 registreert)
-// en controleert de output:
+// payloads (waaronder het "Garagebedrijf Van Brussel"-scenario, ronde 46 —
+// zie ook test_calculator.js voor de losstaande, veel uitgebreidere
+// dekking van lib/calculator.js zelf) en controleert de output:
 // 1. Onderwerpregel en e-mailtekst voor het brief-regressiescenario.
-// 2. Onafhankelijke herberekening van de interne calculatie (tijd, kosten,
-//    adviesprijs, marge) om te bevestigen dat de formule correct is
-//    geïmplementeerd -- niet alleen "de code leest logisch".
-// 3. Botcheck/spamdetectie.
-// 4. Validatie van verplichte velden.
+// 2. Kruiscontrole: de e-mail geeft exact de waarden terug die
+//    calculateOffer() (lib/calculator.js) voor dezelfde payload levert —
+//    bevestigt dat api/offerte-aanvraag.js de gedeelde module aanroept en
+//    niet zelf nog een tweede (verouderde) formule gebruikt.
+// 3. "Meerdere keren per week"-pad (met en zonder geldig aantal).
+// 4. Minimumprijs-clamp (kunstmatig verhoogd CONFIG-minimum).
 // 5. "Onvoldoende informatie"-pad (oppervlakte = "Weet ik niet").
-// 6. Particuliere flow: dienstSlug !== 'periodiek-zakelijk' => geen calc-sectie.
+// 6. Particuliere flow / niet-calculeerbare zakelijke dienst => geen of een
+//    expliciete "niet beschikbaar"-sectie, nooit een verzonnen bedrag.
+// 7-9. Bot-/spamdetectie, validatie verplichte velden, meerdere-locaties-
+//      waarschuwing.
+// 10-11. Geen Web3Forms/hardcoded secrets meer; HTML-mail bevat dezelfde
+//        inhoud als de teksversie en escaped klantinvoer correct.
+// 12-14. De HTTP-handler zelf: veilig falen zonder Resend-config, normale
+//        verzending met gemockte fetch, en veilige 502-afhandeling wanneer
+//        Resend zelf de aanvraag afwijst.
+"use strict";
+
 const assert = require('assert');
 const fs = require('fs');
 const api = require('./api/offerte-aanvraag.js');
+const calculatorLib = require('./lib/calculator.js');
 // 10+. RESEND_API_KEY/RESEND_FROM_EMAIL komen uitsluitend uit process.env (nooit
 //      hardcoded) -- de handler faalt veilig (geen "ok:true", geen secret in
 //      respons/log) als ze ontbreken, en verstuurt normaal zodra ze aanwezig
 //      zijn. Verzending loopt sinds ronde 43 via Resend (lib/mail.js) i.p.v.
-//      Web3Forms (zie CHANGELOG-42.md/CHANGELOG-43.md). Deze tests gebruiken
-//      uitsluitend verzonnen testwaarden, nooit een echte productiesleutel.
-const { berekenInterneCalculatie, bouwEmailTekst, bouwEmailHtmlOfferte, bouwOnderwerp, lijktOpBot, valideerVerplichteVelden, CONFIG } = api._internal;
+//      Web3Forms (zie CHANGELOG-42.md/CHANGELOG-43.md).
+const { calculateOffer, bouwEmailTekst, bouwEmailHtmlOfferte, bouwOnderwerp, lijktOpBot, valideerVerplichteVelden, CONFIG } = api._internal;
 
 const garageVelden = [
   ['Klanttype', 'Bedrijf'],
@@ -29,15 +40,19 @@ const garageVelden = [
   ['Aantal locaties', '1'],
   ['Frequentie', 'Wekelijks'],
   ['Ruimtes', 'Kantoorruimte, Kantine / pantry'],
+  ['Gebruiksintensiteit', 'Intensief'],
   ['Extra vervuiling', 'Bovengemiddelde vervuiling'],
   ['Schoonmaakmoment', 'Geen voorkeur / in overleg'],
-  ['Omschrijving', 'Kantine en kantoor van een autogarage'],
+  ['Omschrijving', 'Kantine en kantoor van een autogarage; de werkplaats zelf wordt niet meegenomen'],
   ['Naam', 'Frank Verberne'],
   ['E-mailadres', 'frank@vanbrussel.nl'],
   ['Telefoonnummer', '0492123456'],
   ['Plaats/postcode', 'Liessel'],
 ];
 
+// Regressiescenario ronde 46, briefpunt 14: zakelijke periodieke schoonmaak,
+// tot 50m² te reinigen, kantoor+kantine, dagelijks/intensief gebruikt,
+// autogarage-omgeving, werkplaats zelf NIET schoongemaakt, 1x/week.
 const garagePayload = {
   klanttype: 'Bedrijf',
   dienst: 'Periodieke bedrijfsschoonmaak',
@@ -50,12 +65,15 @@ const garagePayload = {
   velden: garageVelden,
   calc: {
     oppervlakte: 'Klein',
+    oppervlakteExactM2: '',
     frequentie: 'Wekelijks',
     meerderePerWeekAantal: '',
     aantalLocaties: '1',
-    ruimtes: ['ruimte_kantoor', 'ruimte_kantine'],
+    ruimtes: ['ruimte_kantoor', 'ruimte_kantine'], // NIET ruimte_werkplaats
     ruimteOverig: false,
     vervuiling: 'Bovengemiddelde vervuiling',
+    gebruiksintensiteit: 'Intensief',
+    retourKm: '', // ronde 47: afstand onbekend -- mag NOOIT als 20km fallback behandeld worden
   },
   botcheck: false,
   form_rendered_at: String(Date.now() - 9000),
@@ -79,127 +97,132 @@ console.log('=== Test 1: onderwerp + e-mailtekst (Garagebedrijf Van Brussel) ===
   assert.ok(tekst.includes('Garagebedrijf Van Brussel B.V.'));
   assert.ok(tekst.includes('Liessel'));
   assert.ok(tekst.includes('AANVRAAG'));
-  assert.ok(tekst.includes('INTERNE CALCULATIE'));
-  assert.ok(tekst.includes('Interne prijsindicatie – niet automatisch aan de klant gecommuniceerd en geen definitieve offerte.'));
+  assert.ok(tekst.includes('INTERNE PRIJSINDICATIE'));
+  assert.ok(tekst.includes('MIDDELEN & VERVOER'));
+  assert.ok(tekst.includes('INTERN ADVIES'));
+  assert.ok(tekst.includes('Interne calculatie – niet automatisch aan de klant gecommuniceerd en geen definitieve offerte.'));
   assert.ok(tekst.includes('CONTACTGEGEVENS'));
   assert.ok(tekst.includes('Contactpersoon:'));
-  console.log('OK: subject + body bevatten verwachte secties, geen rommelvelden.');
+  // Nooit interne kostprijs-/margewoorden lekken naar de AANVRAAG-sectie
+  // (die komt 1-op-1 overeen met wat de klant zelf ziet in de wizard).
+  const aanvraagBlok = tekst.split('AANVRAAG')[1].split('INTERNE PRIJSINDICATIE')[0];
+  assert.ok(!/kostprijs|marge|zzp/i.test(aanvraagBlok), 'AANVRAAG-sectie mag nooit interne calculatietermen bevatten');
+  console.log('OK: subject + body bevatten verwachte secties, geen rommelvelden, geen interne termen in de AANVRAAG-sectie.');
 }
 
-console.log('\n=== Test 2: onafhankelijke herberekening interne calculatie ===');
+console.log('\n=== Test 2: kruiscontrole -- e-mail gebruikt exact calculateOffer() uit lib/calculator.js (geen tweede formule) ===');
 {
-  const calc = berekenInterneCalculatie(garagePayload);
+  const calc = calculateOffer(garagePayload);
+  assert.strictEqual(calc.status, 'ok');
   console.log(JSON.stringify(calc, null, 2));
 
-  // Handmatige herberekening volgens de briefformule, losstaand van de
-  // implementatie, met dezelfde CONFIG-waarden:
-  const baseMinutes = 45; // "Klein"
-  const roomMinutes = 10 + 15; // kantoor + kantine
-  const vervuilingFactor = 1.35; // "Bovengemiddelde vervuiling"
-  const verwachteTotaalMinuten = (baseMinutes + roomMinutes) * vervuilingFactor;
-  assert.strictEqual(calc.totaalMinuten, verwachteTotaalMinuten);
-  console.log('Totaal minuten (verwacht ' + verwachteTotaalMinuten + '):', calc.totaalMinuten);
+  const tekst = bouwEmailTekst(garagePayload);
+  assert.ok(tekst.includes('Geschatte schoonmaaktijd: ' + calc.tijdsbandbreedteTekst + ' per bezoek'));
+  assert.ok(tekst.includes('Calculatietijd (gebruikt voor onderstaande prijzen): ' + calc.calculatietijdTekst));
+  assert.ok(tekst.includes('Minimum gezonde prijs: ' + calculatorLib.euro(calc.minimumGezondePrijsExclBtw) + ' excl. btw per bezoek'));
+  assert.ok(tekst.includes('Adviesprijs: ' + calc.adviesprijsTekst + ' excl. btw per bezoek'));
+  assert.ok(tekst.includes('Advies maandbedrag: ' + calc.maandbedragTekst));
+  assert.ok(tekst.includes('Betrouwbaarheid: ' + calc.betrouwbaarheid));
+  assert.ok(tekst.includes('Referentie ZZP-tarief: ' + calc.referentieZzpTariefTekst));
+  assert.ok(tekst.includes('Retourkilometers: nog te bepalen'), 'onbekende afstand moet expliciet "nog te bepalen" tonen, nooit een verzonnen km-getal');
+  assert.ok(tekst.includes('Voertuigkosten: nog te bepalen'));
+  assert.ok(tekst.includes('Vervoer nog niet meegerekend'), 'e-mail moet duidelijk maken dat de verkoopindicatie exclusief vervoer is');
+  assert.ok(!tekst.includes(calc.km + ' km'), 'er mag nooit een gefabriceerd km-getal in de mail staan');
+  assert.ok(tekst.includes('Totale bekende interne kostprijs per bezoek: ' + calculatorLib.euro(calc.kostprijsPerBezoek)));
+  assert.ok(calc.calculatietijdMinuten < 120, 'garagescenario (ronde 47) mag nooit meer richting 2+ uur schieten (was 137 min in ronde 46)');
 
-  const verwachteUren = verwachteTotaalMinuten / 60;
-  assert.strictEqual(calc.uren, verwachteUren);
-
-  const verwachteArbeidskosten = verwachteUren * CONFIG.INTERNAL_HOURLY_COST_EXCL_BTW;
-  const verwachteReiskosten = (CONFIG.TRAVEL_MINUTES_PER_VISIT / 60) * CONFIG.TRAVEL_RATE_PER_HOUR_EXCL_BTW;
-  const verwachteMateriaalkosten = CONFIG.MATERIAL_COST_PER_VISIT_EXCL_BTW;
-  const verwachteDirecteKosten = verwachteArbeidskosten + verwachteReiskosten + verwachteMateriaalkosten + CONFIG.OTHER_DIRECT_COSTS_PER_VISIT_EXCL_BTW;
-  assert.ok(Math.abs(calc.directeKostenPerBezoek - verwachteDirecteKosten) < 1e-9);
-  console.log('Directe kosten per bezoek (verwacht ' + verwachteDirecteKosten.toFixed(4) + '):', calc.directeKostenPerBezoek.toFixed(4));
-
-  const verwachteAdviesprijsRuw = verwachteDirecteKosten / (1 - CONFIG.DESIRED_GROSS_MARGIN);
-  const verwachteAdviesprijs = Math.max(verwachteAdviesprijsRuw, CONFIG.MIN_PRICE_PER_VISIT_EXCL_BTW);
-  assert.ok(Math.abs(calc.adviesprijsExclBtw - verwachteAdviesprijs) < 1e-9);
-  console.log('Adviesprijs excl. btw per bezoek (verwacht ' + verwachteAdviesprijs.toFixed(4) + '):', calc.adviesprijsExclBtw.toFixed(4));
-  assert.strictEqual(calc.minimumToegepast, verwachteAdviesprijs > verwachteAdviesprijsRuw + 0.005);
-
-  const verwachteBtw = verwachteAdviesprijs * (CONFIG.VAT_RATE_PERCENT / 100);
-  const verwachteInclBtw = verwachteAdviesprijs + verwachteBtw;
-  assert.ok(Math.abs(calc.btwBedrag - verwachteBtw) < 1e-9);
-  assert.ok(Math.abs(calc.adviesprijsInclBtw - verwachteInclBtw) < 1e-9);
-  console.log('Adviesprijs incl. btw per bezoek (verwacht ' + verwachteInclBtw.toFixed(4) + '):', calc.adviesprijsInclBtw.toFixed(4));
-
-  // Frequentie "Wekelijks" => bezoeken/maand = 52/12 (NIET simpelweg x4).
-  const verwachteBezoekenPerMaand = 52 / 12;
-  assert.strictEqual(calc.visitsPerMonth, verwachteBezoekenPerMaand);
-  assert.notStrictEqual(verwachteBezoekenPerMaand, 4, 'sanity: 52/12 != 4');
-  console.log('Bezoeken per maand (verwacht ' + verwachteBezoekenPerMaand.toFixed(4) + '):', calc.visitsPerMonth.toFixed(4));
-
-  const verwachtePerMaandExclBtw = verwachteAdviesprijs * verwachteBezoekenPerMaand;
-  assert.ok(Math.abs(calc.adviesprijsPerMaandExclBtw - verwachtePerMaandExclBtw) < 1e-9);
-  console.log('Adviesprijs per maand excl. btw (verwacht ' + verwachtePerMaandExclBtw.toFixed(2) + '):', calc.adviesprijsPerMaandExclBtw.toFixed(2));
-
-  const verwachteMarge = ((verwachteAdviesprijs - verwachteDirecteKosten) / verwachteAdviesprijs) * 100;
-  assert.ok(Math.abs(calc.werkelijkeMargePercent - verwachteMarge) < 1e-9);
-  console.log('Werkelijke brutomarge % (verwacht ' + verwachteMarge.toFixed(2) + '):', calc.werkelijkeMargePercent.toFixed(2));
-
-  // Sanity: marge moet in de buurt van de gewenste marge liggen wanneer het
-  // minimumbedrag niet is toegepast (hier is dat het geval, dus moet gelijk
-  // zijn aan DESIRED_GROSS_MARGIN * 100 op afrondingsniveau).
-  if (!calc.minimumToegepast) {
-    assert.ok(Math.abs(calc.werkelijkeMargePercent - CONFIG.DESIRED_GROSS_MARGIN * 100) < 1e-6);
-    console.log('OK: marge komt overeen met DESIRED_GROSS_MARGIN (minimum niet toegepast).');
-  }
-  console.log('OK: alle herberekende waarden komen overeen met berekenInterneCalculatie().');
+  const html = bouwEmailHtmlOfferte(garagePayload);
+  assert.ok(html.includes(calc.tijdsbandbreedteTekst));
+  assert.ok(html.includes(calc.adviesprijsTekst));
+  assert.ok(html.includes(calc.maandbedragTekst));
+  assert.ok(html.includes('Referentie ZZP-tarief'));
+  assert.ok(html.includes('nog te bepalen'));
+  console.log('OK: zowel de teksversie als de HTML-versie geven exact dezelfde cijfers als calculateOffer() zelf -- geen dubbele/verouderde calculatielogica in api/offerte-aanvraag.js.');
 }
 
-console.log('\n=== Test 3: "Meerdere keren per week" (2x/week) -> juiste bezoeken/maand ===');
+console.log('\n=== Test 2b: expliciete retourafstand -> juiste km getoond in de e-mail, geen "nog te bepalen" meer ===');
+{
+  const metKm = JSON.parse(JSON.stringify(garagePayload));
+  metKm.calc.retourKm = '14';
+  const calc = calculateOffer(metKm);
+  assert.strictEqual(calc.km, 14);
+  assert.strictEqual(calc.vervoerBekend, true);
+  const tekst = bouwEmailTekst(metKm);
+  assert.ok(tekst.includes('Retourkilometers: 14 km'));
+  assert.ok(tekst.includes('Voertuigkosten: ' + calculatorLib.euro(calc.voertuigkosten)));
+  assert.ok(!tekst.includes('nog te bepalen'));
+  const html = bouwEmailHtmlOfferte(metKm);
+  assert.ok(html.includes('14 km'));
+  console.log('OK: een expliciet opgegeven retourafstand wordt correct getoond (nooit meer "nog te bepalen" als de afstand wél bekend is).');
+}
+
+console.log('\n=== Test 3: "Meerdere keren per week" -- met geldig aantal, en het onvolledige pad (blokkeert nu NIET meer de hele schatting) ===');
 {
   const payload2x = JSON.parse(JSON.stringify(garagePayload));
   payload2x.calc.frequentie = 'Meerdere keren per week';
   payload2x.calc.meerderePerWeekAantal = '2';
-  const calc2x = berekenInterneCalculatie(payload2x);
+  const calc2x = calculateOffer(payload2x);
+  assert.strictEqual(calc2x.status, 'ok');
   const verwacht2x = 2 * (52 / 12);
   assert.strictEqual(calc2x.visitsPerMonth, verwacht2x);
-  console.log('Bezoeken per maand bij 2x/week (verwacht ' + verwacht2x.toFixed(4) + '):', calc2x.visitsPerMonth.toFixed(4));
   assert.strictEqual(calc2x.frequentieLabel, '2× per week');
+  const tekst2x = bouwEmailTekst(payload2x);
+  assert.ok(tekst2x.includes('Advies maandbedrag: ' + calc2x.maandbedragTekst));
   console.log('OK: 2x/week correct doorgerekend (niet simpelweg x4 t.o.v. wekelijks).');
+
+  const payloadOnvolledig = JSON.parse(JSON.stringify(garagePayload));
+  payloadOnvolledig.calc.frequentie = 'Meerdere keren per week';
+  payloadOnvolledig.calc.meerderePerWeekAantal = '';
+  const calcOnvolledig = calculateOffer(payloadOnvolledig);
+  assert.strictEqual(calcOnvolledig.status, 'ok', 'v2-verbetering t.o.v. v1: ontbrekend aantal mag de PER-BEZOEK-schatting niet blokkeren');
+  assert.strictEqual(calcOnvolledig.maandbedragTekst, null);
+  const tekstOnvolledig = bouwEmailTekst(payloadOnvolledig);
+  assert.ok(tekstOnvolledig.includes('Advies maandbedrag: niet beschikbaar (aantal keer per week niet opgegeven)'));
+  assert.ok(tekstOnvolledig.includes('Adviesprijs: ' + calcOnvolledig.adviesprijsTekst), 'per-bezoek-adviesprijs moet nog steeds getoond worden');
+  console.log('OK: zonder geldig aantal blijft een per-bezoek-schatting behouden, alleen het maandbedrag vervalt netjes.');
 }
 
-console.log('\n=== Test 4: minimumprijs wordt toegepast bij zeer kleine/lichte opdracht ===');
+console.log('\n=== Test 4: minimumprijs wordt toegepast bij een kunstmatig verhoogd minimum ===');
 {
   const kleinPayload = JSON.parse(JSON.stringify(garagePayload));
   kleinPayload.calc.ruimtes = ['ruimte_kantoor'];
   kleinPayload.calc.vervuiling = 'Normale kantoor-/bedrijfsvervuiling';
   kleinPayload.calc.frequentie = 'Maandelijks';
-  let calcKlein = berekenInterneCalculatie(kleinPayload);
-  console.log('Met huidige CONFIG -> Directe kosten:', calcKlein.directeKostenPerBezoek.toFixed(2), '| Adviesprijs:', calcKlein.adviesprijsExclBtw.toFixed(2), '| Minimum toegepast:', calcKlein.minimumToegepast);
-  // Met de huidige placeholder-parameters ligt de berekende commerciële prijs
-  // hierboven toevallig BOVEN de minimumprijs -- dat is op zich een goed
-  // teken (het minimum is een vangnet, geen normale prijsbepaler). Om de
-  // MAX(...)-clamp zelf te verifiëren zetten we de minimumprijs tijdelijk
-  // hoger dan de berekende commerciële prijs, en zetten die daarna exact terug.
+  kleinPayload.calc.gebruiksintensiteit = 'Rustig';
+  let calcKlein = calculateOffer(kleinPayload);
+  console.log('Met huidige CONFIG -> kostprijs:', calcKlein.kostprijsPerBezoek.toFixed(2), '| adviesprijs:', calcKlein.adviesprijsTekst, '| minimum toegepast:', calcKlein.minimumToegepast);
   const origMin = CONFIG.MIN_PRICE_PER_VISIT_EXCL_BTW;
-  const commercieleRuw = calcKlein.adviesprijsExclBtw; // minimum was hier niet toegepast, dus dit IS de ruwe waarde
-  CONFIG.MIN_PRICE_PER_VISIT_EXCL_BTW = commercieleRuw + 25;
+  CONFIG.MIN_PRICE_PER_VISIT_EXCL_BTW = 500; // ruim boven elke normale kostprijs
   try {
-    calcKlein = berekenInterneCalculatie(kleinPayload);
-    console.log('Met kunstmatig verhoogd minimum (' + CONFIG.MIN_PRICE_PER_VISIT_EXCL_BTW.toFixed(2) + ') -> Adviesprijs:', calcKlein.adviesprijsExclBtw.toFixed(2), '| Minimum toegepast:', calcKlein.minimumToegepast);
+    calcKlein = calculateOffer(kleinPayload);
+    console.log('Met kunstmatig verhoogd minimum (' + CONFIG.MIN_PRICE_PER_VISIT_EXCL_BTW.toFixed(2) + ') -> adviesprijs:', calcKlein.adviesprijsTekst, '| minimum toegepast:', calcKlein.minimumToegepast);
     assert.strictEqual(calcKlein.minimumToegepast, true);
-    assert.strictEqual(calcKlein.adviesprijsExclBtw, CONFIG.MIN_PRICE_PER_VISIT_EXCL_BTW);
+    assert.ok(calcKlein.prijsOnderzijdeExclBtw >= 500);
+    assert.strictEqual(calcKlein.minimumGezondePrijsExclBtw, calcKlein.prijsOnderzijdeExclBtw);
+    const tekst = bouwEmailTekst(kleinPayload);
+    assert.ok(tekst.includes('(minimumprijs toegepast)'));
   } finally {
     CONFIG.MIN_PRICE_PER_VISIT_EXCL_BTW = origMin;
   }
-  console.log('OK: MAX(commerciële prijs, minimumprijs) werkt zoals bedoeld (getest door het minimum tijdelijk boven de commerciële prijs te zetten).');
+  console.log('OK: minimumprijs werkt als vangnet en wordt correct in de e-mail vermeld (getest door het minimum tijdelijk kunstmatig te verhogen -- CONFIG is dezelfde referentie als in lib/calculator.js, dus dit test ook de echte gedeelde module).');
 }
 
 console.log('\n=== Test 5: "onvoldoende informatie"-pad (oppervlakte = "Weet ik niet") ===');
 {
   const onbekendPayload = JSON.parse(JSON.stringify(garagePayload));
   onbekendPayload.calc.oppervlakte = 'Weet ik niet';
-  const calcOnbekend = berekenInterneCalculatie(onbekendPayload);
-  assert.strictEqual(calcOnbekend.onvoldoendeInfo, true);
+  const calcOnbekend = calculateOffer(onbekendPayload);
+  assert.strictEqual(calcOnbekend.status, 'onvoldoende_info');
   console.log('Redenen:', calcOnbekend.redenen);
   const tekst = bouwEmailTekst(onbekendPayload);
-  assert.ok(tekst.includes('Onvoldoende informatie voor een automatische prijsindicatie.'));
-  assert.ok(!/€\d/.test(tekst.split('INTERNE CALCULATIE')[1].split('CONTACTGEGEVENS')[0]), 'geen gefabriceerde bedragen in het onvoldoende-info-blok');
+  assert.ok(tekst.includes('Onvoldoende informatie voor een automatische inschatting.'));
+  assert.ok(tekst.includes('Handmatige calculatie / locatieopname aanbevolen.'));
+  const interneBlok = tekst.split('INTERNE PRIJSINDICATIE')[1].split('CONTACTGEGEVENS')[0];
+  assert.ok(!/€\d/.test(interneBlok), 'geen gefabriceerde bedragen in het onvoldoende-info-blok');
   console.log('OK: geen bedragen verzonnen bij onbekende oppervlakte, nette fallbacktekst getoond.');
 }
 
-console.log('\n=== Test 6: particuliere flow / niet-periodieke zakelijke dienst -> GEEN interne calculatie ===');
+console.log('\n=== Test 6: particuliere flow -> GEEN interne prijsindicatie ===');
 {
   const particulierPayload = {
     klanttype: 'Particulier',
@@ -227,24 +250,20 @@ console.log('\n=== Test 6: particuliere flow / niet-periodieke zakelijke dienst 
     botcheck: false,
     form_rendered_at: String(Date.now() - 9000),
   };
-  const calc = berekenInterneCalculatie(particulierPayload);
+  const calc = calculateOffer(particulierPayload);
   assert.strictEqual(calc, null);
   const tekst = bouwEmailTekst(particulierPayload);
-  assert.ok(!tekst.includes('INTERNE CALCULATIE'));
-  assert.ok(!tekst.includes('Interne prijsindicatie'));
+  assert.ok(!tekst.includes('INTERNE PRIJSINDICATIE'));
+  assert.ok(!tekst.includes('MIDDELEN & VERVOER'));
+  assert.ok(!tekst.includes('INTERN ADVIES'));
   assert.ok(tekst.includes('NIEUWE PARTICULIERE OFFERTEAANVRAAG'));
-  assert.ok(tekst.includes('Prijsindicatie (getoond aan klant):') === false || true); // veld mag getoond worden, het is een AANVRAAG-veld, geen interne calc
   assert.ok(!/\bundefined\b|\bnull\b/.test(tekst));
-  console.log('OK: particuliere e-mail bevat geen INTERNE CALCULATIE-sectie en geen rommelvelden.');
+  console.log('OK: particuliere e-mail bevat geen interne-calculatiesecties en geen rommelvelden.');
   console.log('\n--- Particuliere e-mailtekst ---\n' + tekst + '\n--- einde ---');
 }
 
-console.log('\n=== Test 6b: Kantoorreiniging krijgt nu WEL een interne calculatie (ronde 44 calculatorbereik-uitbreiding) ===');
+console.log('\n=== Test 6b: Kantoorreiniging krijgt een volledige interne prijsindicatie (zelfde bereik als periodiek-zakelijk) ===');
 {
-  // Zelfde onderliggende model/CONFIG als periodiek-zakelijk (zie
-  // CHANGELOG-44.md) -- alleen dienstSlug/dienst-label wijken af van
-  // garagePayload. Bevestigt dat de calculator nu ECHT wordt aangeroepen voor
-  // deze dienst (niet alleen dat de gate-conditie is aangepast).
   const kantoorPayload = {
     klanttype: 'Bedrijf',
     dienst: 'Kantoorreiniging',
@@ -261,6 +280,7 @@ console.log('\n=== Test 6b: Kantoorreiniging krijgt nu WEL een interne calculati
       ['Omvang', 'Klein'],
       ['Frequentie', 'Wekelijks'],
       ['Ruimtes', 'Kantoorruimte, Kantine / pantry, Toiletten / sanitair'],
+      ['Gebruiksintensiteit', 'Gemiddeld'],
       ['Extra vervuiling', 'Bovengemiddelde vervuiling'],
       ['Schoonmaakmoment', 'Na sluiting'],
       ['Naam', 'Test Kantoor'],
@@ -270,45 +290,27 @@ console.log('\n=== Test 6b: Kantoorreiniging krijgt nu WEL een interne calculati
     ],
     calc: {
       oppervlakte: 'Klein',
+      oppervlakteExactM2: '',
       frequentie: 'Wekelijks',
       meerderePerWeekAantal: '',
       aantalLocaties: '',
       ruimtes: ['ruimte_kantoor', 'ruimte_kantine', 'ruimte_toiletten'],
       ruimteOverig: false,
       vervuiling: 'Bovengemiddelde vervuiling',
+      gebruiksintensiteit: 'Gemiddeld',
     },
     botcheck: false,
     form_rendered_at: String(Date.now() - 9000),
   };
-  const calc = berekenInterneCalculatie(kantoorPayload);
-  assert.ok(calc && calc.onvoldoendeInfo === false, 'Kantoorreiniging moet nu een volledige interne calculatie krijgen');
-  // Handmatige herberekening van het exacte scenario uit de brief (ronde 44,
-  // sectie 13): Klein (45 min) + kantoor(10)+kantine(15)+toiletten(15) = 40
-  // extra min, vervuilingsfactor "Bovengemiddelde vervuiling" = 1.35.
-  const verwachteMinuten = (45 + 10 + 15 + 15) * 1.35;
-  assert.ok(Math.abs(calc.totaalMinuten - verwachteMinuten) < 0.001, 'totaalMinuten moet exact overeenkomen met het CONFIG-tijdmodel (ongewijzigd)');
-  const verwachteUren = verwachteMinuten / 60;
-  const verwachteArbeid = verwachteUren * CONFIG.INTERNAL_HOURLY_COST_EXCL_BTW;
-  const verwachteReis = (CONFIG.TRAVEL_MINUTES_PER_VISIT / 60) * CONFIG.TRAVEL_RATE_PER_HOUR_EXCL_BTW;
-  const verwachteDirecteKosten = verwachteArbeid + verwachteReis + CONFIG.MATERIAL_COST_PER_VISIT_EXCL_BTW + CONFIG.OTHER_DIRECT_COSTS_PER_VISIT_EXCL_BTW;
-  const verwachteAdviesprijs = verwachteDirecteKosten / (1 - CONFIG.DESIRED_GROSS_MARGIN);
-  assert.ok(Math.abs(calc.adviesprijsExclBtw - verwachteAdviesprijs) < 0.005, 'adviesprijsExclBtw moet overeenkomen met de ONGEWIJZIGDE formule/parameters');
-  console.log('Kantoorreiniging-scenario -- totaalMinuten (verwacht ' + verwachteMinuten.toFixed(2) + '): ' + calc.totaalMinuten.toFixed(2) + ' (' + formatDuurLokaal(calc.totaalMinuten) + ')');
-  console.log('Kantoorreiniging-scenario -- adviesprijsExclBtw (verwacht ' + verwachteAdviesprijs.toFixed(2) + '): ' + calc.adviesprijsExclBtw.toFixed(2));
+  const calc = calculateOffer(kantoorPayload);
+  assert.strictEqual(calc.status, 'ok', 'Kantoorreiniging moet een volledige interne prijsindicatie krijgen');
   const tekst = bouwEmailTekst(kantoorPayload);
-  assert.ok(tekst.includes('INTERNE CALCULATIE'), 'e-mail moet nu een INTERNE CALCULATIE-sectie bevatten voor Kantoorreiniging');
-  assert.ok(tekst.includes('Interne prijsindicatie'), 'disclaimer moet aanwezig zijn bij een daadwerkelijk berekend bedrag');
+  assert.ok(tekst.includes('INTERNE PRIJSINDICATIE'), 'e-mail moet nu een INTERNE PRIJSINDICATIE-sectie bevatten voor Kantoorreiniging');
+  assert.ok(tekst.includes(calc.tijdsbandbreedteTekst));
   const html = bouwEmailHtmlOfferte(kantoorPayload);
-  assert.ok(html.includes('Interne calculatie'), 'HTML-mail moet ook de interne-calculatiesectie bevatten');
-  console.log('OK: Kantoorreiniging krijgt nu een volledige, correcte interne calculatie (formule zelf ongewijzigd).');
-}
-function formatDuurLokaal(minuten) {
-  const afgerond = Math.round(minuten / 5) * 5;
-  const uren = Math.floor(afgerond / 60);
-  const min = afgerond % 60;
-  if (uren === 0) return min + ' min';
-  if (min === 0) return uren + ' uur';
-  return uren + ' uur ' + min + ' min';
+  assert.ok(html.includes('Interne prijsindicatie'), 'HTML-mail moet ook de interne-prijsindicatiesectie bevatten');
+  console.log('Kantoorreiniging-scenario -- tijdsbandbreedte:', calc.tijdsbandbreedteTekst, '| adviesprijs:', calc.adviesprijsTekst);
+  console.log('OK: Kantoorreiniging krijgt een volledige, correcte interne prijsindicatie via dezelfde gedeelde module.');
 }
 
 console.log('\n=== Test 6c: niet-calculeerbare zakelijke dienst (Glasbewassing) krijgt expliciete "niet beschikbaar"-melding, GEEN verzonnen bedrag ===');
@@ -337,17 +339,32 @@ console.log('\n=== Test 6c: niet-calculeerbare zakelijke dienst (Glasbewassing) 
     botcheck: false,
     form_rendered_at: String(Date.now() - 9000),
   };
-  const calc = berekenInterneCalculatie(glasZakelijkPayload);
-  assert.deepStrictEqual(calc, { nietBeschikbaar: true }, 'niet-calculeerbare zakelijke dienst moet nietBeschikbaar:true opleveren, geen bedrag');
+  const calc = calculateOffer(glasZakelijkPayload);
+  assert.deepStrictEqual(calc, { status: 'niet_beschikbaar' }, 'niet-calculeerbare zakelijke dienst moet status niet_beschikbaar opleveren, geen bedrag');
   const tekst = bouwEmailTekst(glasZakelijkPayload);
-  assert.ok(tekst.includes('INTERNE CALCULATIE'), 'sectie moet WEL getoond worden (niet stilzwijgend weggelaten)');
+  assert.ok(tekst.includes('INTERNE PRIJSINDICATIE'), 'sectie moet WEL getoond worden (niet stilzwijgend weggelaten)');
   assert.ok(tekst.includes('Niet beschikbaar voor deze dienst'), 'moet expliciet "niet beschikbaar" tonen');
   assert.ok(tekst.includes('Handmatige calculatie / locatieopname aanbevolen'), 'moet het advies tonen');
-  assert.ok(!/€\d/.test(tekst.split('INTERNE CALCULATIE')[1].split('CONTACTGEGEVENS')[0]), 'er mag GEEN verzonnen bedrag in de interne-calculatiesectie staan');
-  assert.ok(!tekst.includes('Interne prijsindicatie – niet automatisch'), 'de "berekend bedrag"-disclaimer hoort hier niet thuis (er is niets berekend)');
+  const interneBlok = tekst.split('INTERNE PRIJSINDICATIE')[1].split('CONTACTGEGEVENS')[0];
+  assert.ok(!/€\d/.test(interneBlok), 'er mag GEEN verzonnen bedrag in de interne-prijsindicatiesectie staan');
   const html = bouwEmailHtmlOfferte(glasZakelijkPayload);
   assert.ok(html.includes('Niet beschikbaar voor deze dienst'), 'HTML-versie moet dezelfde melding tonen');
   console.log('OK: niet-calculeerbare zakelijke dienst toont intern een expliciete "niet beschikbaar"-melding, nooit een verzonnen bedrag.');
+}
+
+console.log('\n=== Test 6d: bijzondere vervuiling ("Anders / toelichting") -> intern advies toont "Locatieopname aanbevolen" ===');
+{
+  const specialPayload = JSON.parse(JSON.stringify(garagePayload));
+  specialPayload.calc.vervuiling = 'Anders / toelichting';
+  const calc = calculateOffer(specialPayload);
+  assert.strictEqual(calc.betrouwbaarheid, 'Laag');
+  assert.strictEqual(calc.locatieopnameAanbevolen, true);
+  const tekst = bouwEmailTekst(specialPayload);
+  assert.ok(tekst.includes('Locatieopname aanbevolen'), 'intern advies moet locatieopname aanraden bij een bijzondere/eigen toelichting');
+  assert.ok(!tekst.includes('Max. verantwoord ZZP-tarief'), 'bij Laag betrouwbaarheid mag geen ZZP-tarief getoond worden');
+  const html = bouwEmailHtmlOfferte(specialPayload);
+  assert.ok(html.includes('Locatieopname aanbevolen'));
+  console.log('OK: bijzondere vervuiling/situatie leidt tot een zichtbaar "Locatieopname aanbevolen"-advies, in plaats van een te zeker gepresenteerde prijs.');
 }
 
 console.log('\n=== Test 7: botdetectie (honeypot + te snel ingevuld) ===');
@@ -386,6 +403,8 @@ console.log('\n=== Test 10: geen Web3Forms/RESEND_API_KEY-literal meer in de act
   assert.ok(!/api\.web3forms\.com/i.test(eigenBroncode), 'api/offerte-aanvraag.js mag geen Web3Forms-endpoint meer bevatten');
   assert.ok(!/WEB3FORMS_ACCESS_KEY/.test(eigenBroncode), 'api/offerte-aanvraag.js mag WEB3FORMS_ACCESS_KEY niet meer noemen (volledig verwijderd, zie CHANGELOG-43.md)');
   assert.ok(!/re_[A-Za-z0-9]{10,}/.test(eigenBroncode), 'geen letterlijke Resend-sleutel (formaat re_...) in de broncode');
+  const calculatorBroncode = fs.readFileSync(__dirname + '/lib/calculator.js', 'utf8');
+  assert.ok(!/re_[A-Za-z0-9]{10,}/.test(calculatorBroncode), 'geen letterlijke Resend-sleutel in lib/calculator.js');
   const mailBroncode = fs.readFileSync(__dirname + '/lib/mail.js', 'utf8');
   assert.ok(!/api\.web3forms\.com/i.test(mailBroncode), 'lib/mail.js mag geen Web3Forms-endpoint bevatten');
   assert.ok(/api\.resend\.com/.test(mailBroncode), 'lib/mail.js moet het Resend-endpoint gebruiken');
@@ -399,8 +418,9 @@ console.log('\n=== Test 11: bouwEmailHtmlOfferte() -- zelfde inhoud als de platt
   assert.ok(html.includes('Nieuwe zakelijke offerteaanvraag'));
   assert.ok(html.includes('Garagebedrijf Van Brussel B.V.'));
   assert.ok(html.includes('Liessel'));
-  assert.ok(html.includes('Interne calculatie'));
   assert.ok(html.includes('Interne prijsindicatie'));
+  assert.ok(html.includes('Middelen &amp; vervoer') || html.includes('Middelen & vervoer'), 'sectiekop Middelen & vervoer moet aanwezig zijn (eventueel HTML-geescaped)');
+  assert.ok(html.includes('Intern advies'));
   assert.ok(html.includes('Contactgegevens'));
   assert.ok(!/\bundefined\b|\bnull\b/.test(html), 'geen "undefined"/"null" in de HTML-mail');
   // HTML-injectietest: kwaadaardige tekens in een klantveld mogen nooit
@@ -411,6 +431,22 @@ console.log('\n=== Test 11: bouwEmailHtmlOfferte() -- zelfde inhoud als de platt
   assert.ok(!kwaadHtml.includes('<img src=x onerror=alert(1)>'), 'ongeescapete HTML/JS-injectie via klantnaam mag niet voorkomen');
   assert.ok(kwaadHtml.includes('&lt;img src=x onerror=alert(1)&gt;'), 'klantnaam moet HTML-geescaped in de mail staan');
   console.log('OK: HTML-mail bevat dezelfde secties als de tekstversie en escaped klantinvoer correct (HTML-injectiebescherming).');
+}
+
+console.log('\n=== Test 11b: server-side manipulatie van client-bedragen is onmogelijk -- de payload bevat nooit een bedrag, alleen ruwe invoer ===');
+{
+  // De browser (js/main.js) levert uitsluitend ruwe `calc`-velden aan (zie
+  // buildOffertePayload()) -- nooit een reeds berekend bedrag. Simuleer een
+  // kwaadwillende client die toch een prijsveld meestuurt: dat veld wordt
+  // simpelweg genegeerd, calculateOffer() berekent zelf, server-side, opnieuw.
+  const manipulatiePayload = JSON.parse(JSON.stringify(garagePayload));
+  manipulatiePayload.calc.adviesprijsExclBtw = 1; // zou, indien vertrouwd, een absurd lage prijs opleveren
+  manipulatiePayload.calc.kostprijsPerBezoek = 0;
+  const calcNormaal = calculateOffer(garagePayload);
+  const calcMetInjectie = calculateOffer(manipulatiePayload);
+  assert.strictEqual(calcMetInjectie.adviesprijsTekst, calcNormaal.adviesprijsTekst, 'een door de client meegestuurd prijsveld mag de servercalculatie nooit beïnvloeden');
+  assert.strictEqual(calcMetInjectie.kostprijsPerBezoek, calcNormaal.kostprijsPerBezoek);
+  console.log('OK: extra/gemanipuleerde prijsvelden in de payload hebben geen enkel effect -- de server berekent altijd zelf, uitsluitend op basis van de ruwe invoervelden.');
 }
 
 function mockRes() {
@@ -493,6 +529,7 @@ async function testHandlerMetConfig() {
       assert.strictEqual(capturedBody.reply_to, garagePayload.email, 'reply_to moet het klant-e-mailadres zijn, zodat "Beantwoorden" naar de klant gaat i.p.v. het noreply-adres');
       assert.ok(capturedBody.html && capturedBody.html.length > 0);
       assert.ok(capturedBody.text && capturedBody.text.length > 0);
+      assert.ok(capturedBody.html.includes('Interne prijsindicatie'), 'de daadwerkelijk verstuurde HTML-mail moet de nieuwe interne-prijsindicatiesectie bevatten');
     });
   } finally {
     global.fetch = origFetch;

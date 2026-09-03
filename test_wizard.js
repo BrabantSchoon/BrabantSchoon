@@ -566,5 +566,186 @@ function huidigeStap(doc) {
     console.log('OK: samengestelde stappen (zakelijk en particulier) advancen na de refactor nog steeds nooit vanzelf.');
   }
 
-  console.log('\nAlle ronde-44- en ronde-45-scenario\'s geslaagd.');
-})().catch((e) => { console.error('FOUT in ronde-44/45-scenario:', e); process.exitCode = 1; });
+  console.log('\n=== Scenario 17 (ronde 46): exact-m²-veld op stap 7 annuleert de auto-advance-timer van de oppervlaktecategorie ===');
+  {
+    // Zonder ingreep zou een klik op een categorie-kaart de 200ms-auto-
+    // advance-timer starten, en zou een gebruiker die daarna nog een exact
+    // m²-getal wil intypen halverwege naar stap 8 kunnen worden gestuurd.
+    const dom = makeDom();
+    const doc = dom.window.document;
+    setRadio(doc, 'klanttype', 'Bedrijf');
+    await sleep(260);
+    setRadio(doc, 'dienst', 'Periodieke bedrijfsschoonmaak');
+    await sleep(260); // -> stap 7 (oppervlakte)
+    assert.strictEqual(huidigeStap(doc), '7', 'voorbereiding: moet op de oppervlaktestap staan');
+    setRadio(doc, 'oppervlakte', 'Klein'); // start de 200ms-auto-advance-timer
+    // Meteen (ruim voor de 200ms) in het exacte-m²-veld typen moet die timer annuleren.
+    setValue(doc, '#oppervlakte_m2_exact', '85');
+    await sleep(300); // ruim voorbij de normale auto-advance-vertraging
+    assert.strictEqual(huidigeStap(doc), '7', 'typen in het exacte-m²-veld moet de auto-advance-timer annuleren, ook al stond die al gepland');
+    assert.strictEqual(doc.getElementById('oppervlakte_m2_exact').value, '85', 'de getypte waarde mag niet verloren gaan');
+    // "Volgende" moet nog steeds gewoon werken als fallback.
+    next(doc);
+    assert.strictEqual(huidigeStap(doc), '8', 'handmatig "Volgende" moet na het annuleren nog steeds normaal werken');
+    console.log('OK: focus/invoer in het exacte-m²-veld annuleert een lopende auto-advance-timer; "Volgende" blijft daarna gewoon beschikbaar.');
+  }
+
+  console.log('\n=== Scenario 18 (ronde 46): gebruiksintensiteit (samengestelde stap 9) advancet nooit vanzelf ===');
+  {
+    const dom = makeDom();
+    const doc = dom.window.document;
+    setRadio(doc, 'klanttype', 'Bedrijf');
+    await sleep(260);
+    setRadio(doc, 'dienst', 'Periodieke bedrijfsschoonmaak');
+    await sleep(260); // -> stap 7
+    setRadio(doc, 'oppervlakte', 'Klein');
+    await sleep(260); // -> stap 8
+    setRadio(doc, 'frequentie', 'Wekelijks');
+    await sleep(260); // -> stap 9
+    assert.strictEqual(huidigeStap(doc), '9', 'voorbereiding: moet op de samengestelde ruimtes/intensiteit/vervuiling-stap staan');
+    setRadio(doc, 'gebruiksintensiteit_zakelijk', 'Intensief');
+    await sleep(300);
+    assert.strictEqual(huidigeStap(doc), '9', 'gebruiksintensiteit staat op een samengestelde stap en mag daarom nooit auto-advancen');
+    console.log('OK: gebruiksintensiteit (stap 9) advancet nooit vanzelf, net als de overige velden op die samengestelde stap.');
+  }
+
+  console.log('\n=== Scenario 19 (ronde 46, briefpunt 14): autogarage-regressiescenario -- volledige wizardflow inclusief nieuwe velden ===');
+  {
+    // Zakelijke periodieke schoonmaak; tot 50m² te reinigen; kantoor+kantine
+    // (NIET de werkplaats); dagelijks/intensief gebruikt; autogarage-context
+    // via "Bovengemiddelde vervuiling"; 1x/week. Exacte m² wordt bewust NIET
+    // ingevuld (optioneel veld) om ook het categorie-fallbackpad te dekken.
+    const dom = makeDom();
+    const doc = dom.window.document;
+    dom.window.Element.prototype.scrollIntoView = () => {};
+    let captured = null;
+    dom.window.fetch = (url, opts) => {
+      captured = { url, body: JSON.parse(opts.body) };
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({ ok: true }) });
+    };
+    setRadio(doc, 'klanttype', 'Bedrijf');
+    next(doc);
+    setRadio(doc, 'dienst', 'Periodieke bedrijfsschoonmaak');
+    next(doc);
+    setRadio(doc, 'oppervlakte', 'Klein');
+    // exact m² bewust overgeslagen
+    next(doc);
+    setRadio(doc, 'frequentie', 'Wekelijks');
+    next(doc);
+    assert.strictEqual(huidigeStap(doc), '9', 'voorbereiding: samengestelde stap 9');
+    setChecked(doc, '#zakelijkRuimtes input[data-ruimte-id="ruimte_kantoor"]', true);
+    setChecked(doc, '#zakelijkRuimtes input[data-ruimte-id="ruimte_kantine"]', true);
+    // ruimte_werkplaats NIET aangevinkt -- de werkplaats zelf wordt niet schoongemaakt.
+    setRadio(doc, 'gebruiksintensiteit_zakelijk', 'Intensief');
+    setRadio(doc, 'vervuilingsgraad_zakelijk', 'Bovengemiddelde vervuiling');
+    setRadio(doc, 'schoonmaakmoment', 'Geen voorkeur / in overleg');
+    next(doc);
+    setValue(doc, '#aantal_locaties', '1');
+    setValue(doc, '#bericht', 'Kantine en kantoor van een autogarage, werkplaats zelf niet inbegrepen');
+    next(doc);
+    setValue(doc, '#naam', 'Frank Verberne');
+    setValue(doc, '#bedrijfsnaam', 'Garagebedrijf Van Brussel B.V.');
+    setValue(doc, '#email', 'frank@vanbrussel.nl');
+    setValue(doc, '#telefoon', '0492123456');
+    setValue(doc, '#plaats', 'Liessel');
+    next(doc);
+    assert.strictEqual(huidigeStap(doc), '12', 'voorbereiding: controlestap');
+
+    doc.getElementById('wizardSubmit').removeAttribute('hidden');
+    const formEl = doc.getElementById('offerteWizard');
+    formEl.requestSubmit ? formEl.requestSubmit() : formEl.dispatchEvent(new dom.window.Event('submit', { bubbles: true, cancelable: true }));
+    await sleep(80);
+
+    assert.ok(captured, 'de wizard moet een POST-payload naar /api/offerte-aanvraag hebben verzonden');
+    const body = captured.body;
+    assert.strictEqual(body.calc.oppervlakte, 'Klein');
+    assert.strictEqual(body.calc.oppervlakteExactM2, '', 'exacte m² is bewust niet ingevuld in dit scenario');
+    assert.strictEqual(body.calc.gebruiksintensiteit, 'Intensief');
+    assert.strictEqual(body.calc.vervuiling, 'Bovengemiddelde vervuiling');
+    assert.deepStrictEqual(body.calc.ruimtes.slice().sort(), ['ruimte_kantine', 'ruimte_kantoor'], 'de werkplaats mag NOOIT automatisch worden meegestuurd als geselecteerde ruimte');
+    assert.ok(!body.calc.ruimtes.includes('ruimte_werkplaats'), 'de werkplaats zelf is niet geselecteerd en mag dat ook niet worden');
+
+    // Onafhankelijke bevestiging met de echte Calculator v2: een realistische
+    // bandbreedte, en een betrouwbaarheid die NIET "Hoog" is (de opgegeven
+    // vervuilingscontext moet dat tegenhouden).
+    const { calculateOffer } = require('./lib/calculator.js');
+    const calcResultaat = calculateOffer(body);
+    assert.strictEqual(calcResultaat.status, 'ok');
+    // Ronde 47, expliciete slottoets: mag nooit meer richting 2+ uur schieten
+    // (ronde 46 gaf hier 65-140 min / 137 calculatieminuten).
+    assert.ok(calcResultaat.totaalMinutenMin > 0 && calcResultaat.totaalMinutenMax < 120, 'garagescenario moet een realistische bandbreedte opleveren, nooit meer richting 2+ uur');
+    assert.notStrictEqual(calcResultaat.betrouwbaarheid, 'Hoog');
+    assert.strictEqual(body.calc.retourKm, '', 'afstand bewust niet ingevuld in dit scenario -- mag nooit als een verzonnen kilometeraantal worden behandeld');
+    assert.strictEqual(calcResultaat.km, null);
+    assert.strictEqual(calcResultaat.vervoerNogTeBepalen, true);
+    console.log('Wizard -> calc-payload:', JSON.stringify(body.calc));
+    console.log('Calculator v2 -> tijdsbandbreedte:', calcResultaat.tijdsbandbreedteTekst, '| adviesprijs:', calcResultaat.adviesprijsTekst, '| betrouwbaarheid:', calcResultaat.betrouwbaarheid);
+    console.log('OK: de volledige wizardflow (incl. de nieuwe velden) levert exact de payload op die het autogarage-regressiescenario uit de brief vereist, en de werkplaats wordt nooit automatisch meegerekend.');
+  }
+
+  console.log('\n=== Scenario 20 (ronde 47, briefpunt 11): nieuw optioneel retourafstand-veld -- zichtbaarheid + payload ===');
+  {
+    const dom = makeDom();
+    const doc = dom.window.document;
+    dom.window.Element.prototype.scrollIntoView = () => {};
+
+    // Voor klanttype "Particulier" moet het veld verborgen/disabled blijven
+    // (net als "Aantal locaties" -- alleen relevant voor zakelijke aanvragen).
+    setRadio(doc, 'klanttype', 'Particulier');
+    let veld = doc.getElementById('fieldRetourKm');
+    let input = doc.getElementById('retour_km');
+    assert.strictEqual(veld.hidden, true, 'retourafstand-veld moet verborgen zijn voor particuliere aanvragen');
+    assert.strictEqual(input.disabled, true);
+
+    // Terug naar "Bedrijf": veld moet verschijnen en weer bruikbaar worden.
+    setRadio(doc, 'klanttype', 'Bedrijf');
+    veld = doc.getElementById('fieldRetourKm');
+    input = doc.getElementById('retour_km');
+    assert.strictEqual(veld.hidden, false, 'retourafstand-veld moet zichtbaar zijn voor zakelijke aanvragen');
+    assert.strictEqual(input.disabled, false);
+
+    // Doorlopen tot stap 10 en een waarde invullen; moet in de payload
+    // terechtkomen als calc.retourKm.
+    next(doc); // -> dienst
+    setRadio(doc, 'dienst', 'Periodieke bedrijfsschoonmaak');
+    next(doc); // -> oppervlakte
+    setRadio(doc, 'oppervlakte', 'Klein');
+    next(doc); // -> frequentie
+    setRadio(doc, 'frequentie', 'Wekelijks');
+    next(doc); // -> stap 9 (ruimtes/intensiteit/vervuiling)
+    setChecked(doc, '#zakelijkRuimtes input[data-ruimte-id="ruimte_kantoor"]', true);
+    setRadio(doc, 'gebruiksintensiteit_zakelijk', 'Gemiddeld');
+    setRadio(doc, 'vervuilingsgraad_zakelijk', 'Normale kantoor-/bedrijfsvervuiling');
+    setRadio(doc, 'schoonmaakmoment', 'Geen voorkeur / in overleg');
+    next(doc); // -> stap 10 (toelichting, incl. retour_km)
+    assert.strictEqual(huidigeStap(doc), '10', 'voorbereiding: toelichtingstap');
+    setValue(doc, '#retour_km', '22');
+
+    let captured = null;
+    dom.window.fetch = (url, opts) => {
+      captured = { url, body: JSON.parse(opts.body) };
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({ ok: true }) });
+    };
+    next(doc); // -> contactgegevens
+    setValue(doc, '#naam', 'Test Persoon');
+    setValue(doc, '#email', 'test@voorbeeld.nl');
+    setValue(doc, '#telefoon', '0611112222');
+    setValue(doc, '#plaats', 'Helmond');
+    next(doc); // -> controlestap
+    doc.getElementById('wizardSubmit').removeAttribute('hidden');
+    const formEl = doc.getElementById('offerteWizard');
+    formEl.requestSubmit ? formEl.requestSubmit() : formEl.dispatchEvent(new dom.window.Event('submit', { bubbles: true, cancelable: true }));
+    await sleep(80);
+
+    assert.ok(captured, 'de wizard moet een POST-payload verzonden hebben');
+    assert.strictEqual(captured.body.calc.retourKm, '22', 'de ingevulde retourafstand moet in de payload terechtkomen');
+
+    const { calculateOffer } = require('./lib/calculator.js');
+    const calcResultaat = calculateOffer(captured.body);
+    assert.strictEqual(calcResultaat.km, 22);
+    assert.strictEqual(calcResultaat.vervoerBekend, true);
+    console.log('OK: retourafstand-veld is correct gegated op klanttype, en een ingevulde waarde komt correct in de calculatie terecht.');
+  }
+
+  console.log('\nAlle ronde-44- t/m ronde-47-scenario\'s geslaagd.');
+})().catch((e) => { console.error('FOUT in ronde-44/45/46/47-scenario:', e); process.exitCode = 1; });

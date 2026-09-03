@@ -142,20 +142,32 @@ wat een structurele `502` in productie veroorzaakte — zie `CHANGELOG-42.md` en
   interne tijd-/kostprijs-/margecalculatie voor periodieke bedrijfsschoonmaak
   volledig server-side blijven, zodat een bezoeker deze nooit via devtools of
   netwerkverkeer kan achterhalen. De browser levert alleen de ruwe invoer aan
-  (oppervlakte, ruimtes, vervuiling, frequentie); het endpoint berekent, bouwt de
-  e-mail (platte tekst + HTML) en stuurt die zelf via Resend. Zie de commentaren
-  bovenin `api/offerte-aanvraag.js` voor de volledige `CONFIG` (uurtarief, marge,
-  minimumprijs, reistijd, materiaalkosten, tijdmodel per ruimte/vervuilingsgraad) —
-  elke financiële waarde die nog niet door de ondernemer is bevestigd, staat daar
-  expliciet gemarkeerd als `// TE BEVESTIGEN`. **De formule/parameters zijn in ronde
-  43 én 44 niet aangeraakt** — ronde 43 veranderde alleen de manier van versturen;
-  ronde 44 breidde uitsluitend het BEREIK uit (welke diensten de calculator mogen
-  gebruiken — zie `CALC_DIENST_SLUGS` in zowel `api/offerte-aanvraag.js` als
-  `js/main.js`, en `CHANGELOG-44.md` voor de volledige analyse/rapportage). Een
-  zakelijke/VvE-aanvraag voor een dienst buiten dat bereik krijgt intern altijd een
-  expliciete "Automatische prijsindicatie: niet beschikbaar" + "Handmatige
-  calculatie / locatieopname aanbevolen"-melding — nooit een verzonnen bedrag en
-  nooit een stilzwijgend ontbrekende sectie.
+  (oppervlakte, exacte m², gebruiksintensiteit, ruimtes, vervuiling, frequentie);
+  het endpoint berekent, bouwt de e-mail (platte tekst + HTML) en stuurt die zelf
+  via Resend. **Sinds ronde 46 heet dit rekenmodel Calculator v2 en staat het
+  volledig in `lib/calculator.js`** (niet meer in `api/offerte-aanvraag.js` zelf —
+  dat bestand roept alleen nog `calculateOffer()` aan en bouwt er de e-mail omheen).
+  Calculator v2 werkt met tijds-/prijs**bandbreedtes** in plaats van één
+  schijnprecies bedrag, en geeft een betrouwbaarheidsniveau (Hoog/Middel/Laag,
+  eventueel met "Locatieopname aanbevolen") — zie de commentaren bovenin
+  `lib/calculator.js` voor de volledige `CONFIG` (ZZP-referentietarief,
+  voertuigkosten/km, materiaalkosten, marges, minimumprijs, tijdmodel per m²/
+  ruimte/intensiteit/vervuiling/frequentie) en `CHANGELOG-46.md`/`CHANGELOG-47.md`
+  voor de volledige vergelijking met Calculator v1 (rondes 39-45) en de
+  tijdmodel-/kilometerfallback-herkalibratie (ronde 47). Elke parameter die nog niet
+  door de ondernemer is bevestigd/gekalibreerd staat daar expliciet gemarkeerd als
+  `// TE BEVESTIGEN` of `// TE KALIBREREN`. **Sinds ronde 47** is de oude vaste
+  kilometerfallback (20 km bij een onbekende afstand) volledig verwijderd uit de
+  prijsberekening: een onbekende retourafstand telt nooit meer als gereden km mee
+  (€0 voertuigkosten, expliciet "nog te bepalen" in de interne e-mail); alleen een
+  daadwerkelijk ingevulde afstand (nieuw optioneel wizardveld, stap 10) telt mee
+  tegen `VEHICLE_COST_PER_KM_EXCL_BTW`. Zie `CALC_DIENST_SLUGS` (nu in
+  `lib/calculator.js`, met een noodzakelijke eigen kopie in `js/main.js` omdat de
+  browser dat bestand niet rechtstreeks kan meelezen) voor welke diensten de
+  calculator gebruiken — een zakelijke/VvE-aanvraag voor een dienst buiten dat
+  bereik krijgt intern altijd een expliciete "Niet beschikbaar voor deze dienst" +
+  "Handmatige calculatie / locatieopname aanbevolen"-melding — nooit een verzonnen
+  bedrag en nooit een stilzwijgend ontbrekende sectie.
 - **Dienstcontext vanaf een specifieke dienstpagina** (ronde 44): elke
   `diensten/<slug>.html`-pagina geeft zijn eigen wizard-dienst-slug mee aan de
   offerte-CTA's (zie `SERVICE_TO_WIZARD_DIENST_SLUG` in `generate.py`), zodat de
@@ -284,7 +296,11 @@ daadwerkelijk verzenden. Om alleen de e-mailopbouw en interne calculatie te test
 (zonder Vercel of een echte deploy nodig te hebben), gebruik je de functies in
 `api/offerte-aanvraag.js` rechtstreeks vanuit Node, bijvoorbeeld:
 ```js
-const { berekenInterneCalculatie, bouwEmailTekst, bouwOnderwerp } = require('./api/offerte-aanvraag.js')._internal;
+const { calculateOffer, bouwEmailTekst, bouwOnderwerp } = require('./api/offerte-aanvraag.js')._internal;
+```
+Of, om Calculator v2 helemaal los van de e-mailopbouw/HTTP-laag te testen:
+```js
+const { calculateOffer } = require('./lib/calculator.js');
 ```
 Wil je de complete wizard-flow (stapnavigatie, conditionele velden, de payload die
 naar het endpoint zou gaan) end-to-end simuleren zonder een browser, dan kan dat met
@@ -311,5 +327,20 @@ ontbreekt, dat verzending normaal verloopt zodra ze aanwezig zijn (met een verzo
 testwaarde en een gemockte `fetch`, nooit een echt netwerkverzoek naar Resend), dat
 een afwijzing door Resend resulteert in HTTP 502 met veilige logging, en dat er geen
 Web3Forms-referenties of `RESEND_API_KEY`-literals in de eigen broncode voorkomen.
+
+`test_calculator.js` (`node test_calculator.js`, uitgebreid in ronde 47) test
+Calculator v2 (`lib/calculator.js`) volledig losstaand van de e-mailopbouw/HTTP-laag:
+de vloeiende tijdscurve per m² (incl. grenswaardetests op 50/51, 100/101, 150/151,
+250/251 m²), exacte m² vs. categorie-fallback, rustig/gemiddeld/intensief,
+reguliere vs. bijzondere vervuiling (incl. het autogarage-regressiescenario uit de
+ronde-47-brief, met de expliciete eis dat de garage nooit meer richting 2+ uur
+schiet), alle frequentiepaden, materiaalkosten, de kilometerfallback-verwijdering
+(nooit een verzonnen afstand, alleen een expliciet opgegeven retourafstand telt
+mee), de minimumprijs, de adviesprijs-/maandbandbreedte-afronding, het maximaal
+verantwoorde ZZP-tarief + de Uitbesteedbaarheid-classificatie, en de
+betrouwbaarheidsbeoordeling.
+
 `test_wizard.js` (`npm install jsdom` vereist) simuleert de complete
-offertewizard-flow end-to-end in een virtuele DOM.
+offertewizard-flow end-to-end in een virtuele DOM, inclusief (sinds ronde 46) het
+exacte-m²-veld en de gebruiksintensiteit-vraag, en het volledige
+autogarage-regressiescenario van submit tot aan `calculateOffer()`.
