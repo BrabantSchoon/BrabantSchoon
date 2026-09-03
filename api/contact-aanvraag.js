@@ -1,34 +1,32 @@
 // api/contact-aanvraag.js
 //
-// Vercel Serverless Function (Node.js runtime, geen dependencies buiten de
-// standaard `fetch` die Vercel's Node-runtime al meelevert).
+// Vercel Serverless Function (Node.js runtime). Verstuurt server-side via
+// Resend (zie lib/mail.js) — geen npm-dependency nodig, gewone `fetch()`.
 //
 // Verwerkt het compacte "Snel contact aanvragen"-formulier in de footer
-// (aanwezig op elke pagina, zie render_footer() in generate.py). Dit
-// formulier stuurde voorheen rechtstreeks (native form-POST, geen JS nodig)
-// naar Web3Forms, met de access key als zichtbaar veld in de HTML. Dat is
-// hier bewust losgekoppeld: net als bij de offertewizard (zie
-// api/offerte-aanvraag.js) bouwt dit endpoint de e-mail nu server-side op en
-// stuurt die server-to-server door naar Web3Forms, zodat de access key
-// nergens meer in publieke HTML/JavaScript hoeft te staan.
+// (aanwezig op elke pagina, zie render_footer() in generate.py) en het
+// contactformulier op contact.html — beide gebruiken hetzelfde formulier/
+// dezelfde `id="footerTerugbelForm"` en dus hetzelfde endpoint.
 //
-// BELANGRIJK — geen secret hier: de Web3Forms access key staat NIET in de
-// broncode. Deze functie leest hem bij elk verzoek uit de Vercel-omgevings-
-// variabele `WEB3FORMS_ACCESS_KEY` en faalt veilig (zonder de sleutel te
-// loggen of te versturen) wanneer die ontbreekt. Zie README.md
-// ("Secrets & environment variables").
+// MAILVERZENDING (ronde 43 — was Web3Forms, zie CHANGELOG-42.md/CHANGELOG-43.md):
+// Web3Forms bleek zuivere server-to-server aanroepen te weigeren op een
+// gratis abonnement (structurele 502 in productie, zie CHANGELOG-42.md). Dit
+// endpoint verstuurt daarom nu via Resend — zie lib/mail.js voor de volledige
+// verzendlogica (`process.env.RESEND_API_KEY`/`RESEND_FROM_EMAIL`, nooit
+// hardcoded, faalt veilig zonder secret-lek wanneer die ontbreken).
 //
 // Bewust een eigen, zelfstandig bestand (i.p.v. gedeeld met
-// api/offerte-aanvraag.js): dat endpoint is net uitgebreid getest en
-// opgeleverd (zakelijke calculator/e-mailopbouw) en wordt deze ronde
-// expliciet niet aangeraakt, om geen enkel risico te lopen op dat inmiddels
-// werkende, geverifieerde pad. Zie README.md voor een opmerking over een
-// eventuele latere refactor naar een gedeelde helper.
+// api/offerte-aanvraag.js): beide endpoints hebben elk hun eigen
+// e-mailinhoud/validatie, maar delen nu wél de onderliggende verzendlogica
+// via lib/mail.js — dat is precies de "gedeelde mailservice" die dubbele
+// Resend/foutafhandelingscode voorkomt, zonder de endpoint-specifieke
+// e-mailopbouw en velden samen te voegen (zie README.md).
 
 "use strict";
 
+const { bouwEmailHtml, verstuurEmail } = require("../lib/mail.js");
+
 const CONFIG = {
-  WEB3FORMS_ENDPOINT: "https://api.web3forms.com/submit",
   // Vaste onderwerpregel — identiek aan de vroegere hidden "subject"-input,
   // zodat de e-mail voor de ontvanger herkenbaar hetzelfde blijft.
   SUBJECT: "Terugbelverzoek via de footer (geen volledige offerteaanvraag)",
@@ -36,11 +34,6 @@ const CONFIG = {
   // zelfde dependency-vrije bot-heuristiek als bij de offertewizard.
   MIN_FILL_TIME_MS: 2500,
 };
-
-function getWeb3FormsAccessKey() {
-  const key = process.env.WEB3FORMS_ACCESS_KEY;
-  return typeof key === "string" && key.trim().length > 0 ? key.trim() : null;
-}
 
 function isNietLeeg(v) {
   return typeof v === "string" ? v.trim().length > 0 : !!v;
@@ -76,7 +69,7 @@ function valideerVerplichteVelden(payload) {
 
 // Conditionele e-mailtekst: alleen ingevulde velden, geen lege regels voor
 // de optionele bedrijfsnaam/bericht -- zelfde principe als de offertewizard
-// (nooit een leeg/onnodig veld in de mail).
+// (nooit een leeg/onnodig veld in de mail). ONGEWIJZIGD deze ronde.
 function bouwEmailTekst(payload) {
   const regels = ["NIEUW TERUGBELVERZOEK (footerformulier)", ""];
   regels.push("Naam:");
@@ -100,24 +93,21 @@ function bouwEmailTekst(payload) {
   return regels.join("\n").trim();
 }
 
-async function verstuurNaarWeb3Forms({ message, replyto, fromName, accessKey }) {
-  const body = {
-    access_key: accessKey,
-    subject: CONFIG.SUBJECT,
-    from_name: fromName || "Brabantschoon website",
-    message,
-  };
-  if (replyto) body.replyto = replyto;
-  const resp = await fetch(CONFIG.WEB3FORMS_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify(body),
+// HTML-versie van dezelfde mail — zelfde inhoud als bouwEmailTekst()
+// hierboven, nu nette, rustige HTML. Klantwaarden worden geëscaped door
+// bouwEmailHtml() (lib/mail.js).
+function bouwEmailHtmlContact(payload) {
+  const rows = [
+    ["Naam", payload.naam],
+    ["Telefoon", payload.telefoon],
+    ["E-mail", payload.email],
+  ];
+  if (isNietLeeg(payload.bedrijfsnaam)) rows.push(["Bedrijfsnaam", payload.bedrijfsnaam]);
+  if (isNietLeeg(payload.bericht)) rows.push(["Bericht", payload.bericht]);
+  return bouwEmailHtml({
+    titel: "Nieuw terugbelverzoek (footerformulier)",
+    secties: [{ heading: "Gegevens", rows }],
   });
-  const data = await resp.json().catch(() => ({}));
-  if (!resp.ok || data.success === false) {
-    throw new Error("web3forms_failed: " + (data && data.message ? data.message : resp.status));
-  }
-  return data;
 }
 
 module.exports = async (req, res) => {
@@ -147,34 +137,31 @@ module.exports = async (req, res) => {
     return;
   }
 
-  // Configuratiecontrole: zonder access key kan er sowieso niets verstuurd
-  // worden. Faal hier expliciet en veilig, VOORDAT er iets geprobeerd wordt
-  // -- nooit stilzwijgend doen alsof het verzoek is verzonden wanneer dat
-  // niet zo is. Log alleen dat de variabele ontbreekt, nooit een waarde.
-  const accessKey = getWeb3FormsAccessKey();
-  if (!accessKey) {
-    console.error("contact-aanvraag: WEB3FORMS_ACCESS_KEY ontbreekt (omgevingsvariabele niet ingesteld) — verzoek kan niet worden verstuurd.");
-    res.status(500).json({ ok: false, error: "server_misconfigured" });
-    return;
-  }
-
   try {
-    const message = bouwEmailTekst(payload);
-    await verstuurNaarWeb3Forms({
-      message,
-      replyto: payload.email,
-      fromName: payload.bedrijfsnaam || payload.naam,
-      accessKey,
+    const text = bouwEmailTekst(payload);
+    const html = bouwEmailHtmlContact(payload);
+    await verstuurEmail({
+      subject: CONFIG.SUBJECT,
+      text,
+      html,
+      replyTo: payload.email,
+      logPrefix: "contact-aanvraag",
     });
     res.status(200).json({ ok: true });
   } catch (err) {
-    // Nooit err.message (kan Web3Forms-responsdetails bevatten) naar de
-    // bezoeker doorgeven -- alleen een generieke foutcode.
-    res.status(502).json({ ok: false, error: "send_failed" });
+    // verstuurEmail() (lib/mail.js) heeft de technische details al veilig
+    // gelogd (nooit de API-key, nooit klantgegevens) en zet `.reden` op de
+    // fout: "server_misconfigured" (RESEND_API_KEY/RESEND_FROM_EMAIL
+    // ontbreekt) of "send_failed" (Resend wijst de aanvraag af, of een
+    // netwerkfout). De bezoeker krijgt in beide gevallen alleen een
+    // generieke foutcode, nooit responsdetails.
+    if (err && err.reden === "server_misconfigured") {
+      res.status(500).json({ ok: false, error: "server_misconfigured" });
+    } else {
+      res.status(502).json({ ok: false, error: "send_failed" });
+    }
   }
 };
 
-// Alleen voor lokale tests -- geen effect op Vercel. Bevat GEEN secret:
-// getWeb3FormsAccessKey zelf wordt geëxporteerd (leest bij aanroep uit
-// process.env), niet een reeds-uitgelezen sleutelwaarde.
-module.exports._internal = { bouwEmailTekst, lijktOpBot, valideerVerplichteVelden, getWeb3FormsAccessKey, isValidEmail, isValidTelefoon, CONFIG };
+// Alleen voor lokale tests -- geen effect op Vercel. Bevat GEEN secret.
+module.exports._internal = { bouwEmailTekst, bouwEmailHtmlContact, lijktOpBot, valideerVerplichteVelden, isValidEmail, isValidTelefoon, CONFIG };

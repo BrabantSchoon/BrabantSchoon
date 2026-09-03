@@ -1,13 +1,17 @@
-// Test voor api/contact-aanvraag.js (het footer-terugbelformulier): controleert
-// dat de e-mailtekst conditioneel wordt opgebouwd (geen lege bedrijfsnaam/
-// bericht-regels), dat validatie/botdetectie werken, en vooral dat de
-// WEB3FORMS_ACCESS_KEY uitsluitend uit process.env komt -- nooit hardcoded --
-// en dat het endpoint veilig faalt (geen "ok:true", geen secret-lek) wanneer
-// die omgevingsvariabele ontbreekt. Gebruikt uitsluitend verzonnen testwaarden,
-// nooit de echte Web3Forms-sleutel.
+// Test voor api/contact-aanvraag.js (het compacte contactformulier op
+// contact.html EN het footer-terugbelformulier op elke pagina -- beide delen
+// hetzelfde `id="footerTerugbelForm"` en dus hetzelfde endpoint, dus één
+// testsuite dekt beide). Controleert dat de e-mailtekst conditioneel wordt
+// opgebouwd (geen lege bedrijfsnaam/bericht-regels), dat validatie/botdetectie
+// werken, en dat verzending sinds ronde 43 via Resend loopt (lib/mail.js,
+// zie CHANGELOG-43.md) i.p.v. Web3Forms: RESEND_API_KEY/RESEND_FROM_EMAIL
+// komen uitsluitend uit process.env, nooit hardcoded, en het endpoint faalt
+// veilig (geen "ok:true", geen secret-lek) wanneer ze ontbreken. Gebruikt
+// uitsluitend verzonnen testwaarden, nooit een echte sleutel.
 const assert = require('assert');
+const fs = require('fs');
 const api = require('./api/contact-aanvraag.js');
-const { bouwEmailTekst, lijktOpBot, valideerVerplichteVelden, getWeb3FormsAccessKey, isValidEmail, isValidTelefoon, CONFIG } = api._internal;
+const { bouwEmailTekst, bouwEmailHtmlContact, lijktOpBot, valideerVerplichteVelden, isValidEmail, isValidTelefoon, CONFIG } = api._internal;
 
 const volledigPayload = {
   naam: 'Marieke de Groot',
@@ -44,7 +48,7 @@ console.log('\n=== Test 2: e-mailtekst met optionele velden ingevuld ===');
   console.log('OK: optionele velden verschijnen zodra ze zijn ingevuld.');
 }
 
-console.log('\n=== Test 3: validatie verplichte velden (naam/telefoon/e-mail) ===');
+console.log('\n=== Test 3: validatie verplichte velden (naam/telefoon/e-mail) -- ongeldig e-mailadres wordt geweerd ===');
 {
   assert.deepStrictEqual(valideerVerplichteVelden(volledigPayload), []);
   const fouten = valideerVerplichteVelden({ naam: '', telefoon: 'x', email: 'niet-geldig' });
@@ -64,19 +68,30 @@ console.log('\n=== Test 4: botdetectie (honeypot + te snel ingevuld) ===');
   console.log('OK: botdetectie gedraagt zich zoals verwacht.');
 }
 
-console.log('\n=== Test 5: WEB3FORMS_ACCESS_KEY uitsluitend uit process.env, nooit hardcoded ===');
+console.log('\n=== Test 5: geen Web3Forms/RESEND_API_KEY-literal meer in de actieve broncode ===');
 {
   assert.ok(!('WEB3FORMS_ACCESS_KEY' in CONFIG), 'CONFIG mag geen WEB3FORMS_ACCESS_KEY-veld hebben');
-  const origKey = process.env.WEB3FORMS_ACCESS_KEY;
-  try {
-    delete process.env.WEB3FORMS_ACCESS_KEY;
-    assert.strictEqual(getWeb3FormsAccessKey(), null);
-    process.env.WEB3FORMS_ACCESS_KEY = 'test-fake-key-niet-echt-5678';
-    assert.strictEqual(getWeb3FormsAccessKey(), 'test-fake-key-niet-echt-5678');
-    console.log('OK: getWeb3FormsAccessKey() gedraagt zich correct.');
-  } finally {
-    if (origKey === undefined) delete process.env.WEB3FORMS_ACCESS_KEY; else process.env.WEB3FORMS_ACCESS_KEY = origKey;
-  }
+  assert.ok(!('RESEND_API_KEY' in CONFIG), 'CONFIG mag geen RESEND_API_KEY-veld hebben -- die hoort alleen in process.env te staan');
+  const eigenBroncode = fs.readFileSync(__dirname + '/api/contact-aanvraag.js', 'utf8');
+  assert.ok(!/api\.web3forms\.com/i.test(eigenBroncode), 'api/contact-aanvraag.js mag geen Web3Forms-endpoint meer bevatten');
+  assert.ok(!/WEB3FORMS_ACCESS_KEY/.test(eigenBroncode), 'api/contact-aanvraag.js mag WEB3FORMS_ACCESS_KEY niet meer noemen (volledig verwijderd, zie CHANGELOG-43.md)');
+  assert.ok(!/re_[A-Za-z0-9]{10,}/.test(eigenBroncode), 'geen letterlijke Resend-sleutel (formaat re_...) in de broncode');
+  console.log('OK: geen Web3Forms-afhankelijkheid en geen hardcoded sleutel meer in de actieve broncode.');
+}
+
+console.log('\n=== Test 6: bouwEmailHtmlContact() -- zelfde inhoud als de platte tekst, correct geescaped ===');
+{
+  const payload = { ...volledigPayload, bedrijfsnaam: 'Garagebedrijf Van Brussel B.V.', bericht: 'Graag deze week nog contact.' };
+  const html = bouwEmailHtmlContact(payload);
+  assert.ok(html.includes('Nieuw terugbelverzoek'));
+  assert.ok(html.includes('Marieke de Groot'));
+  assert.ok(html.includes('Garagebedrijf Van Brussel B.V.'));
+  assert.ok(!/\bundefined\b|\bnull\b/.test(html));
+  const kwaadPayload = { ...volledigPayload, bericht: '<script>alert(1)</script>' };
+  const kwaadHtml = bouwEmailHtmlContact(kwaadPayload);
+  assert.ok(!kwaadHtml.includes('<script>alert(1)</script>'), 'ongeescapete HTML/JS-injectie via het berichtveld mag niet voorkomen');
+  assert.ok(kwaadHtml.includes('&lt;script&gt;alert(1)&lt;/script&gt;'), 'berichtveld moet HTML-geescaped in de mail staan');
+  console.log('OK: HTML-mail bevat dezelfde gegevens als de tekstversie en escaped klantinvoer correct (HTML-injectiebescherming).');
 }
 
 function mockRes() {
@@ -86,59 +101,86 @@ function mockRes() {
   return res;
 }
 
-async function testHandlerZonderAccessKey() {
-  console.log('\n=== Test 6: handler faalt veilig zonder WEB3FORMS_ACCESS_KEY ===');
-  const origKey = process.env.WEB3FORMS_ACCESS_KEY;
-  const origConsoleError = console.error;
-  const loggedLines = [];
-  console.error = (...args) => { loggedLines.push(args.join(' ')); };
-  try {
-    delete process.env.WEB3FORMS_ACCESS_KEY;
-    const req = { method: 'POST', body: JSON.stringify(volledigPayload) };
-    const res = mockRes();
-    await api(req, res);
-    console.log('Statuscode zonder access key (verwacht 500):', res.statusCode);
-    assert.strictEqual(res.statusCode, 500);
-    assert.strictEqual(res.body.ok, false);
-    assert.strictEqual(res.body.error, 'server_misconfigured');
-    const loggedText = loggedLines.join('\n');
-    assert.ok(loggedText.includes('WEB3FORMS_ACCESS_KEY ontbreekt'));
-    assert.ok(!/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i.test(loggedText), 'log mag geen sleutelwaarde bevatten');
-    console.log('OK: handler faalt veilig (500/ok:false/server_misconfigured), logt nooit een waarde.');
-  } finally {
-    console.error = origConsoleError;
-    if (origKey === undefined) delete process.env.WEB3FORMS_ACCESS_KEY; else process.env.WEB3FORMS_ACCESS_KEY = origKey;
-  }
+function metEnv(vars, fn) {
+  const orig = {};
+  Object.keys(vars).forEach((k) => { orig[k] = process.env[k]; });
+  return (async () => {
+    try {
+      Object.keys(vars).forEach((k) => {
+        if (vars[k] === undefined) delete process.env[k];
+        else process.env[k] = vars[k];
+      });
+      return await fn();
+    } finally {
+      Object.keys(vars).forEach((k) => {
+        if (orig[k] === undefined) delete process.env[k];
+        else process.env[k] = orig[k];
+      });
+    }
+  })();
 }
 
-async function testHandlerMetAccessKey() {
-  console.log('\n=== Test 7: handler verstuurt normaal zodra WEB3FORMS_ACCESS_KEY aanwezig is (fetch gemockt) ===');
-  const origKey = process.env.WEB3FORMS_ACCESS_KEY;
+async function testHandlerZonderConfig() {
+  console.log('\n=== Test 7: handler faalt veilig zonder RESEND_API_KEY/RESEND_FROM_EMAIL (geen "ok:true", geen secret-lek, geen netwerkaanroep) ===');
+  const origConsoleError = console.error;
+  const loggedLines = [];
+  console.error = (...args) => { loggedLines.push(args.map(String).join(' ')); };
+  let fetchAangeroepen = false;
+  const origFetch = global.fetch;
+  global.fetch = () => { fetchAangeroepen = true; return Promise.reject(new Error('mag niet aangeroepen worden')); };
+  try {
+    await metEnv({ RESEND_API_KEY: undefined, RESEND_FROM_EMAIL: undefined }, async () => {
+      const req = { method: 'POST', body: JSON.stringify(volledigPayload) };
+      const res = mockRes();
+      await api(req, res);
+      console.log('Statuscode zonder configuratie (verwacht 500):', res.statusCode);
+      assert.strictEqual(res.statusCode, 500);
+      assert.strictEqual(res.body.ok, false);
+      assert.strictEqual(res.body.error, 'server_misconfigured');
+      assert.strictEqual(fetchAangeroepen, false, 'zonder configuratie mag er nooit een Resend-aanroep gebeuren');
+      const loggedText = loggedLines.join('\n');
+      assert.ok(loggedText.includes('RESEND_API_KEY'));
+      assert.ok(!/re_[A-Za-z0-9]{10,}/.test(loggedText), 'log mag nergens een sleutelwaarde bevatten');
+    });
+  } finally {
+    console.error = origConsoleError;
+    global.fetch = origFetch;
+  }
+  console.log('OK: handler faalt veilig (500/ok:false/server_misconfigured), geen netwerkaanroep, geen secret in de log.');
+}
+
+async function testHandlerMetConfig() {
+  console.log('\n=== Test 8: handler verstuurt normaal via Resend zodra configuratie aanwezig is (fetch gemockt); replyTo correct ===');
   const origFetch = global.fetch;
   try {
-    process.env.WEB3FORMS_ACCESS_KEY = 'test-fake-key-niet-echt-5678';
-    let capturedFetchBody = null;
+    let capturedBody = null;
+    let capturedHeaders = null;
     global.fetch = (url, opts) => {
-      capturedFetchBody = JSON.parse(opts.body);
-      return Promise.resolve({ ok: true, json: () => Promise.resolve({ success: true }) });
+      capturedBody = JSON.parse(opts.body);
+      capturedHeaders = opts.headers;
+      return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ id: 'test-resend-id' }) });
     };
-    const req = { method: 'POST', body: JSON.stringify(volledigPayload) };
-    const res = mockRes();
-    await api(req, res);
-    console.log('Statuscode met (test-)access key (verwacht 200):', res.statusCode);
-    assert.strictEqual(res.statusCode, 200);
-    assert.deepStrictEqual(res.body, { ok: true });
-    assert.strictEqual(capturedFetchBody.access_key, 'test-fake-key-niet-echt-5678');
-    assert.strictEqual(capturedFetchBody.subject, 'Terugbelverzoek via de footer (geen volledige offerteaanvraag)');
-    console.log('OK: verzending verloopt normaal; subject identiek aan de vroegere hidden-inputwaarde.');
+    await metEnv({ RESEND_API_KEY: 're_test_fake_5678', RESEND_FROM_EMAIL: 'Brabantschoon <noreply@brabantschoon.nl>', RESEND_TO_EMAIL: undefined }, async () => {
+      const req = { method: 'POST', body: JSON.stringify(volledigPayload) };
+      const res = mockRes();
+      await api(req, res);
+      console.log('Statuscode met (test-)configuratie (verwacht 200):', res.statusCode);
+      assert.strictEqual(res.statusCode, 200);
+      assert.deepStrictEqual(res.body, { ok: true });
+      assert.strictEqual(capturedHeaders['Authorization'], 'Bearer re_test_fake_5678');
+      assert.strictEqual(capturedBody.from, 'Brabantschoon <noreply@brabantschoon.nl>');
+      assert.deepStrictEqual(capturedBody.to, ['info@brabantschoon.nl']);
+      assert.strictEqual(capturedBody.subject, CONFIG.SUBJECT);
+      assert.strictEqual(capturedBody.reply_to, volledigPayload.email, 'reply_to moet het klant-e-mailadres zijn, zodat "Beantwoorden" naar de klant gaat');
+    });
   } finally {
     global.fetch = origFetch;
-    if (origKey === undefined) delete process.env.WEB3FORMS_ACCESS_KEY; else process.env.WEB3FORMS_ACCESS_KEY = origKey;
   }
+  console.log('OK: verzending verloopt normaal via Resend; subject identiek aan de vroegere hidden-inputwaarde; reply_to correct.');
 }
 
 async function testHandlerBotEnOntbrekendeVelden() {
-  console.log('\n=== Test 8: handler -- bot krijgt stille ok:true, ontbrekende velden geven 400 ===');
+  console.log('\n=== Test 9: handler -- bot krijgt stille ok:true, ontbrekende velden en ongeldig e-mailadres geven 400, verkeerde methode geeft 405 ===');
   const req1 = { method: 'POST', body: JSON.stringify({ ...volledigPayload, botcheck: true }) };
   const res1 = mockRes();
   await api(req1, res1);
@@ -154,6 +196,13 @@ async function testHandlerBotEnOntbrekendeVelden() {
   assert.strictEqual(res2.body.error, 'missing_fields');
   console.log('OK: ontbrekende verplichte velden geven een nette 400.');
 
+  const req2b = { method: 'POST', body: JSON.stringify({ ...volledigPayload, email: 'niet-geldig-e-mailadres' }) };
+  const res2b = mockRes();
+  await api(req2b, res2b);
+  assert.strictEqual(res2b.statusCode, 400);
+  assert.strictEqual(res2b.body.error, 'missing_fields');
+  console.log('OK: ongeldig e-mailadres wordt server-side geweerd (nette 400, nooit als reply_to gebruikt).');
+
   const req3 = { method: 'GET' };
   const res3 = mockRes();
   await api(req3, res3);
@@ -161,10 +210,43 @@ async function testHandlerBotEnOntbrekendeVelden() {
   console.log('OK: niet-POST-methode geeft 405.');
 }
 
+async function testHandlerResendAfgewezen() {
+  console.log('\n=== Test 10: handler geeft 502 wanneer Resend de aanvraag zelf afwijst, en logt veilig ===');
+  const origFetch = global.fetch;
+  const origConsoleError = console.error;
+  const loggedLines = [];
+  console.error = (...args) => { loggedLines.push(args.map(String).join(' ')); };
+  try {
+    global.fetch = () => Promise.resolve({
+      ok: false,
+      status: 403,
+      json: () => Promise.resolve({ name: 'validation_error', statusCode: 403, message: 'The brabantschoon.nl domain is not verified' }),
+    });
+    await metEnv({ RESEND_API_KEY: 're_test_fake_0000', RESEND_FROM_EMAIL: 'Brabantschoon <noreply@brabantschoon.nl>' }, async () => {
+      const req = { method: 'POST', body: JSON.stringify(volledigPayload) };
+      const res = mockRes();
+      await api(req, res);
+      console.log('Statuscode wanneer Resend afwijst (verwacht 502):', res.statusCode);
+      assert.strictEqual(res.statusCode, 502);
+      assert.strictEqual(res.body.error, 'send_failed');
+      const loggedText = loggedLines.join('\n');
+      assert.ok(loggedText.includes('http_status=403'));
+      assert.ok(loggedText.includes('not verified'));
+      assert.ok(!loggedText.includes('re_test_fake_0000'), 'log mag NOOIT de API-key bevatten, ook niet een testwaarde');
+      assert.ok(!loggedText.includes(volledigPayload.email), 'log mag NOOIT klantgegevens bevatten');
+    });
+  } finally {
+    console.error = origConsoleError;
+    global.fetch = origFetch;
+  }
+  console.log('OK: bij een afwijzing door Resend zelf krijgt de bezoeker alleen een generieke 502, en logt de server veilig zonder key of klantgegevens.');
+}
+
 (async () => {
-  await testHandlerZonderAccessKey();
-  await testHandlerMetAccessKey();
+  await testHandlerZonderConfig();
+  await testHandlerMetConfig();
   await testHandlerBotEnOntbrekendeVelden();
+  await testHandlerResendAfgewezen();
   console.log('\nAlle tests geslaagd.');
 })().catch((err) => {
   console.error(err);

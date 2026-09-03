@@ -1,18 +1,17 @@
 // api/offerte-aanvraag.js
 //
-// Vercel Serverless Function (Node.js runtime, geen dependencies buiten de
-// standaard `fetch` die Vercel's Node-runtime al meelevert).
+// Vercel Serverless Function (Node.js runtime). Verstuurt server-side via
+// Resend (zie lib/mail.js) — geen npm-dependency nodig, gewone `fetch()`.
 //
-// Dit endpoint vervangt de vroegere rechtstreekse formulier-POST vanuit de
-// browser naar Web3Forms. Twee redenen daarvoor (zie CHANGELOG voor het volle
-// verhaal):
+// Twee redenen waarom dit endpoint bestaat (i.p.v. een rechtstreekse
+// formulier-POST vanuit de browser):
 //
 // 1. De oude opzet stuurde ALLE velden van het wizard-formulier mee, ook
 //    tientallen verborgen tellers/checkboxes van niet-gekozen particuliere
-//    opties (met waarde "0" of leeg). Web3Forms somt automatisch alle
-//    meegestuurde velden op, dus dat werd een onleesbare mail. Dit bestand
-//    bouwt de mailtekst zelf, conditioneel, op basis van alleen de velden die
-//    de klant daadwerkelijk heeft ingevuld voor de gekozen klantsoort/dienst.
+//    opties (met waarde "0" of leeg) — dat werd automatisch een onleesbare
+//    mail. Dit bestand bouwt de mailtekst zelf, conditioneel, op basis van
+//    alleen de velden die de klant daadwerkelijk heeft ingevuld voor de
+//    gekozen klantsoort/dienst.
 // 2. Brabantschoon wil een interne tijd-/prijsindicatie voor periodieke
 //    bedrijfsschoonmaak, die de klant nooit te zien mag krijgen. Zolang die
 //    berekening in de browser gebeurt, is ze — ongeacht hoe goed ze verstopt
@@ -20,6 +19,14 @@
 //    de berekening hier, server-side; de browser levert alleen de ruwe
 //    invoer (oppervlakte, ruimtes, vervuiling, frequentie) aan, nooit een
 //    berekend bedrag.
+//
+// MAILVERZENDING (ronde 43 — was Web3Forms, zie CHANGELOG-42.md/CHANGELOG-43.md):
+// Web3Forms bleek zuivere server-to-server aanroepen te weigeren op een
+// gratis abonnement, wat een structurele 502 in productie veroorzaakte. Dit
+// endpoint verstuurt daarom nu via Resend, met dezelfde
+// veilig-falen-zonder-secret-aanpak als voorheen — zie lib/mail.js voor de
+// volledige verzendlogica (`process.env.RESEND_API_KEY`/`RESEND_FROM_EMAIL`,
+// nooit hardcoded).
 //
 // BELANGRIJK — financiële parameters: dit is de ENIGE plek in de repository
 // waar interne kostprijzen/marges voor zakelijke periodieke schoonmaak
@@ -33,8 +40,12 @@
 
 "use strict";
 
+const { bouwEmailHtml, verstuurEmail } = require("../lib/mail.js");
+
 // =================================================================
 // CENTRALE CONFIGURATIE — interne calculatie periodieke bedrijfsschoonmaak
+// (ONGEWIJZIGD deze ronde — zie briefpunt 17: geen enkele financiële
+// parameter, tijdmodel- of vervuilingsfactor-waarde is aangepast)
 // =================================================================
 const CONFIG = {
   // --- Kostprijs & marge (TE BEVESTIGEN door Brabantschoon) ---
@@ -116,29 +127,7 @@ const CONFIG = {
   // eenvoudige, dependency-vrije bot-heuristiek: geen mens vult een
   // meerstaps-wizard in <2,5s in.
   MIN_FILL_TIME_MS: 2500,
-
-  // BELANGRIJK — GEEN secret hier: de Web3Forms access key staat NIET meer in de
-  // broncode. Deze functie leest hem bij elk verzoek uit de Vercel-omgevings-
-  // variabele `WEB3FORMS_ACCESS_KEY` (zie getWeb3FormsAccessKey() hieronder) en
-  // faalt veilig — zonder de sleutel te loggen of te versturen — wanneer die
-  // variabele niet is ingesteld. Zie README.md ("Secrets & environment variables")
-  // voor hoe u deze in Vercel instelt.
-  WEB3FORMS_ENDPOINT: "https://api.web3forms.com/submit",
 };
-
-// =================================================================
-// WEB3FORMS ACCESS KEY — uit environment variable, nooit hardcoded
-// =================================================================
-// Geeft de access key terug, of null wanneer de omgevingsvariabele ontbreekt of
-// leeg is. Bewust een aparte functie (i.p.v. rechtstreeks `process.env...` overal
-// in de code) zodat er precies één plek is die ooit met de echte sleutel omgaat,
-// en zodat tests dit gedrag kunnen simuleren zonder een echte sleutel nodig te
-// hebben (zie test_offerte_api.js — die zet/verwijdert alleen de omgevings-
-// variabele, leest of logt nooit een echte waarde).
-function getWeb3FormsAccessKey() {
-  const key = process.env.WEB3FORMS_ACCESS_KEY;
-  return typeof key === "string" && key.trim().length > 0 ? key.trim() : null;
-}
 
 // Labels die bij CONTACTGEGEVENS horen (en dus NIET nogmaals in de
 // AANVRAAG-sectie mogen verschijnen) — moet als set overeenkomen met de
@@ -353,6 +342,65 @@ function bouwEmailTekst(payload) {
   return regels.join("\n").trim();
 }
 
+// HTML-versie van dezelfde mail — zelfde secties/inhoud als bouwEmailTekst()
+// hierboven (die blijft de bron van waarheid voor de tekst-fallback), nu
+// nette, rustige HTML voor mailclients die dat tonen. Alle klantwaarden
+// worden geëscaped door bouwEmailHtml() (lib/mail.js), labels zijn vaste tekst.
+function bouwEmailHtmlOfferte(payload) {
+  const type = payload.klanttype || "";
+  const isZakelijk = type === "Bedrijf" || type === "VvE / organisatie";
+  const titelPrefix = isZakelijk ? "Nieuwe zakelijke offerteaanvraag" : "Nieuwe particuliere offerteaanvraag";
+  const subtitelDelen = [payload.bedrijfsnaam, payload.plaats].filter(isNietLeeg);
+  const titel = titelPrefix + (subtitelDelen.length ? " – " + subtitelDelen.join(" – ") : "");
+
+  const secties = [];
+
+  const aanvraagVelden = (payload.velden || []).filter(([label]) => !CONTACT_LABELS.has(label));
+  secties.push({
+    heading: "Aanvraag",
+    rows: aanvraagVelden.map(([label, waarde]) => [label, String(waarde)]),
+  });
+
+  const calc = berekenInterneCalculatie(payload);
+  let noot = null;
+  if (calc) {
+    if (calc.onvoldoendeInfo) {
+      secties.push({
+        heading: "Interne calculatie",
+        tekst: "Onvoldoende informatie voor een automatische prijsindicatie. Reden: " + calc.redenen.join("; "),
+      });
+    } else {
+      const calcRows = [
+        ["Geschatte schoonmaaktijd", formatDuur(calc.totaalMinuten) + " per bezoek"],
+        ["Frequentie", calc.frequentieLabel],
+        ["Bezoeken per maand (gem.)", calc.visitsPerMonth.toFixed(2).replace(".", ",")],
+        ["Geschatte directe kosten", euro(calc.directeKostenPerBezoek) + " per bezoek — " + euro(calc.directeKostenPerMaand) + " per maand"],
+        ["Adviesprijs per bezoek", euro(calc.adviesprijsExclBtw) + " excl. btw" + (calc.minimumToegepast ? " (minimumprijs toegepast)" : "")],
+        ["Adviesprijs per maand", euro(calc.adviesprijsPerMaandExclBtw) + " excl. btw"],
+        ["Btw (per bezoek)", euro(calc.btwBedrag)],
+        ["Adviesprijs incl. btw", euro(calc.adviesprijsInclBtw) + " per bezoek — " + euro(calc.adviesprijsPerMaandInclBtw) + " per maand"],
+        ["Verwachte brutomarge", calc.werkelijkeMargePercent.toFixed(1).replace(".", ",") + "%"],
+      ];
+      if (calc.meerdereLocaties) {
+        calcRows.push(["Let op", "Aanvraag betreft " + calc.locatiesAantal + " locaties — calculatie is PER LOCATIE, vermenigvuldig handmatig voor een totaalinschatting."]);
+      }
+      secties.push({ heading: "Interne calculatie", rows: calcRows });
+      noot = "Interne prijsindicatie – niet automatisch aan de klant gecommuniceerd en geen definitieve offerte.";
+    }
+  }
+
+  const contactRows = [];
+  if (isZakelijk && payload.naam) contactRows.push(["Contactpersoon", payload.naam]);
+  else if (payload.naam) contactRows.push(["Naam", payload.naam]);
+  if (payload.bedrijfsnaam) contactRows.push(["Bedrijfsnaam", payload.bedrijfsnaam]);
+  if (payload.email) contactRows.push(["E-mail", payload.email]);
+  if (payload.telefoon) contactRows.push(["Telefoon", payload.telefoon]);
+  if (payload.plaats) contactRows.push(["Plaats", payload.plaats]);
+  secties.push({ heading: "Contactgegevens", rows: contactRows });
+
+  return bouwEmailHtml({ titel, secties, noot });
+}
+
 // =================================================================
 // SPAM-/VALIDATIECONTROLES
 // =================================================================
@@ -375,30 +423,6 @@ function valideerVerplichteVelden(payload) {
   if (!isNietLeeg(payload.telefoon)) fouten.push("telefoon");
   if (!isNietLeeg(payload.plaats)) fouten.push("plaats");
   return fouten;
-}
-
-// =================================================================
-// VERSTUREN VIA WEB3FORMS (server-to-server — de klant ziet dit verzoek
-// nooit, in tegenstelling tot de oude rechtstreekse browser-POST)
-// =================================================================
-async function verstuurNaarWeb3Forms({ subject, message, replyto, fromName, accessKey }) {
-  const body = {
-    access_key: accessKey,
-    subject,
-    from_name: fromName || "Brabantschoon website",
-    message,
-  };
-  if (replyto) body.replyto = replyto;
-  const resp = await fetch(CONFIG.WEB3FORMS_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify(body),
-  });
-  const data = await resp.json().catch(() => ({}));
-  if (!resp.ok || data.success === false) {
-    throw new Error("web3forms_failed: " + (data && data.message ? data.message : resp.status));
-  }
-  return data;
 }
 
 // =================================================================
@@ -431,38 +455,33 @@ module.exports = async (req, res) => {
     return;
   }
 
-  // Configuratiecontrole: zonder access key kan er sowieso niets verstuurd
-  // worden. Faal hier expliciet en veilig, VOORDAT er iets geprobeerd wordt —
-  // nooit stilzwijgend doen alsof de aanvraag is verzonden wanneer dat niet zo
-  // is. Log alleen dat de variabele ontbreekt, nooit een sleutelwaarde (die is
-  // er in dit geval per definitie ook niet). Geen foutdetails naar de bezoeker
-  // — alleen een generieke foutcode, net als bij een mislukte verzending.
-  const accessKey = getWeb3FormsAccessKey();
-  if (!accessKey) {
-    console.error("offerte-aanvraag: WEB3FORMS_ACCESS_KEY ontbreekt (omgevingsvariabele niet ingesteld) — aanvraag kan niet worden verstuurd.");
-    res.status(500).json({ ok: false, error: "server_misconfigured" });
-    return;
-  }
-
   try {
     const subject = bouwOnderwerp(payload);
-    const message = bouwEmailTekst(payload);
-    await verstuurNaarWeb3Forms({
+    const text = bouwEmailTekst(payload);
+    const html = bouwEmailHtmlOfferte(payload);
+    await verstuurEmail({
       subject,
-      message,
-      replyto: payload.email,
-      fromName: payload.bedrijfsnaam || payload.naam,
-      accessKey,
+      text,
+      html,
+      replyTo: payload.email,
+      logPrefix: "offerte-aanvraag",
     });
     res.status(200).json({ ok: true });
   } catch (err) {
-    // Nooit err.message (kan Web3Forms-responsdetails bevatten) naar de
-    // bezoeker doorgeven — alleen een generieke foutcode.
-    res.status(502).json({ ok: false, error: "send_failed" });
+    // verstuurEmail() (lib/mail.js) heeft de technische details al veilig
+    // gelogd (nooit de API-key, nooit klantgegevens) en zet `.reden` op de
+    // fout: "server_misconfigured" (RESEND_API_KEY/RESEND_FROM_EMAIL
+    // ontbreekt, nog vóór er iets geprobeerd is) of "send_failed" (Resend
+    // wijst de aanvraag af, of een netwerkfout). De bezoeker krijgt in beide
+    // gevallen alleen een generieke foutcode, nooit responsdetails.
+    if (err && err.reden === "server_misconfigured") {
+      res.status(500).json({ ok: false, error: "server_misconfigured" });
+    } else {
+      res.status(502).json({ ok: false, error: "send_failed" });
+    }
   }
 };
 
 // Alleen voor lokale tests (zie test_offerte_api.js) — geen effect op Vercel.
-// Bevat GEEN secret: getWeb3FormsAccessKey zelf wordt geëxporteerd (leest bij
-// aanroep uit process.env), niet een reeds-uitgelezen sleutelwaarde.
-module.exports._internal = { berekenInterneCalculatie, bouwEmailTekst, bouwOnderwerp, lijktOpBot, valideerVerplichteVelden, getWeb3FormsAccessKey, CONFIG };
+// Bevat GEEN secret.
+module.exports._internal = { berekenInterneCalculatie, bouwEmailTekst, bouwEmailHtmlOfferte, bouwOnderwerp, lijktOpBot, valideerVerplichteVelden, CONFIG };

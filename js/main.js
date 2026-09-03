@@ -40,17 +40,16 @@ if (document.readyState === 'loading') {
 }
 
 // Footer-terugbelformulier (op elke pagina aanwezig, via render_footer() in
-// generate.py). Stuurde vroeger rechtstreeks (native form-POST) naar
-// Web3Forms met een in de HTML zichtbare access key; verstuurt nu, net als
-// de offertewizard sinds de zakelijke-calculator-uitbreiding, een JSON
-// fetch() naar een eigen server-side endpoint (/api/contact-aanvraag) zodat
-// de Web3Forms access key nergens meer in publieke HTML/JS hoeft te staan.
+// generate.py). Stuurt, net als de offertewizard, een JSON fetch() naar een
+// eigen server-side endpoint (/api/contact-aanvraag) zodat er nooit een
+// mailing-service access key in publieke HTML/JS hoeft te staan (dat
+// endpoint verstuurt sinds ronde 43 via Resend, was Web3Forms -- zie
+// CHANGELOG-43.md; deze client-side flow zelf is daardoor niet gewijzigd).
 // UX/validatie/honeypot blijven functioneel hetzelfde: dezelfde verplichte
 // velden (naam/telefoon/e-mail), dezelfde HTML5-constraint-validatie (geen
 // `novalidate`, dus de browser blokkeert een ongeldige inzending zoals
 // voorheen), dezelfde onzichtbare honeypot-checkbox. Bij succes dezelfde
-// doorverwijzing naar thanks.html als voorheen (nu via JS in plaats van
-// Web3Forms' eigen `redirect`-veld, dat niet meer nodig is).
+// doorverwijzing naar thanks.html als voorheen, via JS.
 function initFooterForm() {
   const form = document.getElementById('footerTerugbelForm');
   if (!form) return;
@@ -620,8 +619,8 @@ if (document.readyState === 'loading') {
   }
 
   // Verborgen/irrelevante velden worden geleegd EN disabled: disabled velden
-  // worden door de browser vanzelf overgeslagen bij zowel validatie als
-  // verzending (ook naar Web3Forms), dus oude waarden kunnen nooit meesturen.
+  // worden door de browser vanzelf overgeslagen bij zowel validatie als het
+  // opbouwen van de payload, dus oude waarden kunnen nooit meesturen.
   function clearAndDisable(input) {
     if (!input) return;
     if (input.type === 'radio' || input.type === 'checkbox') { input.checked = false; }
@@ -1099,12 +1098,13 @@ if (document.readyState === 'loading') {
   if (formRenderedAtField) formRenderedAtField.value = String(Date.now());
 
   // Verzending: JSON naar onze eigen /api/offerte-aanvraag (Vercel serverless
-  // function) i.p.v. een rechtstreekse formulier-POST naar Web3Forms. Zo bouwt
-  // de server de interne e-mail conditioneel op (nooit lege/irrelevante
-  // velden) en blijft de interne calculatie (tijd/kostprijs/marge) altijd
-  // server-side -- die verlaat de browser nooit, dus is ook niet zichtbaar via
-  // devtools/netwerkverkeer. Bij een fout blijft de ingevulde data gewoon
-  // staan, zodat de klant het simpelweg nog eens kan proberen.
+  // function) i.p.v. een rechtstreekse formulier-POST naar een externe
+  // mailing-service. Zo bouwt de server de interne e-mail conditioneel op
+  // (nooit lege/irrelevante velden) en blijft de interne calculatie
+  // (tijd/kostprijs/marge) altijd server-side -- die verlaat de browser
+  // nooit, dus is ook niet zichtbaar via devtools/netwerkverkeer. Bij een
+  // fout blijft de ingevulde data gewoon staan, zodat de klant het simpelweg
+  // nog eens kan proberen.
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (form.dataset.submitting === '1') return;

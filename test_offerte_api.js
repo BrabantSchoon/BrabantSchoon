@@ -11,13 +11,15 @@
 // 5. "Onvoldoende informatie"-pad (oppervlakte = "Weet ik niet").
 // 6. Particuliere flow: dienstSlug !== 'periodiek-zakelijk' => geen calc-sectie.
 const assert = require('assert');
+const fs = require('fs');
 const api = require('./api/offerte-aanvraag.js');
-// 10. WEB3FORMS_ACCESS_KEY komt uitsluitend uit process.env (nooit hardcoded) --
-//     de handler faalt veilig (geen "ok:true", geen secret in respons/log) als
-//     de omgevingsvariabele ontbreekt, en verstuurt normaal zodra hij aanwezig
-//     is. Deze test gebruikt uitsluitend een verzonnen testwaarde, nooit de
-//     echte productiesleutel.
-const { berekenInterneCalculatie, bouwEmailTekst, bouwOnderwerp, lijktOpBot, valideerVerplichteVelden, getWeb3FormsAccessKey, CONFIG } = api._internal;
+// 10+. RESEND_API_KEY/RESEND_FROM_EMAIL komen uitsluitend uit process.env (nooit
+//      hardcoded) -- de handler faalt veilig (geen "ok:true", geen secret in
+//      respons/log) als ze ontbreken, en verstuurt normaal zodra ze aanwezig
+//      zijn. Verzending loopt sinds ronde 43 via Resend (lib/mail.js) i.p.v.
+//      Web3Forms (zie CHANGELOG-42.md/CHANGELOG-43.md). Deze tests gebruiken
+//      uitsluitend verzonnen testwaarden, nooit een echte productiesleutel.
+const { berekenInterneCalculatie, bouwEmailTekst, bouwEmailHtmlOfferte, bouwOnderwerp, lijktOpBot, valideerVerplichteVelden, CONFIG } = api._internal;
 
 const garageVelden = [
   ['Klanttype', 'Bedrijf'],
@@ -265,22 +267,39 @@ console.log('\n=== Test 9: e-mailtekst bij meerdere locaties bevat waarschuwing 
   console.log('OK: waarschuwing bij meerdere locaties aanwezig.');
 }
 
-console.log('\n=== Test 10: WEB3FORMS_ACCESS_KEY uitsluitend uit process.env, nooit hardcoded ===');
+console.log('\n=== Test 10: geen Web3Forms/RESEND_API_KEY-literal meer in de actieve broncode ===');
 {
-  // Regressiebewaking: CONFIG mag nooit weer een echte sleutel bevatten.
-  assert.ok(!('WEB3FORMS_ACCESS_KEY' in CONFIG), 'CONFIG mag geen WEB3FORMS_ACCESS_KEY-veld hebben -- die hoort alleen in process.env te staan');
-  const origKey = process.env.WEB3FORMS_ACCESS_KEY;
-  try {
-    delete process.env.WEB3FORMS_ACCESS_KEY;
-    assert.strictEqual(getWeb3FormsAccessKey(), null, 'ontbrekende env var -> null');
-    process.env.WEB3FORMS_ACCESS_KEY = '   ';
-    assert.strictEqual(getWeb3FormsAccessKey(), null, 'lege/whitespace env var -> null');
-    process.env.WEB3FORMS_ACCESS_KEY = 'test-fake-key-niet-echt-1234';
-    assert.strictEqual(getWeb3FormsAccessKey(), 'test-fake-key-niet-echt-1234', 'aanwezige env var (getrimd) wordt teruggegeven');
-    console.log('OK: getWeb3FormsAccessKey() gedraagt zich correct (null bij ontbreken/leeg, waarde bij aanwezigheid).');
-  } finally {
-    if (origKey === undefined) delete process.env.WEB3FORMS_ACCESS_KEY; else process.env.WEB3FORMS_ACCESS_KEY = origKey;
-  }
+  assert.ok(!('WEB3FORMS_ACCESS_KEY' in CONFIG), 'CONFIG mag geen WEB3FORMS_ACCESS_KEY-veld hebben');
+  assert.ok(!('RESEND_API_KEY' in CONFIG), 'CONFIG mag geen RESEND_API_KEY-veld hebben -- die hoort alleen in process.env te staan');
+  const eigenBroncode = fs.readFileSync(__dirname + '/api/offerte-aanvraag.js', 'utf8');
+  assert.ok(!/api\.web3forms\.com/i.test(eigenBroncode), 'api/offerte-aanvraag.js mag geen Web3Forms-endpoint meer bevatten');
+  assert.ok(!/WEB3FORMS_ACCESS_KEY/.test(eigenBroncode), 'api/offerte-aanvraag.js mag WEB3FORMS_ACCESS_KEY niet meer noemen (volledig verwijderd, zie CHANGELOG-43.md)');
+  assert.ok(!/re_[A-Za-z0-9]{10,}/.test(eigenBroncode), 'geen letterlijke Resend-sleutel (formaat re_...) in de broncode');
+  const mailBroncode = fs.readFileSync(__dirname + '/lib/mail.js', 'utf8');
+  assert.ok(!/api\.web3forms\.com/i.test(mailBroncode), 'lib/mail.js mag geen Web3Forms-endpoint bevatten');
+  assert.ok(/api\.resend\.com/.test(mailBroncode), 'lib/mail.js moet het Resend-endpoint gebruiken');
+  assert.ok(!/re_[A-Za-z0-9]{10,}/.test(mailBroncode), 'geen letterlijke Resend-sleutel (formaat re_...) in lib/mail.js');
+  console.log('OK: geen Web3Forms-afhankelijkheid en geen hardcoded sleutel meer in de actieve broncode.');
+}
+
+console.log('\n=== Test 11: bouwEmailHtmlOfferte() -- zelfde inhoud als de platte tekst, correct geescaped ===');
+{
+  const html = bouwEmailHtmlOfferte(garagePayload);
+  assert.ok(html.includes('Nieuwe zakelijke offerteaanvraag'));
+  assert.ok(html.includes('Garagebedrijf Van Brussel B.V.'));
+  assert.ok(html.includes('Liessel'));
+  assert.ok(html.includes('Interne calculatie'));
+  assert.ok(html.includes('Interne prijsindicatie'));
+  assert.ok(html.includes('Contactgegevens'));
+  assert.ok(!/\bundefined\b|\bnull\b/.test(html), 'geen "undefined"/"null" in de HTML-mail');
+  // HTML-injectietest: kwaadaardige tekens in een klantveld mogen nooit
+  // ongeescaped in de uitvoer belanden.
+  const kwaadPayload = JSON.parse(JSON.stringify(garagePayload));
+  kwaadPayload.naam = '<img src=x onerror=alert(1)>';
+  const kwaadHtml = bouwEmailHtmlOfferte(kwaadPayload);
+  assert.ok(!kwaadHtml.includes('<img src=x onerror=alert(1)>'), 'ongeescapete HTML/JS-injectie via klantnaam mag niet voorkomen');
+  assert.ok(kwaadHtml.includes('&lt;img src=x onerror=alert(1)&gt;'), 'klantnaam moet HTML-geescaped in de mail staan');
+  console.log('OK: HTML-mail bevat dezelfde secties als de tekstversie en escaped klantinvoer correct (HTML-injectiebescherming).');
 }
 
 function mockRes() {
@@ -290,60 +309,125 @@ function mockRes() {
   return res;
 }
 
-async function testHandlerZonderAccessKey() {
-  console.log('\n=== Test 11: handler faalt veilig zonder WEB3FORMS_ACCESS_KEY (geen "ok:true", geen secret-lek) ===');
-  const origKey = process.env.WEB3FORMS_ACCESS_KEY;
-  const origConsoleError = console.error;
-  const loggedLines = [];
-  console.error = (...args) => { loggedLines.push(args.join(' ')); };
-  try {
-    delete process.env.WEB3FORMS_ACCESS_KEY;
-    const req = { method: 'POST', body: JSON.stringify(garagePayload) };
-    const res = mockRes();
-    await api(req, res);
-    console.log('Statuscode zonder access key (verwacht 500):', res.statusCode);
-    console.log('Response body:', JSON.stringify(res.body));
-    assert.strictEqual(res.statusCode, 500);
-    assert.strictEqual(res.body.ok, false, 'mag NOOIT ok:true teruggeven wanneer er geen access key is -- de aanvraag is niet verzonden');
-    assert.strictEqual(res.body.error, 'server_misconfigured');
-    const loggedText = loggedLines.join('\n');
-    assert.ok(loggedText.includes('WEB3FORMS_ACCESS_KEY ontbreekt'), 'log moet duidelijk maken WAT ontbreekt');
-    assert.ok(!/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i.test(loggedText), 'log mag nergens een sleutelwaarde (UUID-vormig) bevatten');
-    console.log('OK: handler faalt veilig (500/ok:false/server_misconfigured), logt alleen dat de variabele ontbreekt, nooit een waarde.');
-  } finally {
-    console.error = origConsoleError;
-    if (origKey === undefined) delete process.env.WEB3FORMS_ACCESS_KEY; else process.env.WEB3FORMS_ACCESS_KEY = origKey;
-  }
+function metEnv(vars, fn) {
+  const orig = {};
+  Object.keys(vars).forEach((k) => { orig[k] = process.env[k]; });
+  return (async () => {
+    try {
+      Object.keys(vars).forEach((k) => {
+        if (vars[k] === undefined) delete process.env[k];
+        else process.env[k] = vars[k];
+      });
+      return await fn();
+    } finally {
+      Object.keys(vars).forEach((k) => {
+        if (orig[k] === undefined) delete process.env[k];
+        else process.env[k] = orig[k];
+      });
+    }
+  })();
 }
 
-async function testHandlerMetAccessKey() {
-  console.log('\n=== Test 12: handler verstuurt normaal zodra WEB3FORMS_ACCESS_KEY aanwezig is (fetch gemockt, nooit een echt netwerkverzoek) ===');
-  const origKey = process.env.WEB3FORMS_ACCESS_KEY;
+async function testHandlerZonderConfig() {
+  console.log('\n=== Test 12: handler faalt veilig zonder RESEND_API_KEY/RESEND_FROM_EMAIL (geen "ok:true", geen secret-lek, geen netwerkaanroep) ===');
+  const origConsoleError = console.error;
+  const loggedLines = [];
+  console.error = (...args) => { loggedLines.push(args.map(String).join(' ')); };
+  let fetchAangeroepen = false;
+  const origFetch = global.fetch;
+  global.fetch = () => { fetchAangeroepen = true; return Promise.reject(new Error('mag niet aangeroepen worden')); };
+  try {
+    await metEnv({ RESEND_API_KEY: undefined, RESEND_FROM_EMAIL: undefined }, async () => {
+      const req = { method: 'POST', body: JSON.stringify(garagePayload) };
+      const res = mockRes();
+      await api(req, res);
+      console.log('Statuscode zonder configuratie (verwacht 500):', res.statusCode);
+      console.log('Response body:', JSON.stringify(res.body));
+      assert.strictEqual(res.statusCode, 500);
+      assert.strictEqual(res.body.ok, false, 'mag NOOIT ok:true teruggeven wanneer er niets verzonden kon worden');
+      assert.strictEqual(res.body.error, 'server_misconfigured');
+      assert.strictEqual(fetchAangeroepen, false, 'zonder configuratie mag er nooit een Resend-aanroep gebeuren');
+      const loggedText = loggedLines.join('\n');
+      assert.ok(loggedText.includes('RESEND_API_KEY'), 'log moet duidelijk maken welke variabele ontbreekt');
+      assert.ok(!/re_[A-Za-z0-9]{10,}/.test(loggedText), 'log mag nergens een sleutelwaarde bevatten');
+    });
+  } finally {
+    console.error = origConsoleError;
+    global.fetch = origFetch;
+  }
+  console.log('OK: handler faalt veilig (500/ok:false/server_misconfigured), geen netwerkaanroep, geen secret in de log.');
+}
+
+async function testHandlerMetConfig() {
+  console.log('\n=== Test 13: handler verstuurt normaal via Resend zodra configuratie aanwezig is (fetch gemockt, nooit een echt netwerkverzoek); replyTo correct ===');
   const origFetch = global.fetch;
   try {
-    process.env.WEB3FORMS_ACCESS_KEY = 'test-fake-key-niet-echt-1234';
-    let capturedFetchBody = null;
+    let capturedBody = null;
+    let capturedHeaders = null;
     global.fetch = (url, opts) => {
-      capturedFetchBody = JSON.parse(opts.body);
-      return Promise.resolve({ ok: true, json: () => Promise.resolve({ success: true }) });
+      capturedBody = JSON.parse(opts.body);
+      capturedHeaders = opts.headers;
+      return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ id: 'test-resend-id' }) });
     };
-    const req = { method: 'POST', body: JSON.stringify(garagePayload) };
-    const res = mockRes();
-    await api(req, res);
-    console.log('Statuscode met (test-)access key (verwacht 200):', res.statusCode);
-    assert.strictEqual(res.statusCode, 200);
-    assert.deepStrictEqual(res.body, { ok: true });
-    assert.strictEqual(capturedFetchBody.access_key, 'test-fake-key-niet-echt-1234');
-    console.log('OK: bij aanwezige access key verloopt verzending normaal; de (test-)sleutel gaat alleen naar Web3Forms, nooit terug naar de bezoeker (respons bevat alleen {ok:true}).');
+    await metEnv({ RESEND_API_KEY: 're_test_fake_1234', RESEND_FROM_EMAIL: 'Brabantschoon <noreply@brabantschoon.nl>', RESEND_TO_EMAIL: undefined }, async () => {
+      const req = { method: 'POST', body: JSON.stringify(garagePayload) };
+      const res = mockRes();
+      await api(req, res);
+      console.log('Statuscode met (test-)configuratie (verwacht 200):', res.statusCode);
+      assert.strictEqual(res.statusCode, 200);
+      assert.deepStrictEqual(res.body, { ok: true });
+      assert.strictEqual(capturedHeaders['Authorization'], 'Bearer re_test_fake_1234', 'de (test-)sleutel gaat alleen server-side naar Resend, nooit terug naar de bezoeker');
+      assert.strictEqual(capturedBody.from, 'Brabantschoon <noreply@brabantschoon.nl>');
+      assert.deepStrictEqual(capturedBody.to, ['info@brabantschoon.nl']);
+      assert.strictEqual(capturedBody.reply_to, garagePayload.email, 'reply_to moet het klant-e-mailadres zijn, zodat "Beantwoorden" naar de klant gaat i.p.v. het noreply-adres');
+      assert.ok(capturedBody.html && capturedBody.html.length > 0);
+      assert.ok(capturedBody.text && capturedBody.text.length > 0);
+    });
   } finally {
     global.fetch = origFetch;
-    if (origKey === undefined) delete process.env.WEB3FORMS_ACCESS_KEY; else process.env.WEB3FORMS_ACCESS_KEY = origKey;
   }
+  console.log('OK: bij aanwezige configuratie verloopt verzending normaal via Resend; reply_to correct; respons bevat alleen {ok:true}.');
+}
+
+async function testHandlerResendAfgewezen() {
+  console.log('\n=== Test 14: handler geeft 502 wanneer Resend de aanvraag zelf afwijst, en logt veilig ===');
+  const origFetch = global.fetch;
+  const origConsoleError = console.error;
+  const loggedLines = [];
+  console.error = (...args) => { loggedLines.push(args.map(String).join(' ')); };
+  try {
+    // Simuleert bijv. een nog niet geverifieerd verzenddomein bij Resend.
+    global.fetch = () => Promise.resolve({
+      ok: false,
+      status: 403,
+      json: () => Promise.resolve({ name: 'validation_error', statusCode: 403, message: 'The brabantschoon.nl domain is not verified' }),
+    });
+    await metEnv({ RESEND_API_KEY: 're_test_fake_9999', RESEND_FROM_EMAIL: 'Brabantschoon <noreply@brabantschoon.nl>' }, async () => {
+      const req = { method: 'POST', body: JSON.stringify(garagePayload) };
+      const res = mockRes();
+      await api(req, res);
+      console.log('Statuscode wanneer Resend afwijst (verwacht 502):', res.statusCode);
+      assert.strictEqual(res.statusCode, 502);
+      assert.strictEqual(res.body.ok, false);
+      assert.strictEqual(res.body.error, 'send_failed');
+      assert.ok(!('message' in res.body) && !('detail' in res.body), 'de bezoeker mag NOOIT de Resend-foutmelding zelf te zien krijgen -- alleen de generieke code');
+      const loggedText = loggedLines.join('\n');
+      assert.ok(loggedText.includes('http_status=403'));
+      assert.ok(loggedText.includes('not verified'), 'log moet de (ingekorte) foutmelding van Resend bevatten, voor diagnose');
+      assert.ok(!loggedText.includes('re_test_fake_9999'), 'log mag NOOIT de API-key bevatten, ook niet een testwaarde');
+      assert.ok(!loggedText.includes(garagePayload.email), 'log mag NOOIT klantgegevens (bijv. e-mailadres) bevatten');
+    });
+  } finally {
+    console.error = origConsoleError;
+    global.fetch = origFetch;
+  }
+  console.log('OK: bij een afwijzing door Resend zelf krijgt de bezoeker alleen een generieke 502, en logt de server veilig status/message zonder key of klantgegevens.');
 }
 
 (async () => {
-  await testHandlerZonderAccessKey();
-  await testHandlerMetAccessKey();
+  await testHandlerZonderConfig();
+  await testHandlerMetConfig();
+  await testHandlerResendAfgewezen();
   console.log('\nAlle tests geslaagd.');
 })().catch((err) => {
   console.error(err);
