@@ -77,7 +77,7 @@ EMAIL = "info@brabantschoon.nl"
 WA_LINK = "https://wa.me/31492313050?text=Hoi%2C%20ik%20wil%20graag%20een%20offerte%20aanvragen"
 KVK = "99274175"
 CITY = "Helmond"
-ASSET_VERSION = "182"
+ASSET_VERSION = "183"
 
 # ---------------------------------------------------------------
 # ICONS

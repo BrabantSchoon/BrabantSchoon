@@ -751,5 +751,94 @@ function huidigeStap(doc) {
     console.log('OK: het retourafstand-veld is volledig verwijderd uit de klantinterface; de calculator behandelt een onbekende afstand correct als "nog te bepalen", zonder ooit een kilometeraantal te verzinnen.');
   }
 
+  console.log('\n=== Scenario 21 (post-ronde-48 productiedebug, briefpunt 2/6/7): honeypot/invultijd-timing blijft intact na de ronde 45/48-wijzigingen ===');
+  {
+    const dom = makeDom();
+    const doc = dom.window.document;
+    dom.window.Element.prototype.scrollIntoView = () => {};
+
+    // form_rendered_at moet ÉÉN keer gezet worden, bij het initialiseren van
+    // de wizard (dus vóór enige stap-navigatie) -- niet opnieuw bij elke
+    // stap/auto-advance. Zou dit per stap gereset worden, dan zou een lange
+    // wizard-doorloop altijd als "te snel ingevuld" worden aangemerkt bij de
+    // laatste stap (de tijd sinds de LAATSTE reset zou dan te kort zijn),
+    // wat precies het soort false-positive-botblokkade is die dit
+    // productiedebug moest uitsluiten.
+    const renderedAtField = doc.getElementById('formRenderedAtField');
+    assert.ok(renderedAtField, 'formRenderedAtField moet bestaan');
+    const renderedAtBijInit = renderedAtField.value;
+    assert.ok(renderedAtBijInit && /^\d+$/.test(renderedAtBijInit), 'form_rendered_at moet bij initialisatie al een numerieke tijdstempel zijn');
+
+    // De honeypot-checkbox mag nooit door normale wizard-interactie (radio's/
+    // checkboxes/auto-advance) worden aangevinkt.
+    const botcheckInput = doc.querySelector('input[name="botcheck"]');
+    assert.ok(botcheckInput, 'botcheck-veld moet bestaan');
+    assert.strictEqual(botcheckInput.checked, false, 'honeypot moet bij init onaangevinkt zijn');
+
+    // Volledige zakelijke doorloop (identiek aan Scenario 1/19), inclusief
+    // meerdere auto-advancende stappen (klanttype/dienst/oppervlakte/
+    // frequentie) en de samengestelde stap 9/10/11.
+    setRadio(doc, 'klanttype', 'Bedrijf');
+    await sleep(10);
+    next(doc);
+    setRadio(doc, 'dienst', 'Kantoorreiniging');
+    await sleep(10);
+    next(doc);
+    setRadio(doc, 'oppervlakte', 'Klein');
+    await sleep(10);
+    next(doc);
+    setRadio(doc, 'frequentie', 'Wekelijks');
+    await sleep(10);
+    next(doc);
+    setChecked(doc, '#zakelijkRuimtes input[data-ruimte-id="ruimte_kantoor"]', true);
+    setRadio(doc, 'gebruiksintensiteit_zakelijk', 'Gemiddeld');
+    setRadio(doc, 'vervuilingsgraad_zakelijk', 'Normale kantoor-/bedrijfsvervuiling');
+    setRadio(doc, 'schoonmaakmoment', 'Geen voorkeur / in overleg');
+    next(doc);
+    setValue(doc, '#bericht', 'Regressietest voor de timing-diagnostiek.');
+    next(doc);
+    setValue(doc, '#naam', 'Timing Test');
+    setValue(doc, '#email', 'timing@voorbeeld.nl');
+    setValue(doc, '#telefoon', '0699998888');
+    setValue(doc, '#plaats', 'Eindhoven');
+    next(doc);
+    assert.strictEqual(huidigeStap(doc), '12', 'voorbereiding: controlestap');
+
+    // Na de volledige (auto-advance-)doorloop moet form_rendered_at nog
+    // exact dezelfde waarde hebben als bij initialisatie -- geen enkele
+    // stap/auto-advance mag hem resetten.
+    assert.strictEqual(renderedAtField.value, renderedAtBijInit, 'form_rendered_at mag niet door stapnavigatie/auto-advance worden gereset');
+    assert.strictEqual(botcheckInput.checked, false, 'honeypot moet na een volledige normale doorloop nog steeds onaangevinkt zijn');
+
+    let captured = null;
+    dom.window.fetch = (url, opts) => {
+      captured = { url, body: JSON.parse(opts.body) };
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({ ok: true, success: true }) });
+    };
+    doc.getElementById('wizardSubmit').removeAttribute('hidden');
+    const formEl = doc.getElementById('offerteWizard');
+    formEl.requestSubmit ? formEl.requestSubmit() : formEl.dispatchEvent(new dom.window.Event('submit', { bubbles: true, cancelable: true }));
+    await sleep(80);
+
+    assert.ok(captured, 'de wizard moet een POST-payload verzonden hebben');
+    assert.strictEqual(captured.body.botcheck, false, 'de payload moet botcheck:false bevatten voor een normale doorloop');
+    assert.strictEqual(captured.body.form_rendered_at, renderedAtBijInit, 'de verzonden form_rendered_at moet gelijk zijn aan de waarde bij initialisatie');
+
+    // Deze jsdom-test doorloopt de wizard vrijwel instant (geen echte
+    // wall-clock-vertraging tussen de stappen), dus de daadwerkelijk
+    // verstreken tijd hier is GEEN betrouwbare maat voor een echte
+    // gebruiker -- die duurt in de praktijk altijd ruim boven
+    // MIN_FILL_TIME_MS (2500ms) vanwege de verplichte tekstvelden
+    // (naam/e-mail/telefoon/plaats) en de acht-plus stappen ertussen. Het
+    // punt van deze test is uitsluitend de MECHANIEK: dat form_rendered_at
+    // hierboven al bewezen stabiel/ongewijzigd blijft door de volledige
+    // (auto-advance-)doorloop. Of die stabiele waarde in de praktijk ver
+    // genoeg terugligt om nooit als bot te worden aangemerkt, wordt server-
+    // side expliciet getest met een realistische, bewust teruggedateerde
+    // waarde in test_offerte_api.js (Test 7b/15/18 -- "scenario C").
+    assert.strictEqual(captured.body.form_rendered_at, renderedAtBijInit);
+    console.log('OK: form_rendered_at wordt eenmalig bij init gezet en blijft stabiel door de hele (auto-advance-)doorloop; de honeypot blijft onaangevinkt.');
+  }
+
   console.log('\nAlle ronde-44- t/m ronde-48-scenario\'s geslaagd.');
 })().catch((e) => { console.error('FOUT in ronde-44/45/46/47/48-scenario:', e); process.exitCode = 1; });

@@ -30,7 +30,7 @@ const calculatorLib = require('./lib/calculator.js');
 //      respons/log) als ze ontbreken, en verstuurt normaal zodra ze aanwezig
 //      zijn. Verzending loopt sinds ronde 43 via Resend (lib/mail.js) i.p.v.
 //      Web3Forms (zie CHANGELOG-42.md/CHANGELOG-43.md).
-const { calculateOffer, bouwEmailTekst, bouwEmailHtmlOfferte, bouwOnderwerp, lijktOpBot, valideerVerplichteVelden, CONFIG } = api._internal;
+const { calculateOffer, bouwEmailTekst, bouwEmailHtmlOfferte, bouwOnderwerp, lijktOpBot, bepaalBotSignalen, valideerVerplichteVelden, MIN_FILL_TIME_MS, CONFIG } = api._internal;
 
 const garageVelden = [
   ['Klanttype', 'Bedrijf'],
@@ -395,6 +395,44 @@ console.log('\n=== Test 7: botdetectie (honeypot + te snel ingevuld) ===');
   console.log('OK: botdetectie gedraagt zich zoals verwacht.');
 }
 
+console.log('\n=== Test 7b (post-ronde-48 productiedebug, briefpunt 2/3): bepaalBotSignalen() geeft de twee signalen apart terug, voor veilige diagnostiek ===');
+{
+  // Honeypot -- los signaal, blijft true ongeacht de invultijd.
+  const honeypot = bepaalBotSignalen({ botcheck: true, form_rendered_at: String(Date.now() - 9000) });
+  assert.strictEqual(honeypot.honeypotFilled, true);
+  assert.strictEqual(honeypot.fillTimeTooShort, false);
+  assert.strictEqual(honeypot.isBot, true);
+
+  // Te snel ingevuld -- los signaal, honeypot blijft false.
+  const teSnel = bepaalBotSignalen({ botcheck: false, form_rendered_at: String(Date.now() - 100) });
+  assert.strictEqual(teSnel.honeypotFilled, false);
+  assert.strictEqual(teSnel.fillTimeTooShort, true);
+  assert.ok(typeof teSnel.fillTimeMs === 'number' && teSnel.fillTimeMs >= 0 && teSnel.fillTimeMs < MIN_FILL_TIME_MS);
+  assert.strictEqual(teSnel.isBot, true);
+
+  // Normaal: beide signalen false, geen bot.
+  const normaal = bepaalBotSignalen({ botcheck: false, form_rendered_at: String(Date.now() - 9000) });
+  assert.strictEqual(normaal.honeypotFilled, false);
+  assert.strictEqual(normaal.fillTimeTooShort, false);
+  assert.strictEqual(normaal.isBot, false);
+
+  // Ontbrekend form_rendered_at: fail-open (geen bot op basis van timing --
+  // alleen de honeypot kan dan nog blokkeren) -- geen client-clockskew mag
+  // ooit een menselijke aanvraag blokkeren.
+  const ontbrekendeTijd = bepaalBotSignalen({ botcheck: false, form_rendered_at: '' });
+  assert.strictEqual(ontbrekendeTijd.fillTimeTooShort, false);
+  assert.strictEqual(ontbrekendeTijd.fillTimeMs, null);
+  assert.strictEqual(ontbrekendeTijd.isBot, false);
+
+  // Realistisch snelle maar geldige mens (bijv. een korte zakelijke wizard
+  // met auto-advance op elke stap): ruim boven MIN_FILL_TIME_MS, dus nooit
+  // geblokkeerd -- scenario C uit de brief.
+  const snelleMaarGeldigeMens = bepaalBotSignalen({ botcheck: false, form_rendered_at: String(Date.now() - 3000) });
+  assert.strictEqual(snelleMaarGeldigeMens.isBot, false, 'een mens die de wizard in 3s doorloopt (auto-advance) mag nooit als bot worden aangemerkt');
+
+  console.log('OK: honeypot en invultijd zijn als losse, veilig logbare signalen beschikbaar; ontbrekende tijd blokkeert nooit (fail-open); een realistisch snelle mens wordt nooit geblokkeerd.');
+}
+
 console.log('\n=== Test 8: validatie verplichte velden ===');
 {
   const fouten = valideerVerplichteVelden({ klanttype: 'Bedrijf', dienst: 'x', naam: '', email: 'niet-geldig', telefoon: '', plaats: '' });
@@ -542,7 +580,7 @@ async function testHandlerMetConfig() {
       await api(req, res);
       console.log('Statuscode met (test-)configuratie (verwacht 200):', res.statusCode);
       assert.strictEqual(res.statusCode, 200);
-      assert.deepStrictEqual(res.body, { ok: true });
+      assert.deepStrictEqual(res.body, { ok: true, success: true }, 'een echte, daadwerkelijk verzonden aanvraag moet expliciet success:true teruggeven (post-ronde-48 productiedebug, briefpunt 4/5)');
       assert.strictEqual(capturedHeaders['Authorization'], 'Bearer re_test_fake_1234', 'de (test-)sleutel gaat alleen server-side naar Resend, nooit terug naar de bezoeker');
       assert.strictEqual(capturedBody.from, 'Brabantschoon <noreply@brabantschoon.nl>');
       assert.deepStrictEqual(capturedBody.to, ['info@brabantschoon.nl']);
@@ -554,7 +592,7 @@ async function testHandlerMetConfig() {
   } finally {
     global.fetch = origFetch;
   }
-  console.log('OK: bij aanwezige configuratie verloopt verzending normaal via Resend; reply_to correct; respons bevat alleen {ok:true}.');
+  console.log('OK: bij aanwezige configuratie verloopt verzending normaal via Resend; reply_to correct; respons bevat { ok:true, success:true }.');
 }
 
 async function testHandlerResendAfgewezen() {
@@ -578,6 +616,7 @@ async function testHandlerResendAfgewezen() {
       assert.strictEqual(res.statusCode, 502);
       assert.strictEqual(res.body.ok, false);
       assert.strictEqual(res.body.error, 'send_failed');
+      assert.strictEqual(res.body.success, false, 'bij een mislukte verzending mag success NOOIT true zijn (voorkomt een false-positive succesmelding, briefpunt 5)');
       assert.ok(!('message' in res.body) && !('detail' in res.body), 'de bezoeker mag NOOIT de Resend-foutmelding zelf te zien krijgen -- alleen de generieke code');
       const loggedText = loggedLines.join('\n');
       assert.ok(loggedText.includes('http_status=403'));
@@ -592,10 +631,246 @@ async function testHandlerResendAfgewezen() {
   console.log('OK: bij een afwijzing door Resend zelf krijgt de bezoeker alleen een generieke 502, en logt de server veilig status/message zonder key of klantgegevens.');
 }
 
+// =================================================================
+// POST-RONDE-48 PRODUCTIEDEBUG (briefpunt 6): productieregressietest +
+// scenario's A-E. Simuleert exact een normale menselijke zakelijke aanvraag
+// (kantoorreiniging) en de vijf gevraagde randgevallen, met een fetch-mock
+// die het aantal aanroepen telt zodat we kunnen bevestigen dat
+// verstuurEmail() (en dus de onderliggende Resend-fetch) precies ÉÉN keer
+// wordt aangeroepen bij een geldige aanvraag, en NUL keer bij een
+// geblokkeerde/ongeldige aanvraag.
+// =================================================================
+function kantoorreinigingsPayload(overrides) {
+  const basis = {
+    klanttype: 'Bedrijf',
+    dienst: 'Kantoorreiniging',
+    dienstSlug: 'kantoorreiniging',
+    naam: 'Sanne de Wit',
+    bedrijfsnaam: 'Kantoorpartners B.V.',
+    email: 'sanne@kantoorpartners.nl',
+    telefoon: '0620123456',
+    plaats: 'Eindhoven',
+    velden: [
+      ['Klanttype', 'Bedrijf'],
+      ['Dienst', 'Kantoorreiniging'],
+      ['Bedrijfsnaam / VvE', 'Kantoorpartners B.V.'],
+      ['Omvang', 'Middel'],
+      ['Frequentie', 'Wekelijks'],
+      ['Ruimtes', 'Kantoorruimte, Toiletten / sanitair'],
+      ['Gebruiksintensiteit', 'Gemiddeld'],
+      ['Schoonmaakmoment', 'Na sluiting'],
+      ['Naam', 'Sanne de Wit'],
+      ['E-mailadres', 'sanne@kantoorpartners.nl'],
+      ['Telefoonnummer', '0620123456'],
+      ['Plaats/postcode', 'Eindhoven'],
+    ],
+    calc: {
+      oppervlakte: 'Middel',
+      oppervlakteExactM2: '',
+      frequentie: 'Wekelijks',
+      meerderePerWeekAantal: '',
+      aantalLocaties: '',
+      ruimtes: ['ruimte_kantoor', 'ruimte_toiletten'],
+      ruimteOverig: false,
+      vervuiling: 'Normale kantoor-/bedrijfsvervuiling',
+      gebruiksintensiteit: 'Gemiddeld',
+    },
+    // Realistische invultijd van een menselijke gebruiker die de 12-staps
+    // wizard (incl. auto-advance) doorloopt -- ruim boven MIN_FILL_TIME_MS.
+    botcheck: false,
+    form_rendered_at: String(Date.now() - 9000),
+  };
+  return Object.assign({}, basis, overrides || {});
+}
+
+function mockFetchTeller(captureBody) {
+  let aantal = 0;
+  const fn = (url, opts) => {
+    aantal += 1;
+    if (captureBody) { captureBody.url = url; captureBody.opts = opts; captureBody.body = JSON.parse(opts.body); }
+    return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ id: 'test-resend-id-regressie' }) });
+  };
+  fn.aantalAanroepen = () => aantal;
+  return fn;
+}
+
+async function testProductieRegressieNormaleAanvraag() {
+  console.log('\n=== Test 15 (post-ronde-48 productiedebug): productieregressie -- normale menselijke zakelijke aanvraag (kantoorreiniging) ===');
+  const origFetch = global.fetch;
+  const captured = {};
+  const fetchMock = mockFetchTeller(captured);
+  global.fetch = fetchMock;
+  try {
+    await metEnv({ RESEND_API_KEY: 're_test_fake_regressie', RESEND_FROM_EMAIL: 'Brabantschoon <info@brabantschoon.nl>', RESEND_TO_EMAIL: undefined }, async () => {
+      const payload = kantoorreinigingsPayload();
+      // 1. botdetectie = false
+      const botSignalen = bepaalBotSignalen(payload);
+      assert.strictEqual(botSignalen.isBot, false, '1. botdetectie moet false zijn voor een normale aanvraag');
+
+      const req = { method: 'POST', body: JSON.stringify(payload) };
+      const res = mockRes();
+      await api(req, res);
+
+      // 2. verstuurEmail() (en dus de onderliggende Resend-fetch) wordt
+      //    exact één keer aangeroepen.
+      assert.strictEqual(fetchMock.aantalAanroepen(), 1, '2. verstuurEmail()/Resend-fetch moet precies één keer aangeroepen worden');
+      // 3. endpoint retourneert success:true
+      assert.strictEqual(res.statusCode, 200);
+      assert.deepStrictEqual(res.body, { ok: true, success: true }, '3. endpoint moet success:true teruggeven');
+      // 4. "frontend toont succes" -- op API-niveau bevestigd via het
+      //    ondubbelzinnige contract dat js/main.js gebruikt: ok:true (geen
+      //    ok:false) betekent altijd de succesvolle afronding (doorsturen
+      //    naar thanks.html), nooit de foutmelding.
+      assert.notStrictEqual(res.body.ok, false, '4. ok mag niet false zijn -- frontend zou anders de foutmelding tonen');
+      // 5. geen foutmelding
+      assert.ok(!('error' in res.body), '5. een succesvolle respons mag geen error-veld bevatten');
+
+      assert.ok(captured.body.html.includes('Interne prijsindicatie'));
+      assert.strictEqual(captured.body.reply_to, payload.email);
+    });
+  } finally {
+    global.fetch = origFetch;
+  }
+  console.log('OK: normale menselijke zakelijke aanvraag -- botdetectie=false, verstuurEmail() precies 1x aangeroepen, success:true, geen foutmelding.');
+}
+
+async function testScenarioAHoneypotGevuld() {
+  console.log('\n=== Test 16 (scenario A): honeypot gevuld -> geen mail ===');
+  const origFetch = global.fetch;
+  const origConsoleLog = console.log;
+  const loggedLines = [];
+  console.log = (...args) => { loggedLines.push(args.map(String).join(' ')); origConsoleLog.apply(console, args); };
+  const fetchMock = mockFetchTeller();
+  global.fetch = fetchMock;
+  try {
+    await metEnv({ RESEND_API_KEY: 're_test_fake_regressie', RESEND_FROM_EMAIL: 'Brabantschoon <info@brabantschoon.nl>' }, async () => {
+      const payload = kantoorreinigingsPayload({ botcheck: true });
+      const req = { method: 'POST', body: JSON.stringify(payload) };
+      const res = mockRes();
+      await api(req, res);
+      assert.strictEqual(fetchMock.aantalAanroepen(), 0, 'honeypot ingevuld -> verstuurEmail()/Resend-fetch mag NOOIT aangeroepen worden');
+      assert.strictEqual(res.statusCode, 200, 'blijft bewust 200 (geen tip richting een bot)');
+      assert.deepStrictEqual(res.body, { ok: true }, 'bot-pad krijgt bewust GEEN success-veld (blijft ondoorzichtig voor een bot)');
+      assert.ok(loggedLines.some(l => l.includes('bot_blocked') && l.includes('honeypotFilled=true')), 'moet veilig loggen dat de honeypot de reden was');
+    });
+  } finally {
+    console.log = origConsoleLog;
+    global.fetch = origFetch;
+  }
+  console.log('OK: honeypot-invulling blokkeert de mail volledig en wordt veilig gelogd, zonder de bot te tippen.');
+}
+
+async function testScenarioBInvultijdTeKort() {
+  console.log('\n=== Test 17 (scenario B): invultijd echt onmogelijk kort -> geen mail ===');
+  const origFetch = global.fetch;
+  const origConsoleLog = console.log;
+  const loggedLines = [];
+  console.log = (...args) => { loggedLines.push(args.map(String).join(' ')); origConsoleLog.apply(console, args); };
+  const fetchMock = mockFetchTeller();
+  global.fetch = fetchMock;
+  try {
+    await metEnv({ RESEND_API_KEY: 're_test_fake_regressie', RESEND_FROM_EMAIL: 'Brabantschoon <info@brabantschoon.nl>' }, async () => {
+      const payload = kantoorreinigingsPayload({ form_rendered_at: String(Date.now() - 150) }); // 150ms: onmogelijk voor een 12-staps-wizard
+      const req = { method: 'POST', body: JSON.stringify(payload) };
+      const res = mockRes();
+      await api(req, res);
+      assert.strictEqual(fetchMock.aantalAanroepen(), 0, 'onmogelijk korte invultijd -> verstuurEmail()/Resend-fetch mag NOOIT aangeroepen worden');
+      assert.strictEqual(res.statusCode, 200);
+      assert.deepStrictEqual(res.body, { ok: true });
+      assert.ok(loggedLines.some(l => l.includes('bot_blocked') && l.includes('fillTimeTooShort=true')), 'moet veilig loggen dat de invultijd de reden was');
+    });
+  } finally {
+    console.log = origConsoleLog;
+    global.fetch = origFetch;
+  }
+  console.log('OK: een onmogelijk korte invultijd blokkeert de mail volledig en wordt veilig gelogd.');
+}
+
+async function testScenarioCSnelleMaarGeldigeMens() {
+  console.log('\n=== Test 18 (scenario C): normale snelle menselijke wizard met auto-advance -> WEL mail ===');
+  const origFetch = global.fetch;
+  const fetchMock = mockFetchTeller();
+  global.fetch = fetchMock;
+  try {
+    await metEnv({ RESEND_API_KEY: 're_test_fake_regressie', RESEND_FROM_EMAIL: 'Brabantschoon <info@brabantschoon.nl>' }, async () => {
+      // 3s: realistisch voor een snelle wizard-doorloop met auto-advance
+      // (elke stap ~200ms vertraging, plus de tijd om naam/e-mail/telefoon/
+      // plaats te typen) -- ruim boven MIN_FILL_TIME_MS (2500ms), dus nooit
+      // een false-positive bot-blokkade voor een snelle maar echte mens.
+      const payload = kantoorreinigingsPayload({ form_rendered_at: String(Date.now() - 3000) });
+      const req = { method: 'POST', body: JSON.stringify(payload) };
+      const res = mockRes();
+      await api(req, res);
+      assert.strictEqual(fetchMock.aantalAanroepen(), 1, 'een snelle maar geldige menselijke wizard-doorloop moet WEL de mail versturen');
+      assert.strictEqual(res.statusCode, 200);
+      assert.deepStrictEqual(res.body, { ok: true, success: true });
+    });
+  } finally {
+    global.fetch = origFetch;
+  }
+  console.log('OK: een snelle maar realistische menselijke wizard-doorloop (auto-advance) wordt nooit als bot geblokkeerd -- de mail wordt gewoon verstuurd.');
+}
+
+async function testScenarioDResendFoutGeenFalsePositive() {
+  console.log('\n=== Test 19 (scenario D): Resend-fout -> geen success:false-positive, frontend-foutmelding ===');
+  const origFetch = global.fetch;
+  const origConsoleError = console.error;
+  console.error = () => {};
+  global.fetch = () => Promise.resolve({
+    ok: false,
+    status: 429,
+    json: () => Promise.resolve({ name: 'rate_limit_exceeded', statusCode: 429, message: 'Too many requests' }),
+  });
+  try {
+    await metEnv({ RESEND_API_KEY: 're_test_fake_regressie', RESEND_FROM_EMAIL: 'Brabantschoon <info@brabantschoon.nl>' }, async () => {
+      const payload = kantoorreinigingsPayload();
+      const req = { method: 'POST', body: JSON.stringify(payload) };
+      const res = mockRes();
+      await api(req, res);
+      assert.strictEqual(res.statusCode, 502, 'een Resend-fout moet een 4xx/5xx opleveren, nooit een 200');
+      assert.strictEqual(res.body.ok, false);
+      assert.strictEqual(res.body.success, false, 'success mag NOOIT true zijn wanneer Resend zelf de aanvraag afwijst');
+      assert.ok(!('success' in res.body) || res.body.success === false, 'geen enkele vorm van een false-positive succes');
+    });
+  } finally {
+    console.error = origConsoleError;
+    global.fetch = origFetch;
+  }
+  console.log('OK: een Resend-fout geeft nooit een false-positive succes -- de frontend krijgt een echte 4xx/5xx en toont de foutmelding.');
+}
+
+async function testScenarioEGeldigeResendResponseSuccess() {
+  console.log('\n=== Test 20 (scenario E): geldige Resend-response -> frontend-succesmelding (ok:true + success:true) ===');
+  const origFetch = global.fetch;
+  const fetchMock = mockFetchTeller();
+  global.fetch = fetchMock;
+  try {
+    await metEnv({ RESEND_API_KEY: 're_test_fake_regressie', RESEND_FROM_EMAIL: 'Brabantschoon <info@brabantschoon.nl>' }, async () => {
+      const payload = kantoorreinigingsPayload();
+      const req = { method: 'POST', body: JSON.stringify(payload) };
+      const res = mockRes();
+      await api(req, res);
+      assert.strictEqual(res.statusCode, 200);
+      assert.strictEqual(res.body.ok, true);
+      assert.strictEqual(res.body.success, true, 'een geldige Resend-response moet altijd success:true opleveren -- dit is precies het signaal waarop js/main.js vertrouwt om de succesvolle afronding te tonen');
+      assert.strictEqual(fetchMock.aantalAanroepen(), 1);
+    });
+  } finally {
+    global.fetch = origFetch;
+  }
+  console.log('OK: een geldige Resend-response levert het ondubbelzinnige succescontract op waarop de frontend vertrouwt.');
+}
+
 (async () => {
   await testHandlerZonderConfig();
   await testHandlerMetConfig();
   await testHandlerResendAfgewezen();
+  await testProductieRegressieNormaleAanvraag();
+  await testScenarioAHoneypotGevuld();
+  await testScenarioBInvultijdTeKort();
+  await testScenarioCSnelleMaarGeldigeMens();
+  await testScenarioDResendFoutGeenFalsePositive();
+  await testScenarioEGeldigeResendResponseSuccess();
   console.log('\nAlle tests geslaagd.');
 })().catch((err) => {
   console.error(err);
