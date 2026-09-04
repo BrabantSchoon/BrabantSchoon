@@ -9,7 +9,7 @@
 // altijd gemockt).
 const assert = require('assert');
 const mail = require('./lib/mail.js');
-const { escapeHtml, enkeleRegel, isValidEmail, getResendConfig, bouwEmailHtml, verstuurEmail, DEFAULT_TO_EMAIL, RESEND_ENDPOINT } = mail;
+const { escapeHtml, enkeleRegel, isValidEmail, getResendConfig, bouwFromHeader, DEFAULT_FROM_DISPLAYNAAM, bouwEmailHtml, verstuurEmail, DEFAULT_TO_EMAIL, RESEND_ENDPOINT } = mail;
 
 function metEnv(vars, fn) {
   const orig = {};
@@ -74,6 +74,91 @@ console.log('\n=== Test 4: getResendConfig() -- RESEND_API_KEY/RESEND_FROM_EMAIL
     assert.deepStrictEqual(cfg.ontbrekend, []);
   });
   console.log('OK: config komt uitsluitend uit process.env (geen hardcoded noreply-default); RESEND_TO_EMAIL valt terug op het bestaande, publieke info@brabantschoon.nl-adres (geen secret).');
+}
+
+console.log('\n=== Test 4b (productiedebug: Resend 422 "Invalid `from` field"): bouwFromHeader() bouwt altijd een geldig, idempotent From-veld ===');
+{
+  // 1. Kale e-mailwaarde -> gewrapt met de vaste weergavenaam.
+  assert.strictEqual(bouwFromHeader('offerte@brabantschoon.nl'), 'Brabantschoon <offerte@brabantschoon.nl>', '1. een kale e-mailwaarde moet gewrapt worden tot "Brabantschoon <e-mailadres>"');
+
+  // 2. Whitespace rondom de env-waarde moet correct getrimd worden.
+  assert.strictEqual(bouwFromHeader('   offerte@brabantschoon.nl   '), 'Brabantschoon <offerte@brabantschoon.nl>', '2. whitespace rondom de waarde moet getrimd worden vóór verwerking');
+  assert.strictEqual(bouwFromHeader('  Brabantschoon <offerte@brabantschoon.nl>  '), 'Brabantschoon <offerte@brabantschoon.nl>', '2b. whitespace rondom een al geformatteerde waarde moet ook getrimd worden');
+
+  // 3. Een reeds correct geformatteerde waarde mag NOOIT dubbel gewrapt worden.
+  assert.strictEqual(bouwFromHeader('Brabantschoon <offerte@brabantschoon.nl>'), 'Brabantschoon <offerte@brabantschoon.nl>', '3. een reeds geformatteerde waarde mag niet dubbel geformatteerd worden');
+  // Idempotentie: de uitvoer van de functie nogmaals door de functie halen
+  // moet altijd exact hetzelfde resultaat geven (nooit "Brabantschoon
+  // <Brabantschoon <...>>").
+  const eenmaal = bouwFromHeader('offerte@brabantschoon.nl');
+  const tweemaal = bouwFromHeader(eenmaal);
+  assert.strictEqual(tweemaal, eenmaal, 'bouwFromHeader() moet idempotent zijn -- een tweede aanroep op de eigen uitvoer verandert er niets aan');
+  assert.ok(!tweemaal.includes(DEFAULT_FROM_DISPLAYNAAM + ' <' + DEFAULT_FROM_DISPLAYNAAM), 'nooit een dubbel-geneste weergavenaam zoals "Brabantschoon <Brabantschoon <...>>"');
+
+  // Root-cause-scenario uit de brief: punthaken ZONDER weergavenaam
+  // ("<offerte@brabantschoon.nl>") -- dit is precies wat Resend als een
+  // ongeldig `from`-veld afwees. Moet hersteld worden met de vaste naam.
+  assert.strictEqual(bouwFromHeader('<offerte@brabantschoon.nl>'), 'Brabantschoon <offerte@brabantschoon.nl>', 'punthaken zonder weergavenaam moeten hersteld worden tot "Brabantschoon <e-mailadres>"');
+
+  // Pathologisch dubbel/verward genest -> nooit gokken, veilig null.
+  assert.strictEqual(bouwFromHeader('Brabantschoon <Brabantschoon <offerte@brabantschoon.nl>>'), null, 'een verward dubbel-genest From-veld mag nooit gegokt worden -- moet null opleveren (veilige configuratiefout)');
+
+  // 4. Lege/ongeldige waarde -> null (nooit een half geformatteerde string).
+  assert.strictEqual(bouwFromHeader(''), null, '4. een lege waarde moet null opleveren');
+  assert.strictEqual(bouwFromHeader('   '), null, '4b. een waarde die alleen whitespace is, moet null opleveren');
+  assert.strictEqual(bouwFromHeader('niet-geldig'), null, '4c. een niet-e-mailwaarde moet null opleveren');
+  assert.strictEqual(bouwFromHeader('<niet-geldig>'), null, '4d. punthaken om een ongeldig e-mailadres moeten ook null opleveren');
+  assert.strictEqual(bouwFromHeader(null), null);
+  assert.strictEqual(bouwFromHeader(undefined), null);
+
+  console.log('OK: bouwFromHeader() bouwt altijd een geldig, idempotent From-veld op, herstelt de exacte productiefout (punthaken zonder naam), en gokt nooit bij twijfel.');
+}
+
+console.log('\n=== Test 4c (productiedebug): getResendConfig() gebruikt bouwFromHeader() -- een ongeldig/kaal RESEND_FROM_EMAIL levert nooit een ongeldig Resend-verzoek op ===');
+{
+  // 1. Kale e-mailwaarde in de omgevingsvariabele -> config.from is het
+  //    volledig, geldig geformatteerde Resend-from-veld.
+  metEnv({ RESEND_FROM_EMAIL: 'offerte@brabantschoon.nl' }, () => {
+    const cfg = getResendConfig();
+    assert.strictEqual(cfg.from, 'Brabantschoon <offerte@brabantschoon.nl>', '1. RESEND_FROM_EMAIL=offerte@brabantschoon.nl moet resulteren in "Brabantschoon <offerte@brabantschoon.nl>"');
+  });
+
+  // Root-cause-scenario: de omgevingsvariabele bevat zelf al de kapotte
+  // "<e-mailadres>"-vorm (punthaken zonder naam) -- getResendConfig() moet
+  // dit herstellen, niet doorsturen.
+  metEnv({ RESEND_FROM_EMAIL: '<offerte@brabantschoon.nl>' }, () => {
+    const cfg = getResendConfig();
+    assert.strictEqual(cfg.from, 'Brabantschoon <offerte@brabantschoon.nl>', 'een omgevingswaarde met kale punthaken moet hersteld worden, niet ongewijzigd doorgestuurd');
+  });
+
+  // 4. Lege/ongeldige waarde -> veilige configuratiefout (RESEND_FROM_EMAIL
+  //    telt als ontbrekend), NOOIT een ongeldig Resend-verzoek.
+  metEnv({ RESEND_FROM_EMAIL: 'niet-geldig' }, () => {
+    const cfg = getResendConfig();
+    assert.strictEqual(cfg.from, null, '4. een ongeldige RESEND_FROM_EMAIL-waarde mag nooit als from-veld gebruikt worden');
+    assert.ok(cfg.ontbrekend.includes('RESEND_FROM_EMAIL'), 'een ongeldig geformatteerde RESEND_FROM_EMAIL moet als ontbrekend/ongeldig worden gerapporteerd, zodat de handler een veilige 500 geeft in plaats van een 502 van Resend zelf');
+  });
+
+  console.log('OK: getResendConfig() herstelt een kale of kapotte RESEND_FROM_EMAIL-waarde altijd tot een geldig from-veld, of faalt veilig als configuratiefout -- nooit een ongeldig verzoek naar Resend.');
+}
+
+async function testVerstuurEmailFromHeaderNormaleAanvraag() {
+  console.log('\n=== Test 4d (productiedebug, scenario 5 "normale offerteaanvraag"): verstuurEmail() roept Resend aan met exact geldig `from` ===');
+  const origFetch = global.fetch;
+  const captured = {};
+  global.fetch = mockFetchOk(captured);
+  try {
+    // Precies de Vercel-configuratie uit de brief: RESEND_FROM_EMAIL blijft
+    // gewoon een kaal adres staan, Reply-To wordt niet aangeraakt.
+    await metEnv({ RESEND_API_KEY: 're_test_fake_1234', RESEND_FROM_EMAIL: 'offerte@brabantschoon.nl', RESEND_TO_EMAIL: 'aanvragen@brabantschoon.nl' }, async () => {
+      await verstuurEmail({ subject: 'Nieuwe zakelijke offerteaanvraag', html: '<p>x</p>', text: 'x', replyTo: 'klant@voorbeeld.com', logPrefix: 'test' });
+      assert.strictEqual(captured.body.from, 'Brabantschoon <offerte@brabantschoon.nl>', 'Resend moet exact het geldige, opgebouwde From-veld ontvangen');
+      assert.strictEqual(captured.body.reply_to, 'klant@voorbeeld.com', 'Reply-To blijft ongewijzigd het geldige klant-e-mailadres -- deze fix raakt Reply-To niet aan');
+    });
+  } finally {
+    global.fetch = origFetch;
+  }
+  console.log('OK: een normale offerteaanvraag met een kale RESEND_FROM_EMAIL-waarde resulteert in exact het geldige Resend-from-formaat; Reply-To blijft ongewijzigd.');
 }
 
 console.log('\n=== Test 5: bouwEmailHtml() escaped waarden, laat lege secties weg ===');
@@ -283,6 +368,7 @@ async function testVerstuurEmailNetwerkfout() {
   await testVerstuurEmailNormaal();
   await testVerstuurEmailOngeldigeReplyTo();
   await testVerstuurEmailGeenTrackingParams();
+  await testVerstuurEmailFromHeaderNormaleAanvraag();
   await testVerstuurEmailResendFout();
   await testVerstuurEmailNetwerkfout();
   console.log('\nAlle tests geslaagd.');
