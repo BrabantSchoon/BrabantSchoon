@@ -1260,6 +1260,18 @@ if (document.readyState === 'loading') {
     submitBtn.textContent = 'Aanvraag wordt verzonden\u2026';
     if (statusEl) statusEl.textContent = 'Aanvraag wordt verzonden\u2026';
     const payload = buildOffertePayload();
+    // Response-contract (api/offerte-aanvraag.js, sinds het productiedebug
+    // na ronde 48): een echte, daadwerkelijk door Resend verzonden aanvraag
+    // geeft altijd HTTP 200 + { ok:true, success:true }; een technische fout
+    // geeft altijd een 4xx/5xx + { ok:false, success:false, error:'...' }.
+    // Een geblokkeerde bot/honeypot-aanvraag krijgt bewust ook HTTP 200 +
+    // { ok:true } (zonder `success`) zodat een bot geen signaal krijgt dat
+    // hij geblokkeerd is -- dat pad hoort een normale bezoeker hier
+    // vrijwel nooit te bereiken (zie de uitgebreide toelichting in
+    // api/offerte-aanvraag.js). De check hieronder blijft daarom bewust op
+    // `ok` gebaseerd (niet op `success`): beide succes-vormen tonen dezelfde
+    // vriendelijke afronding (doorsturen naar thanks.html), alleen een
+    // echte 4xx/5xx of expliciete { ok:false } toont de foutmelding.
     fetch(form.getAttribute('action') || '/api/offerte-aanvraag', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

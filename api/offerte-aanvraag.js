@@ -311,14 +311,27 @@ function bouwEmailHtmlOfferte(payload) {
 // =================================================================
 // SPAM-/VALIDATIECONTROLES
 // =================================================================
-function lijktOpBot(payload) {
-  if (payload.botcheck === true) return true;
+// Post-ronde-48 productiedebug: bepaalt PER SIGNAAL (niet alleen het
+// eindoordeel) waarom een aanvraag als bot/spam wordt aangemerkt, zodat de
+// handler dit veilig kan loggen (uitsluitend booleans/een getal, nooit
+// klantgegevens) -- zie de diagnostiek in de handler hieronder. `lijktOpBot()`
+// blijft de bestaande boolean-signatuur behouden (gebruikt door
+// test_offerte_api.js Test 7) en is nu simpelweg een dunne wrapper hieromheen.
+function bepaalBotSignalen(payload) {
+  const honeypotFilled = payload.botcheck === true;
   const renderedAt = parseInt(payload.form_rendered_at, 10);
+  let fillTimeMs = null;
+  let fillTimeTooShort = false;
   if (Number.isFinite(renderedAt)) {
     const verstreken = Date.now() - renderedAt;
-    if (verstreken >= 0 && verstreken < MIN_FILL_TIME_MS) return true;
+    fillTimeMs = verstreken;
+    if (verstreken >= 0 && verstreken < MIN_FILL_TIME_MS) fillTimeTooShort = true;
   }
-  return false;
+  return { honeypotFilled, fillTimeTooShort, fillTimeMs, isBot: honeypotFilled || fillTimeTooShort };
+}
+
+function lijktOpBot(payload) {
+  return bepaalBotSignalen(payload).isBot;
 }
 
 function valideerVerplichteVelden(payload) {
@@ -349,15 +362,45 @@ module.exports = async (req, res) => {
     return;
   }
 
+  // ================================================================
+  // VEILIGE, TIJDELIJKE DIAGNOSTIEK (productiedebug na ronde 48)
+  // ================================================================
+  // Elke aanvraag logt uitsluitend WELK codepad is geraakt, plus -- bij
+  // botdetectie -- welk van de twee losse signalen daarvoor zorgde. Dit is
+  // de enige manier om in Vercel Logs te onderscheiden of een "HTTP 200 maar
+  // geen mail in Resend"-melding kwam door botdetectie, door validatie, of
+  // door een mislukte Resend-aanroep. NOOIT gelogd: naam, e-mail, telefoon,
+  // berichtinhoud, de volledige payload, of de API-key.
+  //
   // Stille afhandeling voor vermoedelijke bots: geen foutmelding teruggeven
   // (dat zou een bot juist tips geven), gewoon doen alsof het gelukt is.
-  if (lijktOpBot(payload)) {
+  // Dit pad roept verstuurEmail() NOOIT aan -- vandaar geen mail in Resend
+  // als dit pad wordt geraakt. Een normale menselijke gebruiker hoort hier
+  // vrijwel nooit te belanden: de honeypot is een onzichtbaar veld
+  // (tabindex="-1", autocomplete="off") dat een mens nooit invult, en
+  // MIN_FILL_TIME_MS (2500ms) wordt gemeten vanaf het renderen van de hele
+  // wizard (éénmalig gezet bij initialisatie, niet per stap) tot de
+  // uiteindelijke submit -- ruim onder de tijd die een 12-staps-wizard met
+  // verplichte tekstvelden (naam/e-mail/telefoon/plaats) realistisch kost,
+  // ook met auto-advance. Zie test_wizard.js voor een expliciete
+  // regressietest hierop en test_offerte_api.js voor de codepad-tests A-E.
+  const botSignalen = bepaalBotSignalen(payload);
+  if (botSignalen.isBot) {
+    console.log(
+      "offerte-aanvraag: Offerte aanvraag verwerkt: bot_blocked",
+      "honeypotFilled=" + botSignalen.honeypotFilled,
+      "fillTimeTooShort=" + botSignalen.fillTimeTooShort,
+      "fillTimeMs=" + (botSignalen.fillTimeMs === null ? "onbekend" : botSignalen.fillTimeMs)
+    );
     res.status(200).json({ ok: true });
     return;
   }
 
   const ontbrekend = valideerVerplichteVelden(payload);
   if (ontbrekend.length > 0) {
+    // Uitsluitend de NAMEN van de ontbrekende/ongeldige velden (bijv.
+    // "email,telefoon") -- nooit de ingevulde waarden zelf.
+    console.log("offerte-aanvraag: Offerte aanvraag verwerkt: validation_failed", "ontbrekendeVelden=" + ontbrekend.join(","));
     res.status(400).json({ ok: false, error: "missing_fields" });
     return;
   }
@@ -366,6 +409,7 @@ module.exports = async (req, res) => {
     const subject = bouwOnderwerp(payload);
     const text = bouwEmailTekst(payload);
     const html = bouwEmailHtmlOfferte(payload);
+    console.log("offerte-aanvraag: Offerte aanvraag verwerkt: resend_attempted");
     await verstuurEmail({
       subject,
       text,
@@ -373,18 +417,31 @@ module.exports = async (req, res) => {
       replyTo: payload.email,
       logPrefix: "offerte-aanvraag",
     });
-    res.status(200).json({ ok: true });
+    console.log("offerte-aanvraag: Offerte aanvraag verwerkt: resend_success");
+    // Eenduidig response-contract (briefpunt 4): `success:true` wordt
+    // UITSLUITEND gezet nadat verstuurEmail() daadwerkelijk succesvol is
+    // gebleken -- dus nadat Resend zelf een succesvolle response heeft
+    // teruggegeven (zie briefpunt 5: nooit een false-positive succes vóór
+    // mailverzending). `ok:true` blijft ernaast staan voor achterwaartse
+    // compatibiliteit met de bestaande frontend-check in js/main.js. Het
+    // bot-pad hierboven zet bewust GEEN `success`-veld: dat pad blijft
+    // opzettelijk ondoorzichtig richting een eventuele bot, maar is nu wel
+    // volledig te onderscheiden via de server-side log hierboven.
+    res.status(200).json({ ok: true, success: true });
   } catch (err) {
     // verstuurEmail() (lib/mail.js) heeft de technische details al veilig
     // gelogd (nooit de API-key, nooit klantgegevens) en zet `.reden` op de
     // fout: "server_misconfigured" (RESEND_API_KEY/RESEND_FROM_EMAIL
     // ontbreekt, nog vóór er iets geprobeerd is) of "send_failed" (Resend
     // wijst de aanvraag af, of een netwerkfout). De bezoeker krijgt in beide
-    // gevallen alleen een generieke foutcode, nooit responsdetails.
-    if (err && err.reden === "server_misconfigured") {
-      res.status(500).json({ ok: false, error: "server_misconfigured" });
+    // gevallen alleen een generieke foutcode, nooit responsdetails -- en
+    // NOOIT `success:true` (voorkomt een false-positive succesmelding).
+    const reden = err && err.reden;
+    console.log("offerte-aanvraag: Offerte aanvraag verwerkt: resend_failed", "reden=" + (reden || "onbekend"));
+    if (reden === "server_misconfigured") {
+      res.status(500).json({ ok: false, success: false, error: "server_misconfigured" });
     } else {
-      res.status(502).json({ ok: false, error: "send_failed" });
+      res.status(502).json({ ok: false, success: false, error: "send_failed" });
     }
   }
 };
@@ -398,6 +455,7 @@ module.exports._internal = {
   bouwOnderwerp,
   bouwInterneAdviesRegel,
   lijktOpBot,
+  bepaalBotSignalen,
   valideerVerplichteVelden,
   MIN_FILL_TIME_MS,
   CONFIG: calculator.CONFIG,
